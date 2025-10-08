@@ -1,0 +1,14 @@
+fastapi
+python-dotenv
+SQLAlchemy
+uvicorn
+pytest
+pytest-cov
+httpx
+pydantic
+pydantic[email]
+psycopg2-binary
+testcontainers[postgresql]
+pystache
+black
+isort
