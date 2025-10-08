@@ -1,6 +1,6 @@
-from fastapi import APIRouter, status
 import socket
 
+from fastapi import APIRouter, status
 
 health_check_router = APIRouter(tags=["HealthCheck"], prefix="/health")
 

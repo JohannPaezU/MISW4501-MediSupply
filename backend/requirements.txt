@@ -12,3 +12,4 @@ testcontainers[postgresql]
 pystache
 black
 isort
+flake8

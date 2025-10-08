@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from src.routers.health_check_router import health_check_router
 
 version = "1.0"
