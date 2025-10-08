@@ -4,8 +4,6 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [develop, main]
-    paths:
-      - "backend/**"
 
 jobs:
   backend-ci-cd:
@@ -23,27 +21,56 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Detect changes in backend
+        id: backend_changed
+        run: |
+          if [ -z "${{ github.base_ref }}" ]; then
+            echo "No PR context, assuming backend changes"
+            echo "CHANGED=backend/" >> $GITHUB_OUTPUT
+            echo "Result: Backend changes detected (manual run)"
+          else
+            echo "Fetching base branch..."
+            git fetch origin ${{ github.base_ref }} --depth=1
+            echo "Detecting changes in backend..."
+            CHANGED=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep '^backend/' || true)
+            echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
+
+            if [ -z "$CHANGED" ]; then
+              echo "Result: No backend changes detected"
+            else
+              echo "Result: Backend changes detected"
+            fi
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install dependencies
+        if: steps.backend_changed.outputs.CHANGED != ''
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Start Docker (for Testcontainers)
+        if: steps.backend_changed.outputs.CHANGED != ''
         run: |
           sudo systemctl start docker
           docker info
 
       - name: Run linter (flake8)
+        if: steps.backend_changed.outputs.CHANGED != ''
         run: |
           flake8 src --max-line-length=120 --exclude=__init__.py
 
       - name: Run tests with coverage
+        if: steps.backend_changed.outputs.CHANGED != ''
         env:
           TESTCONTAINERS_RYUK_DISABLED: true
         run: |
           pytest --cov=src --cov-report=term-missing --cov-fail-under=90 -v
+
+      - name: No backend changes
+        if: steps.backend_changed.outputs.CHANGED == ''
+        run: echo "No backend changes detected, skipping CI steps."
