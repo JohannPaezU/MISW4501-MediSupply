@@ -2,45 +2,64 @@ name: Backend CI/CD
 
 on:
   workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: "¿Forzar despliegue?"
+        required: true
+        type: choice
+        options:
+          - "No"
+          - "Sí"
+        default: "Sí"
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
   pull_request:
-    branches: [develop, main]
+    branches: [main, develop]
 
 jobs:
-  backend-ci-cd:
-    name: Backend CI (Tests + Lint)
+  detect-changes:
+    name: Detect backend changes
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-
-    services:
-      docker:
-        image: docker:dind
-
+    outputs:
+      changed: ${{ steps.detect.outputs.CHANGED }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Detect changes in backend
-        id: backend_changed
+      - id: detect
+        name: Detect changes in backend
         run: |
           if [ -z "${{ github.base_ref }}" ]; then
-            echo "No PR context, assuming backend changes"
+            echo "🔍 No PR context, assuming backend changes (manual or push)"
             echo "CHANGED=backend/" >> $GITHUB_OUTPUT
-            echo "Result: Backend changes detected (manual run)"
           else
             echo "Fetching base branch..."
             git fetch origin ${{ github.base_ref }} --depth=1
             echo "Detecting changes in backend..."
             CHANGED=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep '^backend/' || true)
-            echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
+            DETECTED="backend/"
 
             if [ -z "$CHANGED" ]; then
-              echo "Result: No backend changes detected"
+              echo "Result: ❌ No backend changes detected"
+              DETECTED=""
             else
-              echo "Result: Backend changes detected"
+              echo "Result: ✅ Backend changes detected"
             fi
+            echo "CHANGED=$DETECTED" >> $GITHUB_OUTPUT
           fi
+
+  build:
+    name: Build & Install Dependencies
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.changed != ''
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -48,29 +67,135 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        if: steps.backend_changed.outputs.CHANGED != ''
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+  test:
+    name: Run Linter & Tests
+    runs-on: ubuntu-latest
+    needs: build
+    if: needs.detect-changes.outputs.changed != ''
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      docker:
+        image: docker:dind
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Start Docker (for Testcontainers)
-        if: steps.backend_changed.outputs.CHANGED != ''
         run: |
           sudo systemctl start docker
           docker info
 
       - name: Run linter (flake8)
-        if: steps.backend_changed.outputs.CHANGED != ''
-        run: |
-          flake8 src --max-line-length=120 --exclude=__init__.py
+        run: flake8 src --max-line-length=120 --exclude=__init__.py
 
       - name: Run tests with coverage
-        if: steps.backend_changed.outputs.CHANGED != ''
         env:
           TESTCONTAINERS_RYUK_DISABLED: true
-        run: |
-          pytest --cov=src --cov-report=term-missing --cov-fail-under=90 -v
+        run: pytest --cov=src --cov-report=term-missing --cov-fail-under=90 -v
 
-      - name: No backend changes
-        if: steps.backend_changed.outputs.CHANGED == ''
-        run: echo "No backend changes detected, skipping CI steps."
+  deploy-staging:
+    name: Deploy to Heroku (staging)
+    runs-on: ubuntu-latest
+    needs: [detect-changes, test]
+    if: >
+      github.ref == 'refs/heads/develop' &&
+      (
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.force_deploy == 'Sí') ||
+        (github.event_name == 'push' && needs.detect-changes.outputs.changed != '')
+      )
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Heroku CLI
+        run: curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.13.15
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME_STAGING }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          branch: develop
+          appdir: backend
+
+      - name: Health check
+        run: |
+          echo "🌐 Waiting for app to start..."
+          sleep 30
+          HEALTH_CHECK_URL="${{ vars.HEROKU_APP_URL }}/api/v1/health"
+          echo "🔍 Checking health endpoint: $HEALTH_CHECK_URL"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_CHECK_URL)
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ App is not healthy (status: $STATUS)"
+            exit 1
+          fi
+          echo "✅ App is healthy (status: $STATUS)"
+
+  deploy-prod:
+    name: Deploy to production (Not implemented)
+    runs-on: ubuntu-latest
+    needs: [detect-changes, test]
+    if: >
+      github.ref == 'refs/heads/main' &&
+      (
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.force_deploy == 'Sí') ||
+        (github.event_name == 'push' && needs.detect-changes.outputs.changed != '')
+      )
+    steps:
+      - name: Notify production deploy
+        run: |
+          echo "🚧 Deploy to production: Not implemented yet."
+
+  backend-status:
+    name: Backend CI Status
+    runs-on: ubuntu-latest
+    needs: [detect-changes, build, test, deploy-staging, deploy-prod]
+    if: always()
+    steps:
+      - name: Final status summary
+        run: |
+          CHANGED="${{ needs.detect-changes.outputs.changed }}"
+          BUILD_RESULT="${{ needs.build.result }}"
+          TEST_RESULT="${{ needs.test.result }}"
+          DEPLOY_STAGING_RESULT="${{ needs.deploy-staging.result }}"
+          DEPLOY_PROD_RESULT="${{ needs.deploy-prod.result }}"
+
+          echo "📋 Summary:"
+          echo "  - Build: $BUILD_RESULT"
+          echo "  - Test: $TEST_RESULT"
+          echo "  - Deploy to Staging: $DEPLOY_STAGING_RESULT"
+          echo "  - Deploy to Production: $DEPLOY_PROD_RESULT"
+          echo ""
+
+          if [ -z "$CHANGED" ]; then
+            echo " 🔍 No backend changes detected — nothing executed."
+            exit 0
+          fi
+
+          if [ "$BUILD_RESULT" != "success" ] || \
+             [ "$TEST_RESULT" != "success" ] || \
+             ([ "$DEPLOY_STAGING_RESULT" != "success" ] && [ "$DEPLOY_STAGING_RESULT" != "skipped" ]) || \
+             ([ "$DEPLOY_PROD_RESULT" != "success" ] && [ "$DEPLOY_PROD_RESULT" != "skipped" ]); then
+            echo "❌ One or more jobs failed."
+            exit 1
+          fi
+
+          echo "✅ All CI/CD jobs passed successfully."

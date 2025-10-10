@@ -13,3 +13,4 @@ pystache
 black
 isort
 flake8
+gunicorn
