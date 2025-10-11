@@ -26,5 +26,5 @@
     <string name="title_home">Inicio</string>
     <string name="title_dashboard">Productos</string>
     <string name="title_notifications">Historial</string>
-    <string name="title_logout">Cerrar sesión</string>
+    <string name="title_logout">Salir</string>
 </resources>
