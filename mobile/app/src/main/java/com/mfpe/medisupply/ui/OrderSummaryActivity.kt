@@ -4,11 +4,12 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.adapters.OrderSummaryAdapter
-import com.mfpe.medisupply.adapters.OrderSummaryItem
+import com.mfpe.medisupply.data.model.OrderSummaryItem
 import com.mfpe.medisupply.data.model.Product
 import com.mfpe.medisupply.databinding.ActivityOrderSummaryBinding
 import java.text.NumberFormat
@@ -130,7 +131,7 @@ class OrderSummaryActivity : AppCompatActivity() {
             Toast.makeText(
                 this,
                 getString(R.string.error_select_delivery_date),
-                Toast.LENGTH_LONG
+                Toast.LENGTH_SHORT
             ).show()
             return false
         }
@@ -138,9 +139,18 @@ class OrderSummaryActivity : AppCompatActivity() {
     }
 
     private fun createOrder() {
-        Toast.makeText(this, "Pedido creado exitosamente.", Toast.LENGTH_LONG).show()
-        setResult(RESULT_OK)
-        finish()
+        AlertDialog.Builder(this)
+            .setTitle("Confirmar pedido")
+            .setMessage("¿Estás seguro que deseas confirmar este pedido?")
+            .setPositiveButton("Confirmar") { _, _ ->
+                Toast.makeText(this, "Pedido creado exitosamente.", Toast.LENGTH_LONG).show()
+                setResult(RESULT_OK)
+                finish()
+            }
+            .setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
 }
