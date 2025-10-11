@@ -24,7 +24,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnCreateAccount.setOnClickListener {
-            val intent = Intent(this, ValidateOTPActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
