@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.mfpe.medisupply.databinding.FragmentInicioBinding
+import com.mfpe.medisupply.viewmodel.InicioViewModel
 
 class InicioFragment : Fragment() {
 
