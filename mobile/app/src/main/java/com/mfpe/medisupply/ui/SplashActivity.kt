@@ -1,4 +1,4 @@
-package com.mfpe.medisupply
+package com.mfpe.medisupply.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.mfpe.medisupply.R
 import com.mfpe.medisupply.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {

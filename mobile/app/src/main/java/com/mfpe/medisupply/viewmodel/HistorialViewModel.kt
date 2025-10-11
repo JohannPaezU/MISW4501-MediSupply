@@ -1,12 +1,12 @@
-package com.mfpe.medisupply.ui.inicio
+package com.mfpe.medisupply.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class InicioViewModel : ViewModel() {
+class HistorialViewModel : ViewModel() {
     private val _text = MutableLiveData<String>().apply {
-        value = "Inicio"
+        value = "Historial"
     }
     val text: LiveData<String> = _text
 }
