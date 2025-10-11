@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.data.model.ValidateOTPRequest
 import com.mfpe.medisupply.databinding.ActivityValidateOtpBinding
+import com.mfpe.medisupply.utils.PrefsManager
 import com.mfpe.medisupply.viewmodel.UserViewModel
 
 class ValidateOTPActivity : AppCompatActivity() {
@@ -35,21 +36,19 @@ class ValidateOTPActivity : AppCompatActivity() {
             val otp = binding.inputEmail.text.toString().trim()
 
             if (otp.isEmpty()) {
-                Toast.makeText(this, "Por favor ingresa el código OTP", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor ingresa el código OTP.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val otpRequest = ValidateOTPRequest(otp = otp)
 
             userViewModel.validateOTP(otpRequest) { success, message, response ->
-                if (success) {
+                if (success && response != null) {
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
-                    // val token = response?.token
-                    // val fullName = response?.fullName
-                    // val email = response?.email
-                    // val role = response?.role
-
+                    PrefsManager.getInstance(this).saveAuthToken(response.token)
+                    PrefsManager.getInstance(this).saveUserFullName(response.fullName)
+                    PrefsManager.getInstance(this).saveUserEmail(response.email)
+                    PrefsManager.getInstance(this).saveUserRole(response.role)
                     val intent = Intent(this, MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

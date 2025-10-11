@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.databinding.ActivityMainBinding
+import com.mfpe.medisupply.utils.PrefsManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,11 +25,10 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         navView.setupWithNavController(navController)
 
-        // Manejar clic en Cerrar sesión
         navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_logout -> {
-                    // Redirigir a LoginActivity
+                    PrefsManager.getInstance(this).clear()
                     val intent = Intent(this, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Manejar clic en el FAB
         binding.fabAdd.setOnClickListener {
             // Aquí puedes agregar la funcionalidad que desees
             // Por ejemplo, navegar a una pantalla de agregar producto
