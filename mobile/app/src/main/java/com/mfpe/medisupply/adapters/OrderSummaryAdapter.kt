@@ -7,17 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mfpe.medisupply.R
+import com.mfpe.medisupply.data.model.OrderSummaryItem
 import com.mfpe.medisupply.databinding.ItemOrderSummaryBinding
 import java.text.NumberFormat
 import java.util.Locale
-
-data class OrderSummaryItem(
-    val id: String,
-    val name: String,
-    val imageUrl: String,
-    val price: Double,
-    val quantity: Int
-)
 
 class OrderSummaryAdapter : ListAdapter<OrderSummaryItem, OrderSummaryAdapter.OrderSummaryViewHolder>(OrderSummaryDiffCallback()) {
 
