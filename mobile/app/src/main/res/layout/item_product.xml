@@ -10,6 +10,9 @@
     app:cardCornerRadius="12dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/pink"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
     app:cardElevation="0dp">
 
     <LinearLayout
