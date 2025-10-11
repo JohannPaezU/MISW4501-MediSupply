@@ -66,7 +66,7 @@ class OrderProductsAdapter : ListAdapter<Product, OrderProductsAdapter.OrderProd
                 val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
                 tvProductExpiry.text = "Vence: ${dateFormat.format(product.dueDate)}"
                 Glide.with(ivProductImage.context)
-                    .load(product.imagenUrl)
+                    .load(product.imageUrl)
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .into(ivProductImage)

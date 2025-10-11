@@ -18,7 +18,13 @@
         android:theme="@style/Theme.Medisupply"
         tools:targetApi="31">
         <activity
+            android:name=".ui.OrderSummaryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.ValidateOTPActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.OrderActivity"
             android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
