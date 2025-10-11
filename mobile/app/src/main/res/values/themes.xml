@@ -30,19 +30,21 @@
         <item name="android:background">@drawable/secondary_button_background</item>
     </style>
 
-    <style name="RoundedFloatingButton">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50dp</item>
-    </style>
-
-    <style name="TimePickerText">
-        <item name="android:textSize">32sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="ShapeAppearanceOverlay.MyApp.FloatingActionButton.Circle" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemIconSize">24dp</item>
+        <item name="itemPaddingTop">16dp</item>
+        <item name="itemPaddingBottom">16dp</item>
+        <item name="itemTextAppearanceActive">@style/BottomNavigationTextAppearance</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationTextAppearance</item>
+    </style>
+
+    <style name="BottomNavigationTextAppearance" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textStyle">normal</item>
     </style>
 
 </resources>
