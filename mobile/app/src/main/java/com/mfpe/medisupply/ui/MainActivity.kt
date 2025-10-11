@@ -2,10 +2,11 @@ package com.mfpe.medisupply.ui
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.databinding.ActivityMainBinding
 import com.mfpe.medisupply.utils.PrefsManager
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -36,7 +37,6 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.placeholder -> {
-                    // No hacer nada para el placeholder
                     false
                 }
                 else -> {
