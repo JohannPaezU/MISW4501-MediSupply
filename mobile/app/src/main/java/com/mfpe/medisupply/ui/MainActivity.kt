@@ -1,4 +1,4 @@
-package com.mfpe.medisupply
+package com.mfpe.medisupply.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.mfpe.medisupply.R
 import com.mfpe.medisupply.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
