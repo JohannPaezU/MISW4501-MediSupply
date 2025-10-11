@@ -6,16 +6,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.mfpe.medisupply.databinding.ActivityRegisterSuccessBinding
+import com.mfpe.medisupply.databinding.ActivityValidateOtpBinding
 
-class RegisterSuccessActivity : AppCompatActivity() {
+class ValidateOTPActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityRegisterSuccessBinding
+    private lateinit var binding: ActivityValidateOtpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityRegisterSuccessBinding.inflate(layoutInflater)
+        binding = ActivityValidateOtpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
