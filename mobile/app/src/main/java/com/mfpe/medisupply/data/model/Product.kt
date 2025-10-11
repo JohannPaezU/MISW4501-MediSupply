@@ -9,7 +9,7 @@ data class Product(
     val details: String,
     val store: String,
     val lote: String,
-    val imagenUrl: String,
+    val imageUrl: String,
     val dueDate: Date,
     val stock: Int,
     val pricePerUnite: Double,

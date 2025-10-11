@@ -46,7 +46,7 @@ class ProductsAdapter : ListAdapter<Product, ProductsAdapter.ProductoViewHolder>
 
                 // Cargar imagen con Glide
                 Glide.with(ivProductImage.context)
-                    .load(product.imagenUrl)
+                    .load(product.imageUrl)
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .into(ivProductImage)

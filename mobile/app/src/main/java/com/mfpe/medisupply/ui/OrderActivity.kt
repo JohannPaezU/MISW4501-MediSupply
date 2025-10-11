@@ -1,11 +1,14 @@
 package com.mfpe.medisupply.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.mfpe.medisupply.R
 import com.mfpe.medisupply.adapters.OrderProductsAdapter
 import com.mfpe.medisupply.databinding.ActivityOrderBinding
 import com.mfpe.medisupply.viewmodel.ProductsViewModel
@@ -15,6 +18,14 @@ class OrderActivity : AppCompatActivity() {
     private lateinit var binding: ActivityOrderBinding
     private lateinit var orderProductsAdapter: OrderProductsAdapter
     private lateinit var productsViewModel: ProductsViewModel
+
+    private val orderSummaryLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            finish()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +46,26 @@ class OrderActivity : AppCompatActivity() {
 
         binding.btnSave.setOnClickListener {
             val quantities = orderProductsAdapter.getProductsWithQuantities()
-            // TODO: Implementar lógica de guardado
-            finish()
+
+            if (quantities.values.all { it == 0 }) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.error_no_products_selected),
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+
+            val selectedProducts = productsViewModel.getCurrentProducts()
+                .filter { product ->
+                    val quantity = quantities[product.id] ?: 0
+                    quantity > 0
+                }
+
+            val intent = Intent(this, OrderSummaryActivity::class.java)
+            intent.putExtra("products", ArrayList(selectedProducts))
+            intent.putExtra("quantities", HashMap(quantities))
+            orderSummaryLauncher.launch(intent)
         }
     }
 
@@ -59,4 +88,3 @@ class OrderActivity : AppCompatActivity() {
         }
     }
 }
-
