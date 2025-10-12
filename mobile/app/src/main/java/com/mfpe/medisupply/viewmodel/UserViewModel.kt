@@ -12,9 +12,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UserViewModel : ViewModel() {
-
+class UserViewModel(
     private val userRepository: UserRepository = UserRepository()
+) : ViewModel() {
 
     fun registerUser(registerUserRequest: RegisterUserRequest, onResult: (Boolean, String) -> Unit) {
         userRepository.registerUser(registerUserRequest).enqueue(object : Callback<RegisterUserResponse>{
@@ -63,6 +63,4 @@ class UserViewModel : ViewModel() {
             }
         })
     }
-
-
 }
