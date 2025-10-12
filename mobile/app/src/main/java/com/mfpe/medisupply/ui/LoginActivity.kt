@@ -11,12 +11,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.data.model.LoginUserRequest
 import com.mfpe.medisupply.databinding.ActivityLoginBinding
+import com.mfpe.medisupply.utils.PrefsManager
 import com.mfpe.medisupply.viewmodel.UserViewModel
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var userViewModel: UserViewModel
+    private lateinit var prefsManager: PrefsManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,15 @@ class LoginActivity : AppCompatActivity() {
         }
 
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        prefsManager = PrefsManager.getInstance(this)
+
+        loadRememberMeData()
+
+        binding.checkRememberMe.setOnCheckedChangeListener { _, isChecked ->
+            if (!isChecked) {
+                prefsManager.clearRememberMe()
+            }
+        }
 
         binding.btnCancel.setOnClickListener {
             finish()
@@ -44,6 +55,14 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val rememberMe = binding.checkRememberMe.isChecked
+            prefsManager.saveRememberMeChecked(rememberMe)
+            if (rememberMe) {
+                prefsManager.saveRememberMeEmail(email)
+            } else {
+                prefsManager.clearRememberMe()
+            }
+
             val loginRequest = LoginUserRequest(
                 email = email,
                 password = password
@@ -56,6 +75,18 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                 }
+            }
+        }
+    }
+
+    private fun loadRememberMeData() {
+        val rememberMeChecked = prefsManager.getRememberMeChecked()
+        binding.checkRememberMe.isChecked = rememberMeChecked
+
+        if (rememberMeChecked) {
+            val savedEmail = prefsManager.getRememberMeEmail()
+            if (!savedEmail.isNullOrEmpty()) {
+                binding.inputEmail.setText(savedEmail)
             }
         }
     }

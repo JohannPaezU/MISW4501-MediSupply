@@ -76,8 +76,40 @@ class PrefsManager private constructor(private val mCtx: Context) {
         editor.apply()
     }
 
+    fun saveRememberMeEmail(email: String) {
+        val sharedPreferences = mCtx.getSharedPreferences(REMEMBER_ME_PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("remember_me_email", email)
+        editor.apply()
+    }
+
+    fun getRememberMeEmail(): String? {
+        val sharedPreferences = mCtx.getSharedPreferences(REMEMBER_ME_PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString("remember_me_email", "")
+    }
+
+    fun saveRememberMeChecked(checked: Boolean) {
+        val sharedPreferences = mCtx.getSharedPreferences(REMEMBER_ME_PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("remember_me_checked", checked)
+        editor.apply()
+    }
+
+    fun getRememberMeChecked(): Boolean {
+        val sharedPreferences = mCtx.getSharedPreferences(REMEMBER_ME_PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("remember_me_checked", false)
+    }
+
+    fun clearRememberMe() {
+        val sharedPreferences = mCtx.getSharedPreferences(REMEMBER_ME_PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
+
     companion object {
         private const val SHARED_PREF_NAME = "my_shared_prefs"
+        private const val REMEMBER_ME_PREF_NAME = "remember_me_prefs"
         private var mInstance: PrefsManager? = null
         @Synchronized
         fun getInstance(mCtx: Context): PrefsManager {
