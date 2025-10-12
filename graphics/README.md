@@ -59,7 +59,7 @@ Crear un archivo CSV con el estado de las Historias de Usuario (HU) y sus subtar
 
 3. **Estructura del CSV:**
    - **Nombre del archivo:** `week_[NÚMERO]_reports_data.csv` (ej: week_1_reports_data.csv)
-   - **Columnas:** HU, sub_task, status, completion_date
+   - **Columnas:** HU, sub_task, status, completion_date, assignee
    - **Formato de fecha:** YYYY-MM-DD (ej: 2025-10-10)
 
 4. **Reglas de mapeo:**
@@ -67,6 +67,7 @@ Crear un archivo CSV con el estado de las Historias de Usuario (HU) y sus subtar
    - **sub_task:** Clave de Jira + resumen (ej: "SCRUM-119 - Crear backend")
    - **status:** Estado actual (To Do, In Progress, Done)
    - **completion_date:** Solo para tareas con status "Done", usar la fecha de resolución
+   - **assignee:** Nombre completo de la persona asignada a la tarea (obtener desde Jira)
 
 5. **Ejemplo de referencia:**
    - Usar el archivo `example_reports_data.csv` como guía de formato
