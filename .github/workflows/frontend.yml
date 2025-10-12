@@ -1,0 +1,62 @@
+name: Frontend CI/CD
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  frontend-ci-cd:
+    name: Frontend CI/CD
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect changes in frontend
+        id: frontend_changed
+        run: |
+          if [ -z "${{ github.base_ref }}" ]; then
+            echo "No PR context, assuming frontend changes"
+            echo "CHANGED=frontend/" >> $GITHUB_OUTPUT
+            echo "Result: Frontend changes detected (manual run)"
+          else
+            echo "Fetching base branch..."
+            git fetch origin ${{ github.base_ref }} --depth=1
+            echo "Detecting changes in frontend..."
+            CHANGED=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep '^frontend/' || true)
+            echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
+
+            if [ -z "$CHANGED" ]; then
+              echo "Result: No frontend changes detected"
+            else
+              echo "Result: Frontend changes detected"
+            fi
+          fi
+
+      - name: Set up Node.js
+        if: steps.frontend_changed.outputs.CHANGED != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.frontend_changed.outputs.CHANGED != ''
+        run: npm ci
+
+      - name: Build Angular app
+        if: steps.frontend_changed.outputs.CHANGED != ''
+        run: npm run build --if-present
+
+      - name: No frontend changes
+        if: steps.frontend_changed.outputs.CHANGED == ''
+        run: echo "No frontend changes detected, skipping CI steps."
