@@ -51,7 +51,6 @@ class LoginActivity : AppCompatActivity() {
 
             userViewModel.loginUser(loginRequest) { success, message ->
                 if (success) {
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, ValidateOTPActivity::class.java)
                     startActivity(intent)
                 } else {
