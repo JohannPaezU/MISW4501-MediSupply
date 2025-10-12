@@ -44,7 +44,7 @@ class ValidateOTPActivity : AppCompatActivity() {
 
             userViewModel.validateOTP(otpRequest) { success, message, response ->
                 if (success && response != null) {
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    PrefsManager.getInstance(this).saveUserId(response.id)
                     PrefsManager.getInstance(this).saveAuthToken(response.token)
                     PrefsManager.getInstance(this).saveUserFullName(response.fullName)
                     PrefsManager.getInstance(this).saveUserEmail(response.email)

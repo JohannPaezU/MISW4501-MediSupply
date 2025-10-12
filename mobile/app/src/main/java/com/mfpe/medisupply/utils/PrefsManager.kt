@@ -4,6 +4,19 @@ import android.content.Context
 
 class PrefsManager private constructor(private val mCtx: Context) {
 
+    fun saveUserId(id: Int) {
+        val sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("user_id", id)
+        editor.apply()
+    }
+
+    val getuserId: Int
+        get() {
+            val sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            return sharedPreferences.getInt("user_id", 0)
+        }
+
     fun saveAuthToken(token: String) {
         val sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
