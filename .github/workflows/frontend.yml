@@ -23,40 +23,39 @@ jobs:
 
       - name: Detect changes in frontend
         id: frontend_changed
+        shell: bash
         run: |
           if [ -z "${{ github.base_ref }}" ]; then
-            echo "No PR context, assuming frontend changes"
-            echo "CHANGED=frontend/" >> $GITHUB_OUTPUT
+            echo "CHANGED=true" >> "$GITHUB_OUTPUT"
             echo "Result: Frontend changes detected (manual run)"
           else
             echo "Fetching base branch..."
             git fetch origin ${{ github.base_ref }} --depth=1
             echo "Detecting changes in frontend..."
-            CHANGED=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep '^frontend/' || true)
-            echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
-
-            if [ -z "$CHANGED" ]; then
-              echo "Result: No frontend changes detected"
-            else
+            if git diff --name-only origin/${{ github.base_ref }} HEAD | grep '^frontend/'; then
+              echo "CHANGED=true" >> "$GITHUB_OUTPUT"
               echo "Result: Frontend changes detected"
+            else
+              echo "CHANGED=false" >> "$GITHUB_OUTPUT"
+              echo "Result: No frontend changes detected"
             fi
           fi
 
       - name: Set up Node.js
-        if: steps.frontend_changed.outputs.CHANGED != ''
+        if: steps.frontend_changed.outputs.CHANGED == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
       - name: Install dependencies
-        if: steps.frontend_changed.outputs.CHANGED != ''
+        if: steps.frontend_changed.outputs.CHANGED == 'true'
         run: npm ci
 
       - name: Build Angular app
-        if: steps.frontend_changed.outputs.CHANGED != ''
+        if: steps.frontend_changed.outputs.CHANGED == 'true'
         run: npm run build --if-present
 
       - name: No frontend changes
-        if: steps.frontend_changed.outputs.CHANGED == ''
+        if: steps.frontend_changed.outputs.CHANGED != 'true'
         run: echo "No frontend changes detected, skipping CI steps."
