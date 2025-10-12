@@ -1,28 +1,28 @@
 HU,sub_task,status,completion_date
 HU02,SCRUM-119 - Crear backend,Done,2025-10-10
-HU02,SCRUM-120 - Crear frontend,Done,2025-10-12
+HU02,SCRUM-120 - Crear frontend,In Progress,
 HU02,SCRUM-121 - Integrar backend y frontend,In Progress,
-HU02,SCRUM-122 - Realizar pruebas manuales,Done,2025-10-12
+HU02,SCRUM-122 - Realizar pruebas manuales,To Do,
 HU02,SCRUM-123 - Realizar pruebas unitarias backend,In Progress,
-HU02,SCRUM-124 - Realizar pruebas unitarias frontend,In Progress,
+HU02,SCRUM-124 - Realizar pruebas unitarias frontend,To Do,
 HU05,SCRUM-125 - Crear backend,Done,2025-10-10
 HU05,SCRUM-126 - Crear frontend,Done,2025-10-10
-HU05,SCRUM-127 - Integrar backend y frontend,Done,2025-10-12
-HU05,SCRUM-128 - Realizar pruebas manuales,Done,2025-10-12
-HU05,SCRUM-129 - Realizar pruebas unitarias backend,In Progress,
-HU05,SCRUM-130 - Realizar pruebas unitarias frontend,In Progress,
-HU011,SCRUM-131 - Crear backend,Done,2025-10-12
-HU011,SCRUM-132 - Crear componente de registro en APP,Done,2025-10-10
-HU011,SCRUM-133 - Crear vista de registro en APP,Done,2025-10-10
-HU011,SCRUM-134 - Realizar pruebas unitarias backend,To Do,
-HU011,SCRUM-135 - Realizar pruebas manuales,Done,2025-10-12
-HU011,SCRUM-152 - Realizar Pruebas End-to-end Front,In Progress,
+HU05,SCRUM-127 - Integrar backend y frontend,In Progress,
+HU05,SCRUM-128 - Realizar pruebas manuales,To Do,
+HU05,SCRUM-129 - Realizar pruebas unitarias backend,To Do,
+HU05,SCRUM-130 - Realizar pruebas unitarias frontend,To Do,
 HU03,SCRUM-136 - Crear backend,Done,2025-10-10
-HU03,SCRUM-137 - Crear frontend,Done,2025-10-12
+HU03,SCRUM-137 - Crear frontend,In Progress,
 HU03,SCRUM-138 - Integrar backend y frontend,In Progress,
-HU03,SCRUM-139 - Realizar pruebas manuales,In Progress,
+HU03,SCRUM-139 - Realizar pruebas manuales,To Do,
 HU03,SCRUM-140 - Realizar pruebas unitarias backend,To Do,
 HU03,SCRUM-141 - Realizar pruebas unitarias frontend,To Do,
+HU011,SCRUM-131 - Crear backend,In Progress,
+HU011,SCRUM-132 - Crear componente de registro en APP,Done,2025-10-10
+HU011,SCRUM-133 - Crear vista de registro en APP,Done,2025-10-10
+HU011,SCRUM-134 - Realizar pruebas unitarias backend,In Progress,
+HU011,SCRUM-135 - Realizar pruebas manuales,In Progress,
+HU06,SCRUM-51 - Consulta de clientes por parte de los vendedores,To Do,
 HU07,SCRUM-52 - Consulta de ruta de visita por fecha,To Do,
 HU08,SCRUM-53 - Registro de la visita de un cliente,To Do,
 HU09,SCRUM-54 - Creación de un pedido en línea con consulta de inventario en tiempo real,To Do,
