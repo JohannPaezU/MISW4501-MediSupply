@@ -41,24 +41,42 @@ Para utilizar este sistema necesitas:
 Usa el siguiente prompt en Cursor:
 
 ```
-Quiero que busques las HU SCRUM-71,SCRUM-74,SCRUM-72,SCRUM-45,SCRUM-51,SCRUM-52,SCRUM-53,SCRUM-54,SCRUM-55,SCRUM-75,SCRUM-46,SCRUM-47,SCRUM-48,SCRUM-73 y crees un csv que tenga:
 
-HU,sub_task,status,completion_date
+## Instrucciones para generar reportes de HU desde Jira
 
-ponle el nombre de  week_[NÚMERO]_reports_data
+### Objetivo
+Crear un archivo CSV con el estado de las Historias de Usuario (HU) y sus subtareas desde Jira.
 
-el completion_date es la fecha en la que la sub tarea se puso en Done
-```
+### Pasos a seguir:
 
-**Ejemplo de uso:**
-```
-Quiero que busques las HU SCRUM-71,SCRUM-74,SCRUM-72,SCRUM-45,SCRUM-51,SCRUM-52,SCRUM-53,SCRUM-54,SCRUM-55,SCRUM-75,SCRUM-46,SCRUM-47,SCRUM-48,SCRUM-73 y crees un csv que tenga:
+1. **Conectar a Jira:**
+   - Usar el proyecto "Proyecto final" (clave: SCRUM)
+   - Buscar las siguientes HU por sus claves: SCRUM-71, SCRUM-74, SCRUM-72, SCRUM-45, SCRUM-51, SCRUM-52, SCRUM-53, SCRUM-54, SCRUM-55, SCRUM-75, SCRUM-46, SCRUM-47, SCRUM-48, SCRUM-73
 
-HU,sub_task,status,completion_date
+2. **Para cada HU:**
+   - **Si tiene subtareas:** Incluir TODAS las subtareas como filas separadas
+   - **Si NO tiene subtareas:** Incluir la HU principal como su propia subtarea
 
-ponle el nombre de week_2_reports_data
+3. **Estructura del CSV:**
+   - **Nombre del archivo:** `week_[NÚMERO]_reports_data.csv` (ej: week_1_reports_data.csv)
+   - **Columnas:** HU, sub_task, status, completion_date
+   - **Formato de fecha:** YYYY-MM-DD (ej: 2025-10-10)
 
-el completion_date es la fecha en la que la sub tarea se puso en Done
+4. **Reglas de mapeo:**
+   - **HU:** Identificador de la historia de usuario (ej: HU01, HU02, etc.)
+   - **sub_task:** Clave de Jira + resumen (ej: "SCRUM-119 - Crear backend")
+   - **status:** Estado actual (To Do, In Progress, Done)
+   - **completion_date:** Solo para tareas con status "Done", usar la fecha de resolución
+
+5. **Ejemplo de referencia:**
+   - Usar el archivo `example_reports_data.csv` como guía de formato
+
+### Notas importantes:
+- Incluir TODAS las HU solicitadas, tengan o no subtareas
+- Para HU sin subtareas, usar la HU principal como subtarea
+- Solo incluir fecha de completion_date para tareas marcadas como "Done"
+- Mantener consistencia en el formato de nombres de HU
+
 ```
 
 ### Estructura del archivo CSV generado
