@@ -20,7 +20,6 @@ pydantic
 pydantic[email]
 
 # Security
-passlib
 bcrypt
 
 # Testing
