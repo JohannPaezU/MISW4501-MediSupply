@@ -1,0 +1,34 @@
+HU,sub_task,status,completion_date,assignee
+HU02,SCRUM-119 - Crear backend,Done,2025-10-10,Johann Sebastian Paez Campos
+HU02,SCRUM-120 - Crear frontend,Done,2025-10-12,js.cervantes
+HU02,SCRUM-121 - Integrar backend y frontend,In Progress,,js.cervantes
+HU02,SCRUM-122 - Realizar pruebas manuales,Done,2025-10-12,Julian Oliveros forero
+HU02,SCRUM-123 - Realizar pruebas unitarias backend,In Progress,,Johann Sebastian Paez Campos
+HU02,SCRUM-124 - Realizar pruebas unitarias frontend,In Progress,,js.cervantes
+HU05,SCRUM-125 - Crear backend,Done,2025-10-10,Miguel Fernando Padilla Espino
+HU05,SCRUM-126 - Crear frontend,Done,2025-10-10,Johann Sebastian Paez Campos
+HU05,SCRUM-127 - Integrar backend y frontend,Done,2025-10-12,Johann Sebastian Paez Campos
+HU05,SCRUM-128 - Realizar pruebas manuales,Done,2025-10-12,js.cervantes
+HU05,SCRUM-129 - Realizar pruebas unitarias backend,In Progress,,Miguel Fernando Padilla Espino
+HU05,SCRUM-130 - Realizar pruebas unitarias frontend,In Progress,,Johann Sebastian Paez Campos
+HU011,SCRUM-131 - Crear backend,Done,2025-10-12,Julian Oliveros forero
+HU011,SCRUM-132 - Crear componente de registro en APP,Done,2025-10-10,Miguel Fernando Padilla Espino
+HU011,SCRUM-133 - Crear vista de registro en APP,Done,2025-10-10,Miguel Fernando Padilla Espino
+HU011,SCRUM-134 - Realizar pruebas unitarias backend,To Do,,Julian Oliveros forero
+HU011,SCRUM-135 - Realizar pruebas manuales,Done,2025-10-12,Johann Sebastian Paez Campos
+HU011,SCRUM-152 - Realizar Pruebas End-to-end Front,In Progress,,Julian Oliveros forero
+HU03,SCRUM-136 - Crear backend,Done,2025-10-10,js.cervantes
+HU03,SCRUM-137 - Crear frontend,Done,2025-10-12,Julian Oliveros forero
+HU03,SCRUM-138 - Integrar backend y frontend,In Progress,,Julian Oliveros forero
+HU03,SCRUM-139 - Realizar pruebas manuales,In Progress,,Miguel Fernando Padilla Espino
+HU03,SCRUM-140 - Realizar pruebas unitarias backend,To Do,,js.cervantes
+HU03,SCRUM-141 - Realizar pruebas unitarias frontend,To Do,,Julian Oliveros forero
+HU07,SCRUM-52 - Consulta de ruta de visita por fecha,To Do,,
+HU08,SCRUM-53 - Registro de la visita de un cliente,To Do,,
+HU09,SCRUM-54 - Creación de un pedido en línea con consulta de inventario en tiempo real,To Do,,
+HU10,SCRUM-55 - Procesamiento de video y generación de recomendación,To Do,,
+HU01,SCRUM-75 - Generación de rutas de entrega,To Do,,
+HU012,SCRUM-46 - Creación de pedido,To Do,,
+HU013,SCRUM-47 - Consulta de los estados de los pedidos,To Do,,
+HU014,SCRUM-48 - Consulta de las entregas programadas,To Do,,
+HU04,SCRUM-73 - Consulta de reportes e informes de los vendedores,To Do,,
