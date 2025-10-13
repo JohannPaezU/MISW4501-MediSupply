@@ -6,30 +6,30 @@ import org.junit.runner.RunWith
 import org.junit.Assert.*
 
 @RunWith(org.junit.runners.JUnit4::class)
-class ProductosViewModelTest {
+class OrdersViewModelTest {
 
     @Test
-    fun `ProductsViewModel should have correct class name`() {
+    fun `OrdersViewModel should have correct class name`() {
         // Given
-        val className = ProductsViewModel::class.java.simpleName
+        val className = OrdersViewModel::class.java.simpleName
         
         // When & Then
-        assertEquals("ProductsViewModel", className)
+        assertEquals("OrdersViewModel", className)
     }
 
     @Test
-    fun `ProductsViewModel should extend ViewModel`() {
+    fun `OrdersViewModel should extend ViewModel`() {
         // Given
-        val superClass = ProductsViewModel::class.java.superclass
+        val superClass = OrdersViewModel::class.java.superclass
         
         // When & Then
         assertEquals(ViewModel::class.java, superClass)
     }
 
     @Test
-    fun `ProductsViewModel should be properly configured`() {
+    fun `OrdersViewModel should be properly configured`() {
         // Given
-        val viewModelClass = ProductsViewModel::class.java
+        val viewModelClass = OrdersViewModel::class.java
         
         // When & Then
         assertNotNull(viewModelClass)
