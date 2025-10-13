@@ -4,8 +4,6 @@ from sqlalchemy import create_engine
 
 
 def get_standard_postgres_connection() -> str:
-    if os.environ.get("DATABASE_URL"):  # pragma: no cover
-        return os.environ["DATABASE_URL"]
     db_user = os.environ["POSTGRES_USER"]
     db_password = os.environ["POSTGRES_PASSWORD"]
     db_host = os.environ["POSTGRES_HOST"]
