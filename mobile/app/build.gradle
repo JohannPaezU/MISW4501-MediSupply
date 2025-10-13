@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id 'jacoco'
 }
 
 android {
@@ -19,9 +18,6 @@ android {
     }
 
     buildTypes {
-        debug {
-            testCoverageEnabled true
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -50,74 +46,6 @@ dependencies {
     implementation libs.androidx.navigation.fragment.ktx
     implementation libs.androidx.navigation.ui.ktx
     testImplementation libs.junit
-    testImplementation libs.mockito.core
-    testImplementation libs.hamcrest
-    testImplementation libs.androidx.arch.core.testing
-    
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
-    androidTestImplementation libs.androidx.espresso.contrib
-    androidTestImplementation libs.androidx.espresso.intents
-    androidTestImplementation libs.androidx.espresso.accessibility
-    androidTestImplementation libs.androidx.espresso.web
-    androidTestImplementation libs.androidx.espresso.idling.resource
-    androidTestImplementation libs.androidx.test.uiautomator
-    androidTestImplementation libs.androidx.test.rules
-    androidTestImplementation libs.mockito.android
-    //
-    implementation libs.retrofit
-    implementation libs.converter.gson
-    implementation libs.glide
-}
-
-// Configuración de Jacoco para reportes de cobertura
-jacoco {
-    toolVersion = "0.8.8"
-}
-
-// Configuración de tareas de Jacoco
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-    jacoco.excludes = ['jdk.internal.*']
-}
-
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
-    reports {
-        xml.required = true
-        html.required = true
-        csv.required = false
-    }
-
-    def fileFilter = [
-        '**/R.class',
-        '**/R$*.class',
-        '**/BuildConfig.*',
-        '**/Manifest*.*',
-        '**/*Test*.*',
-        'android/**/*.*',
-        '**/di/**',
-        '**/hilt/**',
-        '**/databinding/**',
-        '**/jacocoDebug/**'
-    ]
-
-    def debugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
-    def mainSrc = "${project.projectDir}/src/main/java"
-
-    sourceDirectories.setFrom(files([mainSrc]))
-    classDirectories.setFrom(files([debugTree]))
-    executionData.setFrom(fileTree(dir: buildDir, includes: [
-        'jacoco/testDebugUnitTest.exec',
-        'outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec'
-    ]))
-}
-
-task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.30 // 30% de cobertura mínima
-            }
-        }
-    }
 }

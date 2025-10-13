@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.mfpe.medisupply.databinding.FragmentHistorialBinding
-import com.mfpe.medisupply.viewmodel.HistorialViewModel
 
 class HistorialFragment : Fragment() {
 

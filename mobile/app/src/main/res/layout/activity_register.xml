@@ -6,14 +6,14 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.RegisterActivity">
+    tools:context=".RegisterActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.02"/>
+        app:layout_constraintGuide_percent="0.05"/>
 
     <TextView
         android:id="@+id/title"
@@ -22,13 +22,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="48dp"
         android:textSize="24sp"
         android:textStyle="bold"
         android:text="@string/do_register_min"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputEmailLayout"
+        android:id="@+id/inputNamesLayout"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,31 +39,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputEmail"
-            android:drawableStart="@drawable/ic_email"
-            android:drawablePadding="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_email"
-            android:inputType="textEmailAddress"
-            android:selectAllOnFocus="true"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputNamesLayout"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmailLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp">
-        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputNames"
-            android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_names"
@@ -72,7 +48,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputNitRucLayout"
+        android:id="@+id/inputLastNamesLayout"
         app:layout_constraintTop_toBottomOf="@+id/inputNamesLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,19 +59,18 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputNitRuc"
-            android:drawableStart="@drawable/ic_document"
-            android:drawablePadding="8dp"
+            android:id="@+id/inputLastNames"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/label_nit_ruc"
-            android:inputType="text"
+            android:hint="@string/label_lastnames"
+            android:inputType="textPersonName"
             android:selectAllOnFocus="true"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputAddressLayout"
-        app:layout_constraintTop_toBottomOf="@+id/inputNitRucLayout"
+        android:id="@+id/inputEmailLayout"
+        app:layout_constraintTop_toBottomOf="@+id/inputLastNamesLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -105,41 +80,17 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputAddress"
-            android:drawableStart="@drawable/ic_location"
-            android:drawablePadding="8dp"
+            android:id="@+id/inputEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/label_address"
-            android:inputType="textPostalAddress"
-            android:selectAllOnFocus="true"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputContactNumberLayout"
-        app:layout_constraintTop_toBottomOf="@+id/inputAddressLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputContactNumber"
-            android:drawableStart="@drawable/ic_phone"
-            android:drawablePadding="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_contact_number"
-            android:inputType="phone"
+            android:hint="@string/label_email"
+            android:inputType="textEmailAddress"
             android:selectAllOnFocus="true"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputPasswordLayout"
-        app:layout_constraintTop_toBottomOf="@+id/inputContactNumberLayout"
+        app:layout_constraintTop_toBottomOf="@+id/inputEmailLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -150,8 +101,6 @@
         android:layout_marginEnd="32dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputPassword"
-            android:drawableStart="@drawable/ic_lock"
-            android:drawablePadding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_password"
@@ -172,8 +121,6 @@
         android:layout_marginEnd="32dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputConfirmPassword"
-            android:drawableStart="@drawable/ic_lock"
-            android:drawablePadding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_confirm_password"
