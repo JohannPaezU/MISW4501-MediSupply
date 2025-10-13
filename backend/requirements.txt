@@ -1,16 +1,36 @@
+# Web framework
 fastapi
-python-dotenv
-SQLAlchemy
 uvicorn
-pytest
-pytest-cov
-httpx
-pydantic
-pydantic[email]
+gunicorn
+
+# Environment management
+python-dotenv
+pytest-dotenv
+
+# Database and ORM
+SQLAlchemy
 psycopg2-binary
 testcontainers[postgresql]
+
+# HTTP client
+httpx
+
+# Data validation
+pydantic
+pydantic[email]
+
+# Security
+passlib
+bcrypt
+
+# Testing
+pytest
+pytest-cov
+
+# Templating
 pystache
+
+# Code formatting and linting
 black
 isort
 flake8
-gunicorn
