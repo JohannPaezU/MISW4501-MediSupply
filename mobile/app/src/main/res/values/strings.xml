@@ -1,18 +1,23 @@
 <resources>
     <string name="app_name">MediSupply</string>
     <string name="do_login">INICIAR SESIÓN</string>
+    <string name="do_validate_otp">VALIDAR CÓDIGO</string>
     <string name="do_apply">APLICAR</string>
     <string name="do_clean">LIMPIAR</string>
     <string name="do_delete">ELIMINAR</string>
     <string name="do_login_min">Iniciar Sesión</string>
     <string name="do_register">REGISTRARSE</string>
     <string name="do_create_account">CREAR CUENTA</string>
-    <string name="do_register_min">Registrase</string>
+    <string name="do_register_min">Registrarse</string>
     <string name="do_register_success">¡Juan Sebastían tu cuenta se ha creado exitosamente!</string>
     <string name="do_cancel">CANCELAR</string>
     <string name="label_names">Nombres</string>
     <string name="label_lastnames">Apellidos</string>
+    <string name="label_nit_ruc">NIT/RUC</string>
+    <string name="label_address">Dirección</string>
+    <string name="label_contact_number">Número de contacto</string>
     <string name="label_email">Correo electrónico</string>
+    <string name="label_otp">Código OTP</string>
     <string name="label_password">Contraseña</string>
     <string name="label_confirm_password">Confirmar contraseña</string>
     <string name="label_rememberme">Recordarme</string>
@@ -21,5 +26,5 @@
     <string name="title_home">Inicio</string>
     <string name="title_dashboard">Productos</string>
     <string name="title_notifications">Historial</string>
-    <string name="title_logout">Cerrar sesión</string>
+    <string name="title_logout">Salir</string>
 </resources>
