@@ -47,9 +47,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.fabAdd.setOnClickListener {
-            // Aquí puedes agregar la funcionalidad que desees
-            // Por ejemplo, navegar a una pantalla de agregar producto
-            // o mostrar un diálogo
+            val intent = Intent(this, OrderActivity::class.java)
+            startActivity(intent)
         }
     }
 }

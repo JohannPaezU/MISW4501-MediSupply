@@ -27,4 +27,12 @@
     <string name="title_dashboard">Productos</string>
     <string name="title_notifications">Historial</string>
     <string name="title_logout">Salir</string>
+    <string name="title_order_summary">Resumen de pedido</string>
+    <string name="title_products">Productos</string>
+    <string name="label_delivery_date">Fecha de entrega</string>
+    <string name="label_total_value">Valor total: %s</string>
+    <string name="do_create_order">CREAR PEDIDO</string>
+    <string name="do_back">Atrás</string>
+    <string name="error_select_delivery_date">Por favor seleccione una fecha de entrega</string>
+    <string name="error_no_products_selected">Por favor seleccione al menos un producto</string>
 </resources>
