@@ -2,12 +2,6 @@ name: Backend CI/CD
 
 on:
   workflow_dispatch:
-<<<<<<< HEAD
-  push:
-    branches:
-      - develop
-      - main
-=======
     inputs:
       force_deploy:
         description: "¿Forzar despliegue?"
@@ -21,18 +15,12 @@ on:
     branches: [main, develop]
     paths:
       - 'backend/**'
->>>>>>> origin/develop
   pull_request:
     branches: [main, develop]
 
 jobs:
-<<<<<<< HEAD
-  backend-ci-cd:
-    name: Backend CI/CD
-=======
   detect-changes:
     name: Detect backend changes
->>>>>>> origin/develop
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.detect.outputs.CHANGED }}
