@@ -6,20 +6,22 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".ui.LoginActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05"/>
+        app:layout_constraintGuide_percent="0.1"/>
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/logo"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline"
@@ -30,23 +32,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3 "/>
+        app:layout_constraintGuide_percent="0.35 "/>
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guideline2"
-        android:layout_marginTop="48dp"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:text="@string/do_login_min"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputEmailLayout"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -57,6 +48,8 @@
         android:layout_marginEnd="32dp">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputEmail"
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_email"
@@ -76,6 +69,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp">
         <com.google.android.material.textfield.TextInputEditText
+            android:drawableStart="@drawable/ic_lock"
+            android:drawablePadding="8dp"
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
