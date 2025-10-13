@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import com.mfpe.medisupply.R
-import com.mfpe.medisupply.viewmodel.ProductosViewModel
+import com.mfpe.medisupply.viewmodel.ProductsViewModel
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
