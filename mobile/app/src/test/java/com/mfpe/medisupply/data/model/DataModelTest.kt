@@ -142,6 +142,7 @@ class DataModelTest {
 
         // When
         val otpResponse = ValidateOTPResponse(
+            id = 1,
             token = token,
             fullName = fullName,
             email = email,
