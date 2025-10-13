@@ -1,11 +1,11 @@
-# 🏥 MISW4501 - MediSupply
+# MISW4501 - MediSupply
 
 Este repositorio contiene el código completo del proyecto **MediSupply**, desarrollado como parte del curso **MISW4501 - Proyecto 2**.  
 El sistema está dividido en tres componentes principales, cada uno con responsabilidades específicas:
 
 ---
 
-## 🧩 Estructura del proyecto
+## Estructura del proyecto
 
 | Carpeta | Descripción |
 |----------|--------------|
@@ -15,7 +15,7 @@ El sistema está dividido en tres componentes principales, cada uno con responsa
 
 ---
 
-## ⚙️ Características principales
+## Características principales
 
 - Arquitectura modular: frontend, backend y mobile independientes.
 - CI/CD configurado con **GitHub Actions** para integrar y verificar automáticamente cambios.
@@ -24,7 +24,7 @@ El sistema está dividido en tres componentes principales, cada uno con responsa
 
 ---
 
-## 🧑‍💻 Integrantes del equipo
+## Integrantes del equipo
 
 | Nombre                            | Correo                       |
 |-----------------------------------|------------------------------|
