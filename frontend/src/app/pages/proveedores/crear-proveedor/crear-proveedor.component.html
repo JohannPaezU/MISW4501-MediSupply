@@ -1,1 +1,61 @@
-<p>crear-proveedor works!</p>,
+<div class="crear-proveedor-container">
+  <h1 class="page-title">Crear proveedor</h1>
+
+  <form [formGroup]="proveedorForm" class="proveedor-form">
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Nombre</label>
+        <input type="text" class="form-input" formControlName="nombre" placeholder="Miguel Padilla">
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Número de RIT</label>
+        <input type="text" class="form-input" formControlName="numeroRIT" placeholder="1010101011">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Ciudad</label>
+        <div class="input-with-icon">
+          <mat-icon class="input-icon">search</mat-icon>
+          <input type="text" class="form-input with-icon" formControlName="ciudad" placeholder="Bogotá">
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">País</label>
+        <div class="input-with-icon">
+          <mat-icon class="input-icon">search</mat-icon>
+          <input type="text" class="form-input with-icon" formControlName="pais" placeholder="Colombia">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Correo electrónico</label>
+        <input type="email" class="form-input" formControlName="correoElectronico" placeholder="miguel@gmail.com">
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Teléfono</label>
+        <input type="tel" class="form-input" formControlName="telefono" placeholder="+51947891236">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field form-field-full">
+        <label class="field-label">Certificaciones sanitarias</label>
+        <textarea class="form-textarea" formControlName="certificacionesSanitarias" rows="8"
+          placeholder="- Certificación A&#10;- Certificación B"></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" (click)="crearProveedor()">
+        CREAR PROVEEDOR
+      </button>
+    </div>
+  </form>
+</div>
