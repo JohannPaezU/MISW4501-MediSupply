@@ -1,0 +1,21 @@
+<div class="login-container">
+  <div class="login-card">
+    <img src="../../../../assets/images/MediSupply.png" alt="MediSupply" class="login-logo" />
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" formControlName="email" placeholder="miguelpadilla@gmail.com" />
+
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" formControlName="password" placeholder="********" />
+
+      <div class="remember-row">
+        <input type="checkbox" id="remember" formControlName="remember" />
+        <label for="remember">Recordarme</label>
+      </div>
+
+      <button routerLink="/home" type="submit" class="btn-primary">INICIAR SESIÓN</button>
+      <button routerLink="/recuperar-contrasena" type="button" class="btn-secondary">RECUPERAR ACCESO</button>
+    </form>
+  </div>
+</div>
