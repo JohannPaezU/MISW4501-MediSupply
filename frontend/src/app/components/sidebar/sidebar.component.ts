@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -17,8 +17,9 @@ interface MenuItem {
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
+  constructor(private router: Router) {}
   menuItems: MenuItem[] = [
-    { icon: 'favorite_border', label: 'Inicio', route: '/inicio' },
+    { icon: 'favorite_border', label: 'Inicio', route: '/home' },
     { icon: 'directions_car', label: 'Rutas', route: '/rutas' },
     { icon: 'groups', label: 'Vendedores', route: '/vendedores' },
     { icon: 'inventory_2', label: 'Productos', route: '/productos' },
@@ -38,7 +39,6 @@ export class SidebarComponent {
   }
 
   logout(): void {
-    console.log('Cerrar sesión');
-    // Add your logout logic here
+    this.router.navigate(['/login']);
   }
 }
