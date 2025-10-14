@@ -4,10 +4,6 @@ import { RecuperarContrasenaComponent } from './pages/login/recuperar-contrasena
 import { HomeComponent } from './pages/home/home/home.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
-import { ListaProductosComponent } from './pages/productos/lista-productos/lista-productos.component';
-import { CrearProductoComponent } from './pages/productos/crear-producto/crear-producto.component';
-import { CrearProductoMasivoComponent } from './pages/productos/crear-producto-masivo/crear-producto-masivo.component';
-import { PLANES_DE_VENTA_ROUTES } from './pages/planes-de-venta/planes-de-venta.routes';
 
 export const routes: Routes = [
   {

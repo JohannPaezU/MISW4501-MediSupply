@@ -24,7 +24,9 @@ export class SidebarComponent {
       route: '/productos',
       activeFor: ['/productos', '/productos/crear', '/productos/crear-masivo']
     },
-    { icon: 'groups', label: 'Proveedores', route: '/proveedores' },
+    {
+      icon: 'groups', label: 'Proveedores', route: '/proveedores', activeFor: ['/proveedores', '/proveedores/crear']
+    },
     { icon: 'folder_open', label: 'Planes de venta', route: '/planes-de-venta' },
     { icon: 'folder_open', label: 'Reportes', route: '/reportes' }
   ];
