@@ -1,0 +1,69 @@
+<div class="crear-producto-container">
+  <h1 class="page-title">Crear producto</h1>
+
+  <form [formGroup]="productoForm" class="producto-form">
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Nombre Producto</label>
+        <input type="text" class="form-input" formControlName="nombreProducto" placeholder="Acetaminofen">
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Número de Lote</label>
+        <input type="text" class="form-input" formControlName="numeroLote" placeholder="1010101011">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Bodega</label>
+        <input type="text" class="form-input" formControlName="bodega" placeholder="Cedi central">
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Imagen Url</label>
+        <input type="text" class="form-input" formControlName="imagenUrl" placeholder="www.test.com">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Fecha de Vencimiento</label>
+        <input type="text" class="form-input" formControlName="fechaVencimiento" placeholder="dd/mm/aaaa">
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Ficha Tecnica</label>
+        <input title="Ficha Tecnica" type="text" class="form-input" formControlName="fichaTecnica">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Stock (Cantidad)</label>
+        <input type="number" class="form-input" formControlName="stock" placeholder="32">
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Precio por Unidad</label>
+        <input type="text" class="form-input" formControlName="precioUnidad" placeholder="$ 30.000">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field form-field-full">
+        <label class="field-label">Proveedor</label>
+        <input type="text" class="form-input" formControlName="proveedor" placeholder="Pfizer">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="crearProductoMasivo()">
+        CREAR PRODUCTOS MASVO
+      </button>
+      <button type="submit" class="btn-primary" (click)="crearProducto()">
+        CREAR PRODUCTO
+      </button>
+    </div>
+  </form>
+</div>
