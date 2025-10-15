@@ -30,6 +30,9 @@
             android:name=".ui.OrderActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.ComMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.SplashActivity"
             android:exported="true">
             <intent-filter>
