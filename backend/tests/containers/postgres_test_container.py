@@ -1,4 +1,3 @@
-import os
 from testcontainers.postgres import PostgresContainer
 
 from src.core.config import settings

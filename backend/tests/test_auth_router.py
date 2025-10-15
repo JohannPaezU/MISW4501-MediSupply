@@ -1,4 +1,3 @@
-import time
 from unittest.mock import patch
 
 from src.core.config import settings
