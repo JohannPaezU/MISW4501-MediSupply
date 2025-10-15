@@ -1,0 +1,58 @@
+<div class="proveedores-container">
+  <div class="proveedores-header">
+    <h1 class="proveedores-title">Proveedores</h1>
+    <div class="proveedores-actions">
+      <button class="btn-secondary" (click)="exportarCSV()">
+        EXPORTAR A CSV
+      </button>
+      <button class="btn-primary" (click)="crearProveedor()">
+        CREAR PROVEEDOR
+      </button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="proveedores-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Número de RIT</th>
+          <th>Ciudad</th>
+          <th>Correo electrónico</th>
+          <th>Télefono</th>
+          <th>Contacto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let proveedor of proveedores">
+          <td>{{ proveedor.nombre }}</td>
+          <td>{{ proveedor.numeroRIT }}</td>
+          <td>{{ proveedor.ciudad }}</td>
+          <td>{{ proveedor.correo }}</td>
+          <td>{{ proveedor.telefono }}</td>
+          <td>{{ proveedor.contacto }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-container">
+    <div class="pagination-left">
+      <span class="pagination-label">Filas por página:</span>
+      <select title="Filas" class="pagination-select" [value]="pageSize" (change)="onPageSizeChange($event)">
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+      </select>
+    </div>
+    <div class="pagination-right">
+      <span class="pagination-info">{{ startItem }} - {{ endItem }} of {{ totalItems }}</span>
+      <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button class="pagination-btn" (click)="nextPage()" [disabled]="endItem >= totalItems">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

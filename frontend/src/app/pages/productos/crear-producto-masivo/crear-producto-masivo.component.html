@@ -1,0 +1,35 @@
+<div class="crear-masivo-container">
+  <h1 class="page-title">Crear productos masivo</h1>
+
+  <div class="upload-section">
+    <div class="upload-box" (click)="triggerFileInput()">
+      <p class="upload-text">Subir Archivo</p>
+      <input title="Subir Archivo" type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls"
+        (change)="onFileSelected($event)">
+    </div>
+
+    <button class="btn-primary" (click)="crearProducto()">
+      CREAR PRODUCTO
+    </button>
+  </div>
+
+  <div class="reporte-section" *ngIf="mostrarReporte">
+    <div class="reporte-header">
+      <span class="reporte-label">Reporte de resultados:</span>
+    </div>
+
+    <div class="reporte-content">
+      <ul class="reporte-list">
+        <li>Cantidad de registros totales: {{ reporte.totalRegistros }}</li>
+        <li>Cantidad de de registros exitosos: {{ reporte.registrosExitosos }}</li>
+        <li>Cantidad de errores: {{ reporte.cantidadErrores }}</li>
+        <li>
+          Errores:
+          <ul class="errores-list">
+            <li *ngFor="let error of reporte.errores">{{ error }}</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

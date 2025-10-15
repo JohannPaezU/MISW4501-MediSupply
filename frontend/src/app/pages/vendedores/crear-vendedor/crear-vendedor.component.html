@@ -1,0 +1,64 @@
+<div class="crear-vendedor-container">
+  <h1 class="page-title">Crear vendedor</h1>
+
+  <form [formGroup]="vendedorForm" class="vendedor-form">
+    <div class="form-content">
+      <div class="form-field">
+        <label class="field-label">Nombre completo</label>
+        <input
+          type="text"
+          class="form-input"
+          formControlName="nombreCompleto"
+          placeholder="Juan Sebastián Cervantes Restrepo"
+        >
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Documento</label>
+        <input
+          type="text"
+          class="form-input"
+          formControlName="documento"
+          placeholder="70267411"
+        >
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Correo electrónico</label>
+        <input
+          type="email"
+          class="form-input"
+          formControlName="correoElectronico"
+          placeholder="juansebastian@gmail.com"
+        >
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Teléfono</label>
+        <input
+          type="tel"
+          class="form-input"
+          formControlName="telefono"
+          placeholder="+51947891236"
+        >
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Zona asignada</label>
+        <select title="Zona Asignada" class="form-select" formControlName="zonaAsignada">
+          <option value="" disabled selected>Bogotá</option>
+          <option *ngFor="let zona of zonas" [value]="zona">{{ zona }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="importarDesdeCSV()">
+        IMPORTAR DESDE CSV
+      </button>
+      <button type="submit" class="btn-primary" (click)="crearVendedor()">
+        CREAR VENDEDOR
+      </button>
+    </div>
+  </form>
+</div>
