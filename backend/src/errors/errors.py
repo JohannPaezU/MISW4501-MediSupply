@@ -10,5 +10,9 @@ class BadRequestException(ApiError):
     status_code = 400
 
 
+class UnauthorizedException(ApiError):
+    status_code = 401
+
+
 class ConflictException(ApiError):
     status_code = 409
