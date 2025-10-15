@@ -2,7 +2,12 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from src.db.database import get_db
-from src.schemas.auth_schema import LoginRequest, LoginResponse, OTPVerifyResponse, OTPVerifyRequest
+from src.schemas.auth_schema import (
+    LoginRequest,
+    LoginResponse,
+    OTPVerifyRequest,
+    OTPVerifyResponse,
+)
 from src.schemas.user_schema import UserCreateRequest, UserCreateResponse
 from src.services.auth_service import login_user, verify_otp_and_get_token
 from src.services.user_service import create_user
@@ -45,7 +50,7 @@ def register_user(
     status_code=status.HTTP_200_OK,
     summary="Login and request OTP",
     description="""
-Authenticate a user with their email and password.  
+Authenticate a user with their email and password.
 If the credentials are valid, an OTP is generated and sent via email.
 
 ### Request Body
@@ -57,11 +62,13 @@ If the credentials are valid, an OTP is generated and sent via email.
 - **otp_expiration_minutes**: Time window before the OTP expires.
 """,
 )
-def login(*, login_request: LoginRequest, db: Session = Depends(get_db)) -> LoginResponse:
+def login(
+    *, login_request: LoginRequest, db: Session = Depends(get_db)
+) -> LoginResponse:
     otp_expiration_minutes = login_user(db=db, login_request=login_request)
 
     return LoginResponse(
-        message=f"OTP generated successfully",
+        message="OTP generated successfully",
         otp_expiration_minutes=otp_expiration_minutes,
     )
 
@@ -72,7 +79,7 @@ def login(*, login_request: LoginRequest, db: Session = Depends(get_db)) -> Logi
     status_code=status.HTTP_200_OK,
     summary="Verify OTP and get access token",
     description="""
-Verify the 6-digit OTP sent to the user's email.  
+Verify the 6-digit OTP sent to the user's email.
 If valid, a JWT access token is returned.
 
 ### Request Body
@@ -90,7 +97,9 @@ def verify_otp(
     otp_verify_request: OTPVerifyRequest,
     db: Session = Depends(get_db),
 ) -> OTPVerifyResponse:
-    access_token = verify_otp_and_get_token(db=db, otp_verify_request=otp_verify_request)
+    access_token = verify_otp_and_get_token(
+        db=db, otp_verify_request=otp_verify_request
+    )
 
     return OTPVerifyResponse(
         message="OTP verified successfully",

@@ -1,6 +1,7 @@
 from typing import Any, Dict
-from pydantic import BaseModel, EmailStr
+
 import pystache
+from pydantic import BaseModel, EmailStr
 
 
 class EmailRequest(BaseModel):
@@ -14,11 +15,11 @@ class EmailRequest(BaseModel):
         html_template: str,
         email_receiver: str,
         email_subject: str,
-        template_values: Dict[str, Any]
+        template_values: Dict[str, Any],
     ) -> "EmailRequest":
         rendered_content = pystache.render(html_template, template_values)
         return cls(
             email_receiver=email_receiver,
             email_subject=email_subject,
-            email_content=rendered_content
+            email_content=rendered_content,
         )

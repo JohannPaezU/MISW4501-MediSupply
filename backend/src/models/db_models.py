@@ -1,8 +1,8 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, String, Integer, Boolean, ForeignKey, Enum
-from sqlalchemy.orm import validates, Mapped, mapped_column, relationship
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.db.database import Base
 from src.models.enums.user_role import UserRole
@@ -15,17 +15,20 @@ class User(Base):
         String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
     )
     full_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    email: Mapped[str] = mapped_column(String(120), unique=True, index=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, index=True, nullable=False
+    )
     hashed_password: Mapped[str] = mapped_column(String(60), nullable=False)
     phone: Mapped[str] = mapped_column(String(10), nullable=False)
     nit: Mapped[str] = mapped_column(String(50), nullable=False)
     address: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
     )
     otps: Mapped[list["OTP"]] = relationship("OTP", back_populates="user")
-
 
     @validates("phone")
     def validate_phone(self, _, value: str) -> str:  # pragma: no cover
