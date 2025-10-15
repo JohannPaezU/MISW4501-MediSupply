@@ -5,8 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { Proveedor } from '../../../interfaces/proveedor.intrface';
 
-
-
 @Component({
   selector: 'app-lista-proveedor',
   standalone: true,
@@ -18,10 +16,10 @@ import { Proveedor } from '../../../interfaces/proveedor.intrface';
   templateUrl: './lista-proveedor.component.html',
   styleUrls: ['./lista-proveedor.component.css']
 })
-export class ListaProveedorComponent {
-  constructor(private router: Router) {
 
-  }
+export class ListaProveedorComponent {
+  constructor(private router: Router) {}
+
   proveedores: Proveedor[] = [
     {
       nombre: 'Miguel Padilla',
@@ -87,4 +85,5 @@ export class ListaProveedorComponent {
   get endItem(): number {
     return Math.min(this.currentPage * this.pageSize, this.totalItems);
   }
+
 }
