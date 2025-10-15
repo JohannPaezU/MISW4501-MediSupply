@@ -8,7 +8,7 @@
 
     <item
         android:id="@+id/navigation_com_rutas"
-        android:icon="@drawable/ic_history"
+        android:icon="@drawable/ic_location"
         android:title="Rutas" />
 
     <item
@@ -23,7 +23,7 @@
 
     <item
         android:id="@+id/navigation_com_clientes"
-        android:icon="@drawable/ic_products"
+        android:icon="@drawable/ic_person"
         android:title="Clientes" />
 
 </menu>
