@@ -1,4 +1,4 @@
-package com.mfpe.medisupply.ui.historial
+package com.mfpe.medisupply.ui.institucional
 
 import android.content.Intent
 import android.os.Bundle

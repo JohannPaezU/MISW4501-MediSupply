@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/com_mobile_navigation"
+    app:startDestination="@+id/navigation_com_inicio">
+
+    <fragment
+        android:id="@+id/navigation_com_inicio"
+        android:name="com.mfpe.medisupply.ui.comercial.ComInicioFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_com_inicio" />
+
+    <fragment
+        android:id="@+id/navigation_com_rutas"
+        android:name="com.mfpe.medisupply.ui.comercial.ComRutasFragment"
+        android:label="Rutas"
+        tools:layout="@layout/fragment_com_rutas" />
+
+    <fragment
+        android:id="@+id/navigation_com_historial"
+        android:name="com.mfpe.medisupply.ui.comercial.ComHistorialFragment"
+        android:label="Historial"
+        tools:layout="@layout/fragment_com_historial" />
+
+    <fragment
+        android:id="@+id/navigation_com_clientes"
+        android:name="com.mfpe.medisupply.ui.comercial.ComClientesFragment"
+        android:label="Clientes"
+        tools:layout="@layout/fragment_com_clientes" />
+</navigation>
+

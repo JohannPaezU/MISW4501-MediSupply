@@ -2,11 +2,9 @@ package com.mfpe.medisupply.ui.inicio
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
-import com.mfpe.medisupply.R
+import com.mfpe.medisupply.ui.institucional.InicioFragment
 import com.mfpe.medisupply.viewmodel.InicioViewModel
 import org.junit.Before
 import org.junit.Test

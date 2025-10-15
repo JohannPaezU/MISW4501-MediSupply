@@ -1,4 +1,4 @@
-package com.mfpe.medisupply.ui.productos
+package com.mfpe.medisupply.ui.institucional
 
 import android.os.Bundle
 import android.view.LayoutInflater

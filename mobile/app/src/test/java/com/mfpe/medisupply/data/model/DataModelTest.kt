@@ -170,4 +170,133 @@ class DataModelTest {
         assertEquals("Email should remain unchanged", TestUtils.TestData.VALID_EMAIL, loginRequest.email)
         assertEquals("Password should remain unchanged", TestUtils.TestData.VALID_PASSWORD, loginRequest.password)
     }
+
+    @Test
+    fun `Order should have correct properties`() {
+        val now = java.util.Date()
+        val orderProduct = OrderProduct(productId = "p1", productName = "Producto 1", quantity = 2)
+        val order = Order(
+            id = 1,
+            createdAt = now,
+            deliveryDate = now,
+            distributionCenterId = "dc1",
+            distributionCenterName = "Centro 1",
+            comments = "Sin comentarios",
+            clientId = 10,
+            sellerId = 20,
+            status = "pending",
+            products = listOf(orderProduct)
+        )
+        assertEquals(1, order.id)
+        assertEquals(now, order.createdAt)
+        assertEquals(now, order.deliveryDate)
+        assertEquals("dc1", order.distributionCenterId)
+        assertEquals("Centro 1", order.distributionCenterName)
+        assertEquals("Sin comentarios", order.comments)
+        assertEquals(10, order.clientId)
+        assertEquals(20, order.sellerId)
+        assertEquals("pending", order.status)
+        assertEquals(listOf(orderProduct), order.products)
+    }
+
+    @Test
+    fun `OrderProduct should have correct properties`() {
+        val orderProduct = OrderProduct(productId = "p1", productName = "Producto 1", quantity = 5)
+        assertEquals("p1", orderProduct.productId)
+        assertEquals("Producto 1", orderProduct.productName)
+        assertEquals(5, orderProduct.quantity)
+    }
+
+    @Test
+    fun `ProductListResponse should have correct properties`() {
+        val now = java.util.Date()
+        val product = Product(
+            id = "p1",
+            name = "Test",
+            details = "Detalles",
+            store = "Tienda",
+            lote = "L1",
+            imageUrl = "url",
+            dueDate = now,
+            stock = 5,
+            pricePerUnite = 10.0,
+            providerId = 1,
+            providerName = "Proveedor",
+            createdAt = now
+        )
+        val products = listOf(product)
+        val response = ProductListResponse(products = products)
+        assertEquals(products, response.products)
+    }
+
+    @Test
+    fun `OrderListResponse should have correct properties`() {
+        val now = java.util.Date()
+        val orderProduct = OrderProduct(productId = "p1", productName = "Producto 1", quantity = 2)
+        val order = Order(
+            id = 1,
+            createdAt = now,
+            deliveryDate = now,
+            distributionCenterId = "dc1",
+            distributionCenterName = "Centro 1",
+            comments = "Sin comentarios",
+            clientId = 10,
+            sellerId = 20,
+            status = "pending",
+            products = listOf(orderProduct)
+        )
+        val orders = listOf(order)
+        val response = OrderListResponse(orders = orders)
+        assertEquals(orders, response.orders)
+    }
+
+    @Test
+    fun `OrderSummaryItem should have correct properties`() {
+        val item = OrderSummaryItem(id = "1", name = "Test", imageUrl = "img", price = 10.0, quantity = 2)
+        assertEquals("1", item.id)
+        assertEquals("Test", item.name)
+        assertEquals("img", item.imageUrl)
+        assertEquals(10.0, item.price, 0.0)
+        assertEquals(2, item.quantity)
+    }
+
+    @Test
+    fun `SellerHomeResponse should have correct properties`() {
+        val response = SellerHomeResponse(id = 1, numberClients = 5, numberOrders = 10, vendorZone = "Zona 1")
+        assertEquals(1, response.id)
+        assertEquals(5, response.numberClients)
+        assertEquals(10, response.numberOrders)
+        assertEquals("Zona 1", response.vendorZone)
+    }
+
+    @Test
+    fun `Product should have correct properties`() {
+        val now = java.util.Date()
+        val product = Product(
+            id = "p1",
+            name = "Test",
+            details = "Detalles",
+            store = "Tienda",
+            lote = "L1",
+            imageUrl = "url",
+            dueDate = now,
+            stock = 5,
+            pricePerUnite = 10.0,
+            providerId = 1,
+            providerName = "Proveedor",
+            createdAt = now
+        )
+        assertEquals("p1", product.id)
+        assertEquals("Test", product.name)
+        assertEquals("Detalles", product.details)
+        assertEquals("Tienda", product.store)
+        assertEquals("L1", product.lote)
+        assertEquals("url", product.imageUrl)
+        assertEquals(now, product.dueDate)
+        assertEquals(5, product.stock)
+        assertEquals(10.0, product.pricePerUnite, 0.0)
+        assertEquals(1, product.providerId)
+        assertEquals("Proveedor", product.providerName)
+        assertEquals(now, product.createdAt)
+    }
 }

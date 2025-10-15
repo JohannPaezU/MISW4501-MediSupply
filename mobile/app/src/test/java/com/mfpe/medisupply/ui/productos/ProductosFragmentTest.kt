@@ -2,25 +2,18 @@ package com.mfpe.medisupply.ui.productos
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
-import com.mfpe.medisupply.R
-import com.mfpe.medisupply.viewmodel.ProductsViewModel
+import com.mfpe.medisupply.ui.institucional.ProductosFragment
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import org.junit.Assert.*
 
 @RunWith(MockitoJUnitRunner::class)
 class ProductosFragmentTest {
-
-    @Mock
-    private lateinit var mockViewModel: ProductosViewModel
     
     private lateinit var mockTextLiveData: MutableLiveData<String>
 
