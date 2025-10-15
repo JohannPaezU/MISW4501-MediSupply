@@ -1,0 +1,18 @@
+<div class="recover-container">
+  <div class="recover-card">
+    <img src="../../../../assets/images/MediSupply.png" alt="MediSupply" class="recover-logo" />
+
+    <h2 class="recover-title">Recuperar Acceso</h2>
+
+    <form [formGroup]="recoverForm" (ngSubmit)="onSubmit()">
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" formControlName="email" placeholder="miguelpadilla@gmail.com" />
+
+      <button type="submit" class="btn-recover">RECUPERAR ACCESO</button>
+    </form>
+
+    <button class="btn-login" (click)="goToLogin()" type="button">
+      ← Regresar al login
+    </button>
+  </div>
+</div>
