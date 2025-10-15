@@ -1,21 +1,25 @@
 
 # MediSupply API (backend)
 
-This repository contains the backend API for the MediSupply project. The API is a small FastAPI application that uses PostgreSQL as the data store and is intended to be run via Docker Compose.
+This repository contains the backend API for the MediSupply project. The API is a FastAPI application that uses PostgreSQL as the data store and is intended to be run via Docker Compose. It provides user authentication with OTP verification and email notifications.
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
 - [Quick overview](#quick-overview)
+- [Prerequisites](#prerequisites)
 - [Requirements](#requirements)
 - [Project structure](#project-structure)
 - [Environment variables](#environment-variables)
 - [Installation (docker-compose only)](#installation-docker-compose-only)
 - [Running tests](#running-tests)
 - [API Endpoints](#api-endpoints)
-- [Health Check](#health-check)
-- [User Registration](#user-registration)
-  - [Request Field Validation](#request-field-validation)
+  - [Health Check](#health-check)
+  - [User Registration](#user-registration)
+  - [User Login](#user-login)
+  - [OTP Verification](#otp-verification)
+- [Live Environment](#live-environment)
+  - [Quick Test](#quick-test)
+  - [Available Endpoints](#available-endpoints)
 - [License](#license)
 
 ## Quick overview
@@ -23,11 +27,21 @@ This repository contains the backend API for the MediSupply project. The API is 
 - Framework: FastAPI
 - Language: Python 3.12
 - Database: PostgreSQL (run as a container)
+- Authentication: OTP-based with JWT tokens
+- Email Service: Configurable email service integration
 - Run method supported: docker-compose (preferred)
+
+## Prerequisites
+
+Before running this project, make sure you have the following installed:
+
+- **[Python 3.12+](https://www.python.org/downloads/)** - Programming language runtime
+- **[Docker](https://www.docker.com/get-started)** - Container platform for running the application and database
 
 ## Requirements
 
 - Docker and Docker Compose installed and running on the host machine.
+- Email service API key for OTP delivery (supports any email service provider).
 - Ports used by the services are configured through the `.env` file (see below).
 
 Note: tests are integration tests and require Docker to be running; the test harness will automatically provision any containers it needs (you do not need to start Postgres manually).
@@ -38,35 +52,57 @@ Repository tree (top-level, representative) with short descriptions:
 
 ```
 .
-├── Dockerfile                 # Image build for the Python app (runs uvicorn)
-├── docker-compose.yml        # Compose file for app + postgres (dev)
-├── requirements.txt          # Python dependencies
-├── README.md                 # This file
-├── .env.template             # Template env vars (see below)
-├── src                       # Application source code
-│   ├── main.py               # FastAPI app entrypoint (routers & startup)
-│   ├── core                  # Core utilities
-│   │   ├── logging_config.py 
-│   │   └── security.py       
-│   ├── db                    # Database connection and utilities
-│   │   ├── database.py       
-│   │   └── database_util.py  
-│   ├── errors                # Custom errors & exception handlers
+├── Dockerfile                 # Docker image build configuration for the Python app (runs uvicorn)
+├── docker-compose.yml         # Docker Compose orchestration for app + postgres (development)
+├── requirements.txt           # Python package dependencies
+├── README.md                  # Project documentation (this file)
+├── .env.template              # Template for environment variables configuration
+├── .env.test                  # Test environment variables
+├── .python-version            # Python version specification
+├── pytest.ini                 # Pytest configuration file
+├── Procfile                   # Process file for deployment (e.g., Heroku)
+├── format_code.ps1            # PowerShell script for code formatting (Windows)
+├── format_code.sh             # Bash script for code formatting (Linux/Mac)
+├── postman/                   # Postman collection for API testing
+├── src/                       # Application source code
+│   ├── main.py
+│   ├── core/                  # Core utilities and configuration
+│   │   ├── config.py
+│   │   ├── logging_config.py
+│   │   ├── security.py
+│   │   └── utils.py
+│   ├── db/                    # Database connection and utilities
+│   │   ├── database.py
+│   │   └── database_util.py
+│   ├── errors/                # Custom errors and exception handlers
 │   │   ├── errors.py
 │   │   └── exception_handlers.py
-│   ├── models                # ORM models and enums
-│   │   └── db_models.py
-│   ├── routers               # API route definitions
+│   ├── models/                # ORM models and enums
+│   │   ├── db_models.py
+│   │   └── enums/
+│   │       └── user_role.py
+│   ├── routers/               # API route definitions
 │   │   ├── auth_router.py
 │   │   └── health_check_router.py
-│   ├── schemas               # Pydantic request/response schemas
-│   │   └── user_schema.py
-│   └── services              # Business logic / service layer
-│       └── user_service.py
-└── tests                    # Integration tests (use Testcontainers fixtures)
+│   ├── schemas/               # Pydantic request/response schemas
+│   │   ├── user_schema.py
+│   │   └── auth_schema.py
+│   ├── services/              # Business logic / service layer
+│   │   ├── user_service.py
+│   │   ├── auth_service.py
+│   │   ├── email_service.py
+│   │   ├── otp_service.py
+│   │   └── requests/
+│   │       └── email_request.py
+│   └── templates/             # Email templates
+│       └── otp_template.html
+└── tests/                     # Integration tests (use Testcontainers fixtures)
     ├── base_test.py
     ├── conftest.py
-    └── test_auth_router.py
+    ├── test_auth_router.py
+    ├── test_health_check_router.py
+    └── containers/
+        └── postgres_test_container.py
 ```
 
 ## Environment variables
@@ -81,6 +117,12 @@ The project uses these environment variables. Create a `.env` file in the projec
 | `POSTGRES_USER` | Postgres username | `postgres` |
 | `POSTGRES_PASSWORD` | Postgres password | `postgres` |
 | `POSTGRES_DB` | Postgres database name | `medisupply` |
+| `OTP_EXPIRATION_MINUTES` | OTP code expiration time in minutes | `5` |
+| `JWT_SECRET_KEY` | Secret key for JWT token signing | Random secure string (e.g., generated with `openssl rand -hex 32`) |
+| `JWT_ALGORITHM` | Algorithm for JWT encoding | `HS256` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | JWT token expiration time in minutes | `60` |
+| `EMAIL_SENDER` | Sender email address for OTP notifications | `noreply@medisupply.com` |
+| `EMAIL_API_KEY` | API key for email service provider | Your email service API key |
 
 See `.env.template` for a template with all required variables.
 
@@ -152,13 +194,13 @@ Notes:
   "full_name": "Jane Doe",
   "nit": "123456789",
   "address": "123 Main St",
-  "phone": "0999123456",
+  "phone": "1234567890",
   "role": "institutional",
   "password": "secret12"
 }
 ```
 
-- **Response:**
+- **Success Response (201):**
 
 ```json
 {
@@ -167,19 +209,106 @@ Notes:
 }
 ```
 
-#### Request Field Validation
+- **Field Validation:**
 
 | Field | Type | Constraints | Description |
 |-------|------|-------------|-------------|
 | `email` | EmailStr | 5-120 chars | Valid email address |
 | `full_name` | string | 1-100 chars | User's full name |
-| `nit` | string | 1-50 chars | User's NIT |
+| `nit` | string | 1-50 chars | User's NIT (Tax ID) |
 | `address` | string | 1-255 chars | User's address |
 | `phone` | string | exactly 10 digits | User's phone number |
 | `role` | enum | `institutional` or `commercial` | User's role type |
 | `password` | string | 6-12 chars | User's password |
 
+### User Login
+
+- **Endpoint:** `POST /api/v1/auth/login`
+- **Description:** Authenticate a user and send OTP to their email
+- **Request Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "password": "secret12"
+}
+```
+
+- **Success Response (200):**
+
+```json
+{
+  "message": "OTP generated successfully",
+  "otp_expiration_minutes": 5
+}
+```
+
+- **Notes:**
+  - If credentials are valid, a 6-digit OTP is generated and sent to the user's email
+  - The OTP expires after the configured time (default: 5 minutes)
+  - User must verify the OTP to receive an access token
+
+### OTP Verification
+
+- **Endpoint:** `POST /api/v1/auth/verify-otp`
+- **Description:** Verify the OTP and receive a JWT access token
+- **Request Body:**
+
+```json
+{
+  "email": "user@example.com",
+  "otp_code": "123456"
+}
+```
+
+- **Success Response (200):**
+
+```json
+{
+  "message": "OTP verified successfully",
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer"
+}
+```
+
+- **Notes:**
+  - The OTP must be valid and not expired
+  - The returned JWT token should be used in the `Authorization` header for protected endpoints
+  - Token format: `Bearer <access_token>`
+
 **Note:** Interactive API documentation is available at `/docs` (Swagger UI) and `/redoc` (ReDoc) when the server is running.
+
+## Live Environment
+
+The API is currently deployed and available in a **staging environment** on Heroku:
+
+**Base URL (Staging):** https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1
+
+### Quick Test
+
+You can test the API health endpoint to verify the service is running:
+
+```bash
+curl https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1/health
+```
+
+**Example Response:**
+```json
+{
+  "status": "healthy",
+  "success": true,
+  "time_stamp": "2025-10-15T10:30:00.000Z",
+  "service": "API"
+}
+```
+
+### Available Endpoints
+
+All the endpoints documented in the [API Endpoints](#api-endpoints) section are available on this staging environment.
+
+**Interactive Documentation:**
+- Swagger UI: https://medi-supply-staging-9d42f48051e1.herokuapp.com/docs
+- ReDoc: https://medi-supply-staging-9d42f48051e1.herokuapp.com/redoc
 
 ## License
 
