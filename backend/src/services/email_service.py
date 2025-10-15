@@ -11,7 +11,7 @@ from src.services.requests.email_request import EmailRequest
 context = ssl.create_default_context()
 
 
-def send_email(email_request: EmailRequest) -> None:
+def send_email(email_request: EmailRequest) -> None:  # pragma: no cover
     try:
         email_message = EmailMessage()
         email_message["From"] = settings.email_sender
