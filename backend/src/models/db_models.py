@@ -28,7 +28,9 @@ class User(Base):
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
     )
-    otps: Mapped[list["OTP"]] = relationship("OTP", back_populates="user")
+    otps: Mapped[list["OTP"]] = relationship(
+        "OTP", back_populates="user", cascade="all, delete-orphan"
+    )
 
     @validates("phone")
     def validate_phone(self, _, value: str) -> str:  # pragma: no cover
@@ -47,6 +49,8 @@ class OTP(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     expiration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
     is_used: Mapped[bool] = mapped_column(Boolean, default=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
 
     user: Mapped["User"] = relationship("User", back_populates="otps")
