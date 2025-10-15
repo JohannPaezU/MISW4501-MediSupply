@@ -1,6 +1,6 @@
 <div class="proveedores-container">
   <div class="proveedores-header">
-    <h1 class="proveedores-title">Proveedores</h1>
+    <h1 class="page-title">Proveedores</h1>
     <div class="proveedores-actions">
       <button class="btn-secondary" (click)="exportarCSV()">
         EXPORTAR A CSV
@@ -36,23 +36,26 @@
     </table>
   </div>
 
-  <div class="pagination-container">
-    <div class="pagination-left">
-      <span class="pagination-label">Filas por página:</span>
-      <select title="Filas" class="pagination-select" [value]="pageSize" (change)="onPageSizeChange($event)">
-        <option [value]="10">10</option>
-        <option [value]="25">25</option>
-        <option [value]="50">50</option>
+  <footer class="pagination-controls">
+    <div class="page-size-selector">
+      <label for="pageSize">Filas por página:</label>
+      <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
       </select>
     </div>
-    <div class="pagination-right">
-      <span class="pagination-info">{{ startItem }} - {{ endItem }} of {{ totalItems }}</span>
-      <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
-        <mat-icon>chevron_left</mat-icon>
+    <div class="page-info">
+      <span>{{ startItem }} - {{ endItem }} de {{ totalItems }}</span>
+    </div>
+    <div class="page-navigation">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">
+        <mat-icon>keyboard_arrow_left</mat-icon>
       </button>
-      <button class="pagination-btn" (click)="nextPage()" [disabled]="endItem >= totalItems">
-        <mat-icon>chevron_right</mat-icon>
+      <button (click)="nextPage()" [disabled]="endItem >= totalItems">
+        <mat-icon>keyboard_arrow_right</mat-icon>
       </button>
     </div>
-  </div>
+  </footer>
+
 </div>
