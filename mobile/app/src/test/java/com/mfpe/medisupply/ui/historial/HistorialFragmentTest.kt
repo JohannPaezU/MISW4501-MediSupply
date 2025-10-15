@@ -2,25 +2,18 @@ package com.mfpe.medisupply.ui.historial
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
-import com.mfpe.medisupply.R
-import com.mfpe.medisupply.viewmodel.OrdersViewModel
+import com.mfpe.medisupply.ui.institucional.HistorialFragment
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import org.junit.Assert.*
 
 @RunWith(MockitoJUnitRunner::class)
 class HistorialFragmentTest {
-
-    @Mock
-    private lateinit var mockViewModel: HistorialViewModel
     
     private lateinit var mockTextLiveData: MutableLiveData<String>
 
