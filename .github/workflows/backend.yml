@@ -101,7 +101,7 @@ jobs:
           docker info
 
       - name: Run linter (flake8)
-        run: flake8 src --max-line-length=120 --exclude=__init__.py
+        run: flake8 src tests --max-line-length=120 --exclude=__init__.py
 
       - name: Run tests with coverage
         env:
