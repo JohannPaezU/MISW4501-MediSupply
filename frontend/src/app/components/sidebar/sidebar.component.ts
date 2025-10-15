@@ -11,13 +11,14 @@ import { MenuItem } from '../../interfaces/menuItem.interface';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
+
 export class SidebarComponent {
   constructor(private router: Router) { }
 
   menuItems: MenuItem[] = [
     { icon: 'favorite_border', label: 'Inicio', route: '/home' },
     { icon: 'directions_car', label: 'Rutas', route: '/rutas' },
-    { icon: 'groups', label: 'Vendedores', route: '/vendedores' },
+    { icon: 'groups', label: 'Vendedores', route: '/vendedores', activeFor: ['/vendedores', '/vendedores/crear'] },
     {
       icon: 'inventory_2',
       label: 'Productos',
@@ -27,12 +28,11 @@ export class SidebarComponent {
     {
       icon: 'groups', label: 'Proveedores', route: '/proveedores', activeFor: ['/proveedores', '/proveedores/crear']
     },
-    { icon: 'folder_open', label: 'Planes de venta', route: '/planes-de-venta' },
+    { icon: 'folder_open', label: 'Planes de venta', route: '/planes-de-venta', activeFor: ['/planes-de-venta', '/planes-de-venta/crear'] },
     { icon: 'folder_open', label: 'Reportes', route: '/reportes' }
   ];
 
   isMobileMenuOpen = false;
-
 
   isActive(item: MenuItem): boolean {
     const currentUrl = this.router.url;

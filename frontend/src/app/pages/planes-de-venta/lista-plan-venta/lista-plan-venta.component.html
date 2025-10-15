@@ -1,1 +1,57 @@
-<p>lista-plan-venta works!</p>,
+<div class="lista-container">
+  <div class="page-header">
+    <h1 class="page-title">Planes de venta</h1>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="exportarCSV()">EXPORTAR A CSV</button>
+      <button class="btn-primary" (click)="crearPlan()">CREAR PLAN</button>
+    </div>
+  </div>
+
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Periodo</th>
+          <th>Producto</th>
+          <th>Meta (Unidades)</th>
+          <th>Zona</th>
+          <th>Vendedor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let plan of planes">
+          <td>{{ plan.id }}</td>
+          <td>{{ plan.periodo }}</td>
+          <td>{{ plan.producto }}</td>
+          <td>{{ plan.metaUnidades }}</td>
+          <td>{{ plan.zona }}</td>
+          <td>{{ plan.vendedor }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="pagination-controls">
+    <div class="page-size-selector">
+      <label for="pageSize">Filas por página:</label>
+      <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+    </div>
+    <div class="page-info">
+      <span>{{ startItem }} - {{ endItem }} de {{ totalItems }}</span>
+    </div>
+    <div class="page-navigation">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <button (click)="nextPage()" [disabled]="endItem >= totalItems">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </div>
+  </footer>
+</div>
