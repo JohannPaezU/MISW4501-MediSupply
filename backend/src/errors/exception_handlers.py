@@ -9,7 +9,7 @@ from src.errors.errors import ApiError
 def setup_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(ApiError)
     async def api_error_handler(_, error: ApiError) -> JSONResponse:
-        logger.error(f"API error occurred: {error}")
+        logger.exception(f"API error occurred: {error}")
 
         return JSONResponse(
             status_code=error.status_code,
@@ -22,7 +22,7 @@ def setup_exception_handlers(app: FastAPI) -> None:
     async def generic_exception_handler(
         _, error: Exception
     ) -> JSONResponse:  # pragma: no cover
-        logger.error(f"Unexpected error: {error}")
+        logger.exception(f"Unexpected error: {error}")
 
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

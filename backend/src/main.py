@@ -21,4 +21,4 @@ def startup_event():  # pragma: no cover
     logger.info("Starting up the application...")
     load_dotenv(override=True)
     init_database()
-    logger.info("Application startup complete.")
+    logger.info("Application startup complete")

@@ -18,9 +18,11 @@ httpx
 # Data validation
 pydantic
 pydantic[email]
+pydantic-settings
 
 # Security
 bcrypt
+pyjwt
 
 # Testing
 pytest

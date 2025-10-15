@@ -1,0 +1,60 @@
+<div class="productos-container">
+  <div class="productos-header">
+    <h1 class="productos-title">Productos</h1>
+    <div class="productos-actions">
+      <button class="btn-secondary" (click)="exportarCSV()">
+        EXPORTAR A CSV
+      </button>
+      <button class="btn-primary" (click)="crearProducto()">
+        CREAR PRODUCTO
+      </button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="productos-table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Lote</th>
+          <th>Vencimiento</th>
+          <th>Bodega</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let producto of productos">
+          <td>{{ producto.producto }}</td>
+          <td>{{ producto.lote }}</td>
+          <td>{{ producto.vencimiento }}</td>
+          <td>{{ producto.bodega }}</td>
+          <td>
+            <button class="btn-link" (click)="verDetalle(producto)">
+              Ver detalle
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-container">
+    <div class="pagination-left">
+      <span class="pagination-label">Filas por página:</span>
+      <select title="Filas" class="pagination-select" [value]="pageSize" (change)="onPageSizeChange($event)">
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+      </select>
+    </div>
+    <div class="pagination-right">
+      <span class="pagination-info">{{ startItem }} - {{ endItem }} of {{ totalItems }}</span>
+      <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button class="pagination-btn" (click)="nextPage()" [disabled]="endItem >= totalItems">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
