@@ -49,7 +49,12 @@ class ValidateOTPActivity : AppCompatActivity() {
                     PrefsManager.getInstance(this).saveUserFullName(response.fullName)
                     PrefsManager.getInstance(this).saveUserEmail(response.email)
                     PrefsManager.getInstance(this).saveUserRole(response.role)
-                    val intent = Intent(this, MainActivity::class.java)
+
+                    val intent = when (response.role.lowercase()) {
+                        "comercial" -> Intent(this, ComMainActivity::class.java)
+                        "institucional" -> Intent(this, MainActivity::class.java)
+                        else -> Intent(this, MainActivity::class.java)
+                    }
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 } else {

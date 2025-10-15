@@ -98,7 +98,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
         '**/di/**',
         '**/hilt/**',
         '**/databinding/**',
-        '**/jacocoDebug/**'
+        '**/jacocoDebug/**',
+        '**/ui/**' // UI should be tested using E2E tests
     ]
 
     def debugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
@@ -116,7 +117,7 @@ task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn:
     violationRules {
         rule {
             limit {
-                minimum = 0.30 // 30% de cobertura mínima
+                minimum = 0.80
             }
         }
     }

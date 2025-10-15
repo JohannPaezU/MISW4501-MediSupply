@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.data.model.RegisterUserRequest
 import com.mfpe.medisupply.databinding.ActivityRegisterBinding
+import com.mfpe.medisupply.utils.ValidationUtils
 import com.mfpe.medisupply.viewmodel.UserViewModel
 
 class RegisterActivity : AppCompatActivity() {
@@ -43,6 +44,11 @@ class RegisterActivity : AppCompatActivity() {
             if (email.isEmpty() || fullName.isEmpty() || nit.isEmpty() ||
                 address.isEmpty() || phone.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Por favor completa todos los campos.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!ValidationUtils.isValidEmail(email)) {
+                Toast.makeText(this, "Por favor ingresa un correo electrónico válido.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
