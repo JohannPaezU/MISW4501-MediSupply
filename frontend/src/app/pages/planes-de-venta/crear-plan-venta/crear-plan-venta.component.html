@@ -1,1 +1,52 @@
-<p>crear-plan-venta works!</p>,
+<div class="crear-plan-container">
+  <h1 class="page-title">Crear plan</h1>
+
+  <form [formGroup]="planVentaForm" (ngSubmit)="crearPlanDeVenta()" class="plan-form">
+    <div class="form-content">
+      <div class="form-field">
+        <label class="field-label">Periodo</label>
+        <select title="Periodo" class="form-select" formControlName="periodo">
+          <option *ngFor="let periodo of periodos" [value]="periodo">{{ periodo }}</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Producto</label>
+        <select title="Producto" class="form-select" formControlName="producto">
+          <option *ngFor="let producto of productos" [value]="producto">{{ producto }}</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Meta (unidades)</label>
+        <input type="number" class="form-input" formControlName="metaUnidades" placeholder="Ej: 1200">
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Zona</label>
+        <select title="Zona" class="form-select" formControlName="zona">
+          <option *ngFor="let zona of zonas" [value]="zona">{{ zona }}</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Asociar vendedor</label>
+        <div class="search-field-wrapper">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            viewBox="0 0 16 16">
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+          </svg>
+          <input type="text" class="form-input search-input" formControlName="vendedorAsociado"
+            placeholder="Buscar por nombre o documento...">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="planVentaForm.invalid">
+        CREAR PLAN DE VENTA
+      </button>
+    </div>
+  </form>
+</div>

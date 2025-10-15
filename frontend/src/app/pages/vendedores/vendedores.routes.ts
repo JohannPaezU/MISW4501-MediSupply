@@ -9,7 +9,7 @@ export const VENDEDORES_ROUTES: Routes = [
     component: ListaVendedorComponent
   },
   {
-    path: 'crear-vendedor',
+    path: 'crear',
     component: CrearVendedorComponent
   },
 
