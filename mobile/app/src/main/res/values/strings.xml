@@ -5,11 +5,9 @@
     <string name="do_apply">APLICAR</string>
     <string name="do_clean">LIMPIAR</string>
     <string name="do_delete">ELIMINAR</string>
-    <string name="do_login_min">Iniciar Sesión</string>
     <string name="do_register">REGISTRARSE</string>
     <string name="do_create_account">CREAR CUENTA</string>
     <string name="do_register_min">Registrarse</string>
-    <string name="do_register_success">¡Juan Sebastían tu cuenta se ha creado exitosamente!</string>
     <string name="do_cancel">CANCELAR</string>
     <string name="label_names">Nombres</string>
     <string name="label_lastnames">Apellidos</string>
