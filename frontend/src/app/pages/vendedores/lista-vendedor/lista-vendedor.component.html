@@ -1,17 +1,33 @@
 <div class="vendedores-container">
   <div class="vendedores-header">
-    <h1 class="vendedores-title">Vendedores</h1>
+    <h1 class="page-title">Vendedores</h1>
     <div class="vendedores-actions">
-      <button class="btn-secondary" (click)="exportarCSV()">
+      <button class="btn-secondary" (click)="exportarCSV()" [disabled]="isLoading || vendedores.length === 0">
         EXPORTAR A CSV
       </button>
-      <button class="btn-primary" (click)="crearVendedor()">
+      <button class="btn-primary" (click)="crearVendedor()" [disabled]="isLoading">
         CREAR VENDEDOR
       </button>
     </div>
   </div>
 
-  <div class="table-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando vendedores...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <mat-icon color="warn">error_outline</mat-icon>
+    <p>{{ error }}</p>
+    <button class="btn-primary" (click)="cargarVendedores()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!isLoading && !error" class="table-container">
     <table class="vendedores-table">
       <thead>
         <tr>
@@ -23,34 +39,42 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let vendedor of vendedores">
-          <td>{{ vendedor.nombre }}</td>
-          <td>{{ vendedor.documento }}</td>
-          <td>{{ vendedor.telefono }}</td>
+        <tr *ngFor="let vendedor of vendedoresPaginados">
+          <td>{{ vendedor.fullname }}</td>
+          <td>{{ vendedor.document }}</td>
+          <td>{{ vendedor.phone }}</td>
           <td>{{ vendedor.email }}</td>
-          <td>{{ vendedor.zonaAsignada }}</td>
+          <td>{{ vendedor.zone_description || 'No asignada' }}</td>
+        </tr>
+        <tr *ngIf="vendedores.length === 0">
+          <td colspan="5" class="no-data">
+            No hay vendedores registrados
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="pagination-container">
-    <div class="pagination-left">
-      <span class="pagination-label">Filas por página:</span>
-      <select title="Filas" class="pagination-select" [value]="pageSize" (change)="onPageSizeChange($event)">
-        <option [value]="10">10</option>
-        <option [value]="25">25</option>
-        <option [value]="50">50</option>
+
+  <footer *ngIf="!isLoading && !error && vendedores.length > 0" class="pagination-controls">
+    <div class="page-size-selector">
+      <label for="pageSize">Filas por página:</label>
+      <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
       </select>
     </div>
-    <div class="pagination-right">
-      <span class="pagination-info">{{ startItem }} - {{ endItem }} of {{ totalItems }}</span>
-      <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
-        <mat-icon>chevron_left</mat-icon>
+    <div class="page-info">
+      <span>{{ startItem }} - {{ endItem }} de {{ totalItems }}</span>
+    </div>
+    <div class="page-navigation">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">
+        <mat-icon>keyboard_arrow_left</mat-icon>
       </button>
-      <button class="pagination-btn" (click)="nextPage()" [disabled]="endItem >= totalItems">
-        <mat-icon>chevron_right</mat-icon>
+      <button (click)="nextPage()" [disabled]="endItem >= totalItems">
+        <mat-icon>keyboard_arrow_right</mat-icon>
       </button>
     </div>
-  </div>
+  </footer>
 </div>
