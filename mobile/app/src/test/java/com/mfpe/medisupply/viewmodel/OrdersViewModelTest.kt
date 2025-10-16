@@ -100,8 +100,8 @@ class OrdersViewModelTest {
     @Test
     fun `getOrders should execute method and trigger network call`() {
         // Given
-        val clientId = 1
-        val sellerId = 2
+        val clientId = "1"
+        val sellerId = "2"
         var callbackExecuted = false
 
         // When - This will trigger the actual method execution
@@ -125,10 +125,10 @@ class OrdersViewModelTest {
     fun `getOrders should handle different client and seller ids`() {
         // Given
         val testCases = listOf(
-            Pair(1, 1),
-            Pair(0, 0),
-            Pair(999, 999),
-            Pair(-1, -1)
+            Pair("1", "1"),
+            Pair("0", "0"),
+            Pair("999", "999"),
+            Pair("-1", "-1")
         )
 
         // When & Then - All should be able to call the method
@@ -148,8 +148,8 @@ class OrdersViewModelTest {
     @Test
     fun `getOrders should handle multiple calls`() {
         // Given
-        val clientId = 1
-        val sellerId = 2
+        val clientId = "1"
+        val sellerId = "2"
 
         // When - Call the same method multiple times
         try {
@@ -168,8 +168,8 @@ class OrdersViewModelTest {
     @Test
     fun `getOrders should handle zero values`() {
         // Given
-        val clientId = 0
-        val sellerId = 0
+        val clientId = "0"
+        val sellerId = "0"
 
         // When
         try {
@@ -186,8 +186,8 @@ class OrdersViewModelTest {
     @Test
     fun `getOrders should handle negative values`() {
         // Given
-        val clientId = -1
-        val sellerId = -1
+        val clientId = "-1"
+        val sellerId = "-1"
 
         // When
         try {
@@ -204,8 +204,8 @@ class OrdersViewModelTest {
     @Test
     fun `getOrders should handle large values`() {
         // Given
-        val clientId = Int.MAX_VALUE
-        val sellerId = Int.MAX_VALUE
+        val clientId = Int.MAX_VALUE.toString()
+        val sellerId = Int.MAX_VALUE.toString()
 
         // When
         try {
@@ -224,8 +224,8 @@ class OrdersViewModelTest {
         // Given
         val viewModel1 = OrdersViewModel()
         val viewModel2 = OrdersViewModel()
-        val clientId = 1
-        val sellerId = 2
+        val clientId = "1"
+        val sellerId = "2"
 
         // When
         try {
@@ -244,8 +244,8 @@ class OrdersViewModelTest {
     @Test
     fun `getOrders should handle concurrent calls`() {
         // Given
-        val clientId = 1
-        val sellerId = 2
+        val clientId = "1"
+        val sellerId = "2"
 
         // When - Execute methods concurrently
         try {
@@ -279,10 +279,10 @@ class OrdersViewModelTest {
     fun `getOrders should handle different combinations of client and seller ids`() {
         // Given
         val testCases = listOf(
-            Pair(1, 0),
-            Pair(0, 1),
-            Pair(100, 200),
-            Pair(999, 1)
+            Pair("1", "0"),
+            Pair("0", "1"),
+            Pair("100", "200"),
+            Pair("999", "1")
         )
 
         // When

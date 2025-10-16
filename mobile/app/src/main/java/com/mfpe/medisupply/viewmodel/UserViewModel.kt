@@ -20,7 +20,7 @@ class UserViewModel(
         userRepository.registerUser(registerUserRequest).enqueue(object : Callback<RegisterUserResponse>{
             override fun onResponse(call: Call<RegisterUserResponse>, res: Response<RegisterUserResponse>) {
                 if (res.isSuccessful && res.body() != null) {
-                    onResult(true, res.body()?.message!!)
+                    onResult(true, res.body()?.id!!)
                 } else {
                     onResult(false, "Error registering user: ${res.code()}")
                 }
