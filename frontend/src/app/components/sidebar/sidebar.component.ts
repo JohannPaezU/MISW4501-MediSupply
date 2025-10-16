@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MenuItem } from '../../interfaces/menuItem.interface';
+import { AuthService } from '../../services/login/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,7 +14,7 @@ import { MenuItem } from '../../interfaces/menuItem.interface';
 })
 
 export class SidebarComponent {
-  constructor(private router: Router) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   menuItems: MenuItem[] = [
     { icon: 'favorite_border', label: 'Inicio', route: '/home' },
@@ -51,6 +52,6 @@ export class SidebarComponent {
   }
 
   logout(): void {
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }
