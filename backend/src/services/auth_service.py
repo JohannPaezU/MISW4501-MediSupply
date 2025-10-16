@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from src.core.security import create_access_token, verify_password
 from src.core.utils import get_template_path
 from src.errors.errors import UnauthorizedException
+from src.models.db_models import User
 from src.schemas.auth_schema import LoginRequest, OTPVerifyRequest
 from src.services.email_service import send_email
 from src.services.otp_service import create_otp, verify_otp
@@ -11,7 +12,7 @@ from src.services.user_service import get_user_by_email
 
 
 def login_user(*, db: Session, login_request: LoginRequest) -> int:
-    user = get_user_by_email(db=db, email=login_request.email)  # noqa
+    user = get_user_by_email(db=db, email=login_request.email)
     if not user or not verify_password(login_request.password, user.hashed_password):
         raise UnauthorizedException("Invalid email or password")
 
@@ -35,11 +36,8 @@ def login_user(*, db: Session, login_request: LoginRequest) -> int:
 
 
 def verify_otp_and_get_token(
-    *, db: Session, otp_verify_request: OTPVerifyRequest
+    *, db: Session, otp_verify_request: OTPVerifyRequest, user: User
 ) -> str:
-    user = get_user_by_email(db=db, email=otp_verify_request.email)
-    if not user:
-        raise UnauthorizedException("Invalid or expired OTP")
     verify_otp(db=db, user=user, otp_code=otp_verify_request.otp_code)
     token_data = {
         "sub": str(user.id),
