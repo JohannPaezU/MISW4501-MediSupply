@@ -5,7 +5,6 @@ import com.mfpe.medisupply.utils.TestUtils
 import org.junit.Assert.*
 import org.junit.Test
 import retrofit2.Call
-import retrofit2.Retrofit
 
 /**
  * Tests unitarios para RetrofitApiClient
@@ -45,7 +44,7 @@ class RetrofitApiClientTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
 
@@ -54,7 +53,7 @@ class RetrofitApiClientTest {
             password = TestUtils.TestData.VALID_PASSWORD
         )
 
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
 
         // When
         val registerCall = userService.registerUser(registerRequest)

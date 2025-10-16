@@ -11,7 +11,7 @@ class OrdersViewModel : ViewModel() {
 
     private val orderRepository: OrderRepository = OrderRepository()
 
-    fun getOrders(clientId : Int, sellerId : Int, onResult: (Boolean, String, OrderListResponse?) -> Unit) {
+    fun getOrders(clientId : String, sellerId : String, onResult: (Boolean, String, OrderListResponse?) -> Unit) {
         orderRepository.getOrders(clientId, sellerId).enqueue(object :
             Callback<OrderListResponse> {
             override fun onResponse(call: Call<OrderListResponse>, res: Response<OrderListResponse>) {

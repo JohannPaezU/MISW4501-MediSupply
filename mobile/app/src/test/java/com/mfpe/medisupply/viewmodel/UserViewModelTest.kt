@@ -100,7 +100,7 @@ class UserViewModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
@@ -157,7 +157,7 @@ class UserViewModelTest {
     @Test
     fun `validateOTP should execute method and trigger network call`() {
         // Given
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
         
         var callbackExecuted = false
         
@@ -189,7 +189,7 @@ class UserViewModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
@@ -199,7 +199,7 @@ class UserViewModelTest {
             role = "",
             password = "",
             phone = "",
-            nit = "",
+            doi = "",
             address = ""
         )
         
@@ -249,8 +249,8 @@ class UserViewModelTest {
     @Test
     fun `validateOTP should handle different request types`() {
         // Given
-        val validRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
-        val emptyRequest = ValidateOTPRequest(otp = "")
+        val validRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
+        val emptyRequest = ValidateOTPRequest(otpCode = "", email = TestUtils.TestData.VALID_EMAIL)
         
         // When & Then - Both should be able to call the method
         try {
@@ -276,7 +276,7 @@ class UserViewModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
@@ -285,7 +285,7 @@ class UserViewModelTest {
             password = TestUtils.TestData.VALID_PASSWORD
         )
         
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
         
         // When - Execute all methods
         try {
@@ -322,7 +322,7 @@ class UserViewModelTest {
             role = "institutional",
             password = "P@ssw0rd123!",
             phone = "+57-300-123-4567",
-            nit = "900.123.456-7",
+            doi = "900.123.456-7",
             address = "Calle 123 #45-67, Bogotá"
         )
         
@@ -350,7 +350,7 @@ class UserViewModelTest {
             role = longString,
             password = longString,
             phone = longString,
-            nit = longString,
+            doi = longString,
             address = longString
         )
         
@@ -377,7 +377,7 @@ class UserViewModelTest {
             role = "   ",
             password = "   ",
             phone = "   ",
-            nit = "   ",
+            doi = "   ",
             address = "   "
         )
         
@@ -404,7 +404,7 @@ class UserViewModelTest {
             role = "",
             password = "",
             phone = "",
-            nit = "",
+            doi = "",
             address = ""
         )
         
@@ -431,7 +431,7 @@ class UserViewModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
@@ -440,7 +440,7 @@ class UserViewModelTest {
             password = TestUtils.TestData.VALID_PASSWORD
         )
         
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
         
         // When - Execute methods concurrently
         try {
@@ -493,7 +493,7 @@ class UserViewModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
@@ -520,7 +520,7 @@ class UserViewModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
