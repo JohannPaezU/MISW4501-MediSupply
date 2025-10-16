@@ -10,7 +10,7 @@ class OrderRepository {
         RetrofitApiClient.createRetrofitService(OrderService::class.java)
     }
 
-    fun getOrders(clientId : Int, sellerId : Int): Call<OrderListResponse> {
+    fun getOrders(clientId : String, sellerId : String): Call<OrderListResponse> {
         return orderService.getOrders(clientId, sellerId)
     }
 

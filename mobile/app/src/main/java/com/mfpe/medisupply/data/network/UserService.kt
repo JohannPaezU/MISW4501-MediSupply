@@ -12,17 +12,17 @@ import retrofit2.http.POST
 
 interface UserService {
 
-    @POST("user/register")
+    @POST("auth/register")
     fun registerUser(
         @Body registerUserRequest: RegisterUserRequest
     ): Call<RegisterUserResponse>
 
-    @POST("user/login")
+    @POST("auth/login")
     fun loginUser(
         @Body loginUserRequest: LoginUserRequest
     ): Call<LoginUserResponse>
 
-    @POST("user/otp")
+    @POST("auth/verify-otp")
     fun validateOTP(
         @Body validateOTPRequest: ValidateOTPRequest
     ): Call<ValidateOTPResponse>

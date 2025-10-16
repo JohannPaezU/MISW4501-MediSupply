@@ -8,6 +8,6 @@ data class RegisterUserRequest (
     val role: String,
     val password: String,
     val phone: String,
-    val nit: String,
+    val doi: String,
     val address: String
 ) : Serializable
