@@ -14,31 +14,46 @@ mobile/
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/com/mfpe/medisupply/
+│   │   │   │   ├── adapters/           # Adaptadores para RecyclerViews
 │   │   │   │   ├── data/
-│   │   │   │   │   ├── model/           # Modelos de datos
-│   │   │   │   │   ├── network/         # Cliente de red y servicios
-│   │   │   │   │   └── repository/      # Repositorios de datos
+│   │   │   │   │   ├── model/          # Modelos de datos (Order, Product, User, etc.)
+│   │   │   │   │   ├── network/        # Servicios de red y cliente Retrofit
+│   │   │   │   │   └── repository/     # Repositorios de datos
 │   │   │   │   ├── ui/
-│   │   │   │   │   ├── historial/       # Fragmento de historial
-│   │   │   │   │   ├── inicio/          # Fragmento de inicio
-│   │   │   │   │   ├── productos/       # Fragmento de productos
-│   │   │   │   │   └── *.kt            # Actividades principales
-│   │   │   │   ├── utils/              # Utilidades y constantes
-│   │   │   │   └── viewmodel/          # ViewModels de MVVM
+│   │   │   │   │   ├── comercial/      # Fragmentos para usuarios comerciales
+│   │   │   │   │   ├── institucional/  # Fragmentos para usuarios institucionales
+│   │   │   │   │   └── *.kt           # Actividades principales (Login, Main, Order, etc.)
+│   │   │   │   ├── utils/             # Utilidades, constantes y validaciones
+│   │   │   │   └── viewmodel/         # ViewModels de MVVM
 │   │   │   ├── res/
-│   │   │   │   ├── drawable/           # Recursos gráficos
-│   │   │   │   ├── layout/             # Layouts XML
-│   │   │   │   ├── navigation/         # Navegación entre fragmentos
-│   │   │   │   └── values/             # Strings, colores, estilos
+│   │   │   │   ├── color/             # Definiciones de colores
+│   │   │   │   ├── drawable/          # Iconos y recursos gráficos
+│   │   │   │   ├── layout/            # Layouts XML de actividades y fragmentos
+│   │   │   │   ├── menu/              # Menús de navegación
+│   │   │   │   ├── mipmap-*/          # Iconos de la aplicación
+│   │   │   │   ├── navigation/        # Navegación entre fragmentos
+│   │   │   │   ├── values/            # Strings, colores, estilos y dimensiones
+│   │   │   │   └── xml/               # Reglas de backup y extracción de datos
 │   │   │   └── AndroidManifest.xml
-│   │   └── test/                       # Pruebas unitarias
-│   ├── build.gradle                    # Configuración del módulo app
+│   │   ├── test/                      # Pruebas unitarias
+│   │   │   └── java/com/mfpe/medisupply/
+│   │   │       ├── data/              # Pruebas de repositorios y servicios
+│   │   │       ├── integration/       # Pruebas de integración
+│   │   │       ├── ui/                # Pruebas de actividades y fragmentos
+│   │   │       ├── utils/             # Pruebas de utilidades
+│   │   │       └── viewmodel/         # Pruebas de ViewModels
+│   │   └── androidTest/               # Pruebas instrumentadas
+│   ├── build.gradle                   # Configuración del módulo app
 │   └── proguard-rules.pro
 ├── gradle/
-│   └── libs.versions.toml             # Gestión de versiones de dependencias
-├── build.gradle                       # Configuración del proyecto raíz
-├── settings.gradle                    # Configuración de módulos
-└── gradle.properties                  # Propiedades de Gradle
+│   └── libs.versions.toml            # Gestión de versiones de dependencias
+├── build.gradle                      # Configuración del proyecto raíz
+├── settings.gradle                   # Configuración de módulos
+├── gradle.properties                 # Propiedades de Gradle
+├── gradlew                          # Wrapper de Gradle (Unix)
+├── gradlew.bat                      # Wrapper de Gradle (Windows)
+├── run-all-working-tests.sh         # Script para ejecutar todas las pruebas
+└── coverage-commands.md             # Comandos para generar reportes de cobertura
 ```
 
 ## 🛠️ Tecnologías y Dependencias
@@ -152,7 +167,7 @@ cd MISW4501-MediSupply/mobile
 
 ## 🧪 Testing
 
-### Pruebas Unitarias
+### Cobertura de Pruebas Actual
 
 - Ubicación: `app/src/test/java/`
 - Framework: JUnit 4
@@ -166,10 +181,17 @@ cd MISW4501-MediSupply/mobile
 
 ```bash
 # Pruebas unitarias
-./gradlew test
+./gradlew testDebugUnitTest
 
 # Pruebas de integración
 ./gradlew connectedAndroidTest
+
+# Generar reporte de cobertura
+./gradlew test jacocoTestReport
+
+# Abrir el reporte
+open app/build/reports/jacoco/jacocoTestReport/html/index.html
+
 ```
 
 ## 📦 Construcción y Despliegue
