@@ -22,7 +22,7 @@ class UserRepositoryTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
 
@@ -53,7 +53,7 @@ class UserRepositoryTest {
     @Test
     fun `validateOTP should return Call with correct type`() {
         // Given
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
 
         // When
         val result = userRepository.validateOTP(otpRequest)
@@ -72,7 +72,7 @@ class UserRepositoryTest {
             role = "institutional",
             password = "password1",
             phone = "1111111111",
-            nit = "111111111",
+            doi = "111111111",
             address = "Address One"
         )
 
@@ -82,7 +82,7 @@ class UserRepositoryTest {
             role = "individual",
             password = "password2",
             phone = "2222222222",
-            nit = "222222222",
+            doi = "222222222",
             address = "Address Two"
         )
 
@@ -124,8 +124,8 @@ class UserRepositoryTest {
     @Test
     fun `validateOTP should handle different request data`() {
         // Given
-        val otpRequest1 = ValidateOTPRequest(otp = "123456")
-        val otpRequest2 = ValidateOTPRequest(otp = "654321")
+        val otpRequest1 = ValidateOTPRequest(otpCode = "123456", email = TestUtils.TestData.VALID_EMAIL)
+        val otpRequest2 = ValidateOTPRequest(otpCode = "654321", email = TestUtils.TestData.VALID_EMAIL)
 
         // When
         val result1 = userRepository.validateOTP(otpRequest1)
@@ -147,7 +147,7 @@ class UserRepositoryTest {
             role = "",
             password = "",
             phone = "",
-            nit = "",
+            doi = "",
             address = ""
         )
 
@@ -178,7 +178,7 @@ class UserRepositoryTest {
     @Test
     fun `validateOTP should handle empty request data`() {
         // Given
-        val emptyRequest = ValidateOTPRequest(otp = "")
+        val emptyRequest = ValidateOTPRequest(otpCode = "", email = TestUtils.TestData.VALID_EMAIL)
 
         // When
         val result = userRepository.validateOTP(emptyRequest)
@@ -197,7 +197,7 @@ class UserRepositoryTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
 
@@ -206,7 +206,7 @@ class UserRepositoryTest {
             password = TestUtils.TestData.VALID_PASSWORD
         )
 
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
 
         // When
         val registerResult = userRepository.registerUser(registerRequest)

@@ -8,7 +8,7 @@ class OrderRepositoryTest {
 
     @Test
     fun `getOrders should return Call with correct type`() {
-        val result = orderRepository.getOrders(clientId = 1, sellerId = 2)
+        val result = orderRepository.getOrders(clientId = "1", sellerId = "2")
         assertNotNull(result)
     }
 }
