@@ -32,7 +32,7 @@ class UserServiceTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
 
@@ -65,7 +65,7 @@ class UserServiceTest {
     fun `validateOTP should return Call with correct type`() {
         // Given
         val userService = createUserService()
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
 
         // When
         val call = userService.validateOTP(otpRequest)
@@ -85,7 +85,7 @@ class UserServiceTest {
             role = "institutional",
             password = "password123",
             phone = "1234567890",
-            nit = "123456789",
+            doi = "123456789",
             address = "Test Address"
         )
 
@@ -118,7 +118,7 @@ class UserServiceTest {
     fun `validateOTP should accept valid request data`() {
         // Given
         val userService = createUserService()
-        val otpRequest = ValidateOTPRequest(otp = "123456")
+        val otpRequest = ValidateOTPRequest(otpCode = "123456", email = TestUtils.TestData.VALID_EMAIL)
 
         // When
         val call = userService.validateOTP(otpRequest)
@@ -138,7 +138,7 @@ class UserServiceTest {
             role = "",
             password = "",
             phone = "",
-            nit = "",
+            doi = "",
             address = ""
         )
 
@@ -171,7 +171,7 @@ class UserServiceTest {
     fun `validateOTP should handle empty request data`() {
         // Given
         val userService = createUserService()
-        val otpRequest = ValidateOTPRequest(otp = "")
+        val otpRequest = ValidateOTPRequest(otpCode = "", email = TestUtils.TestData.VALID_EMAIL)
 
         // When
         val call = userService.validateOTP(otpRequest)

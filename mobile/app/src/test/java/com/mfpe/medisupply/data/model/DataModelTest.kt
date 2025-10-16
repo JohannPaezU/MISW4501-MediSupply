@@ -3,6 +3,7 @@ package com.mfpe.medisupply.data.model
 import com.mfpe.medisupply.utils.TestUtils
 import org.junit.Assert.*
 import org.junit.Test
+import java.util.Date
 
 /**
  * Tests unitarios para los modelos de datos
@@ -50,7 +51,7 @@ class DataModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
 
@@ -60,7 +61,7 @@ class DataModelTest {
         assertEquals("Role should be institutional", "institutional", registerRequest.role)
         assertEquals("Password should match", TestUtils.TestData.VALID_PASSWORD, registerRequest.password)
         assertEquals("Phone should match", TestUtils.TestData.VALID_PHONE, registerRequest.phone)
-        assertEquals("NIT should match", TestUtils.TestData.VALID_NIT, registerRequest.nit)
+        assertEquals("NIT should match", TestUtils.TestData.VALID_NIT, registerRequest.doi)
         assertEquals("Address should match", TestUtils.TestData.VALID_ADDRESS, registerRequest.address)
     }
 
@@ -73,7 +74,7 @@ class DataModelTest {
             role = "",
             password = "",
             phone = "",
-            nit = "",
+            doi = "",
             address = ""
         )
 
@@ -83,7 +84,7 @@ class DataModelTest {
         assertTrue("Role should be empty", registerRequest.role.isEmpty())
         assertTrue("Password should be empty", registerRequest.password.isEmpty())
         assertTrue("Phone should be empty", registerRequest.phone.isEmpty())
-        assertTrue("NIT should be empty", registerRequest.nit.isEmpty())
+        assertTrue("NIT should be empty", registerRequest.doi.isEmpty())
         assertTrue("Address should be empty", registerRequest.address.isEmpty())
     }
 
@@ -93,19 +94,19 @@ class DataModelTest {
         val otp = TestUtils.TestData.VALID_OTP
 
         // When
-        val otpRequest = ValidateOTPRequest(otp = otp)
+        val otpRequest = ValidateOTPRequest(otpCode = otp, email = TestUtils.TestData.VALID_EMAIL)
 
         // Then
-        assertEquals("OTP should match", otp, otpRequest.otp)
+        assertEquals("OTP should match", otp, otpRequest.otpCode)
     }
 
     @Test
     fun `ValidateOTPRequest with empty otp should be invalid`() {
         // Given
-        val otpRequest = ValidateOTPRequest(otp = "")
+        val otpRequest = ValidateOTPRequest(otpCode = "", email = TestUtils.TestData.VALID_EMAIL)
 
         // When & Then
-        assertTrue("OTP should be empty", otpRequest.otp.isEmpty())
+        assertTrue("OTP should be empty", otpRequest.otpCode.isEmpty())
     }
 
     @Test
@@ -126,10 +127,10 @@ class DataModelTest {
         val message = "Registration successful"
 
         // When
-        val registerResponse = RegisterUserResponse(message = message)
+        val registerResponse = RegisterUserResponse(id = message, createdAt = Date())
 
         // Then
-        assertEquals("Message should match", message, registerResponse.message)
+        assertEquals("Message should match", message, registerResponse.id)
     }
 
     @Test
@@ -142,18 +143,19 @@ class DataModelTest {
 
         // When
         val otpResponse = ValidateOTPResponse(
-            id = 1,
-            token = token,
-            fullName = fullName,
-            email = email,
-            role = role
+            accessToken = token,
+            user = OTPUser(
+                id = "id",
+                fullName = fullName,
+                email = email,
+                role = role)
         )
 
         // Then
-        assertEquals("Token should match", token, otpResponse.token)
-        assertEquals("Full name should match", fullName, otpResponse.fullName)
-        assertEquals("Email should match", email, otpResponse.email)
-        assertEquals("Role should match", role, otpResponse.role)
+        assertEquals("Token should match", token, otpResponse.accessToken)
+        assertEquals("Full name should match", fullName, otpResponse.user.fullName)
+        assertEquals("Email should match", email, otpResponse.user.email)
+        assertEquals("Role should match", role, otpResponse.user.role)
     }
 
     @Test
