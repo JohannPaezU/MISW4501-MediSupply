@@ -19,7 +19,7 @@ class User(Base):
         String(120), unique=True, index=True, nullable=False
     )
     hashed_password: Mapped[str] = mapped_column(String(60), nullable=False)
-    phone: Mapped[str] = mapped_column(String(10), nullable=False)
+    phone: Mapped[str] = mapped_column(String(15), nullable=False)
     doi: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     address: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
@@ -34,8 +34,8 @@ class User(Base):
 
     @validates("phone")
     def validate_phone(self, _, value: str) -> str:  # pragma: no cover
-        if not value.isdigit() or len(value) != 10:
-            raise ValueError("Phone must be exactly 10 digits")
+        if not value.isdigit() or len(value) < 9 or len(value) > 15:
+            raise ValueError("Phone must be between 9 and 15 digits")
         return value
 
 

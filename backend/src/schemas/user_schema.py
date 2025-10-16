@@ -8,6 +8,7 @@ from src.models.enums.user_role import UserRole
 
 
 class UserBase(BaseModel):
+    id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
     email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
     full_name: Annotated[str, Field(min_length=1, max_length=100)]
     doi: Annotated[
@@ -24,7 +25,7 @@ class UserBase(BaseModel):
 
     @field_validator("phone", mode="before")
     def validate_phone(cls, value: str) -> str:
-        if not value.isdigit() or 9 > len(value) > 15:
+        if not value.isdigit() or len(value) < 9 or len(value) > 15:
             raise BadRequestException("Phone must be between 9 and 15 digits")
         return value
 
