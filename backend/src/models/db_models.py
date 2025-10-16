@@ -20,7 +20,7 @@ class User(Base):
     )
     hashed_password: Mapped[str] = mapped_column(String(60), nullable=False)
     phone: Mapped[str] = mapped_column(String(10), nullable=False)
-    nit: Mapped[str] = mapped_column(String(50), nullable=False)
+    doi: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     address: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
     created_at: Mapped[datetime] = mapped_column(

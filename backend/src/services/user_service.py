@@ -11,10 +11,16 @@ def get_user_by_email(*, db: Session, email: str) -> User | None:
     return db.query(User).filter_by(email=email).first()
 
 
+def get_user_by_doi(*, db: Session, doi: str) -> User | None:
+    return db.query(User).filter_by(doi=doi).first()
+
+
 def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
-    existing_user = get_user_by_email(db=db, email=user_create_request.email)
+    existing_user = get_user_by_email(
+        db=db, email=user_create_request.email
+    ) or get_user_by_doi(db=db, doi=user_create_request.doi)
     if existing_user:
-        raise ConflictException("User with this email already exists")
+        raise ConflictException("User with this email or DOI already exists")
 
     user = User(
         full_name=user_create_request.full_name,
@@ -22,7 +28,7 @@ def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
         hashed_password=hash_password(user_create_request.password),
         phone=user_create_request.phone,
         role=user_create_request.role,
-        nit=user_create_request.nit,
+        doi=user_create_request.doi,
         address=user_create_request.address,
     )
     db.add(user)

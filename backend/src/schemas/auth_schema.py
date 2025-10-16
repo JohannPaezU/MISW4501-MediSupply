@@ -2,6 +2,8 @@ from typing import Annotated
 
 from pydantic import BaseModel, EmailStr, Field
 
+from src.schemas.user_schema import UserBase
+
 
 class LoginRequest(BaseModel):
     email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
@@ -30,3 +32,4 @@ class OTPVerifyResponse(BaseModel):
     message: str
     access_token: str
     token_type: str = "bearer"
+    user: UserBase
