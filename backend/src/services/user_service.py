@@ -16,7 +16,9 @@ def get_user_by_doi(*, db: Session, doi: str) -> User | None:
 
 
 def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
-    existing_user = get_user_by_email(db=db, email=user_create_request.email) or get_user_by_doi(db=db, doi=user_create_request.doi)
+    existing_user = get_user_by_email(
+        db=db, email=user_create_request.email
+    ) or get_user_by_doi(db=db, doi=user_create_request.doi)
     if existing_user:
         raise ConflictException("User with this email or DOI already exists")
 

@@ -9,7 +9,7 @@ from src.models.db_models import OTP, User
 
 
 def create_otp(*, db: Session, user: User) -> OTP:
-    otp_code = f"{random.randint(0, 999999):06d}" # noqa
+    otp_code = f"{random.randint(0, 999999):06d}"  # noqa
     expires_at = datetime.now(timezone.utc) + timedelta(
         minutes=settings.otp_expiration_minutes
     )
