@@ -9,7 +9,7 @@ from src.schemas.auth_schema import (
     OTPVerifyRequest,
     OTPVerifyResponse,
 )
-from src.schemas.user_schema import UserCreateRequest, UserCreateResponse, UserBase
+from src.schemas.user_schema import UserCreateRequest, UserCreateResponse
 from src.services.auth_service import login_user, verify_otp_and_get_token
 from src.services.user_service import create_user, get_user_by_email
 
@@ -110,5 +110,5 @@ def verify_otp(
         message="OTP verified successfully",
         access_token=access_token,
         token_type="bearer",
-        user=user
+        user=user,
     )
