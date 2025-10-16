@@ -7,9 +7,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class OrdersViewModel : ViewModel() {
-
+class OrdersViewModel(
     private val orderRepository: OrderRepository = OrderRepository()
+) : ViewModel() {
 
     fun getOrders(clientId : String, sellerId : String, onResult: (Boolean, String, OrderListResponse?) -> Unit) {
         orderRepository.getOrders(clientId, sellerId).enqueue(object :

@@ -7,9 +7,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SellerViewModel : ViewModel() {
-
+class SellerViewModel(
     private val sellerRepository: SellerRepository = SellerRepository()
+) : ViewModel() {
 
     fun getHome(onResult: (Boolean, String, SellerHomeResponse?) -> Unit) {
         sellerRepository.getHome().enqueue(object :
