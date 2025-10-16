@@ -1,5 +1,3 @@
-// src/app/services/vendedor.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -13,11 +11,9 @@ import { Vendedor, VendedorResponse, VendedorDetailResponse, CreateVendedorReque
 export class VendedorService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  /**
-   * Obtiene el token del localStorage
-   */
+
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders({
@@ -26,37 +22,28 @@ export class VendedorService {
     });
   }
 
-  /**
-   * Manejo de errores HTTP
-   */
-private handleError(error: HttpErrorResponse): Observable<never> {
-  let errorMessage = 'Ocurrió un error al obtener la información.';
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Ocurrió un error al obtener la información.';
 
-  if (error.status === 0) {
-    // Error de red, CORS o servidor inaccesible
-    errorMessage = 'No es posible conectar con el servidor. Por favor verifica tu conexión o inténtalo más tarde.';
-  } else if (error.status >= 500) {
-    // Error del servidor
-    errorMessage = 'El servidor presentó un problema. Intenta nuevamente más tarde.';
-  } else if (error.status === 404) {
-    errorMessage = 'El recurso solicitado no fue encontrado.';
-  } else if (error.status === 401 || error.status === 403) {
-    errorMessage = 'No tienes autorización para acceder a este recurso.';
-  } else if (error.error instanceof ErrorEvent) {
-    // Error del cliente
-    errorMessage = `Error del cliente: ${error.error.message}`;
-  } else {
-    // Otros errores HTTP
-    errorMessage = `Error ${error.status}: ${error.message}`;
+    if (error.status === 0) {
+      errorMessage = 'No es posible conectar con el servidor. Por favor verifica tu conexión o inténtalo más tarde.';
+    } else if (error.status >= 500) {
+      errorMessage = 'El servidor presentó un problema. Intenta nuevamente más tarde.';
+    } else if (error.status === 404) {
+      errorMessage = 'El recurso solicitado no fue encontrado.';
+    } else if (error.status === 401 || error.status === 403) {
+      errorMessage = 'No tienes autorización para acceder a este recurso.';
+    } else if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error del cliente: ${error.error.message}`;
+    } else {
+      errorMessage = `Error ${error.status}: ${error.message}`;
+    }
+
+    console.error('❌ Error capturado por handleError:', errorMessage, error);
+    return throwError(() => new Error(errorMessage));
   }
 
-  console.error('❌ Error capturado por handleError:', errorMessage, error);
-  return throwError(() => new Error(errorMessage));
-}
 
-  /**
-   * Obtiene la lista de todos los vendedores
-   */
   getVendedores(): Observable<Vendedor[]> {
     return this.http.get<VendedorResponse>(
       `${this.apiUrl}/sellers`,
@@ -67,9 +54,7 @@ private handleError(error: HttpErrorResponse): Observable<never> {
     );
   }
 
-  /**
-   * Obtiene un vendedor por ID
-   */
+
   getVendedorById(id: number): Observable<Vendedor> {
     return this.http.get<VendedorDetailResponse>(
       `${this.apiUrl}/sellers/${id}`,
@@ -79,9 +64,6 @@ private handleError(error: HttpErrorResponse): Observable<never> {
     );
   }
 
-  /**
-   * Crea un nuevo vendedor
-   */
   createVendedor(vendedor: CreateVendedorRequest): Observable<CreateVendedorResponse> {
     return this.http.post<CreateVendedorResponse>(
       `${this.apiUrl}/sellers`,
@@ -92,9 +74,6 @@ private handleError(error: HttpErrorResponse): Observable<never> {
     );
   }
 
-  /**
-   * Obtiene las zonas disponibles
-   */
   getZones(): Observable<ZonesResponse> {
     return this.http.get<ZonesResponse>(
       `${this.apiUrl}/zones`,
@@ -104,9 +83,7 @@ private handleError(error: HttpErrorResponse): Observable<never> {
     );
   }
 
-  /**
-   * Exporta los vendedores a CSV
-   */
+
   exportToCSV(vendedores: Vendedor[]): void {
     const headers = ['Nombre', 'Documento', 'Email', 'Teléfono', 'Zona', 'Fecha de Creación'];
     const csvData = vendedores.map(v => [

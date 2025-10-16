@@ -1,4 +1,3 @@
-// src/app/interfaces/vendedor.interface.ts
 
 export interface Vendedor {
   id?: number;
@@ -15,7 +14,7 @@ export interface VendedorResponse {
   sellers: Vendedor[];
 }
 
-export interface VendedorDetailResponse extends Vendedor {}
+export interface VendedorDetailResponse extends Vendedor { }
 
 export interface CreateVendedorRequest {
   fullname: string;
@@ -25,7 +24,7 @@ export interface CreateVendedorRequest {
   zone_id: number;
 }
 
-export interface CreateVendedorResponse extends Vendedor {}
+export interface CreateVendedorResponse extends Vendedor { }
 
 export interface Zone {
   id: number;

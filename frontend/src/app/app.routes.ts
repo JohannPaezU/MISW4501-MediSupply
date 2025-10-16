@@ -1,23 +1,28 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login/login.component';
-import { RecuperarContrasenaComponent } from './pages/login/recuperar-contrasena/recuperar-contrasena.component';
 import { HomeComponent } from './pages/home/home/home.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { ObtenerAccesoComponent } from './pages/login/obtener-acceso/obtener-acceso.component';
+import { authGuard } from './guards/auth.guard';
+import { publicGuard } from './guards/public.guard';
+
 
 export const routes: Routes = [
   {
     path: '',
     component: AuthLayoutComponent,
+    canActivate: [publicGuard], // Protege para que usuarios logueados no vean el login
     children: [
       { path: 'login', component: LoginComponent },
-      { path: 'recuperar-contrasena', component: RecuperarContrasenaComponent },
-      { path: '', redirectTo: '/login', pathMatch: 'full' },
+      { path: 'obtener-acceso', component: ObtenerAccesoComponent },
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [authGuard], // Protege todas las rutas hijas
     children: [
       { path: 'home', component: HomeComponent },
       {
@@ -44,7 +49,10 @@ export const routes: Routes = [
         path: 'rutas',
         loadChildren: () => import('./pages/rutas/rutas.routes').then(m => m.RUTAS_ROUTES)
       },
+       // Redirección por defecto para las rutas principales
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },
-  { path: '**', redirectTo: '/home' },
+  // Redirección para cualquier ruta no encontrada
+  { path: '**', redirectTo: 'home' },
 ];
