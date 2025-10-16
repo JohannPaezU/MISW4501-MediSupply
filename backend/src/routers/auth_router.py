@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from src.db.database import get_db
+from src.errors.errors import UnauthorizedException
 from src.schemas.auth_schema import (
     LoginRequest,
     LoginResponse,
@@ -10,7 +11,7 @@ from src.schemas.auth_schema import (
 )
 from src.schemas.user_schema import UserCreateRequest, UserCreateResponse
 from src.services.auth_service import login_user, verify_otp_and_get_token
-from src.services.user_service import create_user
+from src.services.user_service import create_user, get_user_by_email
 
 auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -97,12 +98,17 @@ def verify_otp(
     otp_verify_request: OTPVerifyRequest,
     db: Session = Depends(get_db),
 ) -> OTPVerifyResponse:
+    user = get_user_by_email(db=db, email=otp_verify_request.email)
+    if not user:
+        raise UnauthorizedException("Invalid or expired OTP")
+
     access_token = verify_otp_and_get_token(
-        db=db, otp_verify_request=otp_verify_request
+        db=db, otp_verify_request=otp_verify_request, user=user
     )
 
     return OTPVerifyResponse(
         message="OTP verified successfully",
         access_token=access_token,
         token_type="bearer",
+        user=user,
     )
