@@ -51,7 +51,7 @@ class HistorialFragment : Fragment() {
     }
 
     private fun loadOrders() {
-        ordersViewModel.getOrders(PrefsManager.getInstance(requireContext()).getuserId, 0)
+        ordersViewModel.getOrders(PrefsManager.getInstance(requireContext()).getuserId, "")
         { success, message, response ->
             if (success && response != null) {
                 orderListAdapter.updateOrders(response.orders)

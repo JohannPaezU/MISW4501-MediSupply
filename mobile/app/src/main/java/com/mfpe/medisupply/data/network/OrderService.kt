@@ -9,8 +9,8 @@ interface OrderService {
 
     @GET("order")
     fun getOrders(
-        @Query("client_id") clientId: Int,
-        @Query("seller_id") sellerId: Int
+        @Query("client_id") clientId: String,
+        @Query("seller_id") sellerId: String
     ): Call<OrderListResponse>
 
 }
