@@ -41,7 +41,8 @@ class SellerCreateRequest(SellerBase):
     zone_id: Annotated[str, Field(min_length=36, max_length=36)]
 
 
-class SellerCreateResponse(SellerBase): ...
+class SellerCreateResponse(SellerBase):
+    ...
 
 
 class GetSellersResponse(BaseModel):
