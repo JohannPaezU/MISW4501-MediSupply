@@ -1,5 +1,7 @@
 package com.mfpe.medisupply.utils
 
+import com.mfpe.medisupply.BuildConfig
+
 object Constants {
-    const val BASE_API_PATH = "https://9a43255d-aca2-4e23-a6d2-cbf103bed066.mock.pstmn.io/"
+    const val BASE_API_PATH = BuildConfig.BASE_API_URL
 }

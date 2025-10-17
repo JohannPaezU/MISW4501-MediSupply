@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.mfpe.medisupply.ui.inicio.InicioFragment"
+        android:name="com.mfpe.medisupply.ui.institucional.InicioFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_inicio" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.mfpe.medisupply.ui.productos.ProductosFragment"
+        android:name="com.mfpe.medisupply.ui.institucional.ProductosFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_productos" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.mfpe.medisupply.ui.historial.HistorialFragment"
+        android:name="com.mfpe.medisupply.ui.institucional.HistorialFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_historial" />
 </navigation>

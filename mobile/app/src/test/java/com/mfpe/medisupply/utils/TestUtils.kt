@@ -22,6 +22,7 @@ object TestUtils {
         const val VALID_OTP = "123456"
         const val INVALID_OTP = "000000"
         
+        const val VALID_USER_ID = "1"
         const val VALID_FULL_NAME = "Juan Pérez"
         const val VALID_NIT = "123456789"
         const val VALID_ADDRESS = "Calle 123 #45-67"

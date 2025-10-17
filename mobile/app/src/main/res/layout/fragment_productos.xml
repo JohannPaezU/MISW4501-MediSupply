@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.productos.ProductosFragment">
+    tools:context=".ui.institucional.ProductosFragment">
 
     <LinearLayout
         android:paddingTop="16dp"

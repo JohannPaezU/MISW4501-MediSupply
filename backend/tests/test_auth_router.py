@@ -8,7 +8,7 @@ class TestAuthRouter(BaseTest):
     create_user_payload = {
         "email": "valid-email@mail.com",
         "full_name": "Test User",
-        "nit": "123456789",
+        "doi": "123456789",
         "address": "123 Test St",
         "phone": "1234567890",
         "role": "institutional",
@@ -28,9 +28,8 @@ class TestAuthRouter(BaseTest):
         payload = self.create_user_payload.copy()
         payload["email"] = "invalid-email"
         payload["full_name"] = ""
-        payload["nit"] = ""
+        payload["doi"] = ""
         payload["address"] = ""
-        payload["role"] = "invalid-role"
         payload["password"] = ""
 
         response = self.client.post(f"{self.prefix}/auth/register", json=payload)
@@ -38,10 +37,9 @@ class TestAuthRouter(BaseTest):
         assert response.status_code == 422
         assert json_response["detail"][0]["loc"] == ["body", "email"]
         assert json_response["detail"][1]["loc"] == ["body", "full_name"]
-        assert json_response["detail"][2]["loc"] == ["body", "nit"]
+        assert json_response["detail"][2]["loc"] == ["body", "doi"]
         assert json_response["detail"][3]["loc"] == ["body", "address"]
-        assert json_response["detail"][4]["loc"] == ["body", "role"]
-        assert json_response["detail"][5]["loc"] == ["body", "password"]
+        assert json_response["detail"][4]["loc"] == ["body", "password"]
 
     def test_register_user_with_invalid_phone(self):
         payload = self.create_user_payload.copy()
@@ -50,7 +48,16 @@ class TestAuthRouter(BaseTest):
         response = self.client.post(f"{self.prefix}/auth/register", json=payload)
         json_response = response.json()
         assert response.status_code == 400
-        assert json_response["message"] == "Phone must be exactly 10 digits"
+        assert json_response["message"] == "Phone must be between 9 and 15 digits"
+
+    def test_register_user_with_invalid_role(self):
+        payload = self.create_user_payload.copy()
+        payload["role"] = "admin"
+
+        response = self.client.post(f"{self.prefix}/auth/register", json=payload)
+        json_response = response.json()
+        assert response.status_code == 422
+        assert json_response["message"] == "Role must be either 'institutional' or 'commercial'"
 
     def test_create_existing_user(self):
         response1 = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
@@ -58,7 +65,7 @@ class TestAuthRouter(BaseTest):
 
         assert response1.status_code == 201
         assert response2.status_code == 409
-        assert response2.json() == {"message": "User with this email already exists"}
+        assert response2.json() == {"message": "User with this email or DOI already exists"}
 
     def test_register_user_successfully(self):
         response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
@@ -86,7 +93,9 @@ class TestAuthRouter(BaseTest):
         assert response.json() == {"message": "Invalid email or password"}
 
     def test_login_with_incorrect_password(self):
-        self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        register_response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        assert register_response.status_code == 201
+
         payload = self.login_payload.copy()
         payload["password"] = "wrong_passw"
 
@@ -97,7 +106,8 @@ class TestAuthRouter(BaseTest):
 
     @patch("src.services.auth_service.send_email")
     def test_login_successfully(self, mock_send_email):
-        self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        register_response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        assert register_response.status_code == 201
 
         response = self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
         json_response = response.json()
@@ -126,21 +136,32 @@ class TestAuthRouter(BaseTest):
         assert response.status_code == 401
         assert response.json() == {"message": "Invalid or expired OTP"}
 
-    def test_verify_with_incorrect_otp(self):
-        self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
-        self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
+    @patch("src.services.otp_service.random.randint", return_value=123456)
+    @patch("src.services.auth_service.send_email")
+    def test_verify_with_incorrect_otp(self, mock_send_email, mock_randint):
+        register_response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        assert register_response.status_code == 201
+
+        login_response = self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
+        assert login_response.status_code == 200
+
         payload = self.verify_otp_payload.copy()
         payload["otp_code"] = "000000"
-
         response = self.client.post(f"{self.prefix}/auth/verify-otp", json=payload)
 
         assert response.status_code == 401
         assert response.json() == {"message": "Invalid or expired OTP"}
+        mock_send_email.assert_called_once()
+        mock_randint.assert_called_once()
 
     @patch("src.services.otp_service.random.randint", return_value=123456)
-    def test_verify_otp_successfully(self, mock_randint):
-        self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
-        self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
+    @patch("src.services.auth_service.send_email")
+    def test_verify_otp_successfully(self, mock_send_email, mock_randint):
+        register_response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        assert register_response.status_code == 201
+
+        login_response = self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
+        assert login_response.status_code == 200
 
         response = self.client.post(f"{self.prefix}/auth/verify-otp", json=self.verify_otp_payload)
         json_response = response.json()
@@ -149,4 +170,5 @@ class TestAuthRouter(BaseTest):
         assert json_response["message"] == "OTP verified successfully"
         assert "access_token" in json_response
         assert json_response["token_type"] == "bearer"
+        mock_send_email.assert_called_once()
         mock_randint.assert_called_once()

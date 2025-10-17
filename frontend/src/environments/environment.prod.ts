@@ -1,4 +1,4 @@
- export const environment = {
+export const environment = {
   production: true,
-  apiUrl: ''
+  apiUrl: 'https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1'
 };

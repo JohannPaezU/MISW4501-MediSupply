@@ -7,11 +7,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class OrdersViewModel : ViewModel() {
-
+class OrdersViewModel(
     private val orderRepository: OrderRepository = OrderRepository()
+) : ViewModel() {
 
-    fun getOrders(clientId : Int, sellerId : Int, onResult: (Boolean, String, OrderListResponse?) -> Unit) {
+    fun getOrders(clientId : String, sellerId : String, onResult: (Boolean, String, OrderListResponse?) -> Unit) {
         orderRepository.getOrders(clientId, sellerId).enqueue(object :
             Callback<OrderListResponse> {
             override fun onResponse(call: Call<OrderListResponse>, res: Response<OrderListResponse>) {

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.data.model.RegisterUserRequest
 import com.mfpe.medisupply.databinding.ActivityRegisterBinding
+import com.mfpe.medisupply.utils.ValidationUtils
 import com.mfpe.medisupply.viewmodel.UserViewModel
 
 class RegisterActivity : AppCompatActivity() {
@@ -46,6 +47,11 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (!ValidationUtils.isValidEmail(email)) {
+                Toast.makeText(this, "Por favor ingresa un correo electrónico válido.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (password != confirmPassword) {
                 Toast.makeText(this, "Las contraseñas no coinciden.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -57,13 +63,13 @@ class RegisterActivity : AppCompatActivity() {
                 role = "institutional",
                 password = password,
                 phone = phone,
-                nit = nit,
+                doi = nit,
                 address = address
             )
 
             userViewModel.registerUser(registerRequest) { success, message ->
                 if (success) {
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Usuario registrado correctamente.", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
