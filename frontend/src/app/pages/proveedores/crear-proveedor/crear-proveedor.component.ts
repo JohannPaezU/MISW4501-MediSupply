@@ -36,7 +36,7 @@ export class CrearProveedorComponent {
 
   get f() { return this.proveedorForm.controls; }
 
-   constructor(private fb: FormBuilder, private proveedorService: ProveedorService, private cdr: ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private proveedorService: ProveedorService, private cdr: ChangeDetectorRef) {
 
     this.proveedorForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
@@ -76,21 +76,26 @@ export class CrearProveedorComponent {
       error: (err) => {
         console.error(err);
         let message = 'Ocurrió un error inesperado al crear el proveedor.';
-        if (err.status === 409) {
+
+        const isConflict = err.status === 409;
+        const hasValidationError = err.status === 422 && err.error?.detail;
+
+        if (isConflict) {
           message = 'Ya existe un proveedor con este correo electrónico o RIT.';
-        } else if (err.status === 422 && err.error && err.error.detail) {
+        } else if (hasValidationError) {
           const firstError = err.error.detail[0];
-          const field = firstError.loc[1];
-          const errorMsg = firstError.msg;
+          const field = firstError.loc?.[1] ?? 'desconocido';
+          const errorMsg = firstError.msg ?? 'Error desconocido.';
           message = `Error en el campo '${field}': ${errorMsg}`;
         }
+
         this.errorMessage = message;
         this.showToast(message, 'error');
       }
     });
   }
 
-  private showToast(message: string, type: 'success' | 'error'): void {
+  public showToast(message: string, type: 'success' | 'error'): void {
     this.toastMessage = message;
     this.toastType = type;
     this.cdr.detectChanges();
