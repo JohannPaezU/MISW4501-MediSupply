@@ -31,5 +31,5 @@ class OTPVerifyRequest(BaseModel):
 class OTPVerifyResponse(BaseModel):
     message: str
     access_token: str
-    token_type: str = "bearer"
+    token_type: str
     user: UserBase

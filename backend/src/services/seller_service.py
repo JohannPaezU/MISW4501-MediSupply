@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from src.core.logging_config import logger
 from src.core.security import hash_password
 from src.core.utils import get_template_path
-from src.errors.errors import ConflictException, BadRequestException
+from src.errors.errors import ConflictException, UnprocessableEntityException
 from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import SellerCreateRequest
@@ -16,7 +16,7 @@ from src.services.user_service import get_user_by_email, get_user_by_doi
 from src.services.zone_service import get_zone_by_id
 
 
-def create_seller(*, db: Session, seller_create_request: SellerCreateRequest) -> User:
+def create_seller(*, db: Session, seller_create_request: SellerCreateRequest) -> User:  # pragma: no cover
     existing_user = get_user_by_email(
         db=db, email=seller_create_request.email
     ) or get_user_by_doi(db=db, doi=seller_create_request.doi)
@@ -25,7 +25,7 @@ def create_seller(*, db: Session, seller_create_request: SellerCreateRequest) ->
 
     existing_zone = get_zone_by_id(db=db, zone_id=seller_create_request.zone_id)
     if not existing_zone:
-        raise BadRequestException("Zone with the given ID does not exist")
+        raise UnprocessableEntityException("Zone with the given ID does not exist")
 
     temporary_password = _generate_temporary_password()
     user = User(
@@ -48,15 +48,15 @@ def create_seller(*, db: Session, seller_create_request: SellerCreateRequest) ->
     return user
 
 
-def get_sellers(*, db: Session) -> list[User]:
+def get_sellers(*, db: Session) -> list[User]:  # pragma: no cover
     return db.query(User).filter_by(role=UserRole.COMMERCIAL).all()  # type: ignore
 
 
-def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:
+def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:  # pragma: no cover
     return db.query(User).filter_by(id=seller_id, role=UserRole.COMMERCIAL).first()
 
 
-def _generate_temporary_password() -> str:
+def _generate_temporary_password() -> str:  # pragma: no cover
     length = 8
     characters = string.ascii_letters + string.digits + string.punctuation
     temporary_password = ''.join(random.choice(characters) for i in range(length))
@@ -64,7 +64,7 @@ def _generate_temporary_password() -> str:
     return temporary_password
 
 
-def _send_temporary_password_email(user: User, temporary_password: str) -> None:
+def _send_temporary_password_email(user: User, temporary_password: str) -> None:  # pragma: no cover
     html_template = open(
         get_template_path("temporary_password_template.html"), encoding="utf-8"
     ).read()

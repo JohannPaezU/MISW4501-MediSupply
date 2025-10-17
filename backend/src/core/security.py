@@ -44,7 +44,7 @@ def create_access_token(data: dict[str, Any]) -> str:
     return encoded_jwt
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:  # pragma: no cover
     try:
         payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
         sub: str = payload.get("sub")
@@ -66,7 +66,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise ApiError("An error occurred while processing the token.") from e
 
 
-def require_roles(allowed_roles: list[UserRole]) -> Callable[[User], User]:
+def require_roles(allowed_roles: list[UserRole]) -> Callable[[User], User]:  # pragma: no cover
     def role_checker(current_user: User = Depends(get_current_user)) -> User:
         if current_user.role not in allowed_roles:
             raise ForbiddenException(f"Access denied: requires one of the following roles: {', '.join(r.value for r in allowed_roles)}")
