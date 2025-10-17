@@ -23,8 +23,8 @@ export class LoginComponent {
     private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
-      email: ['juan.cervantes@udea.edu.co', [Validators.required, Validators.email]],
-      password: ['password', [Validators.required, Validators.maxLength(12)]],
+      email: ['js.cervantes@uniandes.edu.co', [Validators.required, Validators.email]],
+      password: ['123456', [Validators.required, Validators.maxLength(12)]],
     });
   }
 

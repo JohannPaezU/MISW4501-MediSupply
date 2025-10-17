@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { finalize, timer } from 'rxjs';
+
+import { ProveedorService } from '../../../services/proveedores/proveedor.service';
+import { ProviderCreateRequest } from '../../../interfaces/proveedor.intrface';
 
 @Component({
   selector: 'app-crear-proveedor',
@@ -23,30 +27,85 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class CrearProveedorComponent {
   proveedorForm: FormGroup;
+  isLoading = false;
+  // Mensajes para las alertas en línea
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder) {
+  // Propiedades para el toast
+  toastMessage: string | null = null;
+  toastType: 'success' | 'error' | null = null;
+
+  get f() { return this.proveedorForm.controls; }
+
+   constructor(private fb: FormBuilder, private proveedorService: ProveedorService, private cdr: ChangeDetectorRef) {
+
+    // El formulario ahora coincide con el schema del backend
     this.proveedorForm = this.fb.group({
-      nombre: ['', Validators.required],
-      numeroRIT: ['', Validators.required],
-      ciudad: ['', Validators.required],
-      pais: ['', Validators.required],
-      correoElectronico: ['', [Validators.required, Validators.email]],
-      telefono: ['', Validators.required],
-      certificacionesSanitarias: ['', Validators.required]
+      name: ['test', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      rit: ['test', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+      city: ['test', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      country: ['test', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      email: ['test@test.com', [Validators.required, Validators.email, Validators.maxLength(120)]],
+      phone: ['1234567890', [Validators.required, Validators.minLength(9), Validators.maxLength(15), Validators.pattern('^[0-9]*$')]],
+      image_url: [null, [Validators.maxLength(255)]] // Campo opcional
     });
   }
 
   crearProveedor(): void {
-    if (this.proveedorForm.valid) {
-      console.log('Crear proveedor:', this.proveedorForm.value);
-    } else {
-      console.log('Formulario inválido');
-      Object.keys(this.proveedorForm.controls).forEach(key => {
-        const control = this.proveedorForm.get(key);
-        if (control?.invalid) {
-          control.markAsTouched();
-        }
-      });
+    if (this.proveedorForm.invalid) {
+      this.proveedorForm.markAllAsTouched();
+      return;
     }
+
+    this.isLoading = true;
+    this.successMessage = null;
+    this.errorMessage = null;
+
+    const providerData: ProviderCreateRequest = this.proveedorForm.value;
+
+    this.proveedorService.createProvider(providerData).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (response) => {
+        const message = `¡Proveedor "${response.name}" creado con éxito!`;
+        this.successMessage = message; // Mensaje en línea
+        this.showToast('Proveedor creado exitosamente', 'success'); // Toast
+        this.proveedorForm.reset();
+      },
+      error: (err) => {
+        console.error(err);
+        let message = 'Ocurrió un error inesperado al crear el proveedor.';
+        if (err.status === 409) { // Conflict
+          message = 'Ya existe un proveedor con este correo electrónico o RIT.';
+        } else if (err.status === 422 && err.error && err.error.detail) {
+          const firstError = err.error.detail[0];
+          const field = firstError.loc[1];
+          const errorMsg = firstError.msg;
+          message = `Error en el campo '${field}': ${errorMsg}`;
+        }
+        this.errorMessage = message; // Mensaje en línea
+        this.showToast(message, 'error'); // Toast
+      }
+    });
+  }
+
+  /**
+   * Muestra un mensaje toast y lo oculta después de 5 segundos.
+   */
+  private showToast(message: string, type: 'success' | 'error'): void {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.cdr.detectChanges();
+
+    timer(5000).subscribe(() => {
+      this.toastMessage = null;
+      this.toastType = null;
+      this.cdr.detectChanges();
+    });
   }
 }
+

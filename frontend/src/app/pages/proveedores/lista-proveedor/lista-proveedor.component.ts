@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
-import { Proveedor } from '../../../interfaces/proveedor.intrface';
+import { finalize } from 'rxjs';
+import { ProveedorService } from '../../../services/proveedores/proveedor.service';
+import { ProviderBase } from '../../../interfaces/proveedor.intrface';
+import { CsvExportService } from '../../../services/utilities/csv.service';
 
 @Component({
   selector: 'app-lista-proveedor',
@@ -16,43 +19,71 @@ import { Proveedor } from '../../../interfaces/proveedor.intrface';
   templateUrl: './lista-proveedor.component.html',
   styleUrls: ['./lista-proveedor.component.css']
 })
-
-export class ListaProveedorComponent {
-  constructor(private router: Router) {}
-
-  proveedores: Proveedor[] = [
-    {
-      nombre: 'Miguel Padilla',
-      numeroRIT: '1010101011',
-      ciudad: 'Bogotá',
-      correo: 'miguel@gmail.com',
-      telefono: '+51947891236',
-      contacto: 'Juan Peréz'
-    },
-    {
-      nombre: 'Juan Cervantes',
-      numeroRIT: '2020202021',
-      ciudad: 'Bogotá',
-      correo: 'juan@gmail.com',
-      telefono: '+51947231236',
-      contacto: 'Lolo López'
-    },
-    {
-      nombre: 'Johann Páez',
-      numeroRIT: '3030303031',
-      ciudad: 'Bogotá',
-      correo: 'johann@gmail.com',
-      telefono: '+51927361326',
-      contacto: 'Tito Ramírez'
-    }
-  ];
+export class ListaProveedorComponent implements OnInit {
+  proveedores: ProviderBase[] = [];
+  isLoading = true;
+  errorMessage: string | null = null;
+  copiedId: string | null = null;
 
   pageSize = 10;
   currentPage = 1;
-  totalItems = 14;
+  totalItems = 0;
+
+  constructor(
+    private router: Router,
+    private proveedorService: ProveedorService,
+    private cdr: ChangeDetectorRef,
+    private csvExportService: CsvExportService
+  ) {}
+
+  ngOnInit(): void {
+    this.cargarProveedores();
+  }
+
+  cargarProveedores(): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.proveedorService.getProviders().pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
+      next: (response) => {
+        this.proveedores = response.providers;
+        this.totalItems = response.total_count;
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = 'No se pudieron cargar los proveedores. Intente de nuevo más tarde.';
+      }
+    });
+  }
 
   exportarCSV(): void {
-    console.log('Exportar a CSV');
+    const headers = {
+      id: 'ID',
+      name: 'Nombre',
+      rit: 'RIT',
+      city: 'Ciudad',
+      country: 'País',
+      email: 'Correo Electrónico',
+      phone: 'Teléfono',
+      created_at: 'Fecha de Creación'
+    };
+    this.csvExportService.exportToCsv(this.proveedores, 'lista-proveedores', headers);
+  }
+
+  copyToClipboard(id: string): void {
+    navigator.clipboard.writeText(id).then(() => {
+      this.copiedId = id;
+      this.cdr.detectChanges(); // <-- SOLUCIÓN: Forzamos la actualización de la vista aquí
+      setTimeout(() => {
+        this.copiedId = null;
+        this.cdr.detectChanges(); // Limpiamos el mensaje después del tiempo de espera
+      }, 1500);
+    }).catch(err => console.error('Error al copiar ID: ', err));
   }
 
   crearProveedor(): void {
@@ -78,12 +109,17 @@ export class ListaProveedorComponent {
     }
   }
 
+  get paginatedProveedores(): ProviderBase[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.proveedores.slice(startIndex, startIndex + this.pageSize);
+  }
+
   get startItem(): number {
-    return (this.currentPage - 1) * this.pageSize + 1;
+    return this.proveedores.length > 0 ? (this.currentPage - 1) * this.pageSize + 1 : 0;
   }
 
   get endItem(): number {
     return Math.min(this.currentPage * this.pageSize, this.totalItems);
   }
-
 }
+

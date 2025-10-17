@@ -1,69 +1,118 @@
 <div class="crear-producto-container">
   <h1 class="page-title">Crear producto</h1>
 
-  <form [formGroup]="productoForm" class="producto-form">
+  <!-- Mensajes de éxito o error -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-error">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="productoForm" class="producto-form" (ngSubmit)="crearProducto()">
     <div class="form-row">
+      <!-- Nombre Producto -->
       <div class="form-field">
         <label class="field-label">Nombre Producto</label>
-        <input type="text" class="form-input" formControlName="nombreProducto" placeholder="Acetaminofen">
+        <input type="text" class="form-input" formControlName="name" placeholder="Acetaminofén 500mg">
+        <div *ngIf="f['name'].touched && f['name'].invalid" class="validation-error">
+          <small *ngIf="f['name'].errors?.['required']">El nombre es requerido.</small>
+          <small *ngIf="f['name'].errors?.['minlength'] || f['name'].errors?.['maxlength']">Debe tener entre 3 y 100 caracteres.</small>
+        </div>
       </div>
 
+      <!-- Número de Lote -->
       <div class="form-field">
         <label class="field-label">Número de Lote</label>
-        <input type="text" class="form-input" formControlName="numeroLote" placeholder="1010101011">
+        <input type="text" class="form-input" formControlName="batch" placeholder="LOTE-A4B76C">
+         <div *ngIf="f['batch'].touched && f['batch'].invalid" class="validation-error">
+          <small *ngIf="f['batch'].errors?.['required']">El lote es requerido.</small>
+          <small *ngIf="f['batch'].errors?.['minlength'] || f['batch'].errors?.['maxlength']">Debe tener entre 5 y 50 caracteres.</small>
+        </div>
       </div>
     </div>
 
     <div class="form-row">
+      <!-- Bodega -->
       <div class="form-field">
         <label class="field-label">Bodega</label>
-        <input type="text" class="form-input" formControlName="bodega" placeholder="Cedi central">
+        <input type="text" class="form-input" formControlName="store" placeholder="Cedi central">
+         <div *ngIf="f['store'].touched && f['store'].invalid" class="validation-error">
+          <small *ngIf="f['store'].errors?.['required']">La bodega es requerida.</small>
+           <small *ngIf="f['store'].errors?.['minlength'] || f['store'].errors?.['maxlength']">Debe tener entre 3 y 100 caracteres.</small>
+        </div>
       </div>
 
+      <!-- Imagen Url -->
       <div class="form-field">
-        <label class="field-label">Imagen Url</label>
-        <input type="text" class="form-input" formControlName="imagenUrl" placeholder="www.test.com">
+        <label class="field-label">Imagen Url (Opcional)</label>
+        <input type="text" class="form-input" formControlName="image_url" placeholder="https://ejemplo.com/imagen.png">
       </div>
     </div>
 
     <div class="form-row">
+      <!-- Fecha de Vencimiento -->
       <div class="form-field">
         <label class="field-label">Fecha de Vencimiento</label>
-        <input type="text" class="form-input" formControlName="fechaVencimiento" placeholder="dd/mm/aaaa">
+        <input title="Seleccione la fecha de vencimiento" type="date" class="form-input" formControlName="due_date">
+         <div *ngIf="f['due_date'].touched && f['due_date'].invalid" class="validation-error">
+          <small *ngIf="f['due_date'].errors?.['required']">La fecha es requerida.</small>
+        </div>
       </div>
 
-      <div class="form-field">
-        <label class="field-label">Ficha Tecnica</label>
-        <input title="Ficha Tecnica" type="text" class="form-input" formControlName="fichaTecnica">
-      </div>
-    </div>
-
-    <div class="form-row">
+      <!-- Stock (Cantidad) -->
       <div class="form-field">
         <label class="field-label">Stock (Cantidad)</label>
-        <input type="number" class="form-input" formControlName="stock" placeholder="32">
-      </div>
-
-      <div class="form-field">
-        <label class="field-label">Precio por Unidad</label>
-        <input type="text" class="form-input" formControlName="precioUnidad" placeholder="$ 30.000">
+        <input type="number" class="form-input" formControlName="stock" placeholder="150">
+         <div *ngIf="f['stock'].touched && f['stock'].invalid" class="validation-error">
+          <small *ngIf="f['stock'].errors?.['required']">El stock es requerido.</small>
+          <small *ngIf="f['stock'].errors?.['min']">El stock debe ser mayor a 0.</small>
+        </div>
       </div>
     </div>
 
     <div class="form-row">
+       <!-- Precio por Unidad -->
+       <div class="form-field">
+        <label class="field-label">Precio por Unidad</label>
+        <input type="number" step="0.01" class="form-input" formControlName="price_per_unite" placeholder="30000">
+         <div *ngIf="f['price_per_unite'].touched && f['price_per_unite'].invalid" class="validation-error">
+          <small *ngIf="f['price_per_unite'].errors?.['required']">El precio es requerido.</small>
+           <small *ngIf="f['price_per_unite'].errors?.['min']">El precio debe ser mayor a 0.</small>
+        </div>
+      </div>
+
+      <!-- ID del Proveedor -->
+      <div class="form-field">
+        <label class="field-label">ID del Proveedor</label>
+        <input type="text" class="form-input" formControlName="provider_id" placeholder="Pegue el ID único del proveedor">
+         <div *ngIf="f['provider_id'].touched && f['provider_id'].invalid" class="validation-error">
+          <small *ngIf="f['provider_id'].errors?.['required']">El ID del proveedor es requerido.</small>
+           <small *ngIf="f['provider_id'].errors?.['minlength'] || f['provider_id'].errors?.['maxlength']">Debe ser un ID válido (UUID).</small>
+        </div>
+      </div>
+    </div>
+
+     <!-- Detalles / Ficha Técnica -->
+     <div class="form-row">
       <div class="form-field form-field-full">
-        <label class="field-label">Proveedor</label>
-        <input type="text" class="form-input" formControlName="proveedor" placeholder="Pfizer">
+        <label class="field-label">Detalles / Ficha Técnica</label>
+        <textarea class="form-input" formControlName="details" rows="4" placeholder="Descripción detallada del producto..."></textarea>
+         <div *ngIf="f['details'].touched && f['details'].invalid" class="validation-error">
+          <small *ngIf="f['details'].errors?.['required']">Los detalles son requeridos.</small>
+           <small *ngIf="f['details'].errors?.['minlength'] || f['details'].errors?.['maxlength']">Debe tener entre 10 y 500 caracteres.</small>
+        </div>
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="button" class="btn-secondary" (click)="crearProductoMasivo()">
-        CREAR PRODUCTOS MASVO
+      <button type="button" class="btn-secondary" (click)="crearProductoMasivo()" [disabled]="isLoading">
+        CREAR PRODUCTOS EN LOTE
       </button>
-      <button type="submit" class="btn-primary" (click)="crearProducto()">
-        CREAR PRODUCTO
+      <button type="submit" class="btn-primary" [disabled]="isLoading || productoForm.invalid">
+        {{ isLoading ? 'CREANDO...' : 'CREAR PRODUCTO' }}
       </button>
     </div>
   </form>
 </div>
+
