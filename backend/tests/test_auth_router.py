@@ -41,13 +41,6 @@ class TestAuthRouter(BaseTest):
         assert json_response["detail"][3]["loc"] == ["body", "address"]
         assert json_response["detail"][4]["loc"] == ["body", "password"]
 
-    def test_register_user_with_invalid_role(self):
-        payload = self.create_user_payload.copy()
-        payload["role"] = "invalid-role"
-
-        response = self.client.post(f"{self.prefix}/auth/register", json=payload)
-        assert response.status_code == 422
-
     def test_register_user_with_invalid_phone(self):
         payload = self.create_user_payload.copy()
         payload["phone"] = "invalid-phone"
@@ -56,6 +49,15 @@ class TestAuthRouter(BaseTest):
         json_response = response.json()
         assert response.status_code == 400
         assert json_response["message"] == "Phone must be between 9 and 15 digits"
+
+    def test_register_user_with_invalid_role(self):
+        payload = self.create_user_payload.copy()
+        payload["role"] = "admin"
+
+        response = self.client.post(f"{self.prefix}/auth/register", json=payload)
+        json_response = response.json()
+        assert response.status_code == 422
+        assert json_response["message"] == "Role must be either 'institutional' or 'commercial'"
 
     def test_create_existing_user(self):
         response1 = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
