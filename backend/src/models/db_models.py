@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timezone
+from typing import Optional
 
 from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
@@ -21,12 +22,20 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(60), nullable=False)
     phone: Mapped[str] = mapped_column(String(15), nullable=False)
     doi: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
-    address: Mapped[str] = mapped_column(String(255), nullable=False)
+    address: Mapped[str] = mapped_column(String(255), nullable=True)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
+    )
+    zone_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("zones.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    zone: Mapped[Optional["Zone"]] = relationship(
+        "Zone", back_populates="users", passive_deletes=True
     )
     otps: Mapped[list["OTP"]] = relationship(
         "OTP", back_populates="user", cascade="all, delete-orphan"
@@ -54,3 +63,20 @@ class OTP(Base):
     )
 
     user: Mapped["User"] = relationship("User", back_populates="otps")
+
+
+class Zone(Base):
+    __tablename__ = "zones"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    description: Mapped[str] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    users: Mapped[list["User"]] = relationship(
+        "User", back_populates="zone"
+    )

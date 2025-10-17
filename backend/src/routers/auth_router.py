@@ -29,7 +29,7 @@ Create a new user account.
 - **full_name**: Full name (1–100 characters)
 - **nit**: NIT (1–50 characters)
 - **address**: Address (1–255 characters)
-- **phone**: Exactly 10 digits
+- **phone**: Phone number (9–15 digits)
 - **role**: Either `institutional` or `commercial`
 - **password**: Between 6–12 characters
 
@@ -37,12 +37,12 @@ Create a new user account.
 Returns the created user's `id` and `created_at` timestamp.
 """,
 )
-def register_user(
+async def register_user(
     *,
-    user_in: UserCreateRequest,
+    user_create_request: UserCreateRequest,
     db: Session = Depends(get_db),
 ) -> UserCreateResponse:
-    return create_user(db=db, user_create_request=user_in)
+    return create_user(db=db, user_create_request=user_create_request)
 
 
 @auth_router.post(
@@ -63,7 +63,7 @@ If the credentials are valid, an OTP is generated and sent via email.
 - **otp_expiration_minutes**: Time window before the OTP expires.
 """,
 )
-def login(
+async def login(
     *, login_request: LoginRequest, db: Session = Depends(get_db)
 ) -> LoginResponse:
     otp_expiration_minutes = login_user(db=db, login_request=login_request)
@@ -93,7 +93,7 @@ If valid, a JWT access token is returned.
 - **token_type**: Token type, typically 'bearer'
 """,
 )
-def verify_otp(
+async def verify_otp(
     *,
     otp_verify_request: OTPVerifyRequest,
     db: Session = Depends(get_db),
