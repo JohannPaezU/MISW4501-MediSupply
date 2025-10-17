@@ -3,12 +3,20 @@ from sqlalchemy.orm import Session
 from src.core.logging_config import logger
 from src.errors.errors import UnprocessableEntityException
 from src.models.db_models import Product
-from src.schemas.product_schema import ProductCreateRequest, ProductCreateBulkRequest, ProductCreateBulkResponse
+from src.schemas.product_schema import (
+    ProductCreateBulkRequest,
+    ProductCreateBulkResponse,
+    ProductCreateRequest,
+)
 from src.services.provider_service import get_provider_by_id
 
 
-def create_product(*, db: Session, product_create_request: ProductCreateRequest) -> Product:  # pragma: no cover
-    existing_provider = get_provider_by_id(db=db, provider_id=product_create_request.provider_id)
+def create_product(
+    *, db: Session, product_create_request: ProductCreateRequest
+) -> Product:  # pragma: no cover
+    existing_provider = get_provider_by_id(
+        db=db, provider_id=product_create_request.provider_id
+    )
     if not existing_provider:
         raise UnprocessableEntityException("Provider with the given ID does not exist")
 
@@ -34,7 +42,9 @@ def create_product(*, db: Session, product_create_request: ProductCreateRequest)
     return product
 
 
-def create_products_bulk(*, db: Session, product_create_bulk_request: ProductCreateBulkRequest) -> ProductCreateBulkResponse:  # pragma: no cover
+def create_products_bulk(
+    *, db: Session, product_create_bulk_request: ProductCreateBulkRequest
+) -> ProductCreateBulkResponse:  # pragma: no cover
     rows_total = len(product_create_bulk_request.products)
     rows_inserted = 0
     errors_details = []
@@ -46,7 +56,9 @@ def create_products_bulk(*, db: Session, product_create_bulk_request: ProductCre
         except UnprocessableEntityException as e:
             errors_details.append(f"Error for product '{product.name}': {str(e)}")
         except Exception as e:
-            errors_details.append(f"Unexpected error for product '{product.name}': {str(e)}")
+            errors_details.append(
+                f"Unexpected error for product '{product.name}': {str(e)}"
+            )
 
     errors = rows_total - rows_inserted
 
@@ -63,5 +75,7 @@ def get_products(*, db: Session) -> list[Product]:  # pragma: no cover
     return db.query(Product).order_by(Product.name).all()  # type: ignore
 
 
-def get_product_by_id(*, db: Session, product_id: str) -> Product | None:  # pragma: no cover
+def get_product_by_id(
+    *, db: Session, product_id: str
+) -> Product | None:  # pragma: no cover
     return db.query(Product).filter_by(id=product_id).first()
