@@ -24,3 +24,7 @@ class NotFoundException(ApiError):
 
 class ConflictException(ApiError):
     status_code = 409
+
+
+class UnprocessableEntityException(ApiError):
+    status_code = 422

@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from src.core.logging_config import logger
 from src.core.security import hash_password
-from src.errors.errors import ConflictException, BadRequestException
+from src.errors.errors import ConflictException, UnprocessableEntityException
 from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.user_schema import UserCreateRequest
@@ -19,7 +19,7 @@ def get_user_by_doi(*, db: Session, doi: str) -> User | None:
 
 def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
     if user_create_request.role not in {UserRole.INSTITUTIONAL, UserRole.COMMERCIAL}:
-        raise BadRequestException("Role must be either 'institutional' or 'commercial'")
+        raise UnprocessableEntityException("Role must be either 'institutional' or 'commercial'")
 
     existing_user = get_user_by_email(
         db=db, email=user_create_request.email

@@ -56,7 +56,7 @@ class TestAuthRouter(BaseTest):
 
         response = self.client.post(f"{self.prefix}/auth/register", json=payload)
         json_response = response.json()
-        assert response.status_code == 400
+        assert response.status_code == 422
         assert json_response["message"] == "Role must be either 'institutional' or 'commercial'"
 
     def test_create_existing_user(self):
