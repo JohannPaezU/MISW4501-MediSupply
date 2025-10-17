@@ -30,6 +30,7 @@ class ValidateOTPActivity : AppCompatActivity() {
             insets
         }
 
+        val email = intent.getStringExtra("user_email")
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
         binding.btnLogin.setOnClickListener {
@@ -40,17 +41,17 @@ class ValidateOTPActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val otpRequest = ValidateOTPRequest(otp = otp)
+            val otpRequest = ValidateOTPRequest(otpCode = otp, email = email ?: "")
 
             userViewModel.validateOTP(otpRequest) { success, message, response ->
                 if (success && response != null) {
-                    PrefsManager.getInstance(this).saveUserId(response.id)
-                    PrefsManager.getInstance(this).saveAuthToken(response.token)
-                    PrefsManager.getInstance(this).saveUserFullName(response.fullName)
-                    PrefsManager.getInstance(this).saveUserEmail(response.email)
-                    PrefsManager.getInstance(this).saveUserRole(response.role)
+                    PrefsManager.getInstance(this).saveUserId(response.user.id)
+                    PrefsManager.getInstance(this).saveAuthToken(response.accessToken)
+                    PrefsManager.getInstance(this).saveUserFullName(response.user.fullName)
+                    PrefsManager.getInstance(this).saveUserEmail(response.user.email)
+                    PrefsManager.getInstance(this).saveUserRole(response.user.role)
 
-                    val intent = when (response.role.lowercase()) {
+                    val intent = when (response.user.role.lowercase()) {
                         "comercial" -> Intent(this, ComMainActivity::class.java)
                         "institucional" -> Intent(this, MainActivity::class.java)
                         else -> Intent(this, MainActivity::class.java)

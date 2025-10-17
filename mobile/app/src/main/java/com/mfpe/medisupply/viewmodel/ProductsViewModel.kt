@@ -8,9 +8,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProductsViewModel : ViewModel() {
-
+class ProductsViewModel(
     private val productRepository: ProductRepository = ProductRepository()
+) : ViewModel() {
+
     private var currentProducts: List<Product> = emptyList()
 
     fun getProducts(onResult: (Boolean, String, ProductListResponse?) -> Unit) {
