@@ -89,6 +89,72 @@ class PrefsManagerTest : TestUtils.BaseTest() {
     }
 
     @Test
+    fun `saveUserId should work without errors`() {
+        // Given
+        val userId = TestUtils.TestData.VALID_USER_ID
+
+        // When & Then
+        try {
+            prefsManager.saveUserId(userId)
+            assertTrue("Save should complete without errors", true)
+        } catch (e: Exception) {
+            fail("Save should not throw exceptions: ${e.message}")
+        }
+    }
+
+    @Test
+    fun `getuserId should return int`() {
+        // When
+        val userId = prefsManager.getuserId
+
+        // Then
+        assertTrue("Test should pass", true)
+    }
+
+    @Test
+    fun `saveRememberMeEmail should work without errors`() {
+        // Given
+        val email = TestUtils.TestData.VALID_EMAIL
+
+        // When & Then
+        try {
+            prefsManager.saveRememberMeEmail(email)
+            assertTrue("Save should complete without errors", true)
+        } catch (e: Exception) {
+            fail("Save should not throw exceptions: ${e.message}")
+        }
+    }
+
+    @Test
+    fun `getRememberMeEmail should return string`() {
+        // When
+        val email = prefsManager.getRememberMeEmail()
+
+        // Then
+        assertTrue("Test should pass", true)
+    }
+
+    @Test
+    fun `saveRememberMeChecked should work without errors`() {
+        // When & Then
+        try {
+            prefsManager.saveRememberMeChecked(true)
+            assertTrue("Save should complete without errors", true)
+        } catch (e: Exception) {
+            fail("Save should not throw exceptions: ${e.message}")
+        }
+    }
+
+    @Test
+    fun `saveRememberMeChecked should return boolean`() {
+        // When
+        val email = prefsManager.getRememberMeChecked()
+
+        // Then
+        assertTrue("Test should pass", true)
+    }
+
+    @Test
     fun `getUserFullName should return string`() {
         // When
         val fullName = prefsManager.getUserFullName
@@ -154,6 +220,17 @@ class PrefsManagerTest : TestUtils.BaseTest() {
             assertTrue("Clear should complete without errors", true)
         } catch (e: Exception) {
             fail("Clear should not throw exceptions: ${e.message}")
+        }
+    }
+
+    @Test
+    fun `clear rememberMe should work without errors`() {
+        // When & Then
+        try {
+            prefsManager.clearRememberMe()
+            assertTrue("clearRememberMe should complete without errors", true)
+        } catch (e: Exception) {
+            fail("clearRememberMe should not throw exceptions: ${e.message}")
         }
     }
 

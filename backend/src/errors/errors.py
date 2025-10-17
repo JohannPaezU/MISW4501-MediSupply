@@ -14,5 +14,17 @@ class UnauthorizedException(ApiError):
     status_code = 401
 
 
+class ForbiddenException(ApiError):
+    status_code = 403
+
+
+class NotFoundException(ApiError):
+    status_code = 404
+
+
 class ConflictException(ApiError):
     status_code = 409
+
+
+class UnprocessableEntityException(ApiError):
+    status_code = 422

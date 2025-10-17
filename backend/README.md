@@ -217,7 +217,7 @@ Notes:
 | `full_name` | string | 1-100 chars | User's full name |
 | `nit` | string | 1-50 chars | User's NIT (Tax ID) |
 | `address` | string | 1-255 chars | User's address |
-| `phone` | string | exactly 10 digits | User's phone number |
+| `phone` | string | Phone number (9–15 digits) | User's phone number |
 | `role` | enum | `institutional` or `commercial` | User's role type |
 | `password` | string | 6-12 chars | User's password |
 

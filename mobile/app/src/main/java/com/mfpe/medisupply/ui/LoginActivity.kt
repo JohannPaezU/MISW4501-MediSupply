@@ -12,6 +12,7 @@ import com.mfpe.medisupply.R
 import com.mfpe.medisupply.data.model.LoginUserRequest
 import com.mfpe.medisupply.databinding.ActivityLoginBinding
 import com.mfpe.medisupply.utils.PrefsManager
+import com.mfpe.medisupply.utils.ValidationUtils
 import com.mfpe.medisupply.viewmodel.UserViewModel
 
 class LoginActivity : AppCompatActivity() {
@@ -55,6 +56,11 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (!ValidationUtils.isValidEmail(email)) {
+                Toast.makeText(this, "Por favor ingresa un correo electrónico válido.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val rememberMe = binding.checkRememberMe.isChecked
             prefsManager.saveRememberMeChecked(rememberMe)
             if (rememberMe) {
@@ -71,6 +77,7 @@ class LoginActivity : AppCompatActivity() {
             userViewModel.loginUser(loginRequest) { success, message ->
                 if (success) {
                     val intent = Intent(this, ValidateOTPActivity::class.java)
+                    intent.putExtra("user_email", email)
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, message, Toast.LENGTH_LONG).show()

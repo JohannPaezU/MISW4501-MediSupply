@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from src.db.database import get_db
+from src.errors.errors import UnauthorizedException
 from src.schemas.auth_schema import (
     LoginRequest,
     LoginResponse,
@@ -10,7 +11,7 @@ from src.schemas.auth_schema import (
 )
 from src.schemas.user_schema import UserCreateRequest, UserCreateResponse
 from src.services.auth_service import login_user, verify_otp_and_get_token
-from src.services.user_service import create_user
+from src.services.user_service import create_user, get_user_by_email
 
 auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -28,7 +29,7 @@ Create a new user account.
 - **full_name**: Full name (1–100 characters)
 - **nit**: NIT (1–50 characters)
 - **address**: Address (1–255 characters)
-- **phone**: Exactly 10 digits
+- **phone**: Phone number (9–15 digits)
 - **role**: Either `institutional` or `commercial`
 - **password**: Between 6–12 characters
 
@@ -36,12 +37,12 @@ Create a new user account.
 Returns the created user's `id` and `created_at` timestamp.
 """,
 )
-def register_user(
+async def register_user(
     *,
-    user_in: UserCreateRequest,
+    user_create_request: UserCreateRequest,
     db: Session = Depends(get_db),
 ) -> UserCreateResponse:
-    return create_user(db=db, user_create_request=user_in)
+    return create_user(db=db, user_create_request=user_create_request)
 
 
 @auth_router.post(
@@ -62,7 +63,7 @@ If the credentials are valid, an OTP is generated and sent via email.
 - **otp_expiration_minutes**: Time window before the OTP expires.
 """,
 )
-def login(
+async def login(
     *, login_request: LoginRequest, db: Session = Depends(get_db)
 ) -> LoginResponse:
     otp_expiration_minutes = login_user(db=db, login_request=login_request)
@@ -92,17 +93,22 @@ If valid, a JWT access token is returned.
 - **token_type**: Token type, typically 'bearer'
 """,
 )
-def verify_otp(
+async def verify_otp(
     *,
     otp_verify_request: OTPVerifyRequest,
     db: Session = Depends(get_db),
 ) -> OTPVerifyResponse:
+    user = get_user_by_email(db=db, email=otp_verify_request.email)
+    if not user:
+        raise UnauthorizedException("Invalid or expired OTP")
+
     access_token = verify_otp_and_get_token(
-        db=db, otp_verify_request=otp_verify_request
+        db=db, otp_verify_request=otp_verify_request, user=user
     )
 
     return OTPVerifyResponse(
         message="OTP verified successfully",
         access_token=access_token,
         token_type="bearer",
+        user=user,
     )
