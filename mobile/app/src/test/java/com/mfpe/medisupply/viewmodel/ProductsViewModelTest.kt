@@ -2,23 +2,41 @@ package com.mfpe.medisupply.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
+import com.mfpe.medisupply.data.model.Product
+import com.mfpe.medisupply.data.model.ProductListResponse
+import com.mfpe.medisupply.data.repository.ProductRepository
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
+import org.mockito.Mock
+import org.mockito.Mockito.*
+import org.mockito.junit.MockitoJUnitRunner
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-@RunWith(org.junit.runners.JUnit4::class)
+@RunWith(MockitoJUnitRunner::class)
 class ProductsViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    @Mock
+    private lateinit var mockProductRepository: ProductRepository
+
+    @Mock
+    private lateinit var mockCall: Call<ProductListResponse>
+
+    @Mock
+    private lateinit var mockResponse: Response<ProductListResponse>
+
     private lateinit var viewModel: ProductsViewModel
 
     @Before
     fun setup() {
-        viewModel = ProductsViewModel()
+        viewModel = ProductsViewModel(mockProductRepository)
     }
 
     @Test
@@ -134,128 +152,241 @@ class ProductsViewModelTest {
     }
 
     @Test
-    fun `getProducts should execute method and trigger network call`() {
-        // Given & When - This will trigger the actual method execution
-        try {
-            viewModel.getProducts { success, message, response ->
-                // Callback may not execute due to network errors
-            }
+    fun `getProducts should call repository and handle successful response`() {
+        // Given
+        val now = java.util.Date()
+        val mockProduct = Product(
+            id = "p1",
+            name = "Test Product",
+            details = "Test Details",
+            store = "Test Store",
+            lote = "L1",
+            imageUrl = "test-url",
+            dueDate = now,
+            stock = 5,
+            pricePerUnite = 10.0,
+            providerId = 1,
+            providerName = "Test Provider",
+            createdAt = now
+        )
+        val mockProductListResponse = ProductListResponse(products = listOf(mockProduct))
+        
+        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(true)
+        `when`(mockResponse.body()).thenReturn(mockProductListResponse)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: ProductListResponse? = null
 
-            // Wait a bit for the async call to potentially complete
-            Thread.sleep(100)
-        } catch (e: Exception) {
-            // Network errors are expected in unit tests
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ProductListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
+
+        viewModel.getProducts { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
         }
 
-        // Then - The method should have been called
-        assertNotNull("getProducts method should exist",
-            ProductsViewModel::class.java.methods.find { it.name == "getProducts" })
+        // Then
+        verify(mockProductRepository).getProducts()
+        verify(mockCall).enqueue(any())
+        assertTrue("Should return success", successResult)
+        assertEquals("Products obtained.", messageResult)
+        assertEquals(mockProductListResponse, responseResult)
+        
+        // Verify that currentProducts was updated
+        val currentProducts = viewModel.getCurrentProducts()
+        assertEquals(1, currentProducts.size)
+        assertEquals("p1", currentProducts[0].id)
+    }
+
+    @Test
+    fun `getProducts should handle unsuccessful response`() {
+        // Given
+        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(false)
+        `when`(mockResponse.code()).thenReturn(404)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: ProductListResponse? = null
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ProductListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
+
+        viewModel.getProducts { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockProductRepository).getProducts()
+        verify(mockCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Error obtaining products: 404", messageResult)
+        assertNull(responseResult)
+    }
+
+    @Test
+    fun `getProducts should handle null response body`() {
+        // Given
+        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(true)
+        `when`(mockResponse.body()).thenReturn(null)
+        `when`(mockResponse.code()).thenReturn(200)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: ProductListResponse? = null
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ProductListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
+
+        viewModel.getProducts { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockProductRepository).getProducts()
+        verify(mockCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Error obtaining products: 200", messageResult)
+        assertNull(responseResult)
+    }
+
+    @Test
+    fun `getProducts should handle network failure`() {
+        // Given
+        val throwable = RuntimeException("Network error")
+        
+        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: ProductListResponse? = null
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ProductListResponse>>(0)
+            callback.onFailure(mockCall, throwable)
+            null
+        }.`when`(mockCall).enqueue(any())
+
+        viewModel.getProducts { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockProductRepository).getProducts()
+        verify(mockCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Connection error: Network error", messageResult)
+        assertNull(responseResult)
     }
 
     @Test
     fun `getProducts should handle multiple calls`() {
-        // Given & When - Call the same method multiple times
-        try {
-            viewModel.getProducts { _, _, _ -> }
-            viewModel.getProducts { _, _, _ -> }
-            viewModel.getProducts { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-
-        // Then
-        assertNotNull("getProducts method should exist",
-            ProductsViewModel::class.java.methods.find { it.name == "getProducts" })
-    }
-
-    @Test
-    fun `getProducts should update currentProducts on success`() {
         // Given
-        val initialProducts = viewModel.getCurrentProducts()
+        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(false)
+        `when`(mockResponse.code()).thenReturn(500)
+        
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ProductListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
 
-        // When
-        try {
-            viewModel.getProducts { success, message, response ->
-                // Callback would update currentProducts on success
-            }
-            Thread.sleep(100)
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-
-        // Then - Method exists and can be called
-        assertNotNull("getProducts method should exist",
-            ProductsViewModel::class.java.methods.find { it.name == "getProducts" })
-        assertNotNull("initialProducts should not be null", initialProducts)
-    }
-
-    @Test
-    fun `getCurrentProducts should return current product list`() {
-        // Given & When
-        val products1 = viewModel.getCurrentProducts()
-
-        try {
-            viewModel.getProducts { _, _, _ -> }
-            Thread.sleep(100)
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-
-        val products2 = viewModel.getCurrentProducts()
+        // When - Call the same method multiple times
+        viewModel.getProducts { _, _, _ -> }
+        viewModel.getProducts { _, _, _ -> }
+        viewModel.getProducts { _, _, _ -> }
 
         // Then
-        assertNotNull("products1 should not be null", products1)
-        assertNotNull("products2 should not be null", products2)
+        verify(mockProductRepository, times(3)).getProducts()
+        verify(mockCall, times(3)).enqueue(any())
     }
 
     @Test
     fun `ProductsViewModel should handle multiple instances`() {
         // Given
-        val viewModel1 = ProductsViewModel()
-        val viewModel2 = ProductsViewModel()
+        val viewModel1 = ProductsViewModel(mockProductRepository)
+        val viewModel2 = ProductsViewModel(mockProductRepository)
+        
+        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(false)
+        `when`(mockResponse.code()).thenReturn(500)
+        
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ProductListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
 
         // When
-        try {
-            viewModel1.getProducts { _, _, _ -> }
-            viewModel2.getProducts { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
+        viewModel1.getProducts { _, _, _ -> }
+        viewModel2.getProducts { _, _, _ -> }
 
         // Then
         assertNotNull("First viewModel should exist", viewModel1)
         assertNotNull("Second viewModel should exist", viewModel2)
         assertNotEquals("ViewModels should be different instances", viewModel1, viewModel2)
+        verify(mockProductRepository, times(2)).getProducts()
     }
 
     @Test
     fun `getProducts should handle concurrent calls`() {
-        // Given & When - Execute methods concurrently
-        try {
-            val thread1 = Thread {
-                viewModel.getProducts { _, _, _ -> }
-            }
-            val thread2 = Thread {
-                viewModel.getProducts { _, _, _ -> }
-            }
-            val thread3 = Thread {
-                viewModel.getProducts { _, _, _ -> }
-            }
+        // Given
+        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(false)
+        `when`(mockResponse.code()).thenReturn(500)
+        
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ProductListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
 
-            thread1.start()
-            thread2.start()
-            thread3.start()
-
-            thread1.join()
-            thread2.join()
-            thread3.join()
-        } catch (e: Exception) {
-            // Network errors are expected
+        // When - Execute methods concurrently
+        val thread1 = Thread {
+            viewModel.getProducts { _, _, _ -> }
+        }
+        val thread2 = Thread {
+            viewModel.getProducts { _, _, _ -> }
+        }
+        val thread3 = Thread {
+            viewModel.getProducts { _, _, _ -> }
         }
 
+        thread1.start()
+        thread2.start()
+        thread3.start()
+
+        thread1.join()
+        thread2.join()
+        thread3.join()
+
         // Then - Method should exist and be callable
-        assertNotNull("getProducts method should exist",
-            ProductsViewModel::class.java.methods.find { it.name == "getProducts" })
+        verify(mockProductRepository, times(3)).getProducts()
+        verify(mockCall, times(3)).enqueue(any())
     }
 
     @Test
@@ -272,74 +403,43 @@ class ProductsViewModelTest {
     }
 
     @Test
-    fun `getProducts should handle success callback`() {
+    fun `getCurrentProducts should return updated products after successful getProducts call`() {
         // Given
-        var callbackInvoked = false
+        val now = java.util.Date()
+        val mockProduct = Product(
+            id = "p1",
+            name = "Test Product",
+            details = "Test Details",
+            store = "Test Store",
+            lote = "L1",
+            imageUrl = "test-url",
+            dueDate = now,
+            stock = 5,
+            pricePerUnite = 10.0,
+            providerId = 1,
+            providerName = "Test Provider",
+            createdAt = now
+        )
+        val mockProductListResponse = ProductListResponse(products = listOf(mockProduct))
+        
+        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(true)
+        `when`(mockResponse.body()).thenReturn(mockProductListResponse)
+        
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ProductListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
 
         // When
-        try {
-            viewModel.getProducts { success, message, response ->
-                callbackInvoked = true
-            }
-            Thread.sleep(100)
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-
-        // Then - Method should have been called
-        assertNotNull("getProducts method should exist",
-            ProductsViewModel::class.java.methods.find { it.name == "getProducts" })
-    }
-
-    @Test
-    fun `getProducts should handle failure callback`() {
-        // Given & When
-        try {
-            viewModel.getProducts { success, message, response ->
-                // Either success or failure callback would be invoked
-                assertNotNull("message should not be null", message)
-            }
-            Thread.sleep(100)
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
+        val initialProducts = viewModel.getCurrentProducts()
+        viewModel.getProducts { _, _, _ -> }
+        val updatedProducts = viewModel.getCurrentProducts()
 
         // Then
-        assertNotNull("getProducts method should exist",
-            ProductsViewModel::class.java.methods.find { it.name == "getProducts" })
-    }
-
-    @Test
-    fun `getCurrentProducts should return empty list before any network call`() {
-        // Given
-        val freshViewModel = ProductsViewModel()
-
-        // When
-        val products = freshViewModel.getCurrentProducts()
-
-        // Then
-        assertNotNull("products should not be null", products)
-        assertTrue("products should be empty initially", products.isEmpty())
-    }
-
-    @Test
-    fun `ProductsViewModel should maintain state across multiple getCurrentProducts calls`() {
-        // Given & When
-        val products1 = viewModel.getCurrentProducts()
-
-        try {
-            viewModel.getProducts { _, _, _ -> }
-            Thread.sleep(50)
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-
-        val products2 = viewModel.getCurrentProducts()
-        val products3 = viewModel.getCurrentProducts()
-
-        // Then
-        assertNotNull("products1 should not be null", products1)
-        assertNotNull("products2 should not be null", products2)
-        assertNotNull("products3 should not be null", products3)
+        assertTrue("Initial products should be empty", initialProducts.isEmpty())
+        assertEquals("Updated products should have 1 item", 1, updatedProducts.size)
+        assertEquals("Product ID should match", "p1", updatedProducts[0].id)
     }
 }

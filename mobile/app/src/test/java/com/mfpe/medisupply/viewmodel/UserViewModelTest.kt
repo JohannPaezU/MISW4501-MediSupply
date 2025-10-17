@@ -1,23 +1,60 @@
 package com.mfpe.medisupply.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import com.mfpe.medisupply.data.model.LoginUserRequest
+import com.mfpe.medisupply.data.model.LoginUserResponse
 import com.mfpe.medisupply.data.model.RegisterUserRequest
+import com.mfpe.medisupply.data.model.RegisterUserResponse
 import com.mfpe.medisupply.data.model.ValidateOTPRequest
+import com.mfpe.medisupply.data.model.ValidateOTPResponse
+import com.mfpe.medisupply.data.model.OTPUser
+import com.mfpe.medisupply.data.repository.UserRepository
 import com.mfpe.medisupply.utils.TestUtils
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Assert.*
+import org.mockito.Mock
+import org.mockito.Mockito.*
+import org.mockito.junit.MockitoJUnitRunner
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-@RunWith(org.junit.runners.JUnit4::class)
+@RunWith(MockitoJUnitRunner::class)
 class UserViewModelTest {
+
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    @Mock
+    private lateinit var mockUserRepository: UserRepository
+
+    @Mock
+    private lateinit var mockRegisterCall: Call<RegisterUserResponse>
+
+    @Mock
+    private lateinit var mockLoginCall: Call<LoginUserResponse>
+
+    @Mock
+    private lateinit var mockValidateOTPCall: Call<ValidateOTPResponse>
+
+    @Mock
+    private lateinit var mockRegisterResponse: Response<RegisterUserResponse>
+
+    @Mock
+    private lateinit var mockLoginResponse: Response<LoginUserResponse>
+
+    @Mock
+    private lateinit var mockValidateOTPResponse: Response<ValidateOTPResponse>
 
     private lateinit var userViewModel: UserViewModel
 
     @Before
     fun setUp() {
-        userViewModel = UserViewModel()
+        userViewModel = UserViewModel(mockUserRepository)
     }
 
     @Test
@@ -91,8 +128,10 @@ class UserViewModelTest {
             kotlin.Function3::class.java))
     }
 
+    // ========== REGISTER USER TESTS ==========
+
     @Test
-    fun `registerUser should execute method and trigger network call`() {
+    fun `registerUser should call repository and handle successful response`() {
         // Given
         val registerRequest = RegisterUserRequest(
             fullName = TestUtils.TestData.VALID_FULL_NAME,
@@ -100,64 +139,41 @@ class UserViewModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
+        val mockRegisterResponseData = RegisterUserResponse(id = "123", createdAt = java.util.Date())
         
-        var callbackExecuted = false
+        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+        `when`(mockRegisterResponse.isSuccessful).thenReturn(true)
+        `when`(mockRegisterResponse.body()).thenReturn(mockRegisterResponseData)
         
-        // When - This will trigger the actual method execution
-        try {
-            userViewModel.registerUser(registerRequest) { success, message ->
-                callbackExecuted = true
-            }
-            
-            // Wait a bit for the async call to potentially complete
-            Thread.sleep(100)
-        } catch (e: Exception) {
-            // Network errors are expected in unit tests
+        var successResult = false
+        var messageResult = ""
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
+            callback.onResponse(mockRegisterCall, mockRegisterResponse)
+            null
+        }.`when`(mockRegisterCall).enqueue(any())
+
+        userViewModel.registerUser(registerRequest) { success, message ->
+            successResult = success
+            messageResult = message
         }
-        
-        // Then - The method should have been called (even if callback doesn't execute due to network)
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
+
+        // Then
+        verify(mockUserRepository).registerUser(registerRequest)
+        verify(mockRegisterCall).enqueue(any())
+        assertTrue("Should return success", successResult)
+        assertEquals("123", messageResult)
     }
 
     @Test
-    fun `loginUser should execute method and trigger network call`() {
+    fun `registerUser should handle unsuccessful response`() {
         // Given
-        val loginRequest = LoginUserRequest(
-            email = TestUtils.TestData.VALID_EMAIL,
-            password = TestUtils.TestData.VALID_PASSWORD
-        )
-        
-        var callbackExecuted = false
-        
-        // When - This will trigger the actual method execution
-        try {
-            userViewModel.loginUser(loginRequest) { success, message ->
-                callbackExecuted = true
-            }
-            
-            // Wait a bit for the async call to potentially complete
-            Thread.sleep(100)
-        } catch (e: Exception) {
-            // Network errors are expected in unit tests
-        }
-        
-        // Then - The method should have been called
-        assertNotNull("loginUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("loginUser", 
-                LoginUserRequest::class.java, 
-                kotlin.Function2::class.java))
-    }
-
-    @Test
-    fun `validateOTP should execute method and trigger network call`() {
-        // Given
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
         
         var callbackExecuted = false
         
@@ -183,74 +199,124 @@ class UserViewModelTest {
     @Test
     fun `registerUser should handle different request types`() {
         // Given
-        val validRequest = RegisterUserRequest(
+        val registerRequest = RegisterUserRequest(
             fullName = TestUtils.TestData.VALID_FULL_NAME,
             email = TestUtils.TestData.VALID_EMAIL,
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
-        val emptyRequest = RegisterUserRequest(
-            fullName = "",
-            email = "",
-            role = "",
-            password = "",
-            phone = "",
-            nit = "",
-            address = ""
-        )
+        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+        `when`(mockRegisterResponse.isSuccessful).thenReturn(false)
+        `when`(mockRegisterResponse.code()).thenReturn(400)
         
-        // When & Then - Both should be able to call the method
-        try {
-            userViewModel.registerUser(validRequest) { _, _ -> }
-            userViewModel.registerUser(emptyRequest) { _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
+        var successResult = false
+        var messageResult = ""
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
+            callback.onResponse(mockRegisterCall, mockRegisterResponse)
+            null
+        }.`when`(mockRegisterCall).enqueue(any())
+
+        userViewModel.registerUser(registerRequest) { success, message ->
+            successResult = success
+            messageResult = message
         }
-        
-        // Verify the method exists and can be called
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
+
+        // Then
+        verify(mockUserRepository).registerUser(registerRequest)
+        verify(mockRegisterCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Error registering user: 400", messageResult)
     }
 
     @Test
-    fun `loginUser should handle different request types`() {
+    fun `registerUser should handle successful response with null body`() {
         // Given
-        val validRequest = LoginUserRequest(
+        val registerRequest = RegisterUserRequest(
+            fullName = TestUtils.TestData.VALID_FULL_NAME,
             email = TestUtils.TestData.VALID_EMAIL,
-            password = TestUtils.TestData.VALID_PASSWORD
+            role = "institutional",
+            password = TestUtils.TestData.VALID_PASSWORD,
+            phone = TestUtils.TestData.VALID_PHONE,
+            doi = TestUtils.TestData.VALID_NIT,
+            address = TestUtils.TestData.VALID_ADDRESS
         )
         
-        val emptyRequest = LoginUserRequest(
-            email = "",
-            password = ""
-        )
+        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+        `when`(mockRegisterResponse.isSuccessful).thenReturn(true)
+        `when`(mockRegisterResponse.body()).thenReturn(null)
         
-        // When & Then - Both should be able to call the method
-        try {
-            userViewModel.loginUser(validRequest) { _, _ -> }
-            userViewModel.loginUser(emptyRequest) { _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
+        var successResult = false
+        var messageResult = ""
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
+            callback.onResponse(mockRegisterCall, mockRegisterResponse)
+            null
+        }.`when`(mockRegisterCall).enqueue(any())
+
+        userViewModel.registerUser(registerRequest) { success, message ->
+            successResult = success
+            messageResult = message
         }
+
+        // Then
+        verify(mockUserRepository).registerUser(registerRequest)
+        verify(mockRegisterCall).enqueue(any())
+        assertFalse("Should return failure when body is null", successResult)
+        assertTrue("Should contain error message", messageResult.contains("Error registering user"))
+    }
+
+    @Test
+    fun `registerUser should handle network failure`() {
+        // Given
+        val registerRequest = RegisterUserRequest(
+            fullName = TestUtils.TestData.VALID_FULL_NAME,
+            email = TestUtils.TestData.VALID_EMAIL,
+            role = "institutional",
+            password = TestUtils.TestData.VALID_PASSWORD,
+            phone = TestUtils.TestData.VALID_PHONE,
+            doi = TestUtils.TestData.VALID_NIT,
+            address = TestUtils.TestData.VALID_ADDRESS
+        )
+        val throwable = RuntimeException("Network error")
         
-        // Verify the method exists and can be called
-        assertNotNull("loginUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("loginUser", 
-                LoginUserRequest::class.java, 
-                kotlin.Function2::class.java))
+        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+        
+        var successResult = false
+        var messageResult = ""
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
+            callback.onFailure(mockRegisterCall, throwable)
+            null
+        }.`when`(mockRegisterCall).enqueue(any())
+
+        userViewModel.registerUser(registerRequest) { success, message ->
+            successResult = success
+            messageResult = message
+        }
+
+        // Then
+        verify(mockUserRepository).registerUser(registerRequest)
+        verify(mockRegisterCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Connection error: Network error", messageResult)
     }
 
     @Test
     fun `validateOTP should handle different request types`() {
         // Given
-        val validRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
-        val emptyRequest = ValidateOTPRequest(otp = "")
+        val validRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
+        val emptyRequest = ValidateOTPRequest(otpCode = "", email = TestUtils.TestData.VALID_EMAIL)
         
         // When & Then - Both should be able to call the method
         try {
@@ -267,6 +333,291 @@ class UserViewModelTest {
                 kotlin.Function3::class.java))
     }
 
+
+    // ========== LOGIN USER TESTS ==========
+
+    @Test
+    fun `loginUser should call repository and handle successful response`() {
+        // Given
+        val loginRequest = LoginUserRequest(
+            email = TestUtils.TestData.VALID_EMAIL,
+            password = TestUtils.TestData.VALID_PASSWORD
+        )
+        val mockLoginResponseData = LoginUserResponse(message = "Login successful")
+        
+        `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
+        `when`(mockLoginResponse.isSuccessful).thenReturn(true)
+        `when`(mockLoginResponse.body()).thenReturn(mockLoginResponseData)
+        
+        var successResult = false
+        var messageResult = ""
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<LoginUserResponse>>(0)
+            callback.onResponse(mockLoginCall, mockLoginResponse)
+            null
+        }.`when`(mockLoginCall).enqueue(any())
+
+        userViewModel.loginUser(loginRequest) { success, message ->
+            successResult = success
+            messageResult = message
+        }
+
+        // Then
+        verify(mockUserRepository).loginUser(loginRequest)
+        verify(mockLoginCall).enqueue(any())
+        assertTrue("Should return success", successResult)
+        assertEquals("Login successful", messageResult)
+    }
+
+    @Test
+    fun `loginUser should handle unsuccessful response`() {
+        // Given
+        val loginRequest = LoginUserRequest(
+            email = TestUtils.TestData.VALID_EMAIL,
+            password = TestUtils.TestData.VALID_PASSWORD
+        )
+        
+        `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
+        `when`(mockLoginResponse.isSuccessful).thenReturn(false)
+        `when`(mockLoginResponse.code()).thenReturn(401)
+        
+        var successResult = false
+        var messageResult = ""
+        
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<LoginUserResponse>>(0)
+            callback.onResponse(mockLoginCall, mockLoginResponse)
+            null
+        }.`when`(mockLoginCall).enqueue(any())
+
+        userViewModel.loginUser(loginRequest) { success, message ->
+            successResult = success
+            messageResult = message
+        }
+
+        // Then
+        verify(mockUserRepository).loginUser(loginRequest)
+        verify(mockLoginCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Error logging in: 401", messageResult)
+    }
+
+    @Test
+    fun `loginUser should handle network failure`() {
+        // Given
+        val loginRequest = LoginUserRequest(
+            email = TestUtils.TestData.VALID_EMAIL,
+            password = TestUtils.TestData.VALID_PASSWORD
+        )
+        val throwable = RuntimeException("Network error")
+        
+        `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
+        
+        var successResult = false
+        var messageResult = ""
+        
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<LoginUserResponse>>(0)
+            callback.onFailure(mockLoginCall, throwable)
+            null
+        }.`when`(mockLoginCall).enqueue(any())
+
+        userViewModel.loginUser(loginRequest) { success, message ->
+            successResult = success
+            messageResult = message
+        }
+
+        // Then
+        verify(mockUserRepository).loginUser(loginRequest)
+        verify(mockLoginCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Connection error: Network error", messageResult)
+    }
+
+    @Test
+    fun `loginUser should handle successful response with null body`() {
+        // Given
+        val loginRequest = LoginUserRequest(
+            email = TestUtils.TestData.VALID_EMAIL,
+            password = TestUtils.TestData.VALID_PASSWORD
+        )
+        
+        `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
+        `when`(mockLoginResponse.isSuccessful).thenReturn(true)
+        `when`(mockLoginResponse.body()).thenReturn(null)
+        
+        var successResult = false
+        var messageResult = ""
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<LoginUserResponse>>(0)
+            callback.onResponse(mockLoginCall, mockLoginResponse)
+            null
+        }.`when`(mockLoginCall).enqueue(any())
+
+        userViewModel.loginUser(loginRequest) { success, message ->
+            successResult = success
+            messageResult = message
+        }
+
+        // Then
+        verify(mockUserRepository).loginUser(loginRequest)
+        verify(mockLoginCall).enqueue(any())
+        assertFalse("Should return failure when body is null", successResult)
+        assertTrue("Should contain error message", messageResult.contains("Error logging in"))
+    }
+
+    // ========== VALIDATE OTP TESTS ==========
+
+    @Test
+    fun `validateOTP should call repository and handle successful response`() {
+        // Given
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
+        val mockValidateOTPResponseData = ValidateOTPResponse(
+            accessToken = "test_token",
+            user = OTPUser(
+                id = "123",
+                fullName = TestUtils.TestData.VALID_FULL_NAME,
+                email = TestUtils.TestData.VALID_EMAIL,
+                role = "institutional"
+            )
+        )
+        
+        `when`(mockUserRepository.validateOTP(otpRequest)).thenReturn(mockValidateOTPCall)
+        `when`(mockValidateOTPResponse.isSuccessful).thenReturn(true)
+        `when`(mockValidateOTPResponse.body()).thenReturn(mockValidateOTPResponseData)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: ValidateOTPResponse? = null
+        
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ValidateOTPResponse>>(0)
+            callback.onResponse(mockValidateOTPCall, mockValidateOTPResponse)
+            null
+        }.`when`(mockValidateOTPCall).enqueue(any())
+
+        userViewModel.validateOTP(otpRequest) { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockUserRepository).validateOTP(otpRequest)
+        verify(mockValidateOTPCall).enqueue(any())
+        assertTrue("Should return success", successResult)
+        assertEquals("OTP validated.", messageResult)
+        assertEquals(mockValidateOTPResponseData, responseResult)
+    }
+
+    @Test
+    fun `validateOTP should handle unsuccessful response`() {
+        // Given
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
+        
+        `when`(mockUserRepository.validateOTP(otpRequest)).thenReturn(mockValidateOTPCall)
+        `when`(mockValidateOTPResponse.isSuccessful).thenReturn(false)
+        `when`(mockValidateOTPResponse.code()).thenReturn(400)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: ValidateOTPResponse? = null
+        
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ValidateOTPResponse>>(0)
+            callback.onResponse(mockValidateOTPCall, mockValidateOTPResponse)
+            null
+        }.`when`(mockValidateOTPCall).enqueue(any())
+
+        userViewModel.validateOTP(otpRequest) { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockUserRepository).validateOTP(otpRequest)
+        verify(mockValidateOTPCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Error validating OTP: 400", messageResult)
+        assertNull(responseResult)
+    }
+
+    @Test
+    fun `validateOTP should handle successful response with null body`() {
+        // Given
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
+        
+        `when`(mockUserRepository.validateOTP(otpRequest)).thenReturn(mockValidateOTPCall)
+        `when`(mockValidateOTPResponse.isSuccessful).thenReturn(true)
+        `when`(mockValidateOTPResponse.body()).thenReturn(null)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: ValidateOTPResponse? = null
+        
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ValidateOTPResponse>>(0)
+            callback.onResponse(mockValidateOTPCall, mockValidateOTPResponse)
+            null
+        }.`when`(mockValidateOTPCall).enqueue(any())
+
+        userViewModel.validateOTP(otpRequest) { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockUserRepository).validateOTP(otpRequest)
+        verify(mockValidateOTPCall).enqueue(any())
+        assertFalse("Should return failure when body is null", successResult)
+        assertTrue("Should contain error message", messageResult.contains("Error validating OTP"))
+        assertNull(responseResult)
+    }
+
+    @Test
+    fun `validateOTP should handle network failure`() {
+        // Given
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
+        val throwable = RuntimeException("Network error")
+        
+        `when`(mockUserRepository.validateOTP(otpRequest)).thenReturn(mockValidateOTPCall)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: ValidateOTPResponse? = null
+        
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<ValidateOTPResponse>>(0)
+            callback.onFailure(mockValidateOTPCall, throwable)
+            null
+        }.`when`(mockValidateOTPCall).enqueue(any())
+
+        userViewModel.validateOTP(otpRequest) { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockUserRepository).validateOTP(otpRequest)
+        verify(mockValidateOTPCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Connection error: Network error", messageResult)
+        assertNull(responseResult)
+    }
+
     @Test
     fun `UserViewModel should handle multiple method calls`() {
         // Given
@@ -276,7 +627,7 @@ class UserViewModelTest {
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
@@ -285,162 +636,7 @@ class UserViewModelTest {
             password = TestUtils.TestData.VALID_PASSWORD
         )
         
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
-        
-        // When - Execute all methods
-        try {
-            userViewModel.registerUser(registerRequest) { _, _ -> }
-            userViewModel.loginUser(loginRequest) { _, _ -> }
-            userViewModel.validateOTP(otpRequest) { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-        
-        // Then - All methods should exist and be callable
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
-        
-        assertNotNull("loginUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("loginUser", 
-                LoginUserRequest::class.java, 
-                kotlin.Function2::class.java))
-        
-        assertNotNull("validateOTP method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("validateOTP", 
-                ValidateOTPRequest::class.java, 
-                kotlin.Function3::class.java))
-    }
-
-    @Test
-    fun `UserViewModel should handle special characters in requests`() {
-        // Given
-        val specialRequest = RegisterUserRequest(
-            fullName = "José María",
-            email = "test@example.com",
-            role = "institutional",
-            password = "P@ssw0rd123!",
-            phone = "+57-300-123-4567",
-            nit = "900.123.456-7",
-            address = "Calle 123 #45-67, Bogotá"
-        )
-        
-        // When
-        try {
-            userViewModel.registerUser(specialRequest) { _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-        
-        // Then
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
-    }
-
-    @Test
-    fun `UserViewModel should handle long strings in requests`() {
-        // Given
-        val longString = "a".repeat(1000)
-        val longRequest = RegisterUserRequest(
-            fullName = longString,
-            email = longString,
-            role = longString,
-            password = longString,
-            phone = longString,
-            nit = longString,
-            address = longString
-        )
-        
-        // When
-        try {
-            userViewModel.registerUser(longRequest) { _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-        
-        // Then
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
-    }
-
-    @Test
-    fun `UserViewModel should handle whitespace values in requests`() {
-        // Given
-        val whitespaceRequest = RegisterUserRequest(
-            fullName = "   ",
-            email = "   ",
-            role = "   ",
-            password = "   ",
-            phone = "   ",
-            nit = "   ",
-            address = "   "
-        )
-        
-        // When
-        try {
-            userViewModel.registerUser(whitespaceRequest) { _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-        
-        // Then
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
-    }
-
-    @Test
-    fun `UserViewModel should handle empty values in requests`() {
-        // Given
-        val emptyRequest = RegisterUserRequest(
-            fullName = "",
-            email = "",
-            role = "",
-            password = "",
-            phone = "",
-            nit = "",
-            address = ""
-        )
-        
-        // When
-        try {
-            userViewModel.registerUser(emptyRequest) { _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-        
-        // Then
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
-    }
-
-    @Test
-    fun `UserViewModel should handle concurrent method calls`() {
-        // Given
-        val registerRequest = RegisterUserRequest(
-            fullName = TestUtils.TestData.VALID_FULL_NAME,
-            email = TestUtils.TestData.VALID_EMAIL,
-            role = "institutional",
-            password = TestUtils.TestData.VALID_PASSWORD,
-            phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
-            address = TestUtils.TestData.VALID_ADDRESS
-        )
-        
-        val loginRequest = LoginUserRequest(
-            email = TestUtils.TestData.VALID_EMAIL,
-            password = TestUtils.TestData.VALID_PASSWORD
-        )
-        
-        val otpRequest = ValidateOTPRequest(otp = TestUtils.TestData.VALID_OTP)
+        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
         
         // When - Execute methods concurrently
         try {
@@ -485,58 +681,37 @@ class UserViewModelTest {
     @Test
     fun `UserViewModel should handle multiple instances`() {
         // Given
-        val viewModel1 = UserViewModel()
-        val viewModel2 = UserViewModel()
+        val viewModel1 = UserViewModel(mockUserRepository)
+        val viewModel2 = UserViewModel(mockUserRepository)
         val registerRequest = RegisterUserRequest(
             fullName = TestUtils.TestData.VALID_FULL_NAME,
             email = TestUtils.TestData.VALID_EMAIL,
             role = "institutional",
             password = TestUtils.TestData.VALID_PASSWORD,
             phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
+            doi = TestUtils.TestData.VALID_NIT,
             address = TestUtils.TestData.VALID_ADDRESS
         )
         
+        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+        `when`(mockRegisterResponse.isSuccessful).thenReturn(false)
+        `when`(mockRegisterResponse.code()).thenReturn(500)
+        
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
+            callback.onResponse(mockRegisterCall, mockRegisterResponse)
+            null
+        }.`when`(mockRegisterCall).enqueue(any())
+        
         // When
-        try {
-            viewModel1.registerUser(registerRequest) { _, _ -> }
-            viewModel2.registerUser(registerRequest) { _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
+        viewModel1.registerUser(registerRequest) { _, _ -> }
+        viewModel2.registerUser(registerRequest) { _, _ -> }
         
         // Then
         assertNotNull("First viewModel should exist", viewModel1)
         assertNotNull("Second viewModel should exist", viewModel2)
         assertNotEquals("ViewModels should be different instances", viewModel1, viewModel2)
+        verify(mockUserRepository, times(2)).registerUser(registerRequest)
     }
 
-    @Test
-    fun `UserViewModel should handle repeated calls to same method`() {
-        // Given
-        val registerRequest = RegisterUserRequest(
-            fullName = TestUtils.TestData.VALID_FULL_NAME,
-            email = TestUtils.TestData.VALID_EMAIL,
-            role = "institutional",
-            password = TestUtils.TestData.VALID_PASSWORD,
-            phone = TestUtils.TestData.VALID_PHONE,
-            nit = TestUtils.TestData.VALID_NIT,
-            address = TestUtils.TestData.VALID_ADDRESS
-        )
-        
-        // When - Call the same method multiple times
-        try {
-            userViewModel.registerUser(registerRequest) { _, _ -> }
-            userViewModel.registerUser(registerRequest) { _, _ -> }
-            userViewModel.registerUser(registerRequest) { _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-        
-        // Then
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
-    }
 }

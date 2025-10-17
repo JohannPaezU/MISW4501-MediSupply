@@ -21,10 +21,12 @@ android {
     buildTypes {
         debug {
             testCoverageEnabled true
+            buildConfigField "String", "BASE_API_URL", "\"https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1/\""
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_API_URL", "\"https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1/\""
         }
     }
     compileOptions {
@@ -36,6 +38,13 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
+    }
+    
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -53,6 +62,8 @@ dependencies {
     testImplementation libs.mockito.core
     testImplementation libs.hamcrest
     testImplementation libs.androidx.arch.core.testing
+    testImplementation libs.robolectric
+    testImplementation libs.androidx.fragment.testing
     
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
@@ -99,7 +110,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
         '**/hilt/**',
         '**/databinding/**',
         '**/jacocoDebug/**',
-        '**/ui/**' // UI should be tested using E2E tests
+        '**/ui/**', // UI should be tested using E2E tests
+        // Excluir adapters completos ya que requieren inflación de layouts para pruebas completas
+        '**/adapters/*.class' // Excluir todos los adapters del reporte de cobertura
     ]
 
     def debugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
@@ -111,6 +124,12 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
         'jacoco/testDebugUnitTest.exec',
         'outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec'
     ]))
+    
+    // Configuración específica para excluir adapters del reporte de cobertura
+    doLast {
+        println "Excluyendo adapters del reporte de cobertura ya que requieren inflación de layouts para pruebas completas"
+        println "Adapters excluidos: ProductsAdapter, OrderSummaryAdapter, OrderListAdapter, OrderProductsAdapter"
+    }
 }
 
 task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {

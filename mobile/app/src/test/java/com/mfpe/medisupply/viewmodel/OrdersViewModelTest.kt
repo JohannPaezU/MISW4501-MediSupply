@@ -2,23 +2,40 @@ package com.mfpe.medisupply.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
+import com.mfpe.medisupply.data.model.OrderListResponse
+import com.mfpe.medisupply.data.repository.OrderRepository
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
+import org.mockito.Mock
+import org.mockito.Mockito.*
+import org.mockito.junit.MockitoJUnitRunner
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-@RunWith(org.junit.runners.JUnit4::class)
+@RunWith(MockitoJUnitRunner::class)
 class OrdersViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    @Mock
+    private lateinit var mockOrderRepository: OrderRepository
+
+    @Mock
+    private lateinit var mockCall: Call<OrderListResponse>
+
+    @Mock
+    private lateinit var mockResponse: Response<OrderListResponse>
+
     private lateinit var viewModel: OrdersViewModel
 
     @Before
     fun setup() {
-        viewModel = OrdersViewModel()
+        viewModel = OrdersViewModel(mockOrderRepository)
     }
 
     @Test
@@ -98,10 +115,116 @@ class OrdersViewModelTest {
     }
 
     @Test
-    fun `getOrders should execute method and trigger network call`() {
+    fun `getOrders should call repository and handle successful response`() {
         // Given
-        val clientId = 1
-        val sellerId = 2
+        val clientId = "1"
+        val sellerId = "2"
+        val mockOrderResponse = OrderListResponse(emptyList())
+        
+        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(true)
+        `when`(mockResponse.body()).thenReturn(mockOrderResponse)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: OrderListResponse? = null
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<OrderListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
+
+        viewModel.getOrders(clientId, sellerId) { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockCall).enqueue(any())
+        assertTrue("Should return success", successResult)
+        assertEquals("Orders obtained.", messageResult)
+        assertEquals(mockOrderResponse, responseResult)
+    }
+
+    @Test
+    fun `getOrders should handle unsuccessful response`() {
+        // Given
+        val clientId = "1"
+        val sellerId = "2"
+        
+        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(false)
+        `when`(mockResponse.code()).thenReturn(404)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: OrderListResponse? = null
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<OrderListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
+
+        viewModel.getOrders(clientId, sellerId) { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockCall).enqueue(any())
+        assertFalse("Should return failure", successResult)
+        assertEquals("Error obtaining orders: 404", messageResult)
+        assertNull(responseResult)
+    }
+
+    @Test
+    fun `getOrders should handle successful response with null body`() {
+        // Given
+        val clientId = "1"
+        val sellerId = "2"
+        
+        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockResponse.isSuccessful).thenReturn(true)
+        `when`(mockResponse.body()).thenReturn(null)
+        
+        var successResult = false
+        var messageResult = ""
+        var responseResult: OrderListResponse? = null
+
+        // When
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<Callback<OrderListResponse>>(0)
+            callback.onResponse(mockCall, mockResponse)
+            null
+        }.`when`(mockCall).enqueue(any())
+
+        viewModel.getOrders(clientId, sellerId) { success, message, response ->
+            successResult = success
+            messageResult = message
+            responseResult = response
+        }
+
+        // Then
+        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockCall).enqueue(any())
+        assertFalse("Should return failure when body is null", successResult)
+        assertTrue("Should contain error message", messageResult.contains("Error obtaining orders"))
+        assertNull(responseResult)
+    }
+
+    @Test
+    fun `getOrders should handle null response body`() {
+        // Given
+        val clientId = "1"
+        val sellerId = "2"
         var callbackExecuted = false
 
         // When - This will trigger the actual method execution
@@ -125,98 +248,94 @@ class OrdersViewModelTest {
     fun `getOrders should handle different client and seller ids`() {
         // Given
         val testCases = listOf(
-            Pair(1, 1),
-            Pair(0, 0),
-            Pair(999, 999),
-            Pair(-1, -1)
+            Pair("1", "1"),
+            Pair("0", "0"),
+            Pair("999", "999"),
+            Pair("-1", "-1")
         )
 
         // When & Then - All should be able to call the method
         testCases.forEach { (clientId, sellerId) ->
-            try {
-                viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-            } catch (e: Exception) {
-                // Network errors are expected
-            }
-        }
+            `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+            `when`(mockResponse.isSuccessful).thenReturn(false)
+            `when`(mockResponse.code()).thenReturn(500)
+            
+            doAnswer { invocation ->
+                val callback = invocation.getArgument<Callback<OrderListResponse>>(0)
+                callback.onResponse(mockCall, mockResponse)
+                null
+            }.`when`(mockCall).enqueue(any())
 
-        // Verify the method exists and can be called
-        assertNotNull("getOrders method should exist",
-            OrdersViewModel::class.java.methods.find { it.name == "getOrders" })
+            viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+            
+            verify(mockOrderRepository).getOrders(clientId, sellerId)
+        }
     }
 
     @Test
     fun `getOrders should handle multiple calls`() {
         // Given
-        val clientId = 1
-        val sellerId = 2
+        val clientId = "1"
+        val sellerId = "2"
+        
+        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
 
         // When - Call the same method multiple times
-        try {
-            viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-            viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-            viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
+        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
 
         // Then
-        assertNotNull("getOrders method should exist",
-            OrdersViewModel::class.java.methods.find { it.name == "getOrders" })
+        verify(mockOrderRepository, times(3)).getOrders(clientId, sellerId)
+        verify(mockCall, times(3)).enqueue(any())
     }
 
     @Test
     fun `getOrders should handle zero values`() {
         // Given
-        val clientId = 0
-        val sellerId = 0
+        val clientId = "0"
+        val sellerId = "0"
+        
+        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
 
         // When
-        try {
-            viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
+        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
 
         // Then
-        assertNotNull("getOrders method should exist",
-            OrdersViewModel::class.java.methods.find { it.name == "getOrders" })
+        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockCall).enqueue(any())
     }
 
     @Test
     fun `getOrders should handle negative values`() {
         // Given
-        val clientId = -1
-        val sellerId = -1
+        val clientId = "-1"
+        val sellerId = "-1"
+        
+        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
 
         // When
-        try {
-            viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
+        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
 
         // Then
-        assertNotNull("getOrders method should exist",
-            OrdersViewModel::class.java.methods.find { it.name == "getOrders" })
+        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockCall).enqueue(any())
     }
 
     @Test
     fun `getOrders should handle large values`() {
         // Given
-        val clientId = Int.MAX_VALUE
-        val sellerId = Int.MAX_VALUE
+        val clientId = Int.MAX_VALUE.toString()
+        val sellerId = Int.MAX_VALUE.toString()
+        
+        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
 
         // When
-        try {
-            viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
+        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
 
         // Then
-        assertNotNull("getOrders method should exist",
-            OrdersViewModel::class.java.methods.find { it.name == "getOrders" })
+        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockCall).enqueue(any())
     }
 
     @Test
@@ -224,16 +343,12 @@ class OrdersViewModelTest {
         // Given
         val viewModel1 = OrdersViewModel()
         val viewModel2 = OrdersViewModel()
-        val clientId = 1
-        val sellerId = 2
+        val clientId = "1"
+        val sellerId = "2"
 
         // When
-        try {
-            viewModel1.getOrders(clientId, sellerId) { _, _, _ -> }
-            viewModel2.getOrders(clientId, sellerId) { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
+        viewModel1.getOrders(clientId, sellerId) { _, _, _ -> }
+        viewModel2.getOrders(clientId, sellerId) { _, _, _ -> }
 
         // Then
         assertNotNull("First viewModel should exist", viewModel1)
@@ -244,8 +359,8 @@ class OrdersViewModelTest {
     @Test
     fun `getOrders should handle concurrent calls`() {
         // Given
-        val clientId = 1
-        val sellerId = 2
+        val clientId = "1"
+        val sellerId = "2"
 
         // When - Execute methods concurrently
         try {
@@ -279,25 +394,29 @@ class OrdersViewModelTest {
     fun `getOrders should handle different combinations of client and seller ids`() {
         // Given
         val testCases = listOf(
-            Pair(1, 0),
-            Pair(0, 1),
-            Pair(100, 200),
-            Pair(999, 1)
+            Pair("1", "0"),
+            Pair("0", "1"),
+            Pair("100", "200"),
+            Pair("999", "1")
         )
 
         // When
         testCases.forEach { (clientId, sellerId) ->
-            try {
-                viewModel.getOrders(clientId, sellerId) { success, message, response ->
-                    // Callback may not execute due to network errors
-                }
-            } catch (e: Exception) {
-                // Network errors are expected
-            }
-        }
+            `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+            `when`(mockResponse.isSuccessful).thenReturn(false)
+            `when`(mockResponse.code()).thenReturn(500)
+            
+            doAnswer { invocation ->
+                val callback = invocation.getArgument<Callback<OrderListResponse>>(0)
+                callback.onResponse(mockCall, mockResponse)
+                null
+            }.`when`(mockCall).enqueue(any())
 
-        // Then
-        assertNotNull("getOrders method should exist",
-            OrdersViewModel::class.java.methods.find { it.name == "getOrders" })
+            viewModel.getOrders(clientId, sellerId) { success, message, response ->
+                // Callback executed
+            }
+            
+            verify(mockOrderRepository).getOrders(clientId, sellerId)
+        }
     }
 }
