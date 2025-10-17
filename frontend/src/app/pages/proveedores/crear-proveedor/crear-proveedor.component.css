@@ -6,6 +6,13 @@
   overflow-y: auto;
 }
 
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
 .proveedor-form {
   display: flex;
   flex-direction: column;
@@ -35,22 +42,6 @@
   color: #666;
 }
 
-.input-with-icon {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  color: #666;
-  font-size: 1.25rem;
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
-}
-
 .form-input {
   padding: 0.875rem 1rem;
   border: 1px solid #d0d0d0;
@@ -60,10 +51,6 @@
   transition: all 0.2s ease;
   background-color: #fff;
   width: 100%;
-}
-
-.form-input.with-icon {
-  padding-left: 3rem;
 }
 
 .form-input::placeholder {
@@ -84,35 +71,10 @@
   border-color: #f44336;
 }
 
-.form-textarea {
-  padding: 0.875rem 1rem;
-  border: 1px solid #d0d0d0;
-  border-radius: 4px;
-  font-size: 1rem;
-  color: #000;
-  transition: all 0.2s ease;
-  background-color: #fff;
-  resize: vertical;
-  min-height: 150px;
-  width: 100%;
-}
-
-.form-textarea::placeholder {
-  color: #999;
-}
-
-.form-textarea:focus {
-  outline: none;
-  border-color: #e91e63;
-  box-shadow: 0 0 0 1px #e91e63;
-}
-
-.form-textarea:hover {
-  border-color: #b0b0b0;
-}
-
-.form-textarea.ng-invalid.ng-touched {
-  border-color: #f44336;
+.validation-error {
+  color: #d32f2f;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .form-actions {
@@ -123,40 +85,122 @@
   padding-top: 2rem;
 }
 
-@media (max-width: 968px) {
-  .crear-proveedor-container {
-    padding: 1.5rem;
-  }
+.btn-primary {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
 
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
+.btn-primary:hover:not(:disabled) {
+  background-color: #c2185b;
+}
 
-  .form-field-full {
-    grid-column: 1;
+.btn-primary:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+
+/* Estilos para las alertas en línea */
+.alert {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+  width: 24px;
+  height: 24px;
+}
+
+.alert-success {
+  background-color: #e8f5e9; /* Verde muy claro */
+  color: #2e7d32; /* Verde oscuro */
+  border-color: #a5d6a7; /* Borde verde claro */
+}
+
+.alert-error {
+  background-color: #ffebee; /* Rojo muy claro */
+  color: #c62828; /* Rojo oscuro */
+  border-color: #ef9a9a; /* Borde rojo claro */
+}
+
+/* Estilos para el Toast Message */
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slide-in 0.3s ease-out forwards, slide-out 0.3s ease-in 5s forwards;
+}
+
+.toast-icon {
+  margin-right: 0.75rem;
+  font-size: 1.5rem;
+  width: 24px;
+  height: 24px;
+}
+
+.toast-success {
+  background-color: #43a047; /* Verde éxito */
+}
+
+.toast-error {
+  background-color: #e53935; /* Rojo error */
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(calc(100% + 2rem));
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(calc(100% + 2rem));
+    opacity: 0;
+  }
+}
+
+
 @media (max-width: 768px) {
-  .crear-proveedor-container {
-    padding: 1rem;
+  .form-row {
+    grid-template-columns: 1fr;
   }
-
-  .page-title {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .proveedor-form {
-    gap: 1.25rem;
-  }
-
-  .form-actions {
-    padding-top: 1.5rem;
-  }
-
-  .btn-primary {
-    width: 100%;
+  .toast-container {
+    right: 1rem;
+    left: 1rem;
+    bottom: 1rem;
+    display: flex;
+    justify-content: center;
   }
 }

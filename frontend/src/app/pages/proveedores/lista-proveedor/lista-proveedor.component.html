@@ -2,7 +2,7 @@
   <div class="proveedores-header">
     <h1 class="page-title">Proveedores</h1>
     <div class="proveedores-actions">
-      <button class="btn-secondary" (click)="exportarCSV()">
+      <button class="btn-secondary" (click)="exportarCSV()" [disabled]="proveedores.length === 0">
         EXPORTAR A CSV
       </button>
       <button class="btn-primary" (click)="crearProveedor()">
@@ -11,32 +11,56 @@
     </div>
   </div>
 
-  <div class="table-container">
+  <!-- Estado de carga mejorado -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando proveedores...</p>
+  </div>
+
+  <!-- Estado de error mejorado -->
+  <div *ngIf="errorMessage && !isLoading" class="alert alert-error">
+    <mat-icon class="alert-icon">error</mat-icon>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-primary btn-retry" (click)="cargarProveedores()">Reintentar</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="table-container">
     <table class="proveedores-table">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Nombre</th>
           <th>Número de RIT</th>
           <th>Ciudad</th>
+          <th>País</th>
           <th>Correo electrónico</th>
-          <th>Télefono</th>
-          <th>Contacto</th>
+          <th>Teléfono</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let proveedor of proveedores">
-          <td>{{ proveedor.nombre }}</td>
-          <td>{{ proveedor.numeroRIT }}</td>
-          <td>{{ proveedor.ciudad }}</td>
-          <td>{{ proveedor.correo }}</td>
-          <td>{{ proveedor.telefono }}</td>
-          <td>{{ proveedor.contacto }}</td>
+        <tr *ngFor="let proveedor of paginatedProveedores">
+          <td class="id-cell" (click)="copyToClipboard(proveedor.id)" title="Copiar ID">
+            <mat-icon>content_copy</mat-icon>
+            <!-- Lógica para mostrar el ID o el mensaje de copiado -->
+            <span *ngIf="copiedId !== proveedor.id" class="id-text">{{ proveedor.id | slice:0:8 }}...</span>
+            <span *ngIf="copiedId === proveedor.id" class="copy-success-text">¡Copiado!</span>
+          </td>
+          <td>{{ proveedor.name }}</td>
+          <td>{{ proveedor.rit }}</td>
+          <td>{{ proveedor.city }}</td>
+          <td>{{ proveedor.country }}</td>
+          <td>{{ proveedor.email }}</td>
+          <td>{{ proveedor.phone }}</td>
+        </tr>
+         <!-- Mensaje para cuando no hay datos -->
+        <tr *ngIf="proveedores.length === 0">
+          <td colspan="7" class="no-data-cell">No se encontraron proveedores.</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <footer class="pagination-controls">
+  <footer *ngIf="!isLoading && !errorMessage && proveedores.length > 0" class="pagination-controls">
     <div class="page-size-selector">
       <label for="pageSize">Filas por página:</label>
       <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
@@ -59,3 +83,4 @@
   </footer>
 
 </div>
+
