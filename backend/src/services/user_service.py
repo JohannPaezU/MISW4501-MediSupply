@@ -19,7 +19,9 @@ def get_user_by_doi(*, db: Session, doi: str) -> User | None:
 
 def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
     if user_create_request.role not in {UserRole.INSTITUTIONAL, UserRole.COMMERCIAL}:
-        raise UnprocessableEntityException("Role must be either 'institutional' or 'commercial'")
+        raise UnprocessableEntityException(
+            "Role must be either 'institutional' or 'commercial'"
+        )
 
     existing_user = get_user_by_email(
         db=db, email=user_create_request.email
@@ -35,7 +37,11 @@ def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
         role=user_create_request.role,
         doi=user_create_request.doi,
         address=user_create_request.address,
-        zone_id=get_random_zone(db=db).id if user_create_request.role == UserRole.COMMERCIAL else None,
+        zone_id=(
+            get_random_zone(db=db).id
+            if user_create_request.role == UserRole.COMMERCIAL
+            else None
+        ),
     )
     db.add(user)
     db.commit()

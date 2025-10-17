@@ -1,16 +1,27 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 from requests import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
-from src.schemas.provider_schema import ProviderCreateResponse, ProviderCreateRequest, GetProvidersResponse, \
-    ProviderBase
-from src.services.provider_service import create_provider, get_providers, get_provider_by_id
+from src.schemas.provider_schema import (
+    GetProvidersResponse,
+    ProviderBase,
+    ProviderCreateRequest,
+    ProviderCreateResponse,
+)
+from src.services.provider_service import (
+    create_provider,
+    get_provider_by_id,
+    get_providers,
+)
 
-provider_router = APIRouter(tags=["Providers"], prefix="/providers",
-                            dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))])
+provider_router = APIRouter(
+    tags=["Providers"],
+    prefix="/providers",
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
+)
 
 
 @provider_router.post(
@@ -31,13 +42,14 @@ Register a new provider in the system.
 - **phone**: Phone number of the provider (9-15 digits)
 
 ### Response
-Returns the details of the newly created provider including `id`, `name`, `rit`, `city`, `country`, `image_url`, `email`, `phone`, and `created_at`.
+Returns the details of the newly created provider including `id`, `name`, `rit`, `city`, `country`, `image_url`,
+`email`, `phone`, and `created_at`.
 """,
 )
 async def register_provider(
-        *,
-        provider_create_request: ProviderCreateRequest,
-        db: Session = Depends(get_db),
+    *,
+    provider_create_request: ProviderCreateRequest,
+    db: Session = Depends(get_db),
 ) -> ProviderCreateResponse:
     return create_provider(db=db, provider_create_request=provider_create_request)
 
@@ -51,12 +63,13 @@ async def register_provider(
 Retrieve a list of all providers in the system.
 
 ### Response
-Returns a list of providers along with the total count. Each provider includes `id`, `name`, `rit`, `city`, `country`, `image_url`, `email`, `phone`, and `created_at`.
+Returns a list of providers along with the total count. Each provider includes `id`, `name`, `rit`, `city`, `country`,
+`image_url`, `email`, `phone`, and `created_at`.
 """,
 )
 async def get_all_providers(
-        *,
-        db: Session = Depends(get_db),
+    *,
+    db: Session = Depends(get_db),
 ) -> GetProvidersResponse:
     providers = get_providers(db=db)
 
@@ -75,13 +88,14 @@ Retrieve a provider's details by their unique ID.
 - **provider_id**: The unique identifier of the provider (36 characters)
 
 ### Response
-Returns the details of the provider including `id`, `name`, `rit`, `city`, `country`, `image_url`, `email`, `phone`, and `created_at`.
+Returns the details of the provider including `id`, `name`, `rit`, `city`, `country`, `image_url`, `email`,
+`phone`, and `created_at`.
 """,
 )
 async def get_provider(
-        *,
-        provider_id: str,
-        db: Session = Depends(get_db),
+    *,
+    provider_id: str,
+    db: Session = Depends(get_db),
 ) -> ProviderBase:
     provider = get_provider_by_id(db=db, provider_id=provider_id)
     if not provider:

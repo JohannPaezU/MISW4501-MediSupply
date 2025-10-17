@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Annotated
-from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
+
+from pydantic import BaseModel, EmailStr, Field, field_validator
+
 from src.errors.errors import BadRequestException
 
 
@@ -25,11 +27,11 @@ class ProviderBase(BaseModel):
 
 
 class ProviderCreateRequest(ProviderBase):
-    ...
+    pass
 
 
 class ProviderCreateResponse(ProviderBase):
-    ...
+    pass
 
 
 class GetProvidersResponse(BaseModel):

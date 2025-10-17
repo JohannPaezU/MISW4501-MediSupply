@@ -1,8 +1,8 @@
 import uuid
-from datetime import datetime, timezone, date
+from datetime import date, datetime, timezone
 from typing import Optional
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String, Date
+from sqlalchemy import Boolean, Date, DateTime, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.db.database import Base
@@ -77,9 +77,7 @@ class Zone(Base):
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
     )
-    users: Mapped[list["User"]] = relationship(
-        "User", back_populates="zone"
-    )
+    users: Mapped[list["User"]] = relationship("User", back_populates="zone")
 
 
 class Provider(Base):

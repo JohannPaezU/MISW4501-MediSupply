@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Annotated
+
 from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
+
 from src.errors.errors import BadRequestException
 
 
@@ -42,7 +44,7 @@ class SellerCreateRequest(SellerBase):
 
 
 class SellerCreateResponse(SellerBase):
-    ...
+    pass
 
 
 class GetSellersResponse(BaseModel):

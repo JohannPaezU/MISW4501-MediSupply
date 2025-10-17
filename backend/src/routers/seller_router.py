@@ -1,15 +1,23 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, Depends, status
 from requests import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
-from src.schemas.seller_schema import SellerCreateResponse, SellerCreateRequest, GetSellersResponse, SellerBase
-from src.services.seller_service import create_seller, get_sellers, get_seller_by_id
+from src.schemas.seller_schema import (
+    GetSellersResponse,
+    SellerBase,
+    SellerCreateRequest,
+    SellerCreateResponse,
+)
+from src.services.seller_service import create_seller, get_seller_by_id, get_sellers
 
-seller_router = APIRouter(tags=["Sellers"], prefix="/sellers",
-                          dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))])
+seller_router = APIRouter(
+    tags=["Sellers"],
+    prefix="/sellers",
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
+)
 
 
 @seller_router.post(
@@ -31,9 +39,9 @@ Returns the created seller's `id`, `created_at` timestamp and the provided detai
 """,
 )
 async def register_seller(
-        *,
-        seller_create_request: SellerCreateRequest,
-        db: Session = Depends(get_db),
+    *,
+    seller_create_request: SellerCreateRequest,
+    db: Session = Depends(get_db),
 ) -> SellerCreateResponse:
     return create_seller(db=db, seller_create_request=seller_create_request)
 
@@ -47,12 +55,13 @@ async def register_seller(
 Retrieve a list of all registered sellers.
 
 ### Response
-Returns a list of sellers with their details including `id`, `full_name`, `doi`, `email`, `phone`, `zone_id`, `zone_description`, and `created_at`.
+Returns a list of sellers with their details including `id`, `full_name`, `doi`, `email`, `phone`, `zone_id`,
+`zone_description`, and `created_at`.
 """,
 )
 async def get_all_sellers(
-        *,
-        db: Session = Depends(get_db),
+    *,
+    db: Session = Depends(get_db),
 ) -> GetSellersResponse:
     sellers = get_sellers(db=db)
 
@@ -71,13 +80,14 @@ Retrieve a seller's details by their unique ID.
 - **seller_id**: The unique identifier of the seller (36 characters)
 
 ### Response
-Returns the seller's details including `id`, `full_name`, `doi`, `email`, `phone`, `zone_id`, `zone_description`, and `created_at`.
+Returns the seller's details including `id`, `full_name`, `doi`, `email`, `phone`, `zone_id`,
+`zone_description`, and `created_at`.
 """,
 )
 async def get_seller(
-        *,
-        seller_id: str,
-        db: Session = Depends(get_db),
+    *,
+    seller_id: str,
+    db: Session = Depends(get_db),
 ) -> SellerBase:
     seller = get_seller_by_id(db=db, seller_id=seller_id)
     if not seller:

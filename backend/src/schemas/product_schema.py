@@ -1,5 +1,6 @@
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import Annotated
+
 from pydantic import BaseModel, Field
 
 
@@ -20,11 +21,11 @@ class ProductBase(BaseModel):
 
 
 class ProductCreateRequest(ProductBase):
-    ...
+    pass
 
 
 class ProductCreateResponse(ProductBase):
-    ...
+    pass
 
 
 class ProductCreateBulkRequest(BaseModel):
