@@ -24,7 +24,8 @@
   gap: 1rem;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
@@ -55,7 +56,6 @@
   cursor: not-allowed;
   border-color: #eee;
 }
-
 
 .table-container {
   flex: 1;
@@ -109,7 +109,7 @@
 }
 
 .id-cell {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 0.8rem;
   color: #888;
   cursor: pointer;
@@ -130,14 +130,15 @@
 }
 
 .id-text {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .copy-success-text {
   color: #28a745;
   font-weight: bold;
   font-size: 0.8rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
 }
 
 .no-data-cell {
@@ -147,7 +148,6 @@
   font-style: italic;
 }
 
-/* --- Estados de Carga y Error --- */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -168,8 +168,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .alert {
@@ -200,7 +204,6 @@
   padding: 0.5rem 1rem;
 }
 
-/* --- Paginación --- */
 .pagination-controls {
   display: flex;
   justify-content: flex-end;
@@ -230,9 +233,20 @@
 }
 
 @media (max-width: 968px) {
-  .proveedores-container { padding: 1rem; }
-  .proveedores-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-  .proveedores-actions { width: 100%; }
-  .pagination-controls { flex-direction: column; align-items: flex-end; gap: 1rem; }
+  .proveedores-container {
+    padding: 1rem;
+  }
+  .proveedores-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .proveedores-actions {
+    width: 100%;
+  }
+  .pagination-controls {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+  }
 }
-

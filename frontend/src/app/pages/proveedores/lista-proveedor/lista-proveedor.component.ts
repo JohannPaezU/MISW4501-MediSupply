@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ProveedorService } from '../../../services/proveedores/proveedor.service';
 import { ProviderBase } from '../../../interfaces/proveedor.intrface';
-import { CsvExportService } from '../../../services/utilities/csv.service';
+import { CsvExportService } from '../../../services/utilities/csvExport.service';
 
 @Component({
   selector: 'app-lista-proveedor',
@@ -34,7 +34,7 @@ export class ListaProveedorComponent implements OnInit {
     private proveedorService: ProveedorService,
     private cdr: ChangeDetectorRef,
     private csvExportService: CsvExportService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.cargarProveedores();
@@ -72,16 +72,16 @@ export class ListaProveedorComponent implements OnInit {
       phone: 'Teléfono',
       created_at: 'Fecha de Creación'
     };
-    this.csvExportService.exportToCsv(this.proveedores, 'lista-proveedores', headers);
+    this.csvExportService.exportarACsv(this.proveedores, 'lista-proveedores', headers);
   }
 
   copyToClipboard(id: string): void {
     navigator.clipboard.writeText(id).then(() => {
       this.copiedId = id;
-      this.cdr.detectChanges(); // <-- SOLUCIÓN: Forzamos la actualización de la vista aquí
+      this.cdr.detectChanges();
       setTimeout(() => {
         this.copiedId = null;
-        this.cdr.detectChanges(); // Limpiamos el mensaje después del tiempo de espera
+        this.cdr.detectChanges();
       }, 1500);
     }).catch(err => console.error('Error al copiar ID: ', err));
   }

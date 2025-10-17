@@ -1,7 +1,6 @@
 <div class="crear-proveedor-container">
   <h1 class="page-title">Crear proveedor</h1>
 
-  <!-- Mensajes de estado en línea mejorados -->
   <div *ngIf="successMessage" class="alert alert-success">
     <mat-icon class="alert-icon">check_circle</mat-icon>
     <span>{{ successMessage }}</span>
@@ -13,16 +12,14 @@
 
   <form [formGroup]="proveedorForm" class="proveedor-form" (ngSubmit)="crearProveedor()">
     <div class="form-row">
-      <!-- Nombre -->
       <div class="form-field">
         <label class="field-label">Nombre</label>
         <input type="text" class="form-input" formControlName="name" placeholder="Laboratorios Pfizer S.A.S.">
-         <div *ngIf="f['name'].touched && f['name'].invalid" class="validation-error">
+        <div *ngIf="f['name'].touched && f['name'].invalid" class="validation-error">
           <small *ngIf="f['name'].errors?.['required']">El nombre es requerido.</small>
         </div>
       </div>
 
-      <!-- Número de RIT -->
       <div class="form-field">
         <label class="field-label">Número de RIT</label>
         <input type="text" class="form-input" formControlName="rit" placeholder="900.123.456-7">
@@ -33,7 +30,6 @@
     </div>
 
     <div class="form-row">
-      <!-- Ciudad -->
       <div class="form-field">
         <label class="field-label">Ciudad</label>
         <input type="text" class="form-input" formControlName="city" placeholder="Bogotá D.C.">
@@ -42,7 +38,6 @@
         </div>
       </div>
 
-      <!-- País -->
       <div class="form-field">
         <label class="field-label">País</label>
         <input type="text" class="form-input" formControlName="country" placeholder="Colombia">
@@ -53,7 +48,6 @@
     </div>
 
     <div class="form-row">
-      <!-- Correo electrónico -->
       <div class="form-field">
         <label class="field-label">Correo electrónico</label>
         <input type="email" class="form-input" formControlName="email" placeholder="contacto@pfizer.co">
@@ -63,21 +57,20 @@
         </div>
       </div>
 
-      <!-- Teléfono -->
       <div class="form-field">
         <label class="field-label">Teléfono</label>
         <input type="tel" class="form-input" formControlName="phone" placeholder="6014278800">
         <div *ngIf="f['phone'].touched && f['phone'].invalid" class="validation-error">
           <small *ngIf="f['phone'].errors?.['required']">El teléfono es requerido.</small>
           <small *ngIf="f['phone'].errors?.['pattern']">Solo debe contener números.</small>
-          <small *ngIf="f['phone'].errors?.['minlength'] || f['phone'].errors?.['maxlength']">Debe tener entre 9 y 15 dígitos.</small>
+          <small *ngIf="f['phone'].errors?.['minlength'] || f['phone'].errors?.['maxlength']">Debe tener entre 9 y 15
+            dígitos.</small>
         </div>
       </div>
     </div>
 
     <div class="form-row">
-       <!-- Imagen URL -->
-       <div class="form-field form-field-full">
+      <div class="form-field form-field-full">
         <label class="field-label">URL de la Imagen (Opcional)</label>
         <input type="text" class="form-input" formControlName="image_url" placeholder="https://ejemplo.com/logo.png">
       </div>
@@ -90,7 +83,6 @@
     </div>
   </form>
 
-  <!-- Contenedor para el Toast Message -->
   <div class="toast-container">
     <div *ngIf="toastMessage" class="toast" [ngClass]="{
       'toast-success': toastType === 'success',
@@ -101,4 +93,3 @@
     </div>
   </div>
 </div>
-

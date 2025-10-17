@@ -10,18 +10,13 @@ import { GetProvidersResponse, ProviderCreateRequest, ProviderCreateResponse } f
 export class ProveedorService {
   private apiUrl = `${environment.apiUrl}/providers`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  /**
-   * Crea un nuevo proveedor.
-   */
   createProvider(provider: ProviderCreateRequest): Observable<ProviderCreateResponse> {
     return this.http.post<ProviderCreateResponse>(this.apiUrl, provider);
   }
 
-  /**
-   * Obtiene la lista de todos los proveedores.
-   */
+
   getProviders(): Observable<GetProvidersResponse> {
     return this.http.get<GetProvidersResponse>(this.apiUrl);
   }

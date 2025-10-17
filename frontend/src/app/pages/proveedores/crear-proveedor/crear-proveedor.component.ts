@@ -28,11 +28,9 @@ import { ProviderCreateRequest } from '../../../interfaces/proveedor.intrface';
 export class CrearProveedorComponent {
   proveedorForm: FormGroup;
   isLoading = false;
-  // Mensajes para las alertas en línea
   successMessage: string | null = null;
   errorMessage: string | null = null;
 
-  // Propiedades para el toast
   toastMessage: string | null = null;
   toastType: 'success' | 'error' | null = null;
 
@@ -40,15 +38,14 @@ export class CrearProveedorComponent {
 
    constructor(private fb: FormBuilder, private proveedorService: ProveedorService, private cdr: ChangeDetectorRef) {
 
-    // El formulario ahora coincide con el schema del backend
     this.proveedorForm = this.fb.group({
-      name: ['test', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-      rit: ['test', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-      city: ['test', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-      country: ['test', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
-      email: ['test@test.com', [Validators.required, Validators.email, Validators.maxLength(120)]],
-      phone: ['1234567890', [Validators.required, Validators.minLength(9), Validators.maxLength(15), Validators.pattern('^[0-9]*$')]],
-      image_url: [null, [Validators.maxLength(255)]] // Campo opcional
+      name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      rit: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+      city: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      country: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(120)]],
+      phone: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(15), Validators.pattern('^[0-9]*$')]],
+      image_url: ['', [Validators.maxLength(255)]]
     });
   }
 
@@ -72,14 +69,14 @@ export class CrearProveedorComponent {
     ).subscribe({
       next: (response) => {
         const message = `¡Proveedor "${response.name}" creado con éxito!`;
-        this.successMessage = message; // Mensaje en línea
-        this.showToast('Proveedor creado exitosamente', 'success'); // Toast
+        this.successMessage = message;
+        this.showToast('Proveedor creado exitosamente', 'success');
         this.proveedorForm.reset();
       },
       error: (err) => {
         console.error(err);
         let message = 'Ocurrió un error inesperado al crear el proveedor.';
-        if (err.status === 409) { // Conflict
+        if (err.status === 409) {
           message = 'Ya existe un proveedor con este correo electrónico o RIT.';
         } else if (err.status === 422 && err.error && err.error.detail) {
           const firstError = err.error.detail[0];
@@ -87,15 +84,12 @@ export class CrearProveedorComponent {
           const errorMsg = firstError.msg;
           message = `Error en el campo '${field}': ${errorMsg}`;
         }
-        this.errorMessage = message; // Mensaje en línea
-        this.showToast(message, 'error'); // Toast
+        this.errorMessage = message;
+        this.showToast(message, 'error');
       }
     });
   }
 
-  /**
-   * Muestra un mensaje toast y lo oculta después de 5 segundos.
-   */
   private showToast(message: string, type: 'success' | 'error'): void {
     this.toastMessage = message;
     this.toastType = type;
