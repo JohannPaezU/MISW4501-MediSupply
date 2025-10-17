@@ -5,10 +5,13 @@ from sqlalchemy.orm import Session
 
 from src.core.logging_config import logger
 from src.core.security import hash_password
+from src.core.utils import get_template_path
 from src.errors.errors import ConflictException, BadRequestException
 from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import SellerCreateRequest
+from src.services.email_service import send_email
+from src.services.requests.email_request import EmailRequest
 from src.services.user_service import get_user_by_email, get_user_by_doi
 from src.services.zone_service import get_zone_by_id
 
@@ -24,10 +27,11 @@ def create_seller(*, db: Session, seller_create_request: SellerCreateRequest) ->
     if not existing_zone:
         raise BadRequestException("Zone with the given ID does not exist")
 
+    temporary_password = _generate_temporary_password()
     user = User(
         full_name=seller_create_request.full_name,
         email=seller_create_request.email,
-        hashed_password=hash_password(_generate_temporary_password()),
+        hashed_password=hash_password(temporary_password),
         phone=seller_create_request.phone,
         role=UserRole.COMMERCIAL,
         doi=seller_create_request.doi,
@@ -39,6 +43,7 @@ def create_seller(*, db: Session, seller_create_request: SellerCreateRequest) ->
     logger.info(
         f"Seller (UserRole.COMMERCIAL) created successfully with id [{user.id}] and email [{user.email}]"
     )
+    _send_temporary_password_email(user=user, temporary_password=temporary_password)
 
     return user
 
@@ -57,3 +62,20 @@ def _generate_temporary_password() -> str:
     temporary_password = ''.join(random.choice(characters) for i in range(length))
 
     return temporary_password
+
+
+def _send_temporary_password_email(user: User, temporary_password: str) -> None:
+    html_template = open(
+        get_template_path("temporary_password_template.html"), encoding="utf-8"
+    ).read()
+    email_request = EmailRequest.from_template(
+        html_template=html_template,
+        email_receiver=user.email,
+        email_subject="¡Bienvenido a MediSupply! - Tu contraseña temporal",
+        template_values={
+            "full_name": user.full_name,
+            "email": user.email,
+            "temporary_password": temporary_password,
+        },
+    )
+    send_email(email_request)
