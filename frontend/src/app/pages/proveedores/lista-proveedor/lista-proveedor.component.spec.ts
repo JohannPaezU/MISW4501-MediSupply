@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, flushMicrotasks } from '@angular/core/testing';
 import { ListaProveedorComponent } from './lista-proveedor.component';
 import { ProveedorService } from '../../../services/proveedores/proveedor.service';
-import { CsvExportService } from '../../../services/utilities/csvExport.service';
+import { CsvExportService } from '../../../services/utilities/csv.service';
 import { of, throwError } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';

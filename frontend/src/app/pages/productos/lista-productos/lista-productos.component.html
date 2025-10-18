@@ -2,7 +2,7 @@
   <div class="productos-header">
     <h1 class="page-title">Productos</h1>
     <div class="productos-actions">
-      <button class="btn-secondary" (click)="exportarCSV()">
+      <button class="btn-secondary" (click)="exportarCSV()" [disabled]="productos.length === 0">
         EXPORTAR A CSV
       </button>
       <button class="btn-primary" (click)="crearProducto()">
@@ -11,34 +11,76 @@
     </div>
   </div>
 
-  <div class="table-container">
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando productos...</p>
+  </div>
+
+  <div *ngIf="hasError && !isLoading" class="alert alert-error">
+    <mat-icon class="alert-icon">error</mat-icon>
+    <span>Error al cargar los productos.</span>
+    <button class="btn-primary btn-retry" (click)="retry()">Reintentar</button>
+  </div>
+
+  <div *ngIf="!isLoading && !hasError" class="table-container">
     <table class="productos-table">
       <thead>
         <tr>
-          <th>Producto</th>
+          <th>ID</th>
+          <th>ID Proveedor</th>
+          <th>Nombre</th>
+          <th>Bodega</th>
           <th>Lote</th>
           <th>Vencimiento</th>
-          <th>Bodega</th>
+          <th>Stock</th>
+          <th>Precio</th>
+          <th>Detalles</th>
+          <th>URL Imagen</th>
+          <th>Creado</th>
           <th>Acciones</th>
         </tr>
       </thead>
+
       <tbody>
         <tr *ngFor="let producto of productos">
-          <td>{{ producto.producto }}</td>
-          <td>{{ producto.lote }}</td>
-          <td>{{ producto.vencimiento }}</td>
-          <td>{{ producto.bodega }}</td>
           <td>
-            <button class="btn-link" (click)="verDetalle(producto)">
-              Ver detalle
-            </button>
+            <div class="id-cell" (click)="copyToClipboard(producto.id, 'product', producto.id)" title="Copiar ID">
+              <mat-icon>content_copy</mat-icon>
+              <span *ngIf="copiedCell !== 'product-' + producto.id" class="id-text">{{ producto.id | slice:0:8 }}...</span>
+              <span *ngIf="copiedCell === 'product-' + producto.id" class="copy-success-text">¡Copiado!</span>
+            </div>
           </td>
+          <td>
+            <div class="id-cell" (click)="copyToClipboard(producto.provider_id, 'provider', producto.id)" title="Copiar ID Proveedor">
+              <mat-icon>content_copy</mat-icon>
+              <span *ngIf="copiedCell !== 'provider-' + producto.id" class="id-text">{{ producto.provider_id | slice:0:8 }}...</span>
+              <span *ngIf="copiedCell === 'provider-' + producto.id" class="copy-success-text">¡Copiado!</span>
+            </div>
+          </td>
+          <td>{{ producto.name }}</td>
+          <td>{{ producto.store }}</td>
+          <td>{{ producto.batch }}</td>
+          <td>{{ producto.due_date | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ producto.stock | number }}</td>
+          <td>{{ producto.price_per_unite | currency:'USD' }}</td>
+          <td>{{ producto.details }}</td>
+          <td>
+            <a *ngIf="producto.image_url" [href]="producto.image_url" target="_blank">Ver imagen</a>
+            <span *ngIf="!producto.image_url">—</span>
+          </td>
+          <td>{{ producto.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <button class="btn-link" (click)="verDetalle(producto)">Ver detalle</button>
+          </td>
+        </tr>
+        <tr *ngIf="productos.length === 0">
+          <td colspan="12" class="no-data-cell">No se encontraron productos.</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <footer class="pagination-controls">
+  <footer class="pagination-controls" *ngIf="!isLoading && !hasError && productos.length > 0">
     <div class="page-size-selector">
       <label for="pageSize">Filas por página:</label>
       <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
@@ -47,9 +89,11 @@
         <option value="20">20</option>
       </select>
     </div>
+
     <div class="page-info">
       <span>{{ startItem }} - {{ endItem }} de {{ totalItems }}</span>
     </div>
+
     <div class="page-navigation">
       <button (click)="previousPage()" [disabled]="currentPage === 1">
         <mat-icon>keyboard_arrow_left</mat-icon>
@@ -59,3 +103,8 @@
       </button>
     </div>
   </footer>
+
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
+</div>
