@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from requests import Session
+from sqlalchemy.orm import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
@@ -7,7 +7,7 @@ from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import (
     GetSellersResponse,
-    SellerBase,
+    GetSellerResponse,
     SellerCreateRequest,
     SellerCreateResponse,
 )
@@ -35,7 +35,8 @@ Create a new seller account.
 - **zone_id**: Zone ID (36 characters)
 
 ### Response
-Returns the created seller's `id`, `created_at` timestamp and the provided details.
+Returns the created seller's details including `id`, `full_name`, `doi`, `email`, `phone`, `created_at`
+and associated `zone` information.
 """,
 )
 async def register_seller(
@@ -55,8 +56,8 @@ async def register_seller(
 Retrieve a list of all registered sellers.
 
 ### Response
-Returns a list of sellers with their details including `id`, `full_name`, `doi`, `email`, `phone`, `zone_id`,
-`zone_description`, and `created_at`.
+Returns a list of sellers with their details including `id`, `full_name`, `doi`, `email`, `phone`, `created_at`
+and associated `zone` information.
 """,
 )
 async def get_all_sellers(
@@ -70,7 +71,7 @@ async def get_all_sellers(
 
 @seller_router.get(
     "/{seller_id}",
-    response_model=SellerBase,
+    response_model=GetSellerResponse,
     status_code=status.HTTP_200_OK,
     summary="Get seller by ID",
     description="""
@@ -80,15 +81,15 @@ Retrieve a seller's details by their unique ID.
 - **seller_id**: The unique identifier of the seller (36 characters)
 
 ### Response
-Returns the seller's details including `id`, `full_name`, `doi`, `email`, `phone`, `zone_id`,
-`zone_description`, and `created_at`.
+Returns the seller's details including `id`, `full_name`, `doi`, `email`, `phone`, `created_at`
+and associated `zone` information.
 """,
 )
 async def get_seller(
     *,
     seller_id: str,
     db: Session = Depends(get_db),
-) -> SellerBase:
+) -> GetSellerResponse:
     seller = get_seller_by_id(db=db, seller_id=seller_id)
     if not seller:
         raise NotFoundException("Seller not found")

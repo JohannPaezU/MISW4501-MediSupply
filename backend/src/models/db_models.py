@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime, timezone
 from typing import Optional
 
-from sqlalchemy import Boolean, Date, DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Date, DateTime, Enum, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.db.database import Base
@@ -39,6 +39,9 @@ class User(Base):
     )
     otps: Mapped[list["OTP"]] = relationship(
         "OTP", back_populates="user", cascade="all, delete-orphan"
+    )
+    selling_plans: Mapped[list["SellingPlan"]] = relationship(
+        "SellingPlan", back_populates="seller"
     )
 
     @validates("phone")
@@ -78,6 +81,7 @@ class Zone(Base):
         default=lambda: datetime.now(timezone.utc),
     )
     users: Mapped[list["User"]] = relationship("User", back_populates="zone")
+    selling_plans: Mapped[list["SellingPlan"]] = relationship("SellingPlan", back_populates="zone")
 
 
 class Provider(Base):
@@ -134,3 +138,41 @@ class Product(Base):
         String(36), ForeignKey("providers.id", ondelete="CASCADE"), nullable=False
     )
     provider: Mapped["Provider"] = relationship("Provider", back_populates="products")
+    selling_plans: Mapped[list["SellingPlan"]] = relationship(
+        "SellingPlan", back_populates="product", cascade="all, delete-orphan"
+    )
+
+
+class SellingPlan(Base):
+    __tablename__ = "selling_plans"
+    __table_args__ = (
+        UniqueConstraint("period", "product_id", "zone_id", "seller_id", name="selling_plan_unique_constraint"),
+    )
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    period: Mapped[str] = mapped_column(String(6), nullable=False)
+    goal: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    product_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("products.id", ondelete="RESTRICT"), nullable=False
+    )
+    zone_id: Mapped[Optional[str]] = mapped_column(
+        String(36), ForeignKey("zones.id", ondelete="SET NULL"), nullable=True,
+    )
+    seller_id: Mapped[Optional[str]] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True,
+    )
+
+    product: Mapped["Product"] = relationship("Product")
+    zone: Mapped[Optional["Zone"]] = relationship(
+        "Zone", passive_deletes=True
+    )
+    seller: Mapped[Optional["User"]] = relationship(
+        "User", passive_deletes=True
+    )
