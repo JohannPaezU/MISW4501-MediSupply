@@ -10,8 +10,14 @@ describe('LoginComponent', () => {
   let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
+    authServiceSpy = jasmine.createSpyObj('AuthService', [
+      'login',
+      'isSessionExpired',
+      'clearSessionExpiredFlag'
+    ]);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+
+    authServiceSpy.isSessionExpired.and.returnValue(false);
 
     TestBed.configureTestingModule({
       imports: [LoginComponent],
@@ -105,5 +111,69 @@ describe('LoginComponent', () => {
     tick();
 
     expect(component.errorMessage).toBe('Ocurrió un error inesperado. Por favor, intente de nuevo.');
+  }));
+
+  it('should show session expired message when session has expired', fakeAsync(() => {
+    authServiceSpy.isSessionExpired.and.returnValue(true);
+
+    const fixture = TestBed.createComponent(LoginComponent);
+    const componentWithExpiredSession = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(componentWithExpiredSession.sessionExpiredMessage).toBe(
+      'Tu sesión ha expirado por seguridad. Por favor, inicia sesión nuevamente.'
+    );
+    expect(authServiceSpy.clearSessionExpiredFlag).toHaveBeenCalled();
+
+    tick(8000);
+    expect(componentWithExpiredSession.sessionExpiredMessage).toBeNull();
+  }));
+
+  it('should not show session expired message when session has not expired', () => {
+    authServiceSpy.isSessionExpired.and.returnValue(false);
+
+    const fixture = TestBed.createComponent(LoginComponent);
+    const componentWithoutExpiredSession = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(componentWithoutExpiredSession.sessionExpiredMessage).toBeNull();
+    expect(authServiceSpy.clearSessionExpiredFlag).not.toHaveBeenCalled();
+  });
+
+  it('should dismiss session expired message when dismissSessionExpiredMessage is called', () => {
+    authServiceSpy.isSessionExpired.and.returnValue(true);
+
+    const fixture = TestBed.createComponent(LoginComponent);
+    const componentWithExpiredSession = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(componentWithExpiredSession.sessionExpiredMessage).not.toBeNull();
+
+    componentWithExpiredSession.dismissSessionExpiredMessage();
+
+    expect(componentWithExpiredSession.sessionExpiredMessage).toBeNull();
+  });
+
+  it('should clear session expired message when submitting form', fakeAsync(() => {
+    authServiceSpy.isSessionExpired.and.returnValue(true);
+    authServiceSpy.login.and.returnValue(of({ message: 'OTP enviado' }));
+
+    const fixture = TestBed.createComponent(LoginComponent);
+    const componentWithExpiredSession = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(componentWithExpiredSession.sessionExpiredMessage).not.toBeNull();
+
+    componentWithExpiredSession.loginForm.setValue({
+      email: 'test@example.com',
+      password: '123456'
+    });
+
+    componentWithExpiredSession.onSubmit();
+    tick();
+
+    expect(componentWithExpiredSession.sessionExpiredMessage).toBeNull();
+
+    tick(8000);
   }));
 });
