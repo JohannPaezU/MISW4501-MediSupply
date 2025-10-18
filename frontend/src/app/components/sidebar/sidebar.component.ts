@@ -17,20 +17,37 @@ export class SidebarComponent {
   constructor(private router: Router, private authService: AuthService) { }
 
   menuItems: MenuItem[] = [
-    { icon: 'favorite_border', label: 'Inicio', route: '/home' },
-    { icon: 'directions_car', label: 'Rutas', route: '/rutas' },
-    { icon: 'groups', label: 'Vendedores', route: '/vendedores', activeFor: ['/vendedores', '/vendedores/crear'] },
+    { icon: 'home', label: 'Inicio', route: '/home' },
+    { icon: 'map', label: 'Rutas', route: '/rutas' },
     {
-      icon: 'inventory_2',
+      icon: 'storefront',
+      label: 'Vendedores',
+      route: '/vendedores',
+      activeFor: ['/vendedores', '/vendedores/crear']
+    },
+    {
+      icon: 'inventory',
       label: 'Productos',
       route: '/productos',
       activeFor: ['/productos', '/productos/crear', '/productos/crear-masivo']
     },
     {
-      icon: 'groups', label: 'Proveedores', route: '/proveedores', activeFor: ['/proveedores', '/proveedores/crear']
+      icon: 'local_shipping',
+      label: 'Proveedores',
+      route: '/proveedores',
+      activeFor: ['/proveedores', '/proveedores/crear']
     },
-    { icon: 'folder_open', label: 'Planes de venta', route: '/planes-de-venta', activeFor: ['/planes-de-venta', '/planes-de-venta/crear'] },
-    { icon: 'folder_open', label: 'Reportes', route: '/reportes' }
+    {
+      icon: 'trending_up',
+      label: 'Planes de venta',
+      route: '/planes-de-venta',
+      activeFor: ['/planes-de-venta', '/planes-de-venta/crear']
+    },
+    {
+      icon: 'insights',
+      label: 'Reportes',
+      route: '/reportes'
+    }
   ];
 
   isMobileMenuOpen = false;

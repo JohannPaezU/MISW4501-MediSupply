@@ -9,7 +9,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (shouldLogout(error, req.url, authService)) {
-        authService.logout();
+        authService.logout('expired');
       }
 
       return throwError(() => error);

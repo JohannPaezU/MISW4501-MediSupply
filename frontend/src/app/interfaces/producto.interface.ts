@@ -1,29 +1,15 @@
-export interface Producto {
-  producto: string;
-  lote: string;
-  vencimiento: string;
-  bodega: string;
-}
-/**
- * Interfaz que representa la estructura de un producto para la solicitud de creación.
- * Coincide con el schema `ProductCreateRequest` del backend.
- */
 export interface ProductCreateRequest {
   name: string;
   details: string;
   store: string;
   batch: string;
   image_url?: string | null;
-  due_date: string; // Formato YYYY-MM-DD
+  due_date: string;
   stock: number;
   price_per_unite: number;
   provider_id: string;
 }
 
-/**
- * Interfaz que representa la respuesta al crear un producto.
- * Coincide con el schema `ProductCreateResponse` del backend.
- */
 export interface ProductCreateResponse {
   id: string;
   name: string;
@@ -35,5 +21,29 @@ export interface ProductCreateResponse {
   stock: number;
   price_per_unite: number;
   provider_id: string;
-  created_at: string; // ISO date string
+  created_at: string;
+}
+
+export interface ProductCreateBulkRequest {
+  products: ProductCreateRequest[];
+}
+
+export interface ProductCreateBulkResponse {
+  success: boolean;
+  rows_total: number;
+  rows_inserted: number;
+  errors: number;
+  errors_details: string[];
+}
+
+export interface ProductRow {
+  name: string;
+  details: string;
+  store: string;
+  batch: string;
+  image_url?: string;
+  due_date: string;
+  stock: number | string;
+  price_per_unite: number | string;
+  provider_id: string;
 }

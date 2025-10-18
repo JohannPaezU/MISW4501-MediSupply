@@ -1,3 +1,4 @@
+/* Estilos base del contenedor y formulario */
 .crear-producto-container {
   display: flex;
   flex-direction: column;
@@ -31,22 +32,106 @@
 
 .field-label {
   font-size: 0.875rem;
-  font-weight: 400;
-  color: #666;
+  font-weight: 500;
+  color: #555;
 }
 
-@media (max-width: 968px) {
-  .crear-producto-container {
-    padding: 1.5rem;
-  }
+.form-input,
+.form-textarea {
+  padding: 0.875rem 1rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #333;
+  transition: all 0.2s ease;
+  background-color: #fff;
+  width: 100%;
+}
 
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
 
-  .form-field-full {
-    grid-column: 1;
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #999;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #e91e63;
+  box-shadow: 0 0 0 1px #e91e63;
+}
+
+.form-input.ng-invalid.ng-touched,
+.form-textarea.ng-invalid.ng-touched {
+  border-color: #c62828;
+}
+
+.validation-error {
+  color: #c62828;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding-left: 0.25rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s ease-out, fadeOut 0.5s ease-in 4.5s;
+}
+
+.toast-icon {
+  margin-right: 0.75rem;
+  font-size: 1.5rem;
+}
+
+.toast-success {
+  background-color: #28a745;
+}
+
+.toast-error {
+  background-color: #c62828;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
@@ -55,22 +140,17 @@
     padding: 1rem;
   }
 
-  .page-title {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .producto-form {
+  .form-row {
+    grid-template-columns: 1fr;
     gap: 1.25rem;
   }
 
   .form-actions {
     flex-direction: column-reverse;
-    padding-top: 1.5rem;
   }
 
-  .btn-secondary,
-  .btn-primary {
+  .btn-primary,
+  .btn-secondary {
     width: 100%;
   }
 }

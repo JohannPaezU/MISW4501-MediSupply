@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -12,9 +12,10 @@ import { AuthService } from '../../../services/login/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   errorMessage: string | null = null;
+  sessionExpiredMessage: string | null = null;
   isLoading = false;
 
   constructor(
@@ -28,6 +29,17 @@ export class LoginComponent {
     });
   }
 
+  ngOnInit(): void {
+    if (this.authService.isSessionExpired()) {
+      this.sessionExpiredMessage = 'Tu sesión ha expirado por seguridad. Por favor, inicia sesión nuevamente.';
+      this.authService.clearSessionExpiredFlag();
+
+      setTimeout(() => {
+        this.sessionExpiredMessage = null;
+      }, 8000);
+    }
+  }
+
   onSubmit() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -36,13 +48,13 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.errorMessage = null;
+    this.sessionExpiredMessage = null;
 
     this.authService.login(this.loginForm.value).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (response) => {
         console.log(response.message);
-        // Redirigir a la página para verificar el OTP
         this.router.navigate(['/obtener-acceso']);
       },
       error: (err) => {
@@ -55,5 +67,9 @@ export class LoginComponent {
         }
       }
     });
+  }
+
+  dismissSessionExpiredMessage(): void {
+    this.sessionExpiredMessage = null;
   }
 }

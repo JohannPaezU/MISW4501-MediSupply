@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ProveedorService } from '../../../services/proveedores/proveedor.service';
 import { ProviderBase } from '../../../interfaces/proveedor.intrface';
-import { CsvExportService } from '../../../services/utilities/csvExport.service';
+import { CsvExportService } from '../../../services/utilities/csv.service';
 
 @Component({
   selector: 'app-lista-proveedor',

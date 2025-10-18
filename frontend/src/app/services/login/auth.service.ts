@@ -3,17 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-
-export interface LoginResponse {
-  message: string;
-  otp_expiration_minutes?: number;
-}
-
-export interface VerifyOtpResponse {
-  message: string;
-  access_token?: string;
-  token_type?: string;
-}
+import { LoginResponse, VerifyOtpResponse } from '../../interfaces/login.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +12,7 @@ export class AuthService {
   private apiUrl = environment.apiUrl;
   private tokenKey = 'access_token';
   private emailKey = 'user_email';
+  private sessionExpiredKey = 'session_expired';
 
   private emailForOtp = new BehaviorSubject<string | null>(null);
   public emailForOtp$ = this.emailForOtp.asObservable();
@@ -29,6 +20,8 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   login(credentials: { email: string; password: string }): Observable<LoginResponse> {
+    this.clearSessionExpiredFlag();
+
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
       tap(() => {
         this.emailForOtp.next(credentials.email);
@@ -40,7 +33,7 @@ export class AuthService {
     return this.http.post<VerifyOtpResponse>(`${this.apiUrl}/auth/verify-otp`, { email, otp_code }).pipe(
       tap(response => {
         if (response.access_token) {
-          this.saveSession(response.access_token, email); // 🔹 Guardamos ambos
+          this.saveSession(response.access_token, email);
         }
       })
     );
@@ -59,12 +52,24 @@ export class AuthService {
     return localStorage.getItem(this.emailKey);
   }
 
-  logout(): void {
+  logout(reason: 'manual' | 'expired' = 'manual'): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.emailKey);
+
+    if (reason === 'expired') {
+      localStorage.setItem(this.sessionExpiredKey, 'true');
+    }
+
     this.router.navigate(['/login']);
   }
 
+  isSessionExpired(): boolean {
+    return localStorage.getItem(this.sessionExpiredKey) === 'true';
+  }
+
+  clearSessionExpiredFlag(): void {
+    localStorage.removeItem(this.sessionExpiredKey);
+  }
 
   isAuthenticated(): boolean {
     return !!this.getToken();
