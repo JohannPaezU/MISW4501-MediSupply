@@ -18,7 +18,7 @@ from src.services.zone_service import get_zone_by_id
 
 def create_seller(
     *, db: Session, seller_create_request: SellerCreateRequest
-) -> User:  # pragma: no cover
+) -> User:
     existing_user = get_user_by_email(
         db=db, email=seller_create_request.email
     ) or get_user_by_doi(db=db, doi=seller_create_request.doi)
@@ -50,25 +50,25 @@ def create_seller(
     return user
 
 
-def get_sellers(*, db: Session) -> list[User]:  # pragma: no cover
+def get_sellers(*, db: Session) -> list[User]:
     return db.query(User).filter_by(role=UserRole.COMMERCIAL).all()  # type: ignore
 
 
-def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:  # pragma: no cover
+def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:
     return db.query(User).filter_by(id=seller_id, role=UserRole.COMMERCIAL).first()
 
 
-def _generate_temporary_password() -> str:  # pragma: no cover
+def _generate_temporary_password() -> str:
     length = 8
     characters = string.ascii_letters + string.digits + string.punctuation
-    temporary_password = "".join(random.choice(characters) for i in range(length))
+    temporary_password = "".join(random.choice(characters) for _ in range(length))
 
     return temporary_password
 
 
 def _send_temporary_password_email(
     user: User, temporary_password: str
-) -> None:  # pragma: no cover
+) -> None:
     html_template = open(
         get_template_path("temporary_password_template.html"), encoding="utf-8"
     ).read()

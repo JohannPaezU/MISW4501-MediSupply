@@ -13,7 +13,7 @@ from src.services.provider_service import get_provider_by_id
 
 def create_product(
     *, db: Session, product_create_request: ProductCreateRequest
-) -> Product:  # pragma: no cover
+) -> Product:
     existing_provider = get_provider_by_id(
         db=db, provider_id=product_create_request.provider_id
     )
@@ -44,7 +44,7 @@ def create_product(
 
 def create_products_bulk(
     *, db: Session, product_create_bulk_request: ProductCreateBulkRequest
-) -> ProductCreateBulkResponse:  # pragma: no cover
+) -> ProductCreateBulkResponse:
     rows_total = len(product_create_bulk_request.products)
     rows_inserted = 0
     errors_details = []
@@ -71,11 +71,11 @@ def create_products_bulk(
     )
 
 
-def get_products(*, db: Session) -> list[Product]:  # pragma: no cover
+def get_products(*, db: Session) -> list[Product]:
     return db.query(Product).order_by(Product.name).all()  # type: ignore
 
 
 def get_product_by_id(
     *, db: Session, product_id: str
-) -> Product | None:  # pragma: no cover
+) -> Product | None:
     return db.query(Product).filter_by(id=product_id).first()

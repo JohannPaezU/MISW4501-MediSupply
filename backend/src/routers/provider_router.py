@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from requests import Session
+from sqlalchemy.orm import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
@@ -7,7 +7,7 @@ from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.provider_schema import (
     GetProvidersResponse,
-    ProviderBase,
+    GetProviderResponse,
     ProviderCreateRequest,
     ProviderCreateResponse,
 )
@@ -78,7 +78,7 @@ async def get_all_providers(
 
 @provider_router.get(
     "/{provider_id}",
-    response_model=ProviderBase,
+    response_model=GetProviderResponse,
     status_code=status.HTTP_200_OK,
     summary="Get provider by ID",
     description="""
@@ -96,7 +96,7 @@ async def get_provider(
     *,
     provider_id: str,
     db: Session = Depends(get_db),
-) -> ProviderBase:
+) -> GetProviderResponse:
     provider = get_provider_by_id(db=db, provider_id=provider_id)
     if not provider:
         raise NotFoundException("Provider not found")
