@@ -1,8 +1,15 @@
-from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
+from collections import defaultdict
 
+from fastapi import APIRouter, Depends, status
+from fastapi.routing import APIRoute
+from sqlalchemy.orm import Session
+from starlette.responses import JSONResponse
+
+from src.core.security import get_current_user
 from src.db.database import get_db
 from src.errors.errors import UnauthorizedException
+
+from src.models.db_models import User
 from src.schemas.auth_schema import (
     LoginRequest,
     LoginResponse,
@@ -111,4 +118,53 @@ async def verify_otp(
         access_token=access_token,
         token_type="bearer",
         user=user,
+    )
+
+
+@auth_router.get(
+    "/permissions",
+    status_code=status.HTTP_200_OK,
+    summary="Dynamically check accessible endpoints by role",
+    description="Retrieve a list of API endpoints accessible to the current user based on their role.",
+)
+def get_permissions(current_user: User = Depends(get_current_user)) -> JSONResponse:  # pragma: no cover
+    user_role = current_user.role.value
+    grouped = defaultdict(set)
+    from src.main import app
+
+    for route in app.routes:
+        if not isinstance(route, APIRoute):
+            continue
+
+        roles = []
+        for dep in route.dependant.dependencies:
+            if hasattr(dep.call, "allowed_roles"):
+                roles.extend([r.value for r in dep.call.allowed_roles])
+        for dep in getattr(route.dependant, "path_dependencies", []):
+            if hasattr(dep.call, "allowed_roles"):
+                roles.extend([r.value for r in dep.call.allowed_roles])
+
+        roles = list(set(roles)) or ["PUBLIC"]
+
+        if "PUBLIC" in roles or user_role in roles:
+            grouped[(route.path, frozenset(roles))].update(route.methods - {"HEAD", "OPTIONS"})
+
+    allowed_endpoints = [
+        {
+            "path": path,
+            "methods": sorted(list(methods)),
+            "allowed_roles": sorted(list(roles))
+        }
+        for (path, roles), methods in grouped.items()
+    ]
+
+    return JSONResponse(
+        content={
+            "user": {
+                "id": str(current_user.id),
+                "email": current_user.email,
+                "role": current_user.role.value,
+            },
+            "allowed_endpoints": allowed_endpoints,
+        }
     )

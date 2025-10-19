@@ -80,4 +80,6 @@ def require_roles(
 
         return current_user
 
+    role_checker.allowed_roles = allowed_roles
+
     return role_checker
