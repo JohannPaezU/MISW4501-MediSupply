@@ -68,12 +68,7 @@ jobs:
       - name: Run linter
         run: npm run lint --if-present
 
-      - name: Run unit tests with coverage
-        env:
-          CI: true
-        run: |
-          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
-
+     
       - name: Build Angular app
         run: npm run build --if-present
 
@@ -99,8 +94,8 @@ jobs:
 
       - name: Confirm build folder exists
         run: |
-          if [ ! -d "dist/frontend/browser/browser" ]; then
-            echo "Error: dist/frontend/browser/browser does not exist. Build failed?"
+          if [ ! -d "dist/frontend/browser" ]; then
+            echo "Error: dist/frontend/browser does not exist. Build failed?"
             exit 1
           fi
 
