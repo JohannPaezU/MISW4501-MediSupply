@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,7 +12,9 @@ import { AuthService } from '../../../services/login/auth.service';
   templateUrl: './obtener-acceso.component.html',
   styleUrls: ['./obtener-acceso.component.css']
 })
-export class ObtenerAccesoComponent implements OnInit, OnDestroy {
+export class ObtenerAccesoComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('otpInput') otpInputRef!: ElementRef<HTMLInputElement>;
+
   otpForm: FormGroup;
   errorMessage: string | null = null;
   successMessage: string | null = null;
@@ -44,6 +46,12 @@ export class ObtenerAccesoComponent implements OnInit, OnDestroy {
     });
 
     this.otpCode?.valueChanges.subscribe((value: string) => this.updateOtpDisplay(value));
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.otpInputRef?.nativeElement.focus();
+    }, 100);
   }
 
   updateOtpDisplay(value: string): void {
@@ -100,7 +108,6 @@ export class ObtenerAccesoComponent implements OnInit, OnDestroy {
     console.error('Error verificación OTP:', err);
 
     const { status, message } = this.parseError(err);
-
     this.errorMessage = this.getErrorMessage(status, message);
     this.resetOtpInput();
     this.updateView();
