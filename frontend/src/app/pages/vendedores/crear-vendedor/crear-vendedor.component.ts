@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { finalize } from 'rxjs';
 import { Zone, CreateVendedorRequest } from '../../../interfaces/vendedor.interface';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
+import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-crear-vendedor',
@@ -11,7 +12,8 @@ import { VendedorService } from '../../../services/vendedores/vendedor.service';
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LoadingSpinnerComponent
   ],
   templateUrl: './crear-vendedor.component.html',
   styleUrls: ['./crear-vendedor.component.css']

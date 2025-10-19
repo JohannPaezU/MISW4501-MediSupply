@@ -11,13 +11,8 @@
     </div>
   </div>
 
-  <!-- Loading Spinner -->
-  <div *ngIf="isLoading" class="loading-container">
-    <div class="spinner"></div>
-    <p>Cargando vendedores...</p>
-  </div>
+  <app-loading-spinner *ngIf="isLoading" message="Cargando vendedores..."></app-loading-spinner>
 
-  <!-- Error Message -->
   <div *ngIf="error && !isLoading" class="alert alert-error">
     <mat-icon class="alert-icon">error</mat-icon>
     <span>{{ error }}</span>
@@ -26,7 +21,6 @@
     </button>
   </div>
 
-  <!-- Table -->
   <div *ngIf="!isLoading && !error" class="table-container">
     <table class="vendedores-table">
       <thead>

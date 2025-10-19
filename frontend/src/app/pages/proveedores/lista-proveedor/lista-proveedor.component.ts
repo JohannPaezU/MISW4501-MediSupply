@@ -7,6 +7,7 @@ import { finalize } from 'rxjs';
 import { ProveedorService } from '../../../services/proveedores/proveedor.service';
 import { ProviderBase } from '../../../interfaces/proveedor.intrface';
 import { CsvExportService } from '../../../services/utilities/csv.service';
+import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-lista-proveedor',
@@ -14,7 +15,8 @@ import { CsvExportService } from '../../../services/utilities/csv.service';
   imports: [
     CommonModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    LoadingSpinnerComponent
   ],
   templateUrl: './lista-proveedor.component.html',
   styleUrls: ['./lista-proveedor.component.css']

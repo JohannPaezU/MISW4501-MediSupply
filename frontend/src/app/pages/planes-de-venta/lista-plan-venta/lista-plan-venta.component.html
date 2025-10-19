@@ -11,10 +11,7 @@
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="loading-container">
-    <div class="spinner"></div>
-    <p>Cargando planes de venta...</p>
-  </div>
+  <app-loading-spinner *ngIf="isLoading" message="Cargando planes de venta..."></app-loading-spinner>
 
   <div *ngIf="error && !isLoading" class="alert alert-error">
     <mat-icon class="alert-icon">error</mat-icon>
