@@ -52,8 +52,8 @@ class ValidateOTPActivity : AppCompatActivity() {
                     PrefsManager.getInstance(this).saveUserRole(response.user.role)
 
                     val intent = when (response.user.role.lowercase()) {
-                        "comercial" -> Intent(this, ComMainActivity::class.java)
-                        "institucional" -> Intent(this, MainActivity::class.java)
+                        "commercial" -> Intent(this, ComMainActivity::class.java)
+                        "institutional" -> Intent(this, MainActivity::class.java)
                         else -> Intent(this, MainActivity::class.java)
                     }
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
