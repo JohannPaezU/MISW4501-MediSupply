@@ -75,7 +75,5 @@ def get_products(*, db: Session) -> list[Product]:
     return db.query(Product).order_by(Product.name).all()  # type: ignore
 
 
-def get_product_by_id(
-    *, db: Session, product_id: str
-) -> Product | None:
+def get_product_by_id(*, db: Session, product_id: str) -> Product | None:
     return db.query(Product).filter_by(id=product_id).first()

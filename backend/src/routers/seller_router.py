@@ -6,8 +6,8 @@ from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import (
-    GetSellersResponse,
     GetSellerResponse,
+    GetSellersResponse,
     SellerCreateRequest,
     SellerCreateResponse,
 )

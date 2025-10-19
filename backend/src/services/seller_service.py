@@ -3,6 +3,7 @@ import string
 
 from sqlalchemy.orm import Session
 
+from src.core.config import settings
 from src.core.logging_config import logger
 from src.core.security import hash_password
 from src.core.utils import get_template_path
@@ -16,9 +17,7 @@ from src.services.user_service import get_user_by_doi, get_user_by_email
 from src.services.zone_service import get_zone_by_id
 
 
-def create_seller(
-    *, db: Session, seller_create_request: SellerCreateRequest
-) -> User:
+def create_seller(*, db: Session, seller_create_request: SellerCreateRequest) -> User:
     existing_user = get_user_by_email(
         db=db, email=seller_create_request.email
     ) or get_user_by_doi(db=db, doi=seller_create_request.doi)
@@ -66,9 +65,7 @@ def _generate_temporary_password() -> str:
     return temporary_password
 
 
-def _send_temporary_password_email(
-    user: User, temporary_password: str
-) -> None:
+def _send_temporary_password_email(user: User, temporary_password: str) -> None:
     html_template = open(
         get_template_path("temporary_password_template.html"), encoding="utf-8"
     ).read()
@@ -78,8 +75,9 @@ def _send_temporary_password_email(
         email_subject="¡Bienvenido a MediSupply! - Tu contraseña temporal",
         template_values={
             "full_name": user.full_name,
-            "email": user.email,
             "temporary_password": temporary_password,
+            "email": user.email,
+            "login_url": settings.login_url,
         },
     )
     send_email(email_request)
