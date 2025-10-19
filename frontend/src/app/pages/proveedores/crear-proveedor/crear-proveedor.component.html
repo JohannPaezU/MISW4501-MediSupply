@@ -1,33 +1,48 @@
 <div class="crear-proveedor-container">
   <h1 class="page-title">Crear proveedor</h1>
 
-  <form [formGroup]="proveedorForm" class="proveedor-form">
+  <div *ngIf="successMessage" class="alert alert-success">
+    <mat-icon class="alert-icon">check_circle</mat-icon>
+    <span>{{ successMessage }}</span>
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <mat-icon class="alert-icon">error</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <form [formGroup]="proveedorForm" class="proveedor-form" (ngSubmit)="crearProveedor()">
     <div class="form-row">
       <div class="form-field">
         <label class="field-label">Nombre</label>
-        <input type="text" class="form-input" formControlName="nombre" placeholder="Miguel Padilla">
+        <input type="text" class="form-input" formControlName="name" placeholder="Laboratorios Pfizer S.A.S.">
+        <div *ngIf="f['name'].touched && f['name'].invalid" class="validation-error">
+          <small *ngIf="f['name'].errors?.['required']">El nombre es requerido.</small>
+        </div>
       </div>
 
       <div class="form-field">
         <label class="field-label">Número de RIT</label>
-        <input type="text" class="form-input" formControlName="numeroRIT" placeholder="1010101011">
+        <input type="text" class="form-input" formControlName="rit" placeholder="900.123.456-7">
+        <div *ngIf="f['rit'].touched && f['rit'].invalid" class="validation-error">
+          <small *ngIf="f['rit'].errors?.['required']">El RIT es requerido.</small>
+        </div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-field">
         <label class="field-label">Ciudad</label>
-        <div class="input-with-icon">
-          <mat-icon class="input-icon">search</mat-icon>
-          <input type="text" class="form-input with-icon" formControlName="ciudad" placeholder="Bogotá">
+        <input type="text" class="form-input" formControlName="city" placeholder="Bogotá D.C.">
+        <div *ngIf="f['city'].touched && f['city'].invalid" class="validation-error">
+          <small *ngIf="f['city'].errors?.['required']">La ciudad es requerida.</small>
         </div>
       </div>
 
       <div class="form-field">
         <label class="field-label">País</label>
-        <div class="input-with-icon">
-          <mat-icon class="input-icon">search</mat-icon>
-          <input type="text" class="form-input with-icon" formControlName="pais" placeholder="Colombia">
+        <input type="text" class="form-input" formControlName="country" placeholder="Colombia">
+        <div *ngIf="f['country'].touched && f['country'].invalid" class="validation-error">
+          <small *ngIf="f['country'].errors?.['required']">El país es requerido.</small>
         </div>
       </div>
     </div>
@@ -35,27 +50,46 @@
     <div class="form-row">
       <div class="form-field">
         <label class="field-label">Correo electrónico</label>
-        <input type="email" class="form-input" formControlName="correoElectronico" placeholder="miguel@gmail.com">
+        <input type="email" class="form-input" formControlName="email" placeholder="contacto@pfizer.co">
+        <div *ngIf="f['email'].touched && f['email'].invalid" class="validation-error">
+          <small *ngIf="f['email'].errors?.['required']">El correo es requerido.</small>
+          <small *ngIf="f['email'].errors?.['email']">Formato de correo inválido.</small>
+        </div>
       </div>
 
       <div class="form-field">
         <label class="field-label">Teléfono</label>
-        <input type="tel" class="form-input" formControlName="telefono" placeholder="+51947891236">
+        <input type="tel" class="form-input" formControlName="phone" placeholder="6014278800">
+        <div *ngIf="f['phone'].touched && f['phone'].invalid" class="validation-error">
+          <small *ngIf="f['phone'].errors?.['required']">El teléfono es requerido.</small>
+          <small *ngIf="f['phone'].errors?.['pattern']">Solo debe contener números.</small>
+          <small *ngIf="f['phone'].errors?.['minlength'] || f['phone'].errors?.['maxlength']">Debe tener entre 9 y 15
+            dígitos.</small>
+        </div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-field form-field-full">
-        <label class="field-label">Certificaciones sanitarias</label>
-        <textarea class="form-textarea" formControlName="certificacionesSanitarias" rows="8"
-          placeholder="- Certificación A&#10;- Certificación B"></textarea>
+        <label class="field-label">URL de la Imagen (Opcional)</label>
+        <input type="text" class="form-input" formControlName="image_url" placeholder="https://ejemplo.com/logo.png">
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn-primary" (click)="crearProveedor()">
-        CREAR PROVEEDOR
+      <button type="submit" class="btn-primary" [disabled]="isLoading || proveedorForm.invalid">
+        {{ isLoading ? 'CREANDO...' : 'CREAR PROVEEDOR' }}
       </button>
     </div>
   </form>
+
+  <div class="toast-container">
+    <div *ngIf="toastMessage" class="toast" [ngClass]="{
+      'toast-success': toastType === 'success',
+      'toast-error': toastType === 'error'
+    }">
+      <mat-icon class="toast-icon">{{ toastType === 'success' ? 'check_circle' : 'error' }}</mat-icon>
+      <span>{{ toastMessage }}</span>
+    </div>
+  </div>
 </div>
