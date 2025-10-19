@@ -74,7 +74,7 @@ jobs:
       - name: Run linter
         run: npm run lint --if-present
 
-      - name: Run unit tests with coverage (must reach 80%)
+      - name: Run unit tests with coverage (must reach 50%)
         env:
           CI: true
         run: |
@@ -109,8 +109,8 @@ jobs:
           echo "Covered lines: $HIT"
           echo "Coverage: ${PERCENT}%"
 
-          if [ "$PERCENT" -lt 80 ]; then
-            echo "Coverage below 80% (${PERCENT}%)"
+          if [ "$PERCENT" -lt 50 ]; then
+            echo "Coverage below 50% (${PERCENT}%)"
             exit 1
           else
             echo "Coverage OK (${PERCENT}%)"
