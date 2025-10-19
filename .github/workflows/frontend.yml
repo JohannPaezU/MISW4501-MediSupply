@@ -74,24 +74,35 @@ jobs:
       - name: Run linter
         run: npm run lint --if-present
 
-      - name: Run unit tests with coverage (must reach 80%)
+          - name: Run unit tests with coverage (must reach 80%)
         env:
           CI: true
         run: |
-          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage --coverage-directory=coverage/frontend
+          echo "Running unit tests with coverage..."
+          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
 
           echo "Checking coverage..."
-          COVERAGE_FILE="coverage/frontend/lcov.info"
+          # Buscar automáticamente el archivo lcov.info dentro de coverage/
+          COVERAGE_FILE=$(find coverage -type f -name "lcov.info" | head -n 1)
 
-          if [ ! -f "$COVERAGE_FILE" ]; then
-            echo "No coverage report found at $COVERAGE_FILE"
+          if [ -z "$COVERAGE_FILE" ]; then
+            echo "No coverage report found!"
             echo "Contents of coverage folder:"
             ls -R coverage || true
             exit 1
           fi
 
+          echo "Coverage report found at: $COVERAGE_FILE"
+
+          # Calcular cobertura a partir del lcov.info
           TOTAL=$(grep -A1 'end_of_record' -B999 "$COVERAGE_FILE" | grep 'LF:' | awk -F ':' '{s+=$2} END {print s}')
           HIT=$(grep -A1 'end_of_record' -B999 "$COVERAGE_FILE" | grep 'LH:' | awk -F ':' '{s+=$2} END {print s}')
+
+          if [ "$TOTAL" -eq 0 ]; then
+            echo "No lines found in coverage data"
+            exit 1
+          fi
+
           PERCENT=$(( 100 * HIT / TOTAL ))
 
           echo "Total lines: $TOTAL"
@@ -104,7 +115,6 @@ jobs:
           else
             echo "Coverage OK (${PERCENT}%)"
           fi
-
       - name: Build Angular app
         run: npm run build --if-present
 
