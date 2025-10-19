@@ -23,7 +23,7 @@ def create_seller(
         db=db, email=seller_create_request.email
     ) or get_user_by_doi(db=db, doi=seller_create_request.doi)
     if existing_user:
-        raise ConflictException("User with this email or DOI already exists")
+        raise ConflictException("Seller with this email or DOI already exists")
 
     existing_zone = get_zone_by_id(db=db, zone_id=seller_create_request.zone_id)
     if not existing_zone:

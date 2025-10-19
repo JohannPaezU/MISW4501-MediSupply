@@ -11,7 +11,7 @@ from src.core.logging_config import logger
 from src.db.database import Base
 from tests.containers.postgres_test_container import PostgresTestContainer
 from src.core.security import hash_password
-from src.models.db_models import User, Provider
+from src.models.db_models import User, Provider, Zone
 from src.models.enums.user_role import UserRole
 
 
@@ -59,6 +59,7 @@ def _populate_initial_data(engine: create_engine) -> dict[str, Any]:
     with session_factory() as db:
         data["users"] = _populate_users(db=db)
         data["providers"] = _populate_providers(db=db)
+        data["zones"] = _populate_zones(db=db)
     logger.info("Initial data population complete.")
 
     return data
@@ -129,3 +130,22 @@ def _populate_providers(db: Session) -> list[Provider]:
         db.expunge(provider)
 
     return providers
+
+
+def _populate_zones(db: Session) -> list[Provider]:
+    zones = [
+        Zone(
+            description="Bogotá",
+        ),
+        Zone(
+            description="Lima",
+        ),
+    ]
+
+    db.add_all(zones)
+    db.commit()
+    for zone in zones:
+        db.refresh(zone)
+        db.expunge(zone)
+
+    return zones
