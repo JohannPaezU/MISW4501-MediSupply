@@ -7,13 +7,6 @@
   background-color: #fff;
 }
 
-.page-title {
-  font-size: 1.75rem;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 1.5rem;
-}
-
 .info-section {
   margin-bottom: 2rem;
 }
@@ -176,61 +169,6 @@
 
 .btn-remove:hover {
   color: #e91e63;
-}
-
-.btn-primary {
-  border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: #e91e63;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 200px;
-  justify-content: center;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #c2185b;
-}
-
-.btn-primary:disabled {
-  background-color: #f9f9f9;
-  color: #aaa;
-  cursor: not-allowed;
-  border: 1px solid #eee;
-}
-
-.spinner-icon {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 3rem;
-  gap: 1rem;
-  color: #777;
-}
-
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #e91e63;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
 }
 
 .reporte-section {
