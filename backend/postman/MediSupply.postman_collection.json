@@ -37,7 +37,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"full_name\": \"Johann Páez\",\r\n    \"nit\": \"12345678-9\",\r\n    \"address\": \"Calle 103 # 16A - 16\",\r\n    \"phone\": \"3003251390\",\r\n    \"role\": \"institutional\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"full_name\": \"Johann Páez\",\r\n    \"doi\": \"4\",\r\n    \"address\": \"Calle 103 # 16A - 16\",\r\n    \"phone\": \"1234567890\",\r\n    \"role\": \"commercial\",\r\n    \"password\": \"{{password}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -55,7 +55,66 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"full_name\": \"Johann Páez\",\r\n    \"doi\": \"4\",\r\n    \"address\": \"Calle 103 # 16A - 16\",\r\n    \"phone\": \"1234567890\",\r\n    \"role\": \"commercial\",\r\n    \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 22:15:31 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "88"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"3e95dd98-ffa2-4f78-8698-2e5dda0d1d59\",\n    \"created_at\": \"2025-10-18T22:15:33.294179Z\"\n}"
+						}
+					]
 				},
 				{
 					"name": "Login",
@@ -103,7 +162,66 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 22:15:44 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "67"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"message\": \"OTP generated successfully\",\n    \"otp_expiration_minutes\": 5\n}"
+						}
+					]
 				},
 				{
 					"name": "Verify OTP",
@@ -116,12 +234,25 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"\r",
 									"pm.test(\"Response has correct structure\", function () {\r",
-									"    const jsonData = pm.response.json();\r",
 									"    pm.expect(jsonData).to.have.property('message');\r",
 									"    pm.expect(jsonData).to.have.property('access_token');\r",
 									"    pm.expect(jsonData).to.have.property('token_type');\r",
-									"});"
+									"    pm.expect(jsonData).to.have.property('user');\r",
+									"    pm.expect(jsonData.user).to.have.property('id');\r",
+									"    pm.expect(jsonData.user).to.have.property('email');\r",
+									"    pm.expect(jsonData.user).to.have.property('full_name');\r",
+									"    pm.expect(jsonData.user).to.have.property('doi');\r",
+									"    pm.expect(jsonData.user).to.have.property('address');\r",
+									"    pm.expect(jsonData.user).to.have.property('phone');\r",
+									"    pm.expect(jsonData.user).to.have.property('role');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.environment.set(\"access_token\", jsonData.access_token);"
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -134,7 +265,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"255236\"\r\n}",
+							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"492567\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -152,7 +283,1374 @@
 							]
 						}
 					},
+					"response": [
+						{
+							"name": "Verify OTP",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"023474\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/verify-otp",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"verify-otp"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 22:17:32 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "468"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"message\": \"OTP verified successfully\",\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NWY4MjBhYy1kYTVkLTQ4ZjctYTU4Mi0yMDU5NWQzZWM0YmYiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjA4MzMwNTN9.zLvUOPKzYF9eANDpOBW7yxOaUMDQ4-KuMWnXlklct1k\",\n    \"token_type\": \"bearer\",\n    \"user\": {\n        \"id\": \"75f820ac-da5d-48f7-a582-20595d3ec4bf\",\n        \"email\": \"js.paezc1@uniandes.edu.co\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"doi\": \"0000000000-0\",\n        \"address\": null,\n        \"phone\": \"123456789\",\n        \"role\": \"admin\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User Permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"permissions"
+							]
+						}
+					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sellers",
+			"item": [
+				{
+					"name": "Get Sellers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sellers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sellers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Sellers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/sellers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sellers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:29:01 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "318"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 1,\n    \"sellers\": [\n        {\n            \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n            \"full_name\": \"Johann Sebastian Páez Campos\",\n            \"doi\": \"123456789\",\n            \"email\": \"sebastian.paezcampos@gmail.com\",\n            \"phone\": \"123456789\",\n            \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n            \"zone\": {\n                \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n                \"description\": \"Bogotá\"\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Seller By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sellers/:sellerId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sellers",
+								":sellerId"
+							],
+							"variable": [
+								{
+									"key": "sellerId",
+									"value": "caea537d-1d85-416a-86ad-4d9aa9a6920e"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Seller By Id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/sellers/:sellerId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sellers",
+										":sellerId"
+									],
+									"variable": [
+										{
+											"key": "sellerId",
+											"value": "acecb4b2-4b10-45eb-8845-82bc04d0b3fd"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:25:28 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "288"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n    \"full_name\": \"Johann Sebastian Páez Campos\",\n    \"doi\": \"123456789\",\n    \"email\": \"sebastian.paezcampos@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n    \"zone\": {\n        \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n        \"description\": \"Bogotá\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Seller",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"full_name\": \"Johann Sebastian Páez Campos\",\r\n    \"doi\": \"1234567289\",\r\n    \"email\": \"sebastianpaez.campos@gmail.com\",\r\n    \"phone\": \"123456789\",\r\n    \"zone_id\": \"a2755811-b900-465a-a198-9712a313004a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sellers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sellers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Seller",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"full_name\": \"Johann Sebastian Páez Campos\",\r\n    \"doi\": \"1234567289\",\r\n    \"email\": \"sebastianpaezcampos@gmail.com\",\r\n    \"phone\": \"123456789\",\r\n    \"zone_id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/sellers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sellers"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 22:07:56 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "288"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"4afcf984-5bac-4cf7-9e81-393613fa96ab\",\n    \"full_name\": \"Johann Sebastian Páez Campos\",\n    \"doi\": \"1234567289\",\n    \"email\": \"sebastianpaezcampos@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-18T22:07:58.014552Z\",\n    \"zone\": {\n        \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n        \"description\": \"Bogotá\"\n    }\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Providers",
+			"item": [
+				{
+					"name": "Get Providers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/providers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"providers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Providers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/providers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"providers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:32:52 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "276"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 1,\n    \"providers\": [\n        {\n            \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n            \"name\": \"Proveedor 1\",\n            \"rit\": \"1010101\",\n            \"city\": \"Bogotá\",\n            \"country\": \"Colombia\",\n            \"image_url\": \"https://image.png\",\n            \"email\": \"fernando@gmail.com\",\n            \"phone\": \"123456789\",\n            \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Provider By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/providers/:providerId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"providers",
+								":providerId"
+							],
+							"variable": [
+								{
+									"key": "providerId",
+									"value": "3d948bb3-b5ba-4b10-a232-1e81eff3cb03"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Provider By Id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/providers/:providerId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"providers",
+										":providerId"
+									],
+									"variable": [
+										{
+											"key": "providerId",
+											"value": "e5a29c31-8852-4ffa-850a-fbafb55217fe"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:32:39 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "244"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n    \"name\": \"Proveedor 1\",\n    \"rit\": \"1010101\",\n    \"city\": \"Bogotá\",\n    \"country\": \"Colombia\",\n    \"image_url\": \"https://image.png\",\n    \"email\": \"fernando@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Provider",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Proveedor 1\",\r\n    \"rit\": \"1010101\",\r\n    \"city\": \"Bogotá\",\r\n    \"country\": \"Colombia\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"email\": \"fernando@gmail.com\",\r\n    \"phone\": \"123456789\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/providers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"providers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Provider",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Proveedor 1\",\r\n    \"rit\": \"10120101\",\r\n    \"city\": \"Bogotá\",\r\n    \"country\": \"Colombia\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"email\": \"fernand2o@gmail.com\",\r\n    \"phone\": \"123456789\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/providers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"providers"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 22:18:27 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "246"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"7ce155bb-6395-46b5-b5cf-98b16f626209\",\n    \"name\": \"Proveedor 1\",\n    \"rit\": \"10120101\",\n    \"city\": \"Bogotá\",\n    \"country\": \"Colombia\",\n    \"image_url\": \"https://image.png\",\n    \"email\": \"fernand2o@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-18T22:18:28.239967Z\"\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Selling Plans",
+			"item": [
+				{
+					"name": "Get Selling Plans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/selling-plans",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"selling-plans"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Selling Plans",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/selling-plans",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"selling-plans"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:46:04 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1063"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 1,\n    \"selling_plans\": [\n        {\n            \"id\": \"a2406d9d-72da-403b-9a8a-41079491d53f\",\n            \"period\": \"082025\",\n            \"goal\": 1500,\n            \"created_at\": \"2025-10-18T21:45:03.522283Z\",\n            \"product\": {\n                \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n                \"name\": \"Pastilla\",\n                \"details\": \"ficha tecnica\",\n                \"store\": \"Central store\",\n                \"batch\": \"10101010\",\n                \"image_url\": \"https://image.png\",\n                \"due_date\": \"2027-09-20\",\n                \"stock\": 3000,\n                \"price_per_unite\": 15.5,\n                \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n                \"provider\": {\n                    \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n                    \"name\": \"Proveedor 1\",\n                    \"rit\": \"1010101\",\n                    \"city\": \"Bogotá\",\n                    \"country\": \"Colombia\",\n                    \"image_url\": \"https://image.png\",\n                    \"email\": \"fernando@gmail.com\",\n                    \"phone\": \"123456789\",\n                    \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n                }\n            },\n            \"zone\": {\n                \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n                \"description\": \"Bogotá\"\n            },\n            \"seller\": {\n                \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n                \"full_name\": \"Johann Sebastian Páez Campos\",\n                \"doi\": \"123456789\",\n                \"email\": \"sebastian.paezcampos@gmail.com\",\n                \"phone\": \"123456789\",\n                \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n                \"zone\": {\n                    \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n                    \"description\": \"Bogotá\"\n                }\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Selling Plan By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/selling-plans/:sellingPlanId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"selling-plans",
+								":sellingPlanId"
+							],
+							"variable": [
+								{
+									"key": "sellingPlanId",
+									"value": "af919e2e-805c-487a-87fa-6f1687a02f32"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Selling Plan By Id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/selling-plans/:sellingPlanId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"selling-plans",
+										":sellingPlanId"
+									],
+									"variable": [
+										{
+											"key": "sellingPlanId",
+											"value": "a2406d9d-72da-403b-9a8a-41079491d53f"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:46:53 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1027"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"a2406d9d-72da-403b-9a8a-41079491d53f\",\n    \"period\": \"082025\",\n    \"goal\": 1500,\n    \"created_at\": \"2025-10-18T21:45:03.522283Z\",\n    \"product\": {\n        \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n        \"name\": \"Pastilla\",\n        \"details\": \"ficha tecnica\",\n        \"store\": \"Central store\",\n        \"batch\": \"10101010\",\n        \"image_url\": \"https://image.png\",\n        \"due_date\": \"2027-09-20\",\n        \"stock\": 3000,\n        \"price_per_unite\": 15.5,\n        \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n        \"provider\": {\n            \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n            \"name\": \"Proveedor 1\",\n            \"rit\": \"1010101\",\n            \"city\": \"Bogotá\",\n            \"country\": \"Colombia\",\n            \"image_url\": \"https://image.png\",\n            \"email\": \"fernando@gmail.com\",\n            \"phone\": \"123456789\",\n            \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n        }\n    },\n    \"zone\": {\n        \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n        \"description\": \"Bogotá\"\n    },\n    \"seller\": {\n        \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"doi\": \"123456789\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n        \"zone\": {\n            \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n            \"description\": \"Bogotá\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Selling Plan",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"period\": \"082025\",\r\n    \"product_id\": \"ea9ef572-a362-4b6e-a156-b98d1b308234\",\r\n    \"zone_id\": \"74f32f04-3fe9-4b69-983b-f2f6af34b94f\",\r\n    \"seller_id\": \"caea537d-1d85-416a-86ad-4d9aa9a6920e\",\r\n    \"goal\": 1500\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/selling-plans",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"selling-plans"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Selling Plan",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"period\": \"082025\",\r\n    \"product_id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\r\n    \"zone_id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\r\n    \"seller_id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\r\n    \"goal\": 1500\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/selling-plans",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"selling-plans"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:45:02 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1027"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"a2406d9d-72da-403b-9a8a-41079491d53f\",\n    \"period\": \"082025\",\n    \"goal\": 1500,\n    \"created_at\": \"2025-10-18T21:45:03.522283Z\",\n    \"product\": {\n        \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n        \"name\": \"Pastilla\",\n        \"details\": \"ficha tecnica\",\n        \"store\": \"Central store\",\n        \"batch\": \"10101010\",\n        \"image_url\": \"https://image.png\",\n        \"due_date\": \"2027-09-20\",\n        \"stock\": 3000,\n        \"price_per_unite\": 15.5,\n        \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n        \"provider\": {\n            \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n            \"name\": \"Proveedor 1\",\n            \"rit\": \"1010101\",\n            \"city\": \"Bogotá\",\n            \"country\": \"Colombia\",\n            \"image_url\": \"https://image.png\",\n            \"email\": \"fernando@gmail.com\",\n            \"phone\": \"123456789\",\n            \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n        }\n    },\n    \"zone\": {\n        \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n        \"description\": \"Bogotá\"\n    },\n    \"seller\": {\n        \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"doi\": \"123456789\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n        \"zone\": {\n            \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n            \"description\": \"Bogotá\"\n        }\n    }\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Products",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:35:58 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "554"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 1,\n    \"products\": [\n        {\n            \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n            \"name\": \"Pastilla\",\n            \"details\": \"ficha tecnica\",\n            \"store\": \"Central store\",\n            \"batch\": \"10101010\",\n            \"image_url\": \"https://image.png\",\n            \"due_date\": \"2027-09-20\",\n            \"stock\": 3000,\n            \"price_per_unite\": 15.5,\n            \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n            \"provider\": {\n                \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n                \"name\": \"Proveedor 1\",\n                \"rit\": \"1010101\",\n                \"city\": \"Bogotá\",\n                \"country\": \"Colombia\",\n                \"image_url\": \"https://image.png\",\n                \"email\": \"fernando@gmail.com\",\n                \"phone\": \"123456789\",\n                \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Products By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/:productId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "880115a3-3b18-4dcc-8852-4b99fe0668c2"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Products By Id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/:productId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										":productId"
+									],
+									"variable": [
+										{
+											"key": "productId",
+											"value": "1175f142-fd5c-4cda-9349-87ca7c4a580c"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:39:04 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "523"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n    \"name\": \"Pastilla\",\n    \"details\": \"ficha tecnica\",\n    \"store\": \"Central store\",\n    \"batch\": \"10101010\",\n    \"image_url\": \"https://image.png\",\n    \"due_date\": \"2027-09-20\",\n    \"stock\": 3000,\n    \"price_per_unite\": 15.5,\n    \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n    \"provider\": {\n        \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n        \"name\": \"Proveedor 1\",\n        \"rit\": \"1010101\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"image_url\": \"https://image.png\",\n        \"email\": \"fernando@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Pastilla\",\r\n    \"details\": \"ficha tecnica\",\r\n    \"store\": \"Central store\",\r\n    \"batch\": \"10101010\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"due_date\": \"2027-09-20\",\r\n    \"stock\": 3000,\r\n    \"price_per_unite\": 15.5,\r\n    \"provider_id\": \"3d948bb3-b5ba-4b10-a232-1e81eff3cb03\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Product",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Pastilla\",\r\n    \"details\": \"ficha tecnica\",\r\n    \"store\": \"Central store\",\r\n    \"batch\": \"10101010\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"due_date\": \"2027-09-20\",\r\n    \"stock\": 3000,\r\n    \"price_per_unite\": 15.5,\r\n    \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:34:03 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "523"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n    \"name\": \"Pastilla\",\n    \"details\": \"ficha tecnica\",\n    \"store\": \"Central store\",\n    \"batch\": \"10101010\",\n    \"image_url\": \"https://image.png\",\n    \"due_date\": \"2027-09-20\",\n    \"stock\": 3000,\n    \"price_per_unite\": 15.5,\n    \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n    \"provider\": {\n        \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n        \"name\": \"Proveedor 1\",\n        \"rit\": \"1010101\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"image_url\": \"https://image.png\",\n        \"email\": \"fernando@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Products Batch",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"name\": \"Betona\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        },\r\n        {\r\n            \"name\": \"Zar\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        },\r\n        {\r\n            \"name\": \"Analgesico\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products-batch",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products-batch"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Products Batch Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"name\": \"Betona\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        },\r\n        {\r\n            \"name\": \"Zar\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        },\r\n        {\r\n            \"name\": \"Analgesico\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products-batch",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products-batch"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 22:19:44 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "80"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"rows_total\": 3,\n    \"rows_inserted\": 3,\n    \"errors\": 0,\n    \"errors_details\": []\n}"
+						},
+						{
+							"name": "Create Products Batch Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"name\": \"Betona\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"c8fa4eab-dc8b-48c3-b1f9-322bee1f5e0f\"\r\n        },\r\n        {\r\n            \"name\": \"Zar\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"c8fa4eab-dc8b-48c3-b1f9-322bee1f5e0f\"\r\n        },\r\n        {\r\n            \"name\": \"Analgesico\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"c8fa4eab-dc8b-48c3-b1f9-322bee1f5e0f\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products-batch",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products-batch"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:34:38 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "297"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"rows_total\": 3,\n    \"rows_inserted\": 0,\n    \"errors\": 3,\n    \"errors_details\": [\n        \"Error for product 'Betona': Provider with the given ID does not exist\",\n        \"Error for product 'Zar': Provider with the given ID does not exist\",\n        \"Error for product 'Analgesico': Provider with the given ID does not exist\"\n    ]\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Zones",
+			"item": [
+				{
+					"name": "Get Zones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/zones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"zones"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Zones",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/zones",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"zones"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 Oct 2025 21:24:33 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "738"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 10,\n    \"zones\": [\n        {\n            \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n            \"description\": \"Bogotá\"\n        },\n        {\n            \"id\": \"1fdec997-44d0-41f0-bd3e-a58183a5e751\",\n            \"description\": \"Lima\"\n        },\n        {\n            \"id\": \"b32fab5c-d467-44cc-8572-a0ae3d3164e8\",\n            \"description\": \"Santiago\"\n        },\n        {\n            \"id\": \"eb67862e-c3c3-4273-bbcb-6bdd3ddbeef8\",\n            \"description\": \"Buenos Aires\"\n        },\n        {\n            \"id\": \"507ae888-ad2f-4aab-aa63-2f753c63d028\",\n            \"description\": \"Ciudad de México\"\n        },\n        {\n            \"id\": \"c1ebc7a1-0fe7-402f-8c70-203e05a2a3eb\",\n            \"description\": \"Madrid\"\n        },\n        {\n            \"id\": \"e1708edf-7490-45da-914c-cbca7265132d\",\n            \"description\": \"Miami\"\n        },\n        {\n            \"id\": \"ab85f78c-9313-4e18-9c50-a769fe861028\",\n            \"description\": \"Panamá\"\n        },\n        {\n            \"id\": \"31d15a5e-c482-4c6c-aee7-c79a68f2fd7f\",\n            \"description\": \"San José\"\n        },\n        {\n            \"id\": \"3f2a5a12-f52a-4582-9562-5bfab8e95b72\",\n            \"description\": \"Quito\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Get Zones Access Denied",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/zones",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"zones"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sun, 19 Oct 2025 01:54:39 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "71"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Access denied: requires one of the following roles: admin\"\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -210,9 +1708,76 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Health Check",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sat, 18 Oct 2025 22:08:22 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "hostname",
+							"value": "DESKTOP-QSHEBNE"
+						},
+						{
+							"key": "ip_address",
+							"value": "192.168.0.6"
+						},
+						{
+							"key": "content-length",
+							"value": "93"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\n    \"status\": \"healthy\",\n    \"success\": true,\n    \"time_stamp\": \"2025-10-18T17:08:22.819590\",\n    \"service\": \"API\"\n}"
+				}
+			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",

@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, status
-from requests import Session
+from sqlalchemy.orm import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.product_schema import (
+    GetProductResponse,
     GetProductsResponse,
-    ProductBase,
     ProductCreateBulkRequest,
     ProductCreateBulkResponse,
     ProductCreateRequest,
@@ -48,7 +48,7 @@ Register a new product in the system.
 
 ### Response
 Returns the details of the newly created product including `id`, `name`, `details`, `store`, `batch`, `image_url`,
-`due_date`, `stock`, `price_per_unite`, `provider_id`, and `created_at`.
+`due_date`, `stock`, `price_per_unite`, `created_at` and associated `provider` information.
 """,
 )
 async def register_product(
@@ -107,7 +107,7 @@ Retrieve a list of all products in the system.
 
 ### Response
 Returns a list of products along with the total count. Each product includes `id`, `name`, `details`, `store`, `batch`,
-`image_url`, `due_date`, `stock`, `price_per_unite`, `provider_id`, and `created_at`.
+`image_url`, `due_date`, `stock`, `price_per_unite`, `created_at` and associated `provider` information.
 """,
 )
 async def get_all_products(
@@ -121,7 +121,7 @@ async def get_all_products(
 
 @product_router.get(
     "/{product_id}",
-    response_model=ProductBase,
+    response_model=GetProductResponse,
     status_code=status.HTTP_200_OK,
     summary="Get product by ID",
     description="""
@@ -132,14 +132,14 @@ Retrieve a product's details by their unique ID.
 
 ### Response
 Returns the details of the product including `id`, `name`, `details`, `store`, `batch`, `image_url`, `due_date`,
-`stock`, `price_per_unite`, `provider_id`, and `created_at`.
+`stock`, `price_per_unite`, `created_at` and associated `provider` information.
 """,
 )
 async def get_product(
     *,
     product_id: str,
     db: Session = Depends(get_db),
-) -> ProductBase:
+) -> GetProductResponse:
     product = get_product_by_id(db=db, product_id=product_id)
     if not product:
         raise NotFoundException("Product not found")
