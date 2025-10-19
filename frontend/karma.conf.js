@@ -26,7 +26,17 @@ module.exports = function (config) {
         { type: 'text-summary' }
       ],
       includeAllSources: true,
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+
+      // 🔽 Agrega esta parte:
+      check: {
+        global: {
+          statements: 50,
+          branches: 50,
+          functions: 50,
+          lines: 50
+        }
+      }
     },
     reporters: ['progress', 'kjhtml'],
     browsers: ['Chrome'],
