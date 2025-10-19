@@ -19,6 +19,8 @@
     <string name="label_password">Contraseña</string>
     <string name="label_confirm_password">Confirmar contraseña</string>
     <string name="label_rememberme">Recordarme</string>
+    <string name="show_password">Mostrar contraseña</string>
+    <string name="hide_password">Ocultar contraseña</string>
     <string name="label_search_by_name">Buscar por nombre</string>
 
     <string name="title_home">Inicio</string>
