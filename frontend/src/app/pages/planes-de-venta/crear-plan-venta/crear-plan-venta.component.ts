@@ -8,6 +8,7 @@ import { ProductService } from '../../../services/productos/product.service';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
 import { CreatePlanVentaRequest } from '../../../interfaces/planVenta.interface';
 import { PlanVentaService } from '../../../services/planes-de-venta/planesDeVenta.service';
+import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-crear-plan-venta',
@@ -15,6 +16,7 @@ import { PlanVentaService } from '../../../services/planes-de-venta/planesDeVent
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    LoadingSpinnerComponent
   ],
   templateUrl: './crear-plan-venta.component.html',
   styleUrls: ['./crear-plan-venta.component.css']
