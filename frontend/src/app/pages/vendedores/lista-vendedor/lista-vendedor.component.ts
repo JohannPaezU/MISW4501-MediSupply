@@ -1,11 +1,8 @@
-// src/app/components/vendedores/lista-vendedor/lista-vendedor.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { Vendedor } from '../../../interfaces/vendedor.interface';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
 
@@ -14,10 +11,7 @@ import { VendedorService } from '../../../services/vendedores/vendedor.service';
   standalone: true,
   imports: [
     CommonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatIconModule
   ],
   templateUrl: './lista-vendedor.component.html',
   styleUrls: ['./lista-vendedor.component.css']
@@ -27,92 +21,109 @@ export class ListaVendedorComponent implements OnInit {
   vendedoresFiltrados: Vendedor[] = [];
   isLoading = false;
   error: string | null = null;
+  copiedId: string | null = null;
 
   pageSize = 10;
   currentPage = 1;
 
+  toastMessage: string | null = null;
+  toastType: 'success' | 'error' = 'success';
+
   constructor(
     private router: Router,
     private vendedorService: VendedorService,
-    private snackBar: MatSnackBar
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.cargarVendedores();
   }
 
-  /**
-   * Carga la lista de vendedores desde el API
-   */
   cargarVendedores(): void {
     this.isLoading = true;
     this.error = null;
+    this.cdr.detectChanges();
 
-    this.vendedorService.getVendedores().subscribe({
-      next: (vendedores) => {
-        this.vendedores = vendedores;
-        this.vendedoresFiltrados = vendedores;
-        this.isLoading = false;
-
-        if (vendedores.length === 0) {
-          this.mostrarMensaje('No hay vendedores registrados', 'info');
+    this.vendedorService.getVendedores()
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          this.vendedores = response.sellers;
+          this.vendedoresFiltrados = response.sellers;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error al cargar vendedores:', err);
+          this.error = 'No se pudieron cargar los vendedores. Intente de nuevo más tarde.';
+          this.cdr.detectChanges();
         }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.error = 'Error al cargar los vendedores';
-        this.mostrarMensaje('Error al cargar los vendedores. Por favor, intente nuevamente.', 'error');
-        console.error('Error al cargar vendedores:', error);
-      }
-    });
+      });
   }
 
-  /**
-   * Exporta los vendedores a CSV
-   */
+  copyToClipboard(id: string): void {
+    navigator.clipboard.writeText(id).then(() => {
+      this.copiedId = id;
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        this.copiedId = null;
+        this.cdr.detectChanges();
+      }, 1500);
+    }).catch(err => console.error('Error al copiar ID: ', err));
+  }
+
   exportarCSV(): void {
-    if (this.vendedores.length === 0) {
-      this.mostrarMensaje('No hay datos para exportar', 'warning');
-      return;
-    }
+    const headers = [
+      'ID',
+      'Nombre completo',
+      'Documento',
+      'Email',
+      'Teléfono',
+      'Zona asignada',
+      'Fecha de creación'
+    ];
 
-    try {
-      this.vendedorService.exportToCSV(this.vendedores);
-      this.mostrarMensaje('Archivo CSV descargado exitosamente', 'success');
-    } catch (error) {
-      this.mostrarMensaje('Error al exportar el archivo CSV', 'error');
-      console.error('Error al exportar CSV:', error);
-    }
+    const rows = this.vendedores.map(v => [
+      v.id || '',
+      v.full_name,
+      v.doi,
+      v.email,
+      v.phone,
+      v.zone?.description || '',
+      v.created_at || ''
+    ]);
+
+    const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'vendedores.csv';
+    link.click();
+
+    this.showToast('CSV exportado exitosamente', 'success');
   }
 
-  /**
-   * Navega a la página de creación de vendedor
-   */
   crearVendedor(): void {
     this.router.navigate(['/vendedores/crear']);
   }
 
-  /**
-   * Maneja el cambio de tamaño de página
-   */
   onPageSizeChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     this.pageSize = Number(target.value);
     this.currentPage = 1;
   }
 
-  /**
-   * Navega a la página anterior
-   */
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
     }
   }
 
-  /**
-   * Navega a la página siguiente
-   */
   nextPage(): void {
     const totalPages = Math.ceil(this.totalItems / this.pageSize);
     if (this.currentPage < totalPages) {
@@ -120,60 +131,41 @@ export class ListaVendedorComponent implements OnInit {
     }
   }
 
-  /**
-   * Muestra mensajes al usuario
-   */
-  private mostrarMensaje(mensaje: string, tipo: 'success' | 'error' | 'warning' | 'info'): void {
-    this.snackBar.open(mensaje, 'Cerrar', {
-      duration: 3000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top',
-      panelClass: [`snackbar-${tipo}`]
-    });
-  }
-
-  /**
-   * Obtiene los vendedores paginados
-   */
   get vendedoresPaginados(): Vendedor[] {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     return this.vendedoresFiltrados.slice(startIndex, endIndex);
   }
 
-  /**
-   * Calcula el índice del primer elemento
-   */
   get startItem(): number {
     if (this.totalItems === 0) return 0;
     return (this.currentPage - 1) * this.pageSize + 1;
   }
 
-  /**
-   * Calcula el índice del último elemento
-   */
   get endItem(): number {
     return Math.min(this.currentPage * this.pageSize, this.totalItems);
   }
 
-  /**
-   * Obtiene el total de elementos
-   */
   get totalItems(): number {
     return this.vendedoresFiltrados.length;
   }
 
-  /**
-   * Verifica si hay página anterior
-   */
   get hasPreviousPage(): boolean {
     return this.currentPage > 1;
   }
 
-  /**
-   * Verifica si hay página siguiente
-   */
   get hasNextPage(): boolean {
     return this.endItem < this.totalItems;
+  }
+
+  showToast(message: string, type: 'success' | 'error'): void {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.toastMessage = null;
+      this.cdr.detectChanges();
+    }, 4000);
   }
 }
