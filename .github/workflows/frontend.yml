@@ -78,12 +78,15 @@ jobs:
         env:
           CI: true
         run: |
-          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
+          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage --coverage-directory=coverage/frontend
 
           echo "Checking coverage..."
-          COVERAGE_FILE=$(find coverage -name 'lcov.info' | head -n 1)
+          COVERAGE_FILE="coverage/frontend/lcov.info"
+
           if [ ! -f "$COVERAGE_FILE" ]; then
-            echo "No coverage report found!"
+            echo "No coverage report found at $COVERAGE_FILE"
+            echo "Contents of coverage folder:"
+            ls -R coverage || true
             exit 1
           fi
 
@@ -98,6 +101,8 @@ jobs:
           if [ "$PERCENT" -lt 80 ]; then
             echo "Coverage below 80% (${PERCENT}%)"
             exit 1
+          else
+            echo "Coverage OK (${PERCENT}%)"
           fi
 
       - name: Build Angular app
