@@ -6,13 +6,6 @@
   overflow-y: auto;
 }
 
-.page-title {
-  font-size: 1.75rem;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 2rem;
-}
-
 .proveedor-form {
   display: flex;
   flex-direction: column;
@@ -85,25 +78,6 @@
   padding-top: 2rem;
 }
 
-.btn-primary {
-  background-color: #e91e63;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #c2185b;
-}
-
-.btn-primary:disabled {
-  background-color: #e0e0e0;
-  cursor: not-allowed;
-}
 
 .alert {
   padding: 1rem;
