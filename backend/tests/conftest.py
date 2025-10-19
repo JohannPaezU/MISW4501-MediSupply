@@ -11,7 +11,7 @@ from src.core.logging_config import logger
 from src.db.database import Base
 from tests.containers.postgres_test_container import PostgresTestContainer
 from src.core.security import hash_password
-from src.models.db_models import User
+from src.models.db_models import User, Provider
 from src.models.enums.user_role import UserRole
 
 
@@ -58,6 +58,7 @@ def _populate_initial_data(engine: create_engine) -> dict[str, Any]:
     session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     with session_factory() as db:
         data["users"] = _populate_users(db=db)
+        data["providers"] = _populate_providers(db=db)
     logger.info("Initial data population complete.")
 
     return data
@@ -94,5 +95,37 @@ def _populate_users(db: Session) -> list[User]:
     db.commit()
     for user in users:
         db.refresh(user)
+        db.expunge(user)
 
     return users
+
+
+def _populate_providers(db: Session) -> list[Provider]:
+    providers = [
+        Provider(
+            name="Provider One",
+            rit="1234567890-1",
+            city="City One",
+            country="Country One",
+            image_url=None,
+            email="provider1@example.com",
+            phone="987654321",
+        ),
+        Provider(
+            name="Provider Two",
+            rit="0987654321-2",
+            city="City Two",
+            country="Country Two",
+            image_url=None,
+            email="provider2@example.com",
+            phone="123456789",
+        )
+    ]
+
+    db.add_all(providers)
+    db.commit()
+    for provider in providers:
+        db.refresh(provider)
+        db.expunge(provider)
+
+    return providers
