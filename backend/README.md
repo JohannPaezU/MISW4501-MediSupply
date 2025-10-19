@@ -1,315 +1,272 @@
 
 # MediSupply API (backend)
 
-This repository contains the backend API for the MediSupply project. The API is a FastAPI application that uses PostgreSQL as the data store and is intended to be run via Docker Compose. It provides user authentication with OTP verification and email notifications.
+Este repositorio contiene la API backend del proyecto MediSupply. La API es una aplicación FastAPI que utiliza PostgreSQL como base de datos y está diseñada para ejecutarse mediante Docker Compose. Proporciona autenticación de usuarios con verificación OTP y notificaciones por correo electrónico.
 
-## Table of Contents
+**🚀 Entorno de Staging:** [https://medi-supply-staging-9d42f48051e1.herokuapp.com/docs](https://medi-supply-staging-9d42f48051e1.herokuapp.com/docs)
 
-- [Quick overview](#quick-overview)
-- [Prerequisites](#prerequisites)
-- [Requirements](#requirements)
-- [Project structure](#project-structure)
-- [Environment variables](#environment-variables)
-- [Installation (docker-compose only)](#installation-docker-compose-only)
-- [Running tests](#running-tests)
-- [API Endpoints](#api-endpoints)
-  - [Health Check](#health-check)
-  - [User Registration](#user-registration)
-  - [User Login](#user-login)
-  - [OTP Verification](#otp-verification)
-- [Live Environment](#live-environment)
-  - [Quick Test](#quick-test)
-  - [Available Endpoints](#available-endpoints)
-- [License](#license)
+## Tabla de Contenidos
 
-## Quick overview
+
+- [Descripción General](#descripción-general)
+- [Prerequisitos](#prerequisitos)
+- [Requisitos](#requisitos)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Variables de Entorno](#variables-de-entorno)
+- [Instalación](#instalación)
+- [Ejecución de Pruebas](#ejecución-de-pruebas)
+- [Endpoints de la API](#endpoints-de-la-api)
+  - [Verificación de Salud](#verificación-de-salud)
+  - [Autenticación](#autenticación)
+  - [Zonas](#zonas)
+  - [Vendedores](#vendedores)
+  - [Proveedores](#proveedores)
+  - [Productos](#productos)
+  - [Planes de Venta](#planes-de-venta)
+- [Entorno en Vivo](#entorno-en-vivo)
+  - [Prueba Rápida](#prueba-rápida)
+  - [Documentación Interactiva](#documentación-interactiva)
+- [Licencia](#licencia)
+
+## Descripción General
 
 - Framework: FastAPI
-- Language: Python 3.12
-- Database: PostgreSQL (run as a container)
-- Authentication: OTP-based with JWT tokens
-- Email Service: Configurable email service integration
-- Run method supported: docker-compose (preferred)
+- Lenguaje: Python 3.12
+- Base de Datos: PostgreSQL (ejecutada como contenedor)
+- Autenticación: Basada en OTP con tokens JWT
+- Servicio de Email: Integración configurable con servicio de correo electrónico
+- Método de ejecución soportado: docker-compose (preferido)
 
-## Prerequisites
+## Prerequisitos
 
-Before running this project, make sure you have the following installed:
+Antes de ejecutar este proyecto, asegúrese de tener instalado lo siguiente:
 
-- **[Python 3.12+](https://www.python.org/downloads/)** - Programming language runtime
-- **[Docker](https://www.docker.com/get-started)** - Container platform for running the application and database
+- **[Python 3.12+](https://www.python.org/downloads/)** - Entorno de ejecución del lenguaje de programación
+- **[Docker](https://www.docker.com/get-started)** - Plataforma de contenedores para ejecutar la aplicación y la base de datos
 
-## Requirements
+## Requisitos
 
-- Docker and Docker Compose installed and running on the host machine.
-- Email service API key for OTP delivery (supports any email service provider).
-- Ports used by the services are configured through the `.env` file (see below).
+- Docker y Docker Compose instalados y ejecutándose en la máquina host.
+- Clave API del servicio de correo electrónico para la entrega de OTP (soporta cualquier proveedor de servicios de correo electrónico).
+- Los puertos utilizados por los servicios se configuran a través del archivo `.env` (ver más abajo).
 
-Note: tests are integration tests and require Docker to be running; the test harness will automatically provision any containers it needs (you do not need to start Postgres manually).
+Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ejecución; el marco de pruebas provisionará automáticamente cualquier contenedor que necesite (no necesita iniciar Postgres manualmente).
 
-## Project structure
+## Estructura del Proyecto
 
-Repository tree (top-level, representative) with short descriptions:
+Árbol del repositorio (nivel superior, representativo) con descripciones breves:
 
 ```
 .
-├── Dockerfile                 # Docker image build configuration for the Python app (runs uvicorn)
-├── docker-compose.yml         # Docker Compose orchestration for app + postgres (development)
-├── requirements.txt           # Python package dependencies
-├── README.md                  # Project documentation (this file)
-├── .env.template              # Template for environment variables configuration
-├── .env.test                  # Test environment variables
-├── .python-version            # Python version specification
-├── pytest.ini                 # Pytest configuration file
-├── Procfile                   # Process file for deployment (e.g., Heroku)
-├── format_code.ps1            # PowerShell script for code formatting (Windows)
-├── format_code.sh             # Bash script for code formatting (Linux/Mac)
-├── postman/                   # Postman collection for API testing
-├── src/                       # Application source code
-│   ├── main.py
-│   ├── core/                  # Core utilities and configuration
-│   │   ├── config.py
-│   │   ├── logging_config.py
-│   │   ├── security.py
-│   │   └── utils.py
-│   ├── db/                    # Database connection and utilities
-│   │   ├── database.py
-│   │   └── database_util.py
-│   ├── errors/                # Custom errors and exception handlers
-│   │   ├── errors.py
+├── Dockerfile                 # Configuración de construcción de imagen Docker para la app Python (ejecuta uvicorn)
+├── docker-compose.yml         # Orquestación Docker Compose para app + postgres (desarrollo)
+├── requirements.txt           # Dependencias de paquetes Python
+├── README.md                  # Documentación del proyecto (este archivo)
+├── .env.template              # Plantilla para configuración de variables de entorno
+├── .env.test                  # Variables de entorno de prueba
+├── .python-version            # Especificación de versión Python
+├── pytest.ini                 # Archivo de configuración de Pytest
+├── Procfile                   # Archivo de proceso para despliegue (ej., Heroku)
+├── format_code.ps1            # Script PowerShell para formateo de código (Windows)
+├── format_code.sh             # Script Bash para formateo de código (Linux/Mac)
+├── postman/                   # Colección Postman para pruebas de API
+├── htmlcov/                   # Reportes de cobertura de código HTML
+├── src/                       # Código fuente de la aplicación
+│   ├── main.py               # Punto de entrada principal de la aplicación
+│   ├── core/                 # Utilidades centrales y configuración
+│   │   ├── config.py         
+│   │   ├── logging_config.py 
+│   │   ├── security.py       
+│   │   └── utils.py          
+│   ├── db/                   # Conexión y utilidades de base de datos
+│   │   ├── database.py       
+│   │   └── database_util.py  
+│   ├── errors/               # Errores personalizados y manejadores de excepciones
+│   │   ├── errors.py         
 │   │   └── exception_handlers.py
-│   ├── models/                # ORM models and enums
-│   │   ├── db_models.py
-│   │   └── enums/
-│   │       └── user_role.py
-│   ├── routers/               # API route definitions
-│   │   ├── auth_router.py
-│   │   └── health_check_router.py
-│   ├── schemas/               # Pydantic request/response schemas
-│   │   ├── user_schema.py
-│   │   └── auth_schema.py
-│   ├── services/              # Business logic / service layer
-│   │   ├── user_service.py
-│   │   ├── auth_service.py
-│   │   ├── email_service.py
-│   │   ├── otp_service.py
-│   │   └── requests/
-│   │       └── email_request.py
-│   └── templates/             # Email templates
-│       └── otp_template.html
-└── tests/                     # Integration tests (use Testcontainers fixtures)
-    ├── base_test.py
-    ├── conftest.py
-    ├── test_auth_router.py
-    ├── test_health_check_router.py
-    └── containers/
-        └── postgres_test_container.py
+│   ├── models/               # Modelos ORM y enums
+│   │   ├── db_models.py      
+│   │   └── enums/            # Enumeraciones
+│   │       └── user_role.py  
+│   ├── routers/              # Definiciones de rutas de API
+│   │   ├── auth_router.py    
+│   │   ├── health_check_router.py  
+│   │   ├── product_router.py       
+│   │   ├── provider_router.py      
+│   │   ├── seller_router.py        
+│   │   ├── selling_plan_router.py  
+│   │   └── zone_router.py          
+│   ├── schemas/              # Schemas Pydantic de request/response
+│   │   ├── auth_schema.py    
+│   │   ├── user_schema.py    
+│   │   ├── product_schema.py 
+│   │   ├── provider_schema.py 
+│   │   ├── seller_schema.py   
+│   │   ├── selling_plan_schema.py 
+│   │   └── zone_schema.py     
+│   ├── services/             # Lógica de negocio / capa de servicio
+│   │   ├── auth_service.py   
+│   │   ├── user_service.py   
+│   │   ├── email_service.py  
+│   │   ├── otp_service.py    
+│   │   ├── product_service.py 
+│   │   ├── provider_service.py 
+│   │   ├── seller_service.py   
+│   │   ├── selling_plan_service.py 
+│   │   ├── zone_service.py     
+│   │   └── requests/           # Modelos de request
+│   │       └── email_request.py 
+│   └── templates/            # Plantillas de correo electrónico
+│       ├── otp_template.html 
+│       └── temporary_password_template.html 
+└── tests/                    # Pruebas de integración (usan fixtures de Testcontainers)
+    ├── base_test.py          # Clase base para pruebas
+    ├── conftest.py           # Configuración de fixtures pytest
+    ├── test_auth_router.py   
+    ├── test_health_check_router.py 
+    ├── test_product_router.py      
+    ├── test_provider_router.py     
+    ├── test_seller_router.py       
+    ├── test_selling_plan_router.py 
+    ├── test_zone_router.py         
+    ├── test_security_access.py     
+    └── containers/                 # Contenedores de prueba
+        └── postgres_test_container.py 
 ```
 
-## Environment variables
+## Variables de Entorno
 
-The project uses these environment variables. Create a `.env` file in the project root based on `.env.template`:
+El proyecto utiliza estas variables de entorno. Cree un archivo `.env` en la raíz del proyecto basado en `.env.template`:
 
-| Variable | Description | Example Value |
-|----------|-------------|---------------|
-| `APP_PORT` | Port the FastAPI app listens on | `8000` |
-| `POSTGRES_HOST` | Hostname/service name for Postgres | `postgres_db` (docker-compose) or `localhost` |
-| `POSTGRES_PORT` | Port for Postgres connection | `5432` |
-| `POSTGRES_USER` | Postgres username | `postgres` |
-| `POSTGRES_PASSWORD` | Postgres password | `postgres` |
-| `POSTGRES_DB` | Postgres database name | `medisupply` |
-| `OTP_EXPIRATION_MINUTES` | OTP code expiration time in minutes | `5` |
-| `JWT_SECRET_KEY` | Secret key for JWT token signing | Random secure string (e.g., generated with `openssl rand -hex 32`) |
-| `JWT_ALGORITHM` | Algorithm for JWT encoding | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | JWT token expiration time in minutes | `60` |
-| `EMAIL_SENDER` | Sender email address for OTP notifications | `noreply@medisupply.com` |
-| `EMAIL_API_KEY` | API key for email service provider | Your email service API key |
+| Variable | Descripción | Valor de Ejemplo |
+|----------|-------------|------------------|
+| `APP_PORT` | Puerto en el que escucha la aplicación FastAPI | `8000` |
+| `CORS_ORIGINS` | Orígenes permitidos para CORS (separados por coma) | `http://localhost:3000,http://localhost:8080` |
+| `LOGIN_URL` | URL de login del frontend | `http://localhost:3000/login` |
+| `POSTGRES_HOST` | Hostname/nombre de servicio para Postgres | `postgres_db` (docker-compose) o `localhost` |
+| `POSTGRES_PORT` | Puerto para conexión Postgres | `5432` |
+| `POSTGRES_USER` | Nombre de usuario Postgres | `postgres` |
+| `POSTGRES_PASSWORD` | Contraseña Postgres | `postgres` |
+| `POSTGRES_DB` | Nombre de la base de datos Postgres | `medisupply` |
+| `OTP_EXPIRATION_MINUTES` | Tiempo de expiración del código OTP en minutos | `5` |
+| `JWT_SECRET_KEY` | Clave secreta para firma de tokens JWT | Cadena segura aleatoria (ej., generada con `openssl rand -hex 32`) |
+| `JWT_ALGORITHM` | Algoritmo para codificación JWT | `HS256` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Tiempo de expiración del token JWT en minutos | `60` |
+| `EMAIL_SENDER` | Dirección de correo del remitente para notificaciones OTP | `noreply@medisupply.com` |
+| `EMAIL_API_KEY` | Clave API del proveedor de servicio de correo | Su clave API del servicio de correo |
 
-See `.env.template` for a template with all required variables.
+Vea `.env.template` para una plantilla con todas las variables requeridas.
 
-## Installation (docker-compose only)
+## Instalación
 
-1. Create a `.env` file in the project root based on `.env.template` (see [Environment variables](#environment-variables) section for details):
+1. Cree un archivo `.env` en la raíz del proyecto basado en `.env.template` (consulte la sección [Variables de Entorno](#variables-de-entorno) para más detalles):
 
-```bash
+```powershell
 cp .env.template .env
-# Edit .env with your values
+# Edite .env con sus valores
 ```
 
-2. Build and start the application and the database using Docker Compose:
+2. Construya e inicie la aplicación y la base de datos usando Docker Compose:
 
 ```powershell
 docker compose up --build
 ```
 
-3. The API will be available at http://localhost:<APP_PORT>/ (default: 8000). The OpenAPI docs are available at http://localhost:<APP_PORT>/docs and the ReDoc at /redoc.
+3. La API estará disponible en http://localhost:<APP_PORT>/ (por defecto: 8000). La documentación OpenAPI está disponible en http://localhost:<APP_PORT>/docs y ReDoc en /redoc.
 
-To stop and remove containers, networks and volumes created by compose:
+Para detener y eliminar contenedores, redes y volúmenes creados por compose:
 
 ```powershell
 docker compose down
 ```
 
-## Running tests
+## Ejecución de Pruebas
 
-The test suite contains integration tests and requires Docker to be running on the host. The test harness (Testcontainers / fixtures) will automatically start any containers needed, so you do NOT need to start Postgres or other services manually.
+La suite de pruebas contiene pruebas de integración y requiere que Docker esté en ejecución en el host. El marco de pruebas (Testcontainers / fixtures) iniciará automáticamente cualquier contenedor necesario, por lo que NO necesita iniciar Postgres u otros servicios manualmente.
 
-Run the tests with coverage from the repository root (backend):
+Ejecute las pruebas con cobertura desde la raíz del repositorio (backend):
 
 ```powershell
 pytest --cov=src --cov-report=term-missing --cov-report=html --cov-fail-under=90 -v
 ```
 
-Notes:
-- Ensure Docker is running before executing the command above.
-- The command produces a coverage report in the `htmlcov/` directory and will fail if coverage falls below 90%.
+Notas:
+- Asegúrese de que Docker esté en ejecución antes de ejecutar el comando anterior.
+- El comando produce un reporte de cobertura en el directorio `htmlcov/` y fallará si la cobertura cae por debajo del 90%.
 
-## API Endpoints
+## Endpoints de la API
 
-**Base path:** `/api/v1`
+**Ruta base:** `/api/v1`
 
-### Health Check
+La API proporciona los siguientes endpoints:
 
-- **Endpoint:** `GET /api/v1/health`
-- **Description:** Returns service health status and metadata
-- **Response:**
+### Verificación de Salud
+- **GET** `/health` - Retorna el estado de salud del servicio y metadatos
 
-```json
-{
-  "status": "healthy",
-  "success": true,
-  "time_stamp": "2025-10-12T10:30:00.000Z",
-  "service": "API"
-}
-```
+### Autenticación
+- **POST** `/auth/register` - Registrar una nueva cuenta de usuario
+- **POST** `/auth/login` - Autenticar un usuario y enviar OTP a su correo electrónico
+- **POST** `/auth/verify-otp` - Verificar el OTP y recibir un token de acceso JWT
+- **GET** `/auth/permissions` - Obtener los endpoints accesibles según el rol del usuario autenticado
 
-### User Registration
+### Zonas
+- **GET** `/zones` - Obtener la lista de todas las zonas disponibles
 
-- **Endpoint:** `POST /api/v1/auth/register`
-- **Description:** Register a new user account
-- **Request Body:**
+### Vendedores
+- **GET** `/sellers` - Obtener la lista de todos los vendedores registrados
+- **POST** `/sellers` - Registrar un nuevo vendedor
+- **GET** `/sellers/{seller_id}` - Obtener los detalles de un vendedor específico por su ID
 
-```json
-{
-  "email": "user@example.com",
-  "full_name": "Jane Doe",
-  "nit": "123456789",
-  "address": "123 Main St",
-  "phone": "1234567890",
-  "role": "institutional",
-  "password": "secret12"
-}
-```
+### Proveedores
+- **GET** `/providers` - Obtener la lista de todos los proveedores registrados
+- **POST** `/providers` - Registrar un nuevo proveedor en el sistema
+- **GET** `/providers/{provider_id}` - Obtener los detalles de un proveedor específico por su ID
 
-- **Success Response (201):**
+### Productos
+- **GET** `/products` - Obtener la lista de todos los productos disponibles
+- **POST** `/products` - Registrar un nuevo producto en el sistema
+- **POST** `/products-batch` - Registrar múltiples productos de forma masiva
+- **GET** `/products/{product_id}` - Obtener los detalles de un producto específico por su ID
 
-```json
-{
-  "id": "uuid-string",
-  "created_at": "2025-10-12T10:30:00.000Z"
-}
-```
+### Planes de Venta
+- **GET** `/selling-plans` - Obtener la lista de todos los planes de venta
+- **POST** `/selling-plans` - Crear un nuevo plan de venta
+- **GET** `/selling-plans/{selling_plan_id}` - Obtener los detalles de un plan de venta específico por su ID
 
-- **Field Validation:**
+**Nota:** La documentación interactiva de la API está disponible en `/docs` (Swagger UI) y `/redoc` (ReDoc) cuando el servidor está en ejecución.
 
-| Field | Type | Constraints | Description |
-|-------|------|-------------|-------------|
-| `email` | EmailStr | 5-120 chars | Valid email address |
-| `full_name` | string | 1-100 chars | User's full name |
-| `nit` | string | 1-50 chars | User's NIT (Tax ID) |
-| `address` | string | 1-255 chars | User's address |
-| `phone` | string | Phone number (9–15 digits) | User's phone number |
-| `role` | enum | `institutional` or `commercial` | User's role type |
-| `password` | string | 6-12 chars | User's password |
+## Entorno en Vivo
 
-### User Login
+La API está actualmente desplegada y disponible en un **entorno de staging** en Heroku:
 
-- **Endpoint:** `POST /api/v1/auth/login`
-- **Description:** Authenticate a user and send OTP to their email
-- **Request Body:**
+**URL Base (Staging):** https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1
 
-```json
-{
-  "email": "user@example.com",
-  "password": "secret12"
-}
-```
+### Prueba Rápida
 
-- **Success Response (200):**
-
-```json
-{
-  "message": "OTP generated successfully",
-  "otp_expiration_minutes": 5
-}
-```
-
-- **Notes:**
-  - If credentials are valid, a 6-digit OTP is generated and sent to the user's email
-  - The OTP expires after the configured time (default: 5 minutes)
-  - User must verify the OTP to receive an access token
-
-### OTP Verification
-
-- **Endpoint:** `POST /api/v1/auth/verify-otp`
-- **Description:** Verify the OTP and receive a JWT access token
-- **Request Body:**
-
-```json
-{
-  "email": "user@example.com",
-  "otp_code": "123456"
-}
-```
-
-- **Success Response (200):**
-
-```json
-{
-  "message": "OTP verified successfully",
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "bearer"
-}
-```
-
-- **Notes:**
-  - The OTP must be valid and not expired
-  - The returned JWT token should be used in the `Authorization` header for protected endpoints
-  - Token format: `Bearer <access_token>`
-
-**Note:** Interactive API documentation is available at `/docs` (Swagger UI) and `/redoc` (ReDoc) when the server is running.
-
-## Live Environment
-
-The API is currently deployed and available in a **staging environment** on Heroku:
-
-**Base URL (Staging):** https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1
-
-### Quick Test
-
-You can test the API health endpoint to verify the service is running:
+Puede probar el endpoint de salud de la API para verificar que el servicio está funcionando:
 
 ```bash
 curl https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1/health
 ```
 
-**Example Response:**
+**Respuesta de Ejemplo:**
 ```json
 {
   "status": "healthy",
   "success": true,
-  "time_stamp": "2025-10-15T10:30:00.000Z",
+  "time_stamp": "2025-10-18T10:30:00.000Z",
   "service": "API"
 }
 ```
 
-### Available Endpoints
+### Documentación Interactiva
 
-All the endpoints documented in the [API Endpoints](#api-endpoints) section are available on this staging environment.
+Todos los endpoints documentados en la sección [Endpoints de la API](#endpoints-de-la-api) están disponibles en este entorno de staging.
 
-**Interactive Documentation:**
+**Documentación Interactiva:**
 - Swagger UI: https://medi-supply-staging-9d42f48051e1.herokuapp.com/docs
 - ReDoc: https://medi-supply-staging-9d42f48051e1.herokuapp.com/redoc
 
-## License
+## Licencia
 
 Copyright © MISW4502 - Proyecto Final 2 - 2025.
