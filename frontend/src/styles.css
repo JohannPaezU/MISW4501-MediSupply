@@ -57,7 +57,6 @@ button {
   font-family: inherit;
 }
 
-/* --- Layout de Página --- */
 .page-container {
   display: flex;
   flex-direction: column;
@@ -80,7 +79,6 @@ button {
   gap: 1rem;
 }
 
-/* --- Tipografía --- */
 .page-title {
   font-size: 2rem;
   font-weight: 600;
@@ -88,7 +86,6 @@ button {
   margin: 0 0 2rem 0;
 }
 
-/* --- Formularios --- */
 .form-field {
   display: flex;
   flex-direction: column;
@@ -107,16 +104,16 @@ button {
 
 .form-label {
   font-size: 0.875rem;
-  font-weight: 500; /* Ajustado de 400 a 500 para coincidir */
-  color: var(--text-color-dark); /* Ajustado de medium a dark */
+  font-weight: 500;
+  color: var(--text-color-dark);
 }
 
 .form-input,
 .form-select {
   padding: 0.875rem 1rem;
   border: 1px solid var(--border-color);
-  border-radius: 4px; /* Unificado (era 8px en un componente) */
-  font-size: 1rem; /* Unificado (era 0.95rem en un componente) */
+  border-radius: 4px;
+  font-size: 1rem;
   color: var(--text-color-dark);
   font-family: var(--font-family-base);
   transition: all 0.2s ease;
@@ -139,10 +136,9 @@ button {
 .form-select:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15); /* Unificado */
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15);
 }
 
-/* Clase global para errores de validación de Angular */
 .form-input.ng-invalid.ng-touched,
 .form-select.ng-invalid.ng-touched {
   border-color: var(--border-color-error);
@@ -166,7 +162,7 @@ button {
   justify-content: flex-end;
   gap: 1rem;
   padding-top: 2rem;
-  margin-top: auto; /* Empuja las acciones al final */
+  margin-top: auto;
   border-top: 1px solid #e0e0e0;
 }
 
@@ -320,17 +316,17 @@ button {
 
 .data-table th,
 .data-table td {
-  padding: 1rem 1.5rem; /* Unificado */
+  padding: 1rem 1.5rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color-light);
-  font-size: 0.875rem; /* Unificado */
+  font-size: 0.875rem;
 }
 
 .data-table thead th {
   font-weight: 500;
   color: var(--text-color-medium);
   background-color: var(--background-alt);
-  position: sticky; /* Añadido de lista-vendedor */
+  position: sticky;
   top: 0;
   z-index: 1;
 }
@@ -340,7 +336,7 @@ button {
 }
 
 .data-table tbody tr:last-child {
-  border-bottom: none; /* Añadido de lista-vendedor */
+  border-bottom: none;
 }
 
 .no-data-cell {
@@ -478,7 +474,6 @@ button {
   }
 }
 
-/* --- Media Queries Generales --- */
 @media (max-width: 768px) {
   .page-container {
     padding: 1rem;
@@ -496,7 +491,7 @@ button {
   }
 
   .form-actions {
-    flex-direction: column-reverse; /* Aplicado de crear-vendedor */
+    flex-direction: column-reverse;
     padding-top: 1.5rem;
   }
 
