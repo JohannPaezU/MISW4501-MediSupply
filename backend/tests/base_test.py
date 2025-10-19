@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.core.security import create_access_token
-from src.models.db_models import User, Provider, Zone, Product
+from src.models.db_models import Product, Provider, User, Zone
 from src.models.enums.user_role import UserRole
 
 
@@ -24,11 +24,18 @@ class BaseTest:
     @pytest.fixture(autouse=True)
     def _create_authorization_tokens(self, setup_teardown_db):
         self._set_up_test_data(setup_teardown_db=setup_teardown_db)
-        institutional_user = next(user for user in self.users if user.role == UserRole.INSTITUTIONAL)
-        commercial_user = next(user for user in self.users if user.role == UserRole.COMMERCIAL)
+        institutional_user = next(
+            user for user in self.users if user.role == UserRole.INSTITUTIONAL
+        )
+        commercial_user = next(
+            user for user in self.users if user.role == UserRole.COMMERCIAL
+        )
         admin_user = next(user for user in self.users if user.role == UserRole.ADMIN)
         self.institutional_token = create_access_token(
-            data={"sub": str(institutional_user.id), "role": institutional_user.role.value}
+            data={
+                "sub": str(institutional_user.id),
+                "role": institutional_user.role.value,
+            }
         )
         self.commercial_token = create_access_token(
             data={"sub": str(commercial_user.id), "role": commercial_user.role.value}

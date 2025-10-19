@@ -13,9 +13,7 @@ class TestSellingPlanRouter(BaseTest):
     @pytest.fixture
     def authorized_client(self):
         client = self.client.__class__(self.client.app)
-        client.headers.update({
-            "Authorization": f"Bearer {self.admin_token}"
-        })
+        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
         return client
 
     def test_register_selling_plan_with_invalid_parameters(self, authorized_client):
@@ -39,7 +37,9 @@ class TestSellingPlanRouter(BaseTest):
         payload = self.create_selling_plan_payload.copy()
         payload["product_id"] = next(iter(self.products)).id
         payload["zone_id"] = next(iter(self.zones)).id
-        payload["seller_id"] = next(user for user in self.users if user.role == UserRole.COMMERCIAL).id
+        payload["seller_id"] = next(
+            user for user in self.users if user.role == UserRole.COMMERCIAL
+        ).id
 
         response = authorized_client.post(f"{self.prefix}/selling-plans", json=payload)
         json_response = response.json()
@@ -54,7 +54,9 @@ class TestSellingPlanRouter(BaseTest):
         payload = self.create_selling_plan_payload.copy()
         payload["product_id"] = next(iter(self.products)).id
         payload["zone_id"] = next(iter(self.zones)).id
-        payload["seller_id"] = next(user for user in self.users if user.role == UserRole.COMMERCIAL).id
+        payload["seller_id"] = next(
+            user for user in self.users if user.role == UserRole.COMMERCIAL
+        ).id
 
         response1 = authorized_client.post(f"{self.prefix}/selling-plans", json=payload)
         assert response1.status_code == 201
@@ -62,14 +64,18 @@ class TestSellingPlanRouter(BaseTest):
         response2 = authorized_client.post(f"{self.prefix}/selling-plans", json=payload)
         json_response2 = response2.json()
         assert response2.status_code == 409
-        assert json_response2["message"] == "A selling plan with the same period, product, zone, and seller already exists"
-
+        assert (
+            json_response2["message"]
+            == "A selling plan with the same period, product, zone, and seller already exists"
+        )
 
     def test_register_selling_plan_with_nonexistent_product(self, authorized_client):
         payload = self.create_selling_plan_payload.copy()
         payload["product_id"] = "123e4567-e89b-12d3-a456-426614174000"
         payload["zone_id"] = next(iter(self.zones)).id
-        payload["seller_id"] = next(user for user in self.users if user.role == UserRole.COMMERCIAL).id
+        payload["seller_id"] = next(
+            user for user in self.users if user.role == UserRole.COMMERCIAL
+        ).id
 
         response = authorized_client.post(f"{self.prefix}/selling-plans", json=payload)
         json_response = response.json()
@@ -80,7 +86,9 @@ class TestSellingPlanRouter(BaseTest):
         payload = self.create_selling_plan_payload.copy()
         payload["product_id"] = next(iter(self.products)).id
         payload["zone_id"] = "123e4567-e89b-12d3-a456-426614174000"
-        payload["seller_id"] = next(user for user in self.users if user.role == UserRole.COMMERCIAL).id
+        payload["seller_id"] = next(
+            user for user in self.users if user.role == UserRole.COMMERCIAL
+        ).id
 
         response = authorized_client.post(f"{self.prefix}/selling-plans", json=payload)
         json_response = response.json()
@@ -106,7 +114,9 @@ class TestSellingPlanRouter(BaseTest):
         assert "selling_plans" in json_response
 
     def test_get_selling_plan_by_id_not_found(self, authorized_client):
-        response = authorized_client.get(f"{self.prefix}/selling-plans/123e4567-e89b-12d3-a456-426614174000")
+        response = authorized_client.get(
+            f"{self.prefix}/selling-plans/123e4567-e89b-12d3-a456-426614174000"
+        )
         json_response = response.json()
         assert response.status_code == 404
         assert json_response["message"] == "Selling plan not found"
@@ -115,15 +125,21 @@ class TestSellingPlanRouter(BaseTest):
         payload = self.create_selling_plan_payload.copy()
         payload["product_id"] = next(iter(self.products)).id
         payload["zone_id"] = next(iter(self.zones)).id
-        payload["seller_id"] = next(user for user in self.users if user.role == UserRole.COMMERCIAL).id
+        payload["seller_id"] = next(
+            user for user in self.users if user.role == UserRole.COMMERCIAL
+        ).id
 
-        create_response = authorized_client.post(f"{self.prefix}/selling-plans", json=payload)
+        create_response = authorized_client.post(
+            f"{self.prefix}/selling-plans", json=payload
+        )
         assert create_response.status_code == 201
 
         create_json_response = create_response.json()
         selling_plan_id = create_json_response["id"]
 
-        response = authorized_client.get(f"{self.prefix}/selling-plans/{selling_plan_id}")
+        response = authorized_client.get(
+            f"{self.prefix}/selling-plans/{selling_plan_id}"
+        )
         json_response = response.json()
         assert response.status_code == 200
         assert json_response["id"] == selling_plan_id

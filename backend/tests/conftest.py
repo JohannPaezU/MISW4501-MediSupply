@@ -1,22 +1,22 @@
-from typing import Generator, Any
+from typing import Any, Generator
 
 import pytest
 from dotenv import find_dotenv, load_dotenv
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from src.core.logging_config import logger
-from src.db.database import Base
-from tests.containers.postgres_test_container import PostgresTestContainer
 from src.core.security import hash_password
-from src.models.db_models import User, Provider, Zone, Product
+from src.db.database import Base
+from src.models.db_models import Product, Provider, User, Zone
 from src.models.enums.user_role import UserRole
+from tests.containers.postgres_test_container import PostgresTestContainer
 
 
 def pytest_configure() -> None:
     logger.info("Configuring test environment...")
-    env_file = find_dotenv('../.env.test')
+    env_file = find_dotenv("../.env.test")
     load_dotenv(env_file, override=True)
     logger.info("Test environment configured.")
 
@@ -30,16 +30,21 @@ def postgres_container() -> Generator[PostgresTestContainer, None, None]:
 
 
 @pytest.fixture(scope="session")
-def test_client(postgres_container: PostgresTestContainer) -> Generator[TestClient, None, None]:
+def test_client(
+    postgres_container: PostgresTestContainer,
+) -> Generator[TestClient, None, None]:
     logger.info("Configuring test client...")
     from src.main import app
+
     client = TestClient(app)
     logger.info("Test client configured.")
     yield client
 
 
 @pytest.fixture(autouse=True)
-def setup_teardown_db(postgres_container: PostgresTestContainer) -> Generator[dict[str, Any], None, None]:
+def setup_teardown_db(
+    postgres_container: PostgresTestContainer,
+) -> Generator[dict[str, Any], None, None]:
     engine = create_engine(postgres_container.get_connection_url())
     logger.info("Setting up database schema...")
     Base.metadata.create_all(bind=engine)
@@ -120,7 +125,7 @@ def _populate_providers(db: Session) -> list[Provider]:
             image_url=None,
             email="provider2@example.com",
             phone="123456789",
-        )
+        ),
     ]
 
     db.add_all(providers)
@@ -174,7 +179,7 @@ def _populate_products(db: Session, providers: list[Provider]) -> list[Product]:
             stock=200,
             price_per_unite=20.0,
             provider_id=providers[1].id,
-        )
+        ),
     ]
     db.add_all(products)
     db.commit()

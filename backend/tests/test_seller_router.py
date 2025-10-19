@@ -10,15 +10,13 @@ class TestSellerRouter(BaseTest):
         "full_name": "John Doe",
         "doi": "123456789",
         "email": "seller@mail.com",
-        "phone": "1234567890"
+        "phone": "1234567890",
     }
 
     @pytest.fixture
     def authorized_client(self):
         client = self.client.__class__(self.client.app)
-        client.headers.update({
-            "Authorization": f"Bearer {self.admin_token}"
-        })
+        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
         return client
 
     def test_register_seller_with_invalid_parameters(self, authorized_client):
@@ -72,7 +70,9 @@ class TestSellerRouter(BaseTest):
         mock_send_email.assert_called_once()
 
     @patch("src.services.seller_service.send_email")
-    def test_register_seller_with_duplicate_email(self, mock_send_email, authorized_client):
+    def test_register_seller_with_duplicate_email(
+        self, mock_send_email, authorized_client
+    ):
         payload = self.create_seller_payload.copy()
         payload["zone_id"] = next(iter(self.zones)).id
 
@@ -83,11 +83,15 @@ class TestSellerRouter(BaseTest):
         response2 = authorized_client.post(f"{self.prefix}/sellers", json=payload)
         json_response2 = response2.json()
         assert response2.status_code == 409
-        assert json_response2["message"] == "Seller with this email or DOI already exists"
+        assert (
+            json_response2["message"] == "Seller with this email or DOI already exists"
+        )
         mock_send_email.assert_called_once()
 
     @patch("src.services.seller_service.send_email")
-    def test_register_seller_with_duplicate_doi(self, mock_send_email, authorized_client):
+    def test_register_seller_with_duplicate_doi(
+        self, mock_send_email, authorized_client
+    ):
         payload = self.create_seller_payload.copy()
         payload["zone_id"] = next(iter(self.zones)).id
 
@@ -98,7 +102,9 @@ class TestSellerRouter(BaseTest):
         response2 = authorized_client.post(f"{self.prefix}/sellers", json=payload)
         json_response2 = response2.json()
         assert response2.status_code == 409
-        assert json_response2["message"] == "Seller with this email or DOI already exists"
+        assert (
+            json_response2["message"] == "Seller with this email or DOI already exists"
+        )
         mock_send_email.assert_called_once()
 
     def test_get_all_sellers(self, authorized_client):
@@ -109,7 +115,9 @@ class TestSellerRouter(BaseTest):
         assert "sellers" in json_response
 
     def test_get_seller_by_id_not_found(self, authorized_client):
-        response = authorized_client.get(f"{self.prefix}/sellers/123e4567-e89b-12d3-a456-426614174000")
+        response = authorized_client.get(
+            f"{self.prefix}/sellers/123e4567-e89b-12d3-a456-426614174000"
+        )
         json_response = response.json()
         assert response.status_code == 404
         assert json_response["message"] == "Seller not found"
