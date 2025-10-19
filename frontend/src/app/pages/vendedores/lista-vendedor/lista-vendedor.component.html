@@ -1,56 +1,87 @@
-<div class="vendedores-container">
-  <div class="vendedores-header">
-    <h1 class="vendedores-title">Vendedores</h1>
-    <div class="vendedores-actions">
-      <button class="btn-secondary" (click)="exportarCSV()">
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Vendedores</h1>
+    <div class="page-actions">
+      <button class="btn-secondary" (click)="exportarCSV()" [disabled]="isLoading || vendedores.length === 0">
         EXPORTAR A CSV
       </button>
-      <button class="btn-primary" (click)="crearVendedor()">
+      <button class="btn-primary" (click)="crearVendedor()" [disabled]="isLoading">
         CREAR VENDEDOR
       </button>
     </div>
   </div>
 
-  <div class="table-container">
+  <app-loading-spinner *ngIf="isLoading" message="Cargando vendedores..."></app-loading-spinner>
+
+  <div *ngIf="error && !isLoading" class="alert alert-error">
+    <mat-icon class="alert-icon">error</mat-icon>
+    <span>{{ error }}</span>
+    <button class="btn-primary btn-retry" (click)="cargarVendedores()">
+      Reintentar
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="table-container">
     <table class="vendedores-table">
       <thead>
         <tr>
-          <th>Nombre</th>
+          <th>ID</th>
+          <th>Nombre completo</th>
           <th>Documento</th>
-          <th>Teléfono</th>
           <th>Email</th>
+          <th>Teléfono</th>
           <th>Zona asignada</th>
+          <th>Fecha de creación</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let vendedor of vendedores">
-          <td>{{ vendedor.nombre }}</td>
-          <td>{{ vendedor.documento }}</td>
-          <td>{{ vendedor.telefono }}</td>
+        <tr *ngFor="let vendedor of vendedoresPaginados">
+          <td>
+            <div class="id-cell" (click)="copyToClipboard(vendedor.id!)" title="Copiar ID">
+              <mat-icon>content_copy</mat-icon>
+              <span *ngIf="copiedId !== vendedor.id" class="id-text">{{ vendedor.id | slice:0:8 }}...</span>
+              <span *ngIf="copiedId === vendedor.id" class="copy-success-text">¡Copiado!</span>
+            </div>
+          </td>
+          <td>{{ vendedor.full_name }}</td>
+          <td>{{ vendedor.doi }}</td>
           <td>{{ vendedor.email }}</td>
-          <td>{{ vendedor.zonaAsignada }}</td>
+          <td>{{ vendedor.phone }}</td>
+          <td>
+            <span class="zone-badge">{{ vendedor.zone?.description || 'Sin zona' }}</span>
+          </td>
+          <td>{{ vendedor.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </tr>
+        <tr *ngIf="vendedores.length === 0">
+          <td colspan="7" class="no-data-cell">No se encontraron vendedores.</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div class="pagination-container">
-    <div class="pagination-left">
-      <span class="pagination-label">Filas por página:</span>
-      <select title="Filas" class="pagination-select" [value]="pageSize" (change)="onPageSizeChange($event)">
-        <option [value]="10">10</option>
-        <option [value]="25">25</option>
-        <option [value]="50">50</option>
+  <footer *ngIf="!isLoading && !error && vendedores.length > 0" class="pagination-controls">
+    <div class="page-size-selector">
+      <label for="pageSize">Filas por página:</label>
+      <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
       </select>
     </div>
-    <div class="pagination-right">
-      <span class="pagination-info">{{ startItem }} - {{ endItem }} of {{ totalItems }}</span>
-      <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
-        <mat-icon>chevron_left</mat-icon>
+    <div class="page-info">
+      <span>{{ startItem }} - {{ endItem }} de {{ totalItems }}</span>
+    </div>
+    <div class="page-navigation">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">
+        <mat-icon>keyboard_arrow_left</mat-icon>
       </button>
-      <button class="pagination-btn" (click)="nextPage()" [disabled]="endItem >= totalItems">
-        <mat-icon>chevron_right</mat-icon>
+      <button (click)="nextPage()" [disabled]="endItem >= totalItems">
+        <mat-icon>keyboard_arrow_right</mat-icon>
       </button>
     </div>
+  </footer>
+
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
   </div>
 </div>
