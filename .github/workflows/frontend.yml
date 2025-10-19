@@ -99,8 +99,8 @@ jobs:
 
       - name: Confirm build folder exists
         run: |
-          if [ ! -d "dist/frontend/browser/browser" ]; then
-            echo "Error: dist/frontend/browser/browser does not exist. Build failed?"
+          if [ ! -d "dist/frontend/browser" ]; then
+            echo "Error: dist/frontend/browser does not exist. Build failed?"
             exit 1
           fi
 
