@@ -11,7 +11,7 @@ from src.core.logging_config import logger
 from src.db.database import Base
 from tests.containers.postgres_test_container import PostgresTestContainer
 from src.core.security import hash_password
-from src.models.db_models import User, Provider, Zone
+from src.models.db_models import User, Provider, Zone, Product
 from src.models.enums.user_role import UserRole
 
 
@@ -60,6 +60,7 @@ def _populate_initial_data(engine: create_engine) -> dict[str, Any]:
         data["users"] = _populate_users(db=db)
         data["providers"] = _populate_providers(db=db)
         data["zones"] = _populate_zones(db=db)
+        data["products"] = _populate_products(db=db, providers=data["providers"])
     logger.info("Initial data population complete.")
 
     return data
@@ -149,3 +150,37 @@ def _populate_zones(db: Session) -> list[Provider]:
         db.expunge(zone)
 
     return zones
+
+
+def _populate_products(db: Session, providers: list[Provider]) -> list[Product]:
+    products = [
+        Product(
+            name="Product One",
+            details="Details for product one.",
+            store="Store One",
+            batch="BATCH001",
+            image_url="http://example.com/product1.jpg",
+            due_date="2024-12-31",
+            stock=100,
+            price_per_unite=10.5,
+            provider_id=next(iter(providers)).id,
+        ),
+        Product(
+            name="Product Two",
+            details="Details for product two.",
+            store="Store Two",
+            batch="BATCH002",
+            image_url="http://example.com/product2.jpg",
+            due_date="2025-01-31",
+            stock=200,
+            price_per_unite=20.0,
+            provider_id=providers[1].id,
+        )
+    ]
+    db.add_all(products)
+    db.commit()
+    for product in products:
+        db.refresh(product)
+        db.expunge(product)
+
+    return products
