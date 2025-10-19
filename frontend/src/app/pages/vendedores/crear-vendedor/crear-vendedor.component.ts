@@ -67,6 +67,32 @@ export class CrearVendedorComponent implements OnInit {
       });
   }
 
+  private buildRequest(): CreateVendedorRequest {
+    const formValue = this.vendedorForm.value;
+    return {
+      full_name: formValue.nombreCompleto.trim(),
+      doi: formValue.documento.trim(),
+      email: formValue.correoElectronico.trim(),
+      phone: formValue.telefono.trim(),
+      zone_id: formValue.zonaAsignada
+    };
+  }
+
+  private handleError(err: any): string {
+    const messages: Record<number, string> = {
+      409: 'Ya existe un vendedor con este correo o documento.',
+      422: 'La zona seleccionada no existe.'
+    };
+
+    if (messages[err.status]) return messages[err.status];
+
+    const detail = err?.error?.detail;
+    if (typeof detail === 'string') return detail;
+    if (Array.isArray(detail)) return detail[0]?.msg || 'Error desconocido.';
+
+    return 'Hubo un error al crear el vendedor. Por favor, intenta de nuevo.';
+  }
+
   crearVendedor(): void {
     this.vendedorForm.markAllAsTouched();
 
@@ -76,15 +102,7 @@ export class CrearVendedorComponent implements OnInit {
     }
 
     this.isLoading = true;
-
-    const formValue = this.vendedorForm.value;
-    const nuevoVendedor: CreateVendedorRequest = {
-      full_name: formValue.nombreCompleto.trim(),
-      doi: formValue.documento.trim(),
-      email: formValue.correoElectronico.trim(),
-      phone: formValue.telefono.trim(),
-      zone_id: formValue.zonaAsignada
-    };
+    const nuevoVendedor = this.buildRequest();
 
     this.vendedorService.createVendedor(nuevoVendedor)
       .pipe(finalize(() => {
@@ -92,33 +110,23 @@ export class CrearVendedorComponent implements OnInit {
         this.cdr.detectChanges();
       }))
       .subscribe({
-        next: (response) => {
-          this.showToast(`¡Vendedor ${response.full_name} creado con éxito!`, 'success');
-          this.vendedorForm.reset();
-          this.vendedorForm.patchValue({ zonaAsignada: null });
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.error('Error al crear el vendedor:', err);
-          let errorMessage = 'Hubo un error al crear el vendedor. Por favor, intenta de nuevo.';
-
-          if (err.status === 409) {
-            errorMessage = 'Ya existe un vendedor con este correo o documento.';
-          } else if (err.status === 422) {
-            errorMessage = 'La zona seleccionada no existe.';
-          } else if (err.error?.detail) {
-            if (typeof err.error.detail === 'string') {
-              errorMessage = err.error.detail;
-            } else if (Array.isArray(err.error.detail)) {
-              errorMessage = err.error.detail[0]?.msg || errorMessage;
-            }
-          }
-
-          this.showToast(errorMessage, 'error');
-        }
-    });
+        next: (response) => this.onCreateSuccess(response),
+        error: (err) => this.onCreateError(err)
+      });
   }
 
+  private onCreateSuccess(response: any): void {
+    this.showToast(`¡Vendedor ${response.full_name} creado con éxito!`, 'success');
+    this.vendedorForm.reset();
+    this.vendedorForm.patchValue({ zonaAsignada: null });
+    this.cdr.detectChanges();
+  }
+
+  private onCreateError(err: any): void {
+    console.error('Error al crear el vendedor:', err);
+    const errorMessage = this.handleError(err);
+    this.showToast(errorMessage, 'error');
+  }
   importarDesdeCSV(): void {
     this.showToast('Funcionalidad próximamente disponible', 'error');
   }

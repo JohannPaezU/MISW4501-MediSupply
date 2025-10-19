@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { Vendedor } from '../../../interfaces/vendedor.interface';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
+import { CsvExportService } from '../../../services/utilities/csv.service';
 
 @Component({
   selector: 'app-lista-vendedor',
@@ -32,6 +33,7 @@ export class ListaVendedorComponent implements OnInit {
   constructor(
     private router: Router,
     private vendedorService: VendedorService,
+    private csvExportService: CsvExportService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -45,12 +47,10 @@ export class ListaVendedorComponent implements OnInit {
     this.cdr.detectChanges();
 
     this.vendedorService.getVendedores()
-      .pipe(
-        finalize(() => {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        })
-      )
+      .pipe(finalize(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (response) => {
           this.vendedores = response.sellers;
@@ -66,46 +66,46 @@ export class ListaVendedorComponent implements OnInit {
   }
 
   copyToClipboard(id: string): void {
-    navigator.clipboard.writeText(id).then(() => {
-      this.copiedId = id;
-      this.cdr.detectChanges();
-      setTimeout(() => {
-        this.copiedId = null;
+    navigator.clipboard.writeText(id)
+      .then(() => {
+        this.copiedId = id;
         this.cdr.detectChanges();
-      }, 1500);
-    }).catch(err => console.error('Error al copiar ID: ', err));
+        setTimeout(() => {
+          this.copiedId = null;
+          this.cdr.detectChanges();
+        }, 1500);
+      })
+      .catch(err => console.error('Error al copiar ID: ', err));
   }
 
   exportarCSV(): void {
-    const headers = [
-      'ID',
-      'Nombre completo',
-      'Documento',
-      'Email',
-      'Teléfono',
-      'Zona asignada',
-      'Fecha de creación'
-    ];
+    if (this.vendedores.length === 0) {
+      this.showToast('No hay vendedores para exportar.', 'error');
+      return;
+    }
 
-    const rows = this.vendedores.map(v => [
-      v.id || '',
-      v.full_name,
-      v.doi,
-      v.email,
-      v.phone,
-      v.zone?.description || '',
-      v.created_at || ''
-    ]);
+    const headers = {
+      id: 'ID',
+      full_name: 'Nombre completo',
+      doi: 'Documento',
+      email: 'Email',
+      phone: 'Teléfono',
+      zone_description: 'Zona asignada',
+      created_at: 'Fecha de creación'
+    };
 
-    const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const data = this.vendedores.map(v => ({
+      id: v.id || '',
+      full_name: v.full_name,
+      doi: v.doi,
+      email: v.email,
+      phone: v.phone,
+      zone_description: v.zone?.description || '',
+      created_at: v.created_at || ''
+    }));
 
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'vendedores.csv';
-    link.click();
-
-    this.showToast('CSV exportado exitosamente', 'success');
+    this.csvExportService.exportarACsv(data, 'vendedores', headers);
+    this.showToast('CSV exportado exitosamente.', 'success');
   }
 
   crearVendedor(): void {
@@ -119,16 +119,12 @@ export class ListaVendedorComponent implements OnInit {
   }
 
   previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
+    if (this.currentPage > 1) this.currentPage--;
   }
 
   nextPage(): void {
     const totalPages = Math.ceil(this.totalItems / this.pageSize);
-    if (this.currentPage < totalPages) {
-      this.currentPage++;
-    }
+    if (this.currentPage < totalPages) this.currentPage++;
   }
 
   get vendedoresPaginados(): Vendedor[] {
