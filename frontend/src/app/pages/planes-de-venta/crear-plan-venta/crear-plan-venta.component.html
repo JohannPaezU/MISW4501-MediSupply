@@ -1,52 +1,106 @@
 <div class="crear-plan-container">
-  <h1 class="page-title">Crear plan</h1>
+  <h1 class="page-title">Crear plan de venta</h1>
 
-  <form [formGroup]="planVentaForm" (ngSubmit)="crearPlanDeVenta()" class="plan-form">
+  <div *ngIf="isLoadingData" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+
+  <form *ngIf="!isLoadingData" [formGroup]="planVentaForm" (ngSubmit)="crearPlanDeVenta()" class="plan-form">
     <div class="form-content">
+
       <div class="form-field">
-        <label class="field-label">Periodo</label>
-        <select title="Periodo" class="form-select" formControlName="periodo">
-          <option *ngFor="let periodo of periodos" [value]="periodo">{{ periodo }}</option>
+        <label class="field-label">Periodo *</label>
+        <select
+          title="Periodo"
+          class="form-select"
+          formControlName="periodo"
+          [class.error]="periodo?.invalid && (periodo?.dirty || periodo?.touched)">
+          <option [ngValue]="null" disabled>Seleccione un periodo</option>
+          <option *ngFor="let p of periodos" [value]="p">{{ p }}</option>
         </select>
+        <div *ngIf="periodo?.invalid && (periodo?.dirty || periodo?.touched)" class="error-message">
+          <div *ngIf="periodo?.errors?.['required']">El periodo es requerido.</div>
+        </div>
       </div>
 
       <div class="form-field">
-        <label class="field-label">Producto</label>
-        <select title="Producto" class="form-select" formControlName="producto">
-          <option *ngFor="let producto of productos" [value]="producto">{{ producto }}</option>
+        <label class="field-label">Producto *</label>
+        <select
+          title="Producto"
+          class="form-select"
+          formControlName="producto"
+          [class.error]="producto?.invalid && (producto?.dirty || producto?.touched)">
+          <option [ngValue]="null" disabled>Seleccione un producto</option>
+          <option *ngFor="let prod of productos" [value]="prod.id">
+            {{ prod.name }} - {{ prod.batch }}
+          </option>
         </select>
+        <div *ngIf="producto?.invalid && (producto?.dirty || producto?.touched)" class="error-message">
+          <div *ngIf="producto?.errors?.['required']">El producto es requerido.</div>
+        </div>
       </div>
 
       <div class="form-field">
-        <label class="field-label">Meta (unidades)</label>
-        <input type="number" class="form-input" formControlName="metaUnidades" placeholder="Ej: 1200">
+        <label class="field-label">Meta (unidades) *</label>
+        <input
+          type="number"
+          class="form-input"
+          formControlName="metaUnidades"
+          placeholder="Ej: 1200"
+          [class.error]="metaUnidades?.invalid && (metaUnidades?.dirty || metaUnidades?.touched)">
+        <div *ngIf="metaUnidades?.invalid && (metaUnidades?.dirty || metaUnidades?.touched)" class="error-message">
+          <div *ngIf="metaUnidades?.errors?.['required']">La meta es requerida.</div>
+          <div *ngIf="metaUnidades?.errors?.['min']">La meta debe ser mayor a 0.</div>
+        </div>
       </div>
 
       <div class="form-field">
-        <label class="field-label">Zona</label>
-        <select title="Zona" class="form-select" formControlName="zona">
-          <option *ngFor="let zona of zonas" [value]="zona">{{ zona }}</option>
+        <label class="field-label">Zona *</label>
+        <select
+          title="Zona"
+          class="form-select"
+          formControlName="zona"
+          [class.error]="zona?.invalid && (zona?.dirty || zona?.touched)">
+          <option [ngValue]="null" disabled>Seleccione una zona</option>
+          <option *ngFor="let z of zonas" [value]="z.id">{{ z.description }}</option>
         </select>
+        <div *ngIf="zona?.invalid && (zona?.dirty || zona?.touched)" class="error-message">
+          <div *ngIf="zona?.errors?.['required']">La zona es requerida.</div>
+        </div>
       </div>
 
+
+
       <div class="form-field">
-        <label class="field-label">Asociar vendedor</label>
-        <div class="search-field-wrapper">
-          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-            viewBox="0 0 16 16">
-            <path
-              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-          </svg>
-          <input type="text" class="form-input search-input" formControlName="vendedorAsociado"
-            placeholder="Buscar por nombre o documento...">
+        <label class="field-label">Vendedor asociado *</label>
+        <select
+          title="Vendedor"
+          class="form-select"
+          formControlName="vendedorAsociado"
+          [class.error]="vendedorAsociado?.invalid && (vendedorAsociado?.dirty || vendedorAsociado?.touched)">
+          <option [ngValue]="null" disabled>Seleccione un vendedor</option>
+          <option *ngFor="let vendedor of vendedoresFiltrados" [value]="vendedor.id">
+            {{ vendedor.full_name }} - {{ vendedor.doi }}
+          </option>
+        </select>
+        <small class="field-hint" *ngIf="vendedoresFiltrados.length === 0 && searchVendedor?.value">
+          No se encontraron vendedores con ese criterio
+        </small>
+        <div *ngIf="vendedorAsociado?.invalid && (vendedorAsociado?.dirty || vendedorAsociado?.touched)" class="error-message">
+          <div *ngIf="vendedorAsociado?.errors?.['required']">El vendedor es requerido.</div>
         </div>
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn-primary" [disabled]="planVentaForm.invalid">
-        CREAR PLAN DE VENTA
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        {{ isLoading ? 'CREANDO...' : 'CREAR PLAN DE VENTA' }}
       </button>
     </div>
   </form>
+
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
 </div>
