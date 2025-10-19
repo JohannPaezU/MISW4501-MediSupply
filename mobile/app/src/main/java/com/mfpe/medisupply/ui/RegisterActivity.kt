@@ -2,6 +2,8 @@ package com.mfpe.medisupply.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,8 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var userViewModel: UserViewModel
+    private var isPasswordVisible = false
+    private var isConfirmPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +35,8 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+
+        setupPasswordVisibilityToggle()
 
         binding.btnCreateAccount.setOnClickListener {
             val email = binding.inputEmail.text.toString().trim()
@@ -82,5 +88,45 @@ class RegisterActivity : AppCompatActivity() {
         binding.btnCancel.setOnClickListener {
             finish()
         }
+    }
+
+    private fun setupPasswordVisibilityToggle() {
+        // Configurar el toggle para el campo de contraseña
+        binding.inputPasswordLayout.setEndIconOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            togglePasswordVisibility(
+                binding.inputPassword,
+                binding.inputPasswordLayout,
+                isPasswordVisible
+            )
+        }
+
+        // Configurar el toggle para el campo de confirmar contraseña
+        binding.inputConfirmPasswordLayout.setEndIconOnClickListener {
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+            togglePasswordVisibility(
+                binding.inputConfirmPassword,
+                binding.inputConfirmPasswordLayout,
+                isConfirmPasswordVisible
+            )
+        }
+    }
+
+    private fun togglePasswordVisibility(
+        editText: com.google.android.material.textfield.TextInputEditText,
+        textInputLayout: com.google.android.material.textfield.TextInputLayout,
+        isVisible: Boolean
+    ) {
+        if (isVisible) {
+            editText.transformationMethod = HideReturnsTransformationMethod.getInstance()
+            textInputLayout.endIconDrawable = getDrawable(R.drawable.ic_visibility)
+            textInputLayout.endIconContentDescription = getString(R.string.hide_password)
+        } else {
+            editText.transformationMethod = PasswordTransformationMethod.getInstance()
+            textInputLayout.endIconDrawable = getDrawable(R.drawable.ic_visibility_off)
+            textInputLayout.endIconContentDescription = getString(R.string.show_password)
+        }
+        // Mover el cursor al final del texto
+        editText.setSelection(editText.text?.length ?: 0)
     }
 }
