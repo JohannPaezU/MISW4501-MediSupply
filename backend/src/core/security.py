@@ -45,7 +45,7 @@ def create_access_token(data: dict[str, Any]) -> str:
 
 def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-) -> User:  # pragma: no cover
+) -> User:
     try:
         payload = jwt.decode(
             token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]
@@ -71,7 +71,7 @@ def get_current_user(
 
 def require_roles(
     allowed_roles: list[UserRole],
-) -> Callable[[User], User]:  # pragma: no cover
+) -> Callable[[User], User]:
     def role_checker(current_user: User = Depends(get_current_user)) -> User:
         if current_user.role not in allowed_roles:
             raise ForbiddenException(
@@ -79,5 +79,7 @@ def require_roles(
             )
 
         return current_user
+
+    role_checker.allowed_roles = allowed_roles
 
     return role_checker

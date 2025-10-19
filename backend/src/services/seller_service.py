@@ -3,6 +3,7 @@ import string
 
 from sqlalchemy.orm import Session
 
+from src.core.config import settings
 from src.core.logging_config import logger
 from src.core.security import hash_password
 from src.core.utils import get_template_path
@@ -16,14 +17,12 @@ from src.services.user_service import get_user_by_doi, get_user_by_email
 from src.services.zone_service import get_zone_by_id
 
 
-def create_seller(
-    *, db: Session, seller_create_request: SellerCreateRequest
-) -> User:  # pragma: no cover
+def create_seller(*, db: Session, seller_create_request: SellerCreateRequest) -> User:
     existing_user = get_user_by_email(
         db=db, email=seller_create_request.email
     ) or get_user_by_doi(db=db, doi=seller_create_request.doi)
     if existing_user:
-        raise ConflictException("User with this email or DOI already exists")
+        raise ConflictException("Seller with this email or DOI already exists")
 
     existing_zone = get_zone_by_id(db=db, zone_id=seller_create_request.zone_id)
     if not existing_zone:
@@ -50,25 +49,23 @@ def create_seller(
     return user
 
 
-def get_sellers(*, db: Session) -> list[User]:  # pragma: no cover
+def get_sellers(*, db: Session) -> list[User]:
     return db.query(User).filter_by(role=UserRole.COMMERCIAL).all()  # type: ignore
 
 
-def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:  # pragma: no cover
+def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:
     return db.query(User).filter_by(id=seller_id, role=UserRole.COMMERCIAL).first()
 
 
-def _generate_temporary_password() -> str:  # pragma: no cover
+def _generate_temporary_password() -> str:
     length = 8
     characters = string.ascii_letters + string.digits + string.punctuation
-    temporary_password = "".join(random.choice(characters) for i in range(length))
+    temporary_password = "".join(random.choice(characters) for _ in range(length))
 
     return temporary_password
 
 
-def _send_temporary_password_email(
-    user: User, temporary_password: str
-) -> None:  # pragma: no cover
+def _send_temporary_password_email(user: User, temporary_password: str) -> None:
     html_template = open(
         get_template_path("temporary_password_template.html"), encoding="utf-8"
     ).read()
@@ -78,8 +75,9 @@ def _send_temporary_password_email(
         email_subject="¡Bienvenido a MediSupply! - Tu contraseña temporal",
         template_values={
             "full_name": user.full_name,
-            "email": user.email,
             "temporary_password": temporary_password,
+            "email": user.email,
+            "login_url": settings.login_url,
         },
     )
     send_email(email_request)
