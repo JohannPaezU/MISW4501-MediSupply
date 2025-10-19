@@ -6,11 +6,12 @@ import { finalize } from 'rxjs';
 import { PlanVenta } from '../../../interfaces/planVenta.interface';
 import { PlanVentaService } from '../../../services/planes-de-venta/planesDeVenta.service';
 import { CsvExportService } from '../../../services/utilities/csv.service';
+import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-lista-plan-venta',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule,LoadingSpinnerComponent],
   templateUrl: './lista-plan-venta.component.html',
   styleUrls: ['./lista-plan-venta.component.css']
 })

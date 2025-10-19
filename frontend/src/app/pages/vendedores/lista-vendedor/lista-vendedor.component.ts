@@ -6,13 +6,15 @@ import { finalize } from 'rxjs';
 import { Vendedor } from '../../../interfaces/vendedor.interface';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
 import { CsvExportService } from '../../../services/utilities/csv.service';
+import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-lista-vendedor',
   standalone: true,
   imports: [
     CommonModule,
-    MatIconModule
+    MatIconModule,
+    LoadingSpinnerComponent
   ],
   templateUrl: './lista-vendedor.component.html',
   styleUrls: ['./lista-vendedor.component.css']

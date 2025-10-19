@@ -7,11 +7,12 @@ import { catchError, finalize, of } from 'rxjs';
 import { ProductService } from '../../../services/productos/product.service';
 import { ProductCreateResponse } from '../../../interfaces/producto.interface';
 import { CsvExportService } from '../../../services/utilities/csv.service';
+import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-lista-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule,LoadingSpinnerComponent],
   templateUrl: './lista-productos.component.html',
   styleUrls: ['./lista-productos.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
