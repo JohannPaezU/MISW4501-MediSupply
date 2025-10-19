@@ -14,6 +14,8 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int
     email_sender: EmailStr
     email_api_key: str
+    cors_origins: str
+    login_url: str
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

@@ -8,7 +8,6 @@ from starlette.responses import JSONResponse
 from src.core.security import get_current_user
 from src.db.database import get_db
 from src.errors.errors import UnauthorizedException
-
 from src.models.db_models import User
 from src.schemas.auth_schema import (
     LoginRequest,
@@ -127,7 +126,9 @@ async def verify_otp(
     summary="Dynamically check accessible endpoints by role",
     description="Retrieve a list of API endpoints accessible to the current user based on their role.",
 )
-def get_permissions(current_user: User = Depends(get_current_user)) -> JSONResponse:  # pragma: no cover
+def get_permissions(
+    current_user: User = Depends(get_current_user),
+) -> JSONResponse:  # pragma: no cover
     user_role = current_user.role.value
     grouped = defaultdict(set)
     from src.main import app
@@ -147,13 +148,15 @@ def get_permissions(current_user: User = Depends(get_current_user)) -> JSONRespo
         roles = list(set(roles)) or ["PUBLIC"]
 
         if "PUBLIC" in roles or user_role in roles:
-            grouped[(route.path, frozenset(roles))].update(route.methods - {"HEAD", "OPTIONS"})
+            grouped[(route.path, frozenset(roles))].update(
+                route.methods - {"HEAD", "OPTIONS"}
+            )
 
     allowed_endpoints = [
         {
             "path": path,
             "methods": sorted(list(methods)),
-            "allowed_roles": sorted(list(roles))
+            "allowed_roles": sorted(list(roles)),
         }
         for (path, roles), methods in grouped.items()
     ]

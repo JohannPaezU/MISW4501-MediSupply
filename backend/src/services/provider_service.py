@@ -39,19 +39,13 @@ def get_providers(*, db: Session) -> list[Provider]:
     return db.query(Provider).all()  # type: ignore
 
 
-def get_provider_by_id(
-    *, db: Session, provider_id: str
-) -> Provider | None:
+def get_provider_by_id(*, db: Session, provider_id: str) -> Provider | None:
     return db.query(Provider).filter_by(id=provider_id).first()
 
 
-def get_provider_by_email(
-    *, db: Session, email: str
-) -> Provider | None:
+def get_provider_by_email(*, db: Session, email: str) -> Provider | None:
     return db.query(Provider).filter_by(email=email).first()
 
 
-def get_provider_by_rit(
-    *, db: Session, rit: str
-) -> Provider | None:
+def get_provider_by_rit(*, db: Session, rit: str) -> Provider | None:
     return db.query(Provider).filter_by(rit=rit).first()

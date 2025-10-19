@@ -20,7 +20,9 @@ app = FastAPI(title="MediSupply API", version=version)
 
 app.add_middleware(
     CORSMiddleware,  # type: ignore
-    allow_origins=[origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()],
+    allow_origins=[
+        origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

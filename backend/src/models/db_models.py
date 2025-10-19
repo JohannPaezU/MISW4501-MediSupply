@@ -2,7 +2,16 @@ import uuid
 from datetime import date, datetime, timezone
 from typing import Optional
 
-from sqlalchemy import Boolean, Date, DateTime, Enum, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    Date,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.db.database import Base
@@ -81,7 +90,9 @@ class Zone(Base):
         default=lambda: datetime.now(timezone.utc),
     )
     users: Mapped[list["User"]] = relationship("User", back_populates="zone")
-    selling_plans: Mapped[list["SellingPlan"]] = relationship("SellingPlan", back_populates="zone")
+    selling_plans: Mapped[list["SellingPlan"]] = relationship(
+        "SellingPlan", back_populates="zone"
+    )
 
 
 class Provider(Base):
@@ -146,7 +157,13 @@ class Product(Base):
 class SellingPlan(Base):
     __tablename__ = "selling_plans"
     __table_args__ = (
-        UniqueConstraint("period", "product_id", "zone_id", "seller_id", name="selling_plan_unique_constraint"),
+        UniqueConstraint(
+            "period",
+            "product_id",
+            "zone_id",
+            "seller_id",
+            name="selling_plan_unique_constraint",
+        ),
     )
 
     id: Mapped[str] = mapped_column(
@@ -163,16 +180,16 @@ class SellingPlan(Base):
         String(36), ForeignKey("products.id", ondelete="RESTRICT"), nullable=False
     )
     zone_id: Mapped[Optional[str]] = mapped_column(
-        String(36), ForeignKey("zones.id", ondelete="SET NULL"), nullable=True,
+        String(36),
+        ForeignKey("zones.id", ondelete="SET NULL"),
+        nullable=True,
     )
     seller_id: Mapped[Optional[str]] = mapped_column(
-        String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True,
+        String(36),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
     )
 
     product: Mapped["Product"] = relationship("Product")
-    zone: Mapped[Optional["Zone"]] = relationship(
-        "Zone", passive_deletes=True
-    )
-    seller: Mapped[Optional["User"]] = relationship(
-        "User", passive_deletes=True
-    )
+    zone: Mapped[Optional["Zone"]] = relationship("Zone", passive_deletes=True)
+    seller: Mapped[Optional["User"]] = relationship("User", passive_deletes=True)
