@@ -68,7 +68,6 @@ jobs:
       - name: Run linter
         run: npm run lint --if-present
 
-     
       - name: Build Angular app
         run: npm run build --if-present
 
@@ -98,15 +97,6 @@ jobs:
             echo "Error: dist/frontend/browser does not exist. Build failed?"
             exit 1
           fi
-
-      - name: Move build files to expected folder
-        run: |
-          # Vaciar dist/frontend/browser
-          rm -rf dist/frontend/browser/* || true
-          # Mover los archivos de la carpeta interna 'browser'
-          mv dist/frontend/browser/browser/* dist/frontend/browser/
-          # Eliminar la carpeta interna vacía
-          rmdir dist/frontend/browser/browser
 
       - name: Deploy to Firebase Staging
         run: firebase deploy --project ${{ vars.FIREBASE_PROJECT_STAGING }} --token ${{ secrets.FIREBASE_TOKEN }} --only hosting
