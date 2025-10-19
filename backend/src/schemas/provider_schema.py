@@ -34,6 +34,10 @@ class ProviderCreateResponse(ProviderBase):
     pass
 
 
+class GetProviderResponse(ProviderBase):
+    pass
+
+
 class GetProvidersResponse(BaseModel):
     total_count: int
     providers: list[ProviderBase]

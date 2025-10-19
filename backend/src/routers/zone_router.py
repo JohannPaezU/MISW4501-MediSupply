@@ -18,6 +18,13 @@ zone_router = APIRouter(
     "",
     response_model=GetZonesResponse,
     status_code=status.HTTP_200_OK,
+    summary="Get all zones",
+    description="""
+Retrieve a list of all zones.
+
+### Response
+Returns a list of zones with their details including `id` and `description`.
+""",
 )
 async def get_all_zones(db: Session = Depends(get_db)) -> GetZonesResponse:
     zones = get_zones(db=db)
