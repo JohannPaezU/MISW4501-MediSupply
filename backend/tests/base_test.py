@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.core.security import create_access_token
-from src.models.db_models import User, Provider
+from src.models.db_models import User, Provider, Zone
 from src.models.enums.user_role import UserRole
 
 
@@ -14,6 +14,7 @@ class BaseTest:
     admin_token: str
     users: list[User]
     providers: list[Provider]
+    zones: list[Zone]
 
     @pytest.fixture(autouse=True)
     def _inject_client(self, test_client):
@@ -38,3 +39,4 @@ class BaseTest:
     def _set_up_test_data(self, setup_teardown_db):
         self.users = setup_teardown_db["users"]
         self.providers = setup_teardown_db["providers"]
+        self.zones = setup_teardown_db["zones"]
