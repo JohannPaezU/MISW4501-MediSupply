@@ -1,17 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-// ¡Importante! Añadir MatSnackBar
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-
 import { finalize } from 'rxjs';
 import { Zone, CreateVendedorRequest } from '../../../interfaces/vendedor.interface';
-import { CrearVendedorService } from '../../../services/vendedores/crearVendedor.service';
+import { VendedorService } from '../../../services/vendedores/vendedor.service';
 
 @Component({
   selector: 'app-crear-vendedor',
@@ -19,13 +11,7 @@ import { CrearVendedorService } from '../../../services/vendedores/crearVendedor
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatSnackBarModule // Añadir el módulo aquí
+    ReactiveFormsModule
   ],
   templateUrl: './crear-vendedor.component.html',
   styleUrls: ['./crear-vendedor.component.css']
@@ -34,22 +20,24 @@ export class CrearVendedorComponent implements OnInit {
   vendedorForm: FormGroup;
   zonas: Zone[] = [];
   isLoading = false;
+  isLoadingZones = true;
+  toastMessage: string | null = null;
+  toastType: 'success' | 'error' = 'success';
 
   constructor(
     private fb: FormBuilder,
-    private crearVendedorService: CrearVendedorService,
-    private snackBar: MatSnackBar // Inyectar MatSnackBar
+    private vendedorService: VendedorService,
+    private cdr: ChangeDetectorRef
   ) {
     this.vendedorForm = this.fb.group({
-      nombreCompleto: ['', Validators.required],
-      documento: ['', Validators.required],
-      correoElectronico: ['', [Validators.required, Validators.email]],
-      telefono: ['', Validators.required],
-      zonaAsignada: [null, Validators.required] // Usar null como valor inicial para el select
+      nombreCompleto: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      documento: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+      correoElectronico: ['', [Validators.required, Validators.email, Validators.minLength(5), Validators.maxLength(120)]],
+      telefono: ['', [Validators.required, Validators.pattern(/^\d{9,15}$/)]],
+      zonaAsignada: [null, Validators.required]
     });
   }
 
-  // Getters para acceder fácilmente a los controles del formulario en el HTML
   get nombreCompleto() { return this.vendedorForm.get('nombreCompleto'); }
   get documento() { return this.vendedorForm.get('documento'); }
   get correoElectronico() { return this.vendedorForm.get('correoElectronico'); }
@@ -61,22 +49,29 @@ export class CrearVendedorComponent implements OnInit {
   }
 
   cargarZonas(): void {
-    this.crearVendedorService.getZonas().subscribe({
-      next: (data) => {
-        this.zonas = data;
-      },
-      error: (err) => {
-        this.mostrarMensaje('Error al cargar las zonas. Intente de nuevo.', 'error');
-        console.error('Error al cargar las zonas:', err);
-      }
-    });
+    this.isLoadingZones = true;
+    this.vendedorService.getZonas()
+      .pipe(finalize(() => {
+        this.isLoadingZones = false;
+        this.cdr.detectChanges();
+      }))
+      .subscribe({
+        next: (data) => {
+          this.zonas = data;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error al cargar las zonas:', err);
+          this.showToast('Error al cargar las zonas. Intente de nuevo.', 'error');
+        }
+      });
   }
 
   crearVendedor(): void {
     this.vendedorForm.markAllAsTouched();
 
     if (this.vendedorForm.invalid) {
-      this.mostrarMensaje('Por favor, complete todos los campos requeridos.', 'error');
+      this.showToast('Por favor, complete todos los campos correctamente.', 'error');
       return;
     }
 
@@ -84,40 +79,58 @@ export class CrearVendedorComponent implements OnInit {
 
     const formValue = this.vendedorForm.value;
     const nuevoVendedor: CreateVendedorRequest = {
-      fullname: formValue.nombreCompleto,
-      document: formValue.documento,
-      email: formValue.correoElectronico,
-      phone: formValue.telefono,
-      zone_id: Number(formValue.zonaAsignada)
+      full_name: formValue.nombreCompleto.trim(),
+      doi: formValue.documento.trim(),
+      email: formValue.correoElectronico.trim(),
+      phone: formValue.telefono.trim(),
+      zone_id: formValue.zonaAsignada
     };
 
-    this.crearVendedorService.createVendedor(nuevoVendedor)
-      .pipe(finalize(() => this.isLoading = false))
+    this.vendedorService.createVendedor(nuevoVendedor)
+      .pipe(finalize(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (response) => {
-          this.mostrarMensaje(`¡Vendedor ${response.fullname} creado con éxito!`, 'success');
+          this.showToast(`¡Vendedor ${response.full_name} creado con éxito!`, 'success');
           this.vendedorForm.reset();
+          this.vendedorForm.patchValue({ zonaAsignada: null });
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Error al crear el vendedor:', err);
-          this.mostrarMensaje('Hubo un error al crear el vendedor. Por favor, intenta de nuevo.', 'error');
+          let errorMessage = 'Hubo un error al crear el vendedor. Por favor, intenta de nuevo.';
+
+          if (err.status === 409) {
+            errorMessage = 'Ya existe un vendedor con este correo o documento.';
+          } else if (err.status === 422) {
+            errorMessage = 'La zona seleccionada no existe.';
+          } else if (err.error?.detail) {
+            if (typeof err.error.detail === 'string') {
+              errorMessage = err.error.detail;
+            } else if (Array.isArray(err.error.detail)) {
+              errorMessage = err.error.detail[0]?.msg || errorMessage;
+            }
+          }
+
+          this.showToast(errorMessage, 'error');
         }
     });
   }
 
   importarDesdeCSV(): void {
-    // Lógica futura para la importación
+    this.showToast('Funcionalidad próximamente disponible', 'error');
   }
 
-  /**
-   * Muestra mensajes al usuario usando MatSnackBar
-   */
-  private mostrarMensaje(mensaje: string, tipo: 'success' | 'error'): void {
-    this.snackBar.open(mensaje, 'Cerrar', {
-      duration: 5000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top',
-      panelClass: [`snackbar-${tipo}`] // Clases CSS para estilizar el snackbar
-    });
+  showToast(message: string, type: 'success' | 'error'): void {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.toastMessage = null;
+      this.cdr.detectChanges();
+    }, 5000);
   }
 }

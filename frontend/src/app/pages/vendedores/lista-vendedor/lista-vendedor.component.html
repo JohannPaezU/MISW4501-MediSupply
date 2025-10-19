@@ -13,15 +13,15 @@
 
   <!-- Loading Spinner -->
   <div *ngIf="isLoading" class="loading-container">
-    <mat-spinner diameter="50"></mat-spinner>
+    <div class="spinner"></div>
     <p>Cargando vendedores...</p>
   </div>
 
   <!-- Error Message -->
-  <div *ngIf="error && !isLoading" class="error-container">
-    <mat-icon color="warn">error_outline</mat-icon>
-    <p>{{ error }}</p>
-    <button class="btn-primary" (click)="cargarVendedores()">
+  <div *ngIf="error && !isLoading" class="alert alert-error">
+    <mat-icon class="alert-icon">error</mat-icon>
+    <span>{{ error }}</span>
+    <button class="btn-primary btn-retry" (click)="cargarVendedores()">
       Reintentar
     </button>
   </div>
@@ -31,30 +31,39 @@
     <table class="vendedores-table">
       <thead>
         <tr>
-          <th>Nombre</th>
+          <th>ID</th>
+          <th>Nombre completo</th>
           <th>Documento</th>
-          <th>Teléfono</th>
           <th>Email</th>
+          <th>Teléfono</th>
           <th>Zona asignada</th>
+          <th>Fecha de creación</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let vendedor of vendedoresPaginados">
-          <td>{{ vendedor.fullname }}</td>
-          <td>{{ vendedor.document }}</td>
-          <td>{{ vendedor.phone }}</td>
+          <td>
+            <div class="id-cell" (click)="copyToClipboard(vendedor.id!)" title="Copiar ID">
+              <mat-icon>content_copy</mat-icon>
+              <span *ngIf="copiedId !== vendedor.id" class="id-text">{{ vendedor.id | slice:0:8 }}...</span>
+              <span *ngIf="copiedId === vendedor.id" class="copy-success-text">¡Copiado!</span>
+            </div>
+          </td>
+          <td>{{ vendedor.full_name }}</td>
+          <td>{{ vendedor.doi }}</td>
           <td>{{ vendedor.email }}</td>
-          <td>{{ vendedor.zone_description || 'No asignada' }}</td>
+          <td>{{ vendedor.phone }}</td>
+          <td>
+            <span class="zone-badge">{{ vendedor.zone?.description || 'Sin zona' }}</span>
+          </td>
+          <td>{{ vendedor.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
         </tr>
         <tr *ngIf="vendedores.length === 0">
-          <td colspan="5" class="no-data">
-            No hay vendedores registrados
-          </td>
+          <td colspan="7" class="no-data-cell">No se encontraron vendedores.</td>
         </tr>
       </tbody>
     </table>
   </div>
-
 
   <footer *ngIf="!isLoading && !error && vendedores.length > 0" class="pagination-controls">
     <div class="page-size-selector">
@@ -77,4 +86,8 @@
       </button>
     </div>
   </footer>
+
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
 </div>
