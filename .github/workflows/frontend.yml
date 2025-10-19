@@ -68,19 +68,17 @@ jobs:
       - name: Run linter
         run: npm run lint --if-present
 
-      - name: Run unit tests with coverage (must reach 80%)
+      - name: Run unit tests with coverage
         env:
           CI: true
         run: |
-          echo "Running unit tests with coverage..."
           npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
-          echo "Karma will fail automatically if coverage is below 80%."
 
       - name: Build Angular app
         run: npm run build --if-present
 
       - name: List build output (debug)
-        run: ls -R dist/frontend
+        run: ls -R dist/frontend/browser
 
   deploy-staging:
     name: Deploy to Firebase (Staging)
@@ -101,8 +99,8 @@ jobs:
 
       - name: Confirm build folder exists
         run: |
-          if [ ! -d "dist/frontend/browser" ]; then
-            echo "Error: dist/frontend/browser does not exist. Build failed?"
+          if [ ! -d "dist/frontend/browser/browser" ]; then
+            echo "Error: dist/frontend/browser/browser does not exist. Build failed?"
             exit 1
           fi
 
@@ -114,9 +112,8 @@ jobs:
           echo "Waiting for Firebase to update..."
           sleep 15
           if [ -z "${{ vars.FIREBASE_STAGING_URL }}" ]; then
-            echo "No health check URL configured (vars.FIREBASE_STAGING_URL)"
+            echo "No health check URL configured"
           else
-            echo "Checking staging site: ${{ vars.FIREBASE_STAGING_URL }}"
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ vars.FIREBASE_STAGING_URL }})
             if [ "$STATUS" != "200" ]; then
               echo "Firebase site not healthy (status: $STATUS)"
