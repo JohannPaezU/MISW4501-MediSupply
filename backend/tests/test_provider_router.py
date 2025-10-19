@@ -17,9 +17,7 @@ class TestProviderRouter(BaseTest):
     @pytest.fixture
     def authorized_client(self):
         client = self.client.__class__(self.client.app)
-        client.headers.update({
-            "Authorization": f"Bearer {self.admin_token}"
-        })
+        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
         return client
 
     def test_register_provider_with_invalid_parameters(self, authorized_client):
@@ -62,7 +60,10 @@ class TestProviderRouter(BaseTest):
         response2 = authorized_client.post(f"{self.prefix}/providers", json=payload)
         json_response2 = response2.json()
         assert response2.status_code == 409
-        assert json_response2["message"] == "Provider with this email or RIT already exists"
+        assert (
+            json_response2["message"]
+            == "Provider with this email or RIT already exists"
+        )
 
     def test_register_provider_with_duplicate_rit(self, authorized_client):
         payload = self.create_provider_payload.copy()
@@ -74,7 +75,10 @@ class TestProviderRouter(BaseTest):
         json_response2 = response2.json()
 
         assert response2.status_code == 409
-        assert json_response2["message"] == "Provider with this email or RIT already exists"
+        assert (
+            json_response2["message"]
+            == "Provider with this email or RIT already exists"
+        )
 
     def test_register_provider_success(self, authorized_client):
         payload = self.create_provider_payload.copy()
@@ -98,7 +102,9 @@ class TestProviderRouter(BaseTest):
         assert "providers" in json_response
 
     def test_get_provider_by_id_not_found(self, authorized_client):
-        response = authorized_client.get(f"{self.prefix}/providers/123e4567-e89b-12d3-a456-426614174000")
+        response = authorized_client.get(
+            f"{self.prefix}/providers/123e4567-e89b-12d3-a456-426614174000"
+        )
         json_response = response.json()
         assert response.status_code == 404
         assert json_response["message"] == "Provider not found"
@@ -106,7 +112,9 @@ class TestProviderRouter(BaseTest):
     def test_get_provider_by_id_success(self, authorized_client):
         payload = self.create_provider_payload.copy()
 
-        create_response = authorized_client.post(f"{self.prefix}/providers", json=payload)
+        create_response = authorized_client.post(
+            f"{self.prefix}/providers", json=payload
+        )
         assert create_response.status_code == 201
 
         create_json_response = create_response.json()

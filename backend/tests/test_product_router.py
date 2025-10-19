@@ -14,15 +14,13 @@ class TestProductRouter(BaseTest):
         "image_url": "http://example.com/image.jpg",
         "due_date": "2025-12-31",
         "stock": 100,
-        "price_per_unite": 9.99
+        "price_per_unite": 9.99,
     }
 
     @pytest.fixture
     def authorized_client(self):
         client = self.client.__class__(self.client.app)
-        client.headers.update({
-            "Authorization": f"Bearer {self.admin_token}"
-        })
+        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
         return client
 
     def test_register_product_with_invalid_parameters(self, authorized_client):
@@ -86,7 +84,7 @@ class TestProductRouter(BaseTest):
                     "due_date": "2025-11-30",
                     "stock": 50,
                     "price_per_unite": 19.99,
-                    "provider_id": "123e4567-e89b-12d3-a456-426614174000"
+                    "provider_id": "123e4567-e89b-12d3-a456-426614174000",
                 },
                 {
                     "name": "Bulk Product 2",
@@ -97,8 +95,8 @@ class TestProductRouter(BaseTest):
                     "due_date": "2025-10-31",
                     "stock": 75,
                     "price_per_unite": 29.99,
-                    "provider_id": next(iter(self.providers)).id
-                }
+                    "provider_id": next(iter(self.providers)).id,
+                },
             ]
         }
 
@@ -111,8 +109,13 @@ class TestProductRouter(BaseTest):
         assert json_response["errors"] == 1
         assert len(json_response["errors_details"]) == 1
 
-    @patch("src.services.product_service.create_product", side_effect=Exception("Database error"))
-    def test_register_products_bulk_causing_exception(self, mock_create_product, authorized_client):
+    @patch(
+        "src.services.product_service.create_product",
+        side_effect=Exception("Database error"),
+    )
+    def test_register_products_bulk_causing_exception(
+        self, mock_create_product, authorized_client
+    ):
         payload = {
             "products": [
                 {
@@ -124,7 +127,7 @@ class TestProductRouter(BaseTest):
                     "due_date": "2025-11-30",
                     "stock": 50,
                     "price_per_unite": 19.99,
-                    "provider_id": next(iter(self.providers)).id
+                    "provider_id": next(iter(self.providers)).id,
                 },
                 {
                     "name": "Bulk Product 2",
@@ -135,8 +138,8 @@ class TestProductRouter(BaseTest):
                     "due_date": "2025-10-31",
                     "stock": 75,
                     "price_per_unite": 29.99,
-                    "provider_id": next(iter(self.providers)).id
-                }
+                    "provider_id": next(iter(self.providers)).id,
+                },
             ]
         }
 
@@ -151,9 +154,7 @@ class TestProductRouter(BaseTest):
         mock_create_product.assert_called()
 
     def test_register_products_bulk_success(self, authorized_client):
-        payload = {
-            "products": []
-        }
+        payload = {"products": []}
         provider_id = next(iter(self.providers)).id
         for i in range(5):
             product = self.create_product_payload.copy()
@@ -179,7 +180,9 @@ class TestProductRouter(BaseTest):
         assert isinstance(json_response["products"], list)
 
     def test_get_product_not_found(self, authorized_client):
-        response = authorized_client.get(f"{self.prefix}/products/123e4567-e89b-12d3-a456-426614174000")
+        response = authorized_client.get(
+            f"{self.prefix}/products/123e4567-e89b-12d3-a456-426614174000"
+        )
         json_response = response.json()
         assert response.status_code == 404
         assert json_response["message"] == "Product not found"
@@ -188,7 +191,9 @@ class TestProductRouter(BaseTest):
         payload = self.create_product_payload.copy()
         payload["provider_id"] = next(iter(self.providers)).id
 
-        create_response = authorized_client.post(f"{self.prefix}/products", json=payload)
+        create_response = authorized_client.post(
+            f"{self.prefix}/products", json=payload
+        )
         assert create_response.status_code == 201
 
         create_json_response = create_response.json()

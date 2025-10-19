@@ -8,9 +8,7 @@ class TestZoneRouter(BaseTest):
     @pytest.fixture
     def authorized_client(self):
         client = self.client.__class__(self.client.app)
-        client.headers.update({
-            "Authorization": f"Bearer {self.admin_token}"
-        })
+        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
         return client
 
     def test_get_all_zones(self, authorized_client):

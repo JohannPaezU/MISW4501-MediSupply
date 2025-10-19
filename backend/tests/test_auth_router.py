@@ -12,17 +12,11 @@ class TestAuthRouter(BaseTest):
         "address": "123 Test St",
         "phone": "1234567890",
         "role": "institutional",
-        "password": "my_pass123"
+        "password": "my_pass123",
     }
-    login_payload = {
-        "email": "valid-email@mail.com",
-        "password": "my_pass123"
-    }
+    login_payload = {"email": "valid-email@mail.com", "password": "my_pass123"}
 
-    verify_otp_payload = {
-        "email": "valid-email@mail.com",
-        "otp_code": "123456"
-    }
+    verify_otp_payload = {"email": "valid-email@mail.com", "otp_code": "123456"}
 
     def test_register_user_with_invalid_parameters(self):
         payload = self.create_user_payload.copy()
@@ -57,18 +51,29 @@ class TestAuthRouter(BaseTest):
         response = self.client.post(f"{self.prefix}/auth/register", json=payload)
         json_response = response.json()
         assert response.status_code == 422
-        assert json_response["message"] == "Role must be either 'institutional' or 'commercial'"
+        assert (
+            json_response["message"]
+            == "Role must be either 'institutional' or 'commercial'"
+        )
 
     def test_create_existing_user(self):
-        response1 = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
-        response2 = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        response1 = self.client.post(
+            f"{self.prefix}/auth/register", json=self.create_user_payload
+        )
+        response2 = self.client.post(
+            f"{self.prefix}/auth/register", json=self.create_user_payload
+        )
 
         assert response1.status_code == 201
         assert response2.status_code == 409
-        assert response2.json() == {"message": "User with this email or DOI already exists"}
+        assert response2.json() == {
+            "message": "User with this email or DOI already exists"
+        }
 
     def test_register_institutional_user_successfully(self):
-        response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        response = self.client.post(
+            f"{self.prefix}/auth/register", json=self.create_user_payload
+        )
         json_response = response.json()
 
         assert response.status_code == 201
@@ -98,13 +103,17 @@ class TestAuthRouter(BaseTest):
         assert json_response["detail"][1]["loc"] == ["body", "password"]
 
     def test_login_with_nonexistent_user(self):
-        response = self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
+        response = self.client.post(
+            f"{self.prefix}/auth/login", json=self.login_payload
+        )
 
         assert response.status_code == 401
         assert response.json() == {"message": "Invalid email or password"}
 
     def test_login_with_incorrect_password(self):
-        register_response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        register_response = self.client.post(
+            f"{self.prefix}/auth/register", json=self.create_user_payload
+        )
         assert register_response.status_code == 201
 
         payload = self.login_payload.copy()
@@ -117,16 +126,22 @@ class TestAuthRouter(BaseTest):
 
     @patch("src.services.auth_service.send_email")
     def test_login_successfully(self, mock_send_email):
-        register_response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        register_response = self.client.post(
+            f"{self.prefix}/auth/register", json=self.create_user_payload
+        )
         assert register_response.status_code == 201
 
-        response = self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
+        response = self.client.post(
+            f"{self.prefix}/auth/login", json=self.login_payload
+        )
         json_response = response.json()
 
         assert response.status_code == 200
         assert json_response["message"] == "OTP generated successfully"
         assert "otp_expiration_minutes" in json_response
-        assert json_response["otp_expiration_minutes"] == settings.otp_expiration_minutes
+        assert (
+            json_response["otp_expiration_minutes"] == settings.otp_expiration_minutes
+        )
         mock_send_email.assert_called_once()
 
     def test_verify_otp_with_invalid_parameters(self):
@@ -142,7 +157,9 @@ class TestAuthRouter(BaseTest):
         assert json_response["detail"][1]["loc"] == ["body", "otp_code"]
 
     def test_verify_otp_with_nonexistent_user(self):
-        response = self.client.post(f"{self.prefix}/auth/verify-otp", json=self.verify_otp_payload)
+        response = self.client.post(
+            f"{self.prefix}/auth/verify-otp", json=self.verify_otp_payload
+        )
 
         assert response.status_code == 401
         assert response.json() == {"message": "Invalid or expired OTP"}
@@ -150,10 +167,14 @@ class TestAuthRouter(BaseTest):
     @patch("src.services.otp_service.random.randint", return_value=123456)
     @patch("src.services.auth_service.send_email")
     def test_verify_with_incorrect_otp(self, mock_send_email, mock_randint):
-        register_response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        register_response = self.client.post(
+            f"{self.prefix}/auth/register", json=self.create_user_payload
+        )
         assert register_response.status_code == 201
 
-        login_response = self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
+        login_response = self.client.post(
+            f"{self.prefix}/auth/login", json=self.login_payload
+        )
         assert login_response.status_code == 200
 
         payload = self.verify_otp_payload.copy()
@@ -168,13 +189,19 @@ class TestAuthRouter(BaseTest):
     @patch("src.services.otp_service.random.randint", return_value=123456)
     @patch("src.services.auth_service.send_email")
     def test_verify_otp_successfully(self, mock_send_email, mock_randint):
-        register_response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        register_response = self.client.post(
+            f"{self.prefix}/auth/register", json=self.create_user_payload
+        )
         assert register_response.status_code == 201
 
-        login_response = self.client.post(f"{self.prefix}/auth/login", json=self.login_payload)
+        login_response = self.client.post(
+            f"{self.prefix}/auth/login", json=self.login_payload
+        )
         assert login_response.status_code == 200
 
-        response = self.client.post(f"{self.prefix}/auth/verify-otp", json=self.verify_otp_payload)
+        response = self.client.post(
+            f"{self.prefix}/auth/verify-otp", json=self.verify_otp_payload
+        )
         json_response = response.json()
 
         assert response.status_code == 200
