@@ -1,27 +1,33 @@
+<button class="mobile-menu-toggle" *ngIf="!isMobileMenuOpen" (click)="toggleMobileMenu()">
+  <mat-icon>menu</mat-icon>
+</button>
+
 <aside class="sidebar" [class.mobile-open]="isMobileMenuOpen">
   <div class="sidebar-header">
     <h2 class="menu-title">Menú</h2>
+
     <button class="mobile-close" (click)="closeMobileMenu()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
   <nav class="sidebar-nav">
-    <a *ngFor="let item of menuItems" [routerLink]="item.route" class="nav-item" [class.active]="isActive(item)"
-      (click)="closeMobileMenu()">
-
+    <a
+      *ngFor="let item of menuItems"
+      [routerLink]="item.route"
+      class="nav-item"
+      [class.active]="isActive(item)"
+      (click)="closeMobileMenu()"
+    >
       <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
       <span class="nav-label">{{ item.label }}</span>
     </a>
+
     <button class="nav-item logout-btn" (click)="logout()">
       <mat-icon class="nav-icon">logout</mat-icon>
       <span class="nav-label">Cerrar sesión</span>
     </button>
   </nav>
 </aside>
-
-<button class="mobile-menu-toggle" (click)="toggleMobileMenu()">
-  <mat-icon>menu</mat-icon>
-</button>
 
 <div class="mobile-overlay" *ngIf="isMobileMenuOpen" (click)="closeMobileMenu()"></div>

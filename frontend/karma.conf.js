@@ -1,4 +1,3 @@
-// Karma configuration file
 module.exports = function (config) {
   config.set({
     basePath: '',
@@ -12,11 +11,10 @@ module.exports = function (config) {
     ],
     client: {
       jasmine: {
-        // Opciones de Jasmine
       },
     },
     jasmineHtmlReporter: {
-      suppressAll: true, // elimina trazas duplicadas
+      suppressAll: true,
     },
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/frontend'),
@@ -28,13 +26,12 @@ module.exports = function (config) {
       includeAllSources: true,
       fixWebpackSourcePaths: true,
 
-      // 🔽 Agrega esta parte:
       check: {
         global: {
-          statements: 50,
-          branches: 50,
-          functions: 50,
-          lines: 50
+          statements: 80,
+          branches: 80,
+          functions: 80,
+          lines: 80
         }
       }
     },
