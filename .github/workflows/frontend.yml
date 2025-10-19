@@ -25,18 +25,22 @@ jobs:
     outputs:
       changed: ${{ steps.detect.outputs.CHANGED }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - id: detect
         name: Detect changes in frontend
         run: |
           if [ -z "${{ github.base_ref }}" ]; then
-            echo "🔍 No PR context, assuming frontend changes (manual or push)"
+            echo "No PR context, assuming frontend changes (manual or push)"
             echo "CHANGED=frontend/" >> $GITHUB_OUTPUT
           else
+            echo "Fetching base branch..."
             git fetch origin ${{ github.base_ref }} --depth=1
+            echo "Detecting changes in frontend..."
             CHANGED=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep '^frontend/' || true)
             DETECTED="frontend/"
+
             if [ -z "$CHANGED" ]; then
               echo "Result: No frontend changes detected"
               DETECTED=""
@@ -70,21 +74,37 @@ jobs:
       - name: Run linter
         run: npm run lint --if-present
 
-      - name: Run unit tests with coverage
-        run: npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
+      - name: Run unit tests with coverage (must reach 80%)
         env:
           CI: true
-
-      - name: Show coverage summary
         run: |
-          echo "📊 Coverage Summary:"
-          find ./frontend/coverage -name "lcov-report" -exec echo "Found coverage report in {}" \; || echo "No coverage report found."
+          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
+
+          echo "Checking coverage..."
+          COVERAGE_FILE=$(find coverage -name 'lcov.info' | head -n 1)
+          if [ ! -f "$COVERAGE_FILE" ]; then
+            echo "No coverage report found!"
+            exit 1
+          fi
+
+          TOTAL=$(grep -A1 'end_of_record' -B999 "$COVERAGE_FILE" | grep 'LF:' | awk -F ':' '{s+=$2} END {print s}')
+          HIT=$(grep -A1 'end_of_record' -B999 "$COVERAGE_FILE" | grep 'LH:' | awk -F ':' '{s+=$2} END {print s}')
+          PERCENT=$(( 100 * HIT / TOTAL ))
+
+          echo "Total lines: $TOTAL"
+          echo "Covered lines: $HIT"
+          echo "Coverage: ${PERCENT}%"
+
+          if [ "$PERCENT" -lt 80 ]; then
+            echo "Coverage below 80% (${PERCENT}%)"
+            exit 1
+          fi
 
       - name: Build Angular app
         run: npm run build --if-present
 
   deploy-staging:
-    name: Deploy to Staging (Firebase)
+    name: Deploy to Firebase (Staging)
     runs-on: ubuntu-latest
     needs: build-test
     if: >
@@ -93,58 +113,59 @@ jobs:
         (github.event_name == 'workflow_dispatch' && github.event.inputs.force_deploy == 'Sí') ||
         (github.event_name == 'push' && needs.detect-changes.outputs.changed != '')
       )
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
+
       - name: Deploy to Firebase Staging
-        run: firebase deploy --project staging --token ${{ secrets.FIREBASE_TOKEN }} --only hosting
+        run: firebase deploy --project ${{ vars.FIREBASE_PROJECT_STAGING }} --token ${{ secrets.FIREBASE_TOKEN }} --only hosting
 
-  deploy-prod:
-    name: Deploy to Production (Firebase)
-    runs-on: ubuntu-latest
-    needs: [detect-changes, build-test]
-    if: >
-      github.ref == 'refs/heads/main' &&
-      (
-        (github.event_name == 'workflow_dispatch' && github.event.inputs.force_deploy == 'Sí') ||
-        (github.event_name == 'push' && needs.detect-changes.outputs.changed != '')
-      )
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-      - name: Deploy to Firebase Production
-        run: firebase deploy --project default --token ${{ secrets.FIREBASE_TOKEN }} --only hosting
+      - name: Health check
+        run: |
+          echo "Waiting for Firebase to update..."
+          sleep 15
+          if [ -z "${{ vars.FIREBASE_STAGING_URL }}" ]; then
+            echo "No health check URL configured (vars.FIREBASE_STAGING_URL)"
+          else
+            echo "Checking staging site: ${{ vars.FIREBASE_STAGING_URL }}"
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ vars.FIREBASE_STAGING_URL }})
+            if [ "$STATUS" != "200" ]; then
+              echo "Firebase site not healthy (status: $STATUS)"
+              exit 1
+            fi
+            echo "Firebase site is live and healthy (status: $STATUS)"
+          fi
 
-  status:
+  frontend-status:
     name: Frontend CI/CD Status
     runs-on: ubuntu-latest
-    needs: [detect-changes, build-test, deploy-staging, deploy-prod]
+    needs: [detect-changes, build-test, deploy-staging]
     if: always()
     steps:
-      - name: Summary
+      - name: Final summary
         run: |
           CHANGED="${{ needs.detect-changes.outputs.changed }}"
           BUILD_RESULT="${{ needs.build-test.result }}"
-          DEPLOY_STAGING_RESULT="${{ needs.deploy-staging.result }}"
-          DEPLOY_PROD_RESULT="${{ needs.deploy-prod.result }}"
+          DEPLOY_RESULT="${{ needs.deploy-staging.result }}"
 
-          echo "📋 Summary:"
+          echo "Summary:"
           echo "  - Build & Test: $BUILD_RESULT"
-          echo "  - Deploy (staging): $DEPLOY_STAGING_RESULT"
-          echo "  - Deploy (production): $DEPLOY_PROD_RESULT"
+          echo "  - Deploy (Staging): $DEPLOY_RESULT"
 
           if [ -z "$CHANGED" ]; then
-            echo "🟡 No frontend changes detected — nothing executed."
+            echo "No frontend changes detected — nothing executed."
             exit 0
           fi
 
           if [ "$BUILD_RESULT" != "success" ] || \
-             ([ "$DEPLOY_STAGING_RESULT" != "success" ] && [ "$DEPLOY_STAGING_RESULT" != "skipped" ]) || \
-             ([ "$DEPLOY_PROD_RESULT" != "success" ] && [ "$DEPLOY_PROD_RESULT" != "skipped" ]); then
-            echo "❌ One or more jobs failed."
+             ([ "$DEPLOY_RESULT" != "success" ] && [ "$DEPLOY_RESULT" != "skipped" ]); then
+            echo "One or more jobs failed."
             exit 1
           fi
 
-          echo "✅ All frontend CI/CD jobs passed successfully."
+          echo "All frontend CI/CD jobs passed successfully."
