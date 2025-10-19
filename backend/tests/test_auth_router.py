@@ -67,8 +67,19 @@ class TestAuthRouter(BaseTest):
         assert response2.status_code == 409
         assert response2.json() == {"message": "User with this email or DOI already exists"}
 
-    def test_register_user_successfully(self):
+    def test_register_institutional_user_successfully(self):
         response = self.client.post(f"{self.prefix}/auth/register", json=self.create_user_payload)
+        json_response = response.json()
+
+        assert response.status_code == 201
+        assert "id" in json_response
+        assert "created_at" in json_response
+
+    def test_register_commercial_user_successfully(self):
+        payload = self.create_user_payload.copy()
+        payload["role"] = "commercial"
+
+        response = self.client.post(f"{self.prefix}/auth/register", json=payload)
         json_response = response.json()
 
         assert response.status_code == 201
