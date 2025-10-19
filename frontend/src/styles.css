@@ -16,10 +16,18 @@
   --border-color: #d0d0d0;
   --border-color-hover: #b0b0b0;
   --border-color-error: #f44336;
+  --border-color-light: #e0e0e0;
 
   --background-light: #fff;
   --background-alt: #fafafa;
   --background-hover: #f5f5f5;
+
+  --success-color: #4caf50;
+  --error-color: #f44336;
+  --info-color-bg: #e3f2fd;
+  --info-color-text: #1565c0;
+  --error-color-bg: #ffebee;
+  --error-color-text: #c62828;
 
   --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
@@ -67,6 +75,11 @@ button {
   margin-bottom: 2rem;
 }
 
+.page-actions {
+  display: flex;
+  gap: 1rem;
+}
+
 /* --- Tipografía --- */
 .page-title {
   font-size: 2rem;
@@ -86,24 +99,31 @@ button {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
 }
 
 .form-label {
   font-size: 0.875rem;
-  font-weight: 400;
-  color: var(--text-color-medium);
+  font-weight: 500; /* Ajustado de 400 a 500 para coincidir */
+  color: var(--text-color-dark); /* Ajustado de medium a dark */
 }
 
 .form-input,
 .form-select {
   padding: 0.875rem 1rem;
   border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 4px; /* Unificado (era 8px en un componente) */
+  font-size: 1rem; /* Unificado (era 0.95rem en un componente) */
   color: var(--text-color-dark);
   font-family: var(--font-family-base);
   transition: all 0.2s ease;
   background-color: var(--background-light);
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
 }
 
 .form-input::placeholder {
@@ -119,9 +139,10 @@ button {
 .form-select:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 1px var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15); /* Unificado */
 }
 
+/* Clase global para errores de validación de Angular */
 .form-input.ng-invalid.ng-touched,
 .form-select.ng-invalid.ng-touched {
   border-color: var(--border-color-error);
@@ -136,12 +157,33 @@ button {
   padding-right: 2.5rem;
 }
 
+.form-field-full {
+  grid-column: 1 / -1;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   padding-top: 2rem;
-  margin-top: auto;
+  margin-top: auto; /* Empuja las acciones al final */
+  border-top: 1px solid #e0e0e0;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-color-medium);
+  margin-top: -0.25rem;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.error-message div {
+  margin-bottom: 0.25rem;
 }
 
 /* --- Botones --- */
@@ -181,11 +223,9 @@ button {
   cursor: not-allowed;
 }
 
-
 .btn-secondary {
   padding: 0.75rem 1.5rem;
-  border: 1px solid #d0d0d0;
-
+  border: 1px solid var(--border-color);
   font-size: 0.875rem;
   font-weight: 500;
   border-radius: 4px;
@@ -212,8 +252,7 @@ button {
   font-size: 0.875rem;
   cursor: pointer;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-family-base);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -222,10 +261,55 @@ button {
   color: #1565c0;
   text-decoration: underline;
 }
+
+.btn-retry {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+}
+
+/* --- ID CELL --- */
+
+.copy-success-text {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 0.8rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+
+.id-cell {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.8rem;
+  color: #888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.id-cell mat-icon {
+  font-size: 1rem;
+  color: #aaa;
+  transition: color 0.2s ease;
+}
+
+.id-cell:hover mat-icon {
+  color: #e91e63;
+}
+
+.id-text {
+  font-family: "Courier New", Courier, monospace;
+}
+
 /* --- Tablas --- */
 .table-container {
-  overflow-x: auto;
-  flex-grow: 1;
+  flex: 1;
+  overflow: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  min-height: 0;
 }
 
 .data-table {
@@ -236,28 +320,79 @@ button {
 
 .data-table th,
 .data-table td {
-  padding: 1rem;
+  padding: 1rem 1.5rem; /* Unificado */
   text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color-light);
+  font-size: 0.875rem; /* Unificado */
 }
 
 .data-table thead th {
   font-weight: 500;
   color: var(--text-color-medium);
   background-color: var(--background-alt);
+  position: sticky; /* Añadido de lista-vendedor */
+  top: 0;
+  z-index: 1;
 }
 
 .data-table tbody tr:hover {
   background-color: var(--background-hover);
 }
 
+.data-table tbody tr:last-child {
+  border-bottom: none; /* Añadido de lista-vendedor */
+}
+
+.no-data-cell {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-color-medium);
+  font-style: italic;
+}
+
+/* --- Badges --- */
+.zone-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--info-color-bg);
+  color: var(--info-color-text);
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* --- Alertas --- */
+.alert {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+  width: 24px;
+  height: 24px;
+}
+
+.alert-error {
+  background-color: var(--error-color-bg);
+  color: var(--error-color-text);
+  border-color: #ef9a9a;
+}
+
+/* --- Paginación --- */
 .pagination-controls {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding-top: 1.5rem;
   gap: 1.5rem;
-  color: #666;
+  color: var(--text-color-medium);
   font-size: 0.875rem;
 }
 
@@ -269,14 +404,18 @@ button {
 
 .page-size-selector select {
   padding: 0.3rem;
-  border: 1px solid #d0d0d0;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  background-color: #fff;
+  background-color: var(--background-light);
+}
+
+.page-info {
+  white-space: nowrap;
 }
 
 .page-navigation button {
   background: none;
-  border: 1px solid #d0d0d0;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   width: 32px;
   height: 32px;
@@ -301,19 +440,41 @@ button {
   font-size: 20px;
 }
 
-@media (max-width: 768px) {
-  .lista-container {
-    padding: 1rem;
+/* --- Toast / Notificaciones --- */
+.toast {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  color: var(--text-color-white);
+  animation: fadeInOut 4s forwards;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+}
+
+.toast.success {
+  background-color: var(--success-color);
+}
+
+.toast.error {
+  background-color: var(--error-color);
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .pagination-controls {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 1rem;
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
   }
 }
 
@@ -335,7 +496,7 @@ button {
   }
 
   .form-actions {
-    flex-direction: column;
+    flex-direction: column-reverse; /* Aplicado de crear-vendedor */
     padding-top: 1.5rem;
   }
 
@@ -347,5 +508,12 @@ button {
     flex-direction: column;
     align-items: flex-end;
     gap: 1rem;
+  }
+
+  .toast {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+    bottom: 1rem;
   }
 }

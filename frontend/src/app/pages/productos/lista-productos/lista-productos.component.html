@@ -1,7 +1,7 @@
-<div class="productos-container">
-  <div class="productos-header">
+<div class="page-container">
+  <div class="page-header">
     <h1 class="page-title">Productos</h1>
-    <div class="productos-actions">
+    <div class="page-actions">
       <button class="btn-secondary" (click)="exportarCSV()" [disabled]="productos.length === 0">
         EXPORTAR A CSV
       </button>
@@ -34,7 +34,6 @@
           <th>Detalles</th>
           <th>URL Imagen</th>
           <th>Creado</th>
-          <th>Acciones</th>
         </tr>
       </thead>
 
@@ -66,9 +65,7 @@
             <span *ngIf="!producto.image_url">—</span>
           </td>
           <td>{{ producto.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
-          <td>
-            <button class="btn-link" (click)="verDetalle(producto)">Ver detalle</button>
-          </td>
+
         </tr>
         <tr *ngIf="productos.length === 0">
           <td colspan="12" class="no-data-cell">No se encontraron productos.</td>

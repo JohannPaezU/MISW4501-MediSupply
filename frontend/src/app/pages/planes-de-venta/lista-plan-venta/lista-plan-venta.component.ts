@@ -136,7 +136,7 @@ export class ListaPlanVentaComponent implements OnInit {
     return plan.seller?.full_name ?? '';
   }
   crearPlanVenta(): void {
-    this.router.navigate(['/planes-venta/crear']);
+    this.router.navigate(['/planes-de-venta/crear']);
   }
 
   onPageSizeChange(event: Event): void {

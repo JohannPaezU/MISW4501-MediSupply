@@ -1,10 +1,7 @@
 <div class="crear-plan-container">
   <h1 class="page-title">Crear plan de venta</h1>
 
-  <div *ngIf="isLoadingData" class="loading-container">
-    <div class="spinner"></div>
-    <p>Cargando datos...</p>
-  </div>
+  <app-loading-spinner *ngIf="isLoadingData" message="Cargando datos..."></app-loading-spinner>
 
   <form *ngIf="!isLoadingData" [formGroup]="planVentaForm" (ngSubmit)="crearPlanDeVenta()" class="plan-form">
     <div class="form-content">
