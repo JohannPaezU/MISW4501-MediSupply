@@ -67,7 +67,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp">
+        android:layout_marginEnd="32dp"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/ic_visibility_off"
+        app:endIconContentDescription="@string/show_password">
         <com.google.android.material.textfield.TextInputEditText
             android:drawableStart="@drawable/ic_lock"
             android:drawablePadding="8dp"
