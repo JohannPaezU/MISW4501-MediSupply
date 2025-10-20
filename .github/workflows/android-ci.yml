@@ -103,7 +103,7 @@ jobs:
       - name: Get APK info
         run: |
           cd mobile
-          APK_PATH="app/build/outputs/apk/release/app-release.apk"
+          APK_PATH="app/build/outputs/apk/release/app-release-unsigned.apk"
           if [ -f "$APK_PATH" ]; then
             echo "📱 APK Details:"
             echo "  - Path: $APK_PATH"
@@ -119,7 +119,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: mobile/app/build/outputs/apk/release/app-release.apk
+          path: mobile/app/build/outputs/apk/release/app-release-unsigned.apk
           retention-days: 30
 
       - name: Create Release Notes
