@@ -12,13 +12,12 @@ import { PlanVenta, GetPlanesVentaResponse } from '../../../interfaces/planVenta
 import { ProductCreateResponse } from '../../../interfaces/producto.interface';
 import { Zone, Vendedor } from '../../../interfaces/vendedor.interface';
 
-
 @Component({
   selector: 'app-loading-spinner',
   standalone: true,
   template: ''
 })
-class StubLoadingSpinnerComponent {}
+class StubLoadingSpinnerComponent { }
 
 const mockProduct: ProductCreateResponse = {
   id: 'p1', name: 'Producto Test', details: '', store: '', batch: '',
@@ -62,7 +61,6 @@ let routerSpy: jasmine.SpyObj<Router>;
 let planVentaServiceSpy: jasmine.SpyObj<PlanVentaService>;
 let csvServiceSpy: jasmine.SpyObj<CsvExportService>;
 
-
 describe('ListaPlanVentaComponent', () => {
   let component: ListaPlanVentaComponent;
   let fixture: ComponentFixture<ListaPlanVentaComponent>;
@@ -83,12 +81,12 @@ describe('ListaPlanVentaComponent', () => {
         { provide: CsvExportService, useValue: csvServiceSpy },
       ]
     })
-    .overrideComponent(ListaPlanVentaComponent, {
-      set: {
-        imports: [CommonModule, MatIconModule, StubLoadingSpinnerComponent]
-      }
-    })
-    .compileComponents();
+      .overrideComponent(ListaPlanVentaComponent, {
+        set: {
+          imports: [CommonModule, MatIconModule, StubLoadingSpinnerComponent]
+        }
+      })
+      .compileComponents();
 
     planVentaServiceSpy.getPlanesVenta.and.returnValue(of(mockPlanesVentaResponse));
 
@@ -101,7 +99,6 @@ describe('ListaPlanVentaComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 
   describe('Initialization and Data Loading', () => {
     it('should load data successfully on init', () => {
@@ -121,10 +118,9 @@ describe('ListaPlanVentaComponent', () => {
 
       expect(component.isLoading).toBeFalse();
       expect(component.error).toBe('No se pudieron cargar los planes de venta. Intente de nuevo más tarde.');
-
+      expect(console.error).toHaveBeenCalled();
     }));
   });
-
 
   describe('Pagination', () => {
     beforeEach(() => {
@@ -165,6 +161,12 @@ describe('ListaPlanVentaComponent', () => {
       expect(component.currentPage).toBe(1);
     });
 
+    it('should go to previous page when currentPage > 1', () => {
+      component.currentPage = 2;
+      component.previousPage();
+      expect(component.currentPage).toBe(1);
+    });
+
     it('should not go to next page if on last page', () => {
       component.currentPage = 2;
       fixture.detectChanges();
@@ -173,6 +175,12 @@ describe('ListaPlanVentaComponent', () => {
       fixture.detectChanges();
 
       expect(component.currentPage).toBe(2);
+    });
+
+    it('startItem and endItem should be 0 if list empty', () => {
+      component.planesVenta = [];
+      expect(component.startItem).toBe(0);
+      expect(component.endItem).toBe(0);
     });
   });
 
@@ -187,13 +195,8 @@ describe('ListaPlanVentaComponent', () => {
 
       expect(data.length).toBe(11);
       expect(filename).toBe('planes_venta');
-
       expect(headers).toBeDefined();
-      if (headers) {
-        expect(headers['product_name']).toBe('Producto');
-      }
-
-
+      expect(headers!['product_name']).toBe('Producto');
       expect(component.toastMessage).toBe('Planes de venta exportados correctamente.');
       flush();
     }));
@@ -202,14 +205,26 @@ describe('ListaPlanVentaComponent', () => {
       fixture.detectChanges();
 
       component.planesVenta = [];
-
       fixture.detectChanges();
 
       component.exportarCSV();
 
       expect(csvServiceSpy.exportarACsv).not.toHaveBeenCalled();
       expect(component.toastMessage).toBe('No hay planes de venta para exportar.');
+      flush();
+    }));
 
+    it('should handle undefined product, zone, seller when exporting CSV', fakeAsync(() => {
+      component.planesVenta = [{
+        id: 'planX', period: 'Marzo', goal: 10, created_at: '2023-03-01T00:00:00Z'
+      } as any];
+
+      component.exportarCSV();
+
+      const [data] = csvServiceSpy.exportarACsv.calls.mostRecent().args;
+      expect(data[0].product_name).toBe('');
+      expect(data[0].zone_description).toBe('');
+      expect(data[0].seller_name).toBe('');
       flush();
     }));
   });
@@ -222,7 +237,6 @@ describe('ListaPlanVentaComponent', () => {
 
     it('should copy ID to clipboard and show feedback', fakeAsync(() => {
       component.copyToClipboard('test-id-123');
-
       tick();
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('test-id-123');
@@ -232,6 +246,16 @@ describe('ListaPlanVentaComponent', () => {
       expect(component.copiedId).toBeNull();
     }));
 
+    it('should handle clipboard errors', fakeAsync(() => {
+      (navigator.clipboard.writeText as jasmine.Spy).and.returnValue(Promise.reject('fail'));
+      spyOn(console, 'error');
+
+      component.copyToClipboard('id123');
+      tick();
+
+      expect(console.error).toHaveBeenCalledWith('Error al copiar ID: ', 'fail');
+    }));
+
     it('should show and hide toast message', fakeAsync(() => {
       component.showToast('Test Toast', 'error');
 
@@ -239,7 +263,6 @@ describe('ListaPlanVentaComponent', () => {
       expect(component.toastType).toBe('error');
 
       tick(4000);
-
       expect(component.toastMessage).toBeNull();
     }));
   });

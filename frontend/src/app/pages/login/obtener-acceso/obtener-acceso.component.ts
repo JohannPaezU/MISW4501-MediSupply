@@ -130,19 +130,24 @@ export class ObtenerAccesoComponent implements OnInit, AfterViewInit, OnDestroy 
     return { status, message };
   }
 
-  private updateView(): void {
+  public updateView(): void {
     try { this.cdr.detectChanges(); } catch { }
   }
 
-  private getErrorMessage(status: number | null, msg: string | null): string {
-    if (status === 400 || status === 401) {
-      return msg ?? 'El código OTP es inválido o ha expirado.';
-    }
-    if (status === 0) {
-      return 'No se pudo conectar con el servidor. Verifica tu conexión.';
-    }
-    return msg ?? 'Ocurrió un error inesperado. Intenta de nuevo.';
+private getErrorMessage(status: number | null, msg: string | null): string {
+  if (status === 400 || status === 401) {
+    return msg ?? 'El código OTP es inválido o ha expirado.';
   }
+  if (status === 0) {
+    return 'No se pudo conectar con el servidor. Verifica tu conexión.';
+  }
+
+  if (!msg || msg === 'Error desconocido') {
+    return 'Ocurrió un error inesperado. Intenta de nuevo.';
+  }
+
+  return msg;
+}
 
   private resetOtpInput(): void {
     this.otpCode?.setValue('');

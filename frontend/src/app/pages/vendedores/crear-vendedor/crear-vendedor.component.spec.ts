@@ -273,4 +273,32 @@ describe('CrearVendedorComponent', () => {
       flush();
     }));
   });
+
+ describe('handleError', () => {
+  const genericMessage = 'Hubo un error al crear el vendedor. Por favor, intenta de nuevo.';
+
+  it('should return generic message if error.error.detail is undefined', () => {
+    const error = { error: {} };
+    const result = component['handleError'](error);
+    expect(result).toBe(genericMessage);
+  });
+
+  it('should return first message if error.error.detail is array', () => {
+    const error = { error: { detail: [{ msg: 'Detalle de error' }] } };
+    const result = component['handleError'](error);
+    expect(result).toBe('Detalle de error');
+  });
+
+  it('should return detail if error.error.detail is string', () => {
+    const error = { error: { detail: 'Error como string' } };
+    const result = component['handleError'](error);
+    expect(result).toBe('Error como string');
+  });
+
+  it('should return generic message if error.error.detail is other type', () => {
+    const error = { error: { detail: 12345 } };
+    const result = component['handleError'](error);
+    expect(result).toBe(genericMessage);
+  });
+});
 });
