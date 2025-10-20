@@ -33,7 +33,7 @@ selling_plan_router = APIRouter(
 Create a new selling plan in the system.
 
 ### Request Body
-- **period**: Period of the selling plan (1-6 characters)
+- **period**: Period of the selling plan (1-20 characters)
 - **goal**: Goal of the selling plan (positive integer)
 - **product_id**: ID of the associated product (36 characters)
 - **zone_id**: ID of the associated zone (36 characters)
