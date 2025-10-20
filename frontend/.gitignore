@@ -19,7 +19,6 @@ src/environments/environment.prod.ts
 *.launch
 .settings/
 *.sublime-workspace
-
 # Visual Studio Code
 .vscode/*
 !.vscode/settings.json
