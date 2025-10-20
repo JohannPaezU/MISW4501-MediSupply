@@ -59,7 +59,8 @@ def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:
 
 def _generate_temporary_password() -> str:
     length = 8
-    characters = string.ascii_letters + string.digits + string.punctuation
+    safe_symbols = "@#$-_!"
+    characters = string.ascii_letters + string.digits + safe_symbols
     temporary_password = "".join(random.choice(characters) for _ in range(length))
 
     return temporary_password
