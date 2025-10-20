@@ -1,0 +1,41 @@
+.proveedores-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.proveedores-table thead {
+  background-color: #fafafa;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.proveedores-table th {
+  text-align: left;
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+.proveedores-table tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+.proveedores-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.proveedores-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.proveedores-table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  color: #555;
+  white-space: nowrap;
+}

@@ -1,0 +1,78 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Proveedores</h1>
+    <div class="page-actions">
+      <button class="btn-secondary" (click)="exportarCSV()" [disabled]="proveedores.length === 0">
+        EXPORTAR A CSV
+      </button>
+      <button class="btn-primary" (click)="crearProveedor()">
+        CREAR PROVEEDOR
+      </button>
+    </div>
+  </div>
+
+  <app-loading-spinner *ngIf="isLoading" message="Cargando proveedores..."></app-loading-spinner>
+
+  <div *ngIf="errorMessage && !isLoading" class="alert alert-error">
+    <mat-icon class="alert-icon">error</mat-icon>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-primary btn-retry" (click)="cargarProveedores()">Reintentar</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="table-container">
+    <table class="proveedores-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Número de RIT</th>
+          <th>Ciudad</th>
+          <th>País</th>
+          <th>Correo electrónico</th>
+          <th>Teléfono</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let proveedor of paginatedProveedores">
+          <td class="id-cell" (click)="copyToClipboard(proveedor.id)" title="Copiar ID">
+            <mat-icon>content_copy</mat-icon>
+            <span *ngIf="copiedId !== proveedor.id" class="id-text">{{ proveedor.id | slice:0:8 }}...</span>
+            <span *ngIf="copiedId === proveedor.id" class="copy-success-text">¡Copiado!</span>
+          </td>
+          <td>{{ proveedor.name }}</td>
+          <td>{{ proveedor.rit }}</td>
+          <td>{{ proveedor.city }}</td>
+          <td>{{ proveedor.country }}</td>
+          <td>{{ proveedor.email }}</td>
+          <td>{{ proveedor.phone }}</td>
+        </tr>
+        <tr *ngIf="proveedores.length === 0">
+          <td colspan="7" class="no-data-cell">No se encontraron proveedores.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer *ngIf="!isLoading && !errorMessage && proveedores.length > 0" class="pagination-controls">
+    <div class="page-size-selector">
+      <label for="pageSize">Filas por página:</label>
+      <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+    </div>
+    <div class="page-info">
+      <span>{{ startItem }} - {{ endItem }} de {{ totalItems }}</span>
+    </div>
+    <div class="page-navigation">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <button (click)="nextPage()" [disabled]="endItem >= totalItems">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </div>
+  </footer>
+
+</div>

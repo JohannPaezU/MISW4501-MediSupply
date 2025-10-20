@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">MediSupply</string>
+    <string name="do_login">INICIAR SESIÓN</string>
+    <string name="do_validate_otp">VALIDAR CÓDIGO</string>
+    <string name="do_apply">APLICAR</string>
+    <string name="do_clean">LIMPIAR</string>
+    <string name="do_delete">ELIMINAR</string>
+    <string name="do_register">REGISTRARSE</string>
+    <string name="do_create_account">CREAR CUENTA</string>
+    <string name="do_register_min">Registrarse</string>
+    <string name="do_cancel">CANCELAR</string>
+    <string name="label_names">Nombres</string>
+    <string name="label_lastnames">Apellidos</string>
+    <string name="label_nit_ruc">NIT/RUC</string>
+    <string name="label_address">Dirección</string>
+    <string name="label_contact_number">Número de contacto</string>
+    <string name="label_email">Correo electrónico</string>
+    <string name="label_otp">Código OTP</string>
+    <string name="label_password">Contraseña</string>
+    <string name="label_confirm_password">Confirmar contraseña</string>
+    <string name="label_rememberme">Recordarme</string>
+    <string name="show_password">Mostrar contraseña</string>
+    <string name="hide_password">Ocultar contraseña</string>
+    <string name="label_search_by_name">Buscar por nombre</string>
+
+    <string name="title_home">Inicio</string>
+    <string name="title_dashboard">Productos</string>
+    <string name="title_notifications">Historial</string>
+    <string name="title_logout">Salir</string>
+    <string name="title_order_summary">Resumen de pedido</string>
+    <string name="title_products">Productos</string>
+    <string name="label_delivery_date">Fecha de entrega</string>
+    <string name="label_total_value">Valor total: %s</string>
+    <string name="do_create_order">CREAR PEDIDO</string>
+    <string name="do_back">Atrás</string>
+    <string name="error_select_delivery_date">Por favor seleccione una fecha de entrega</string>
+    <string name="error_no_products_selected">Por favor seleccione al menos un producto</string>
+</resources>
