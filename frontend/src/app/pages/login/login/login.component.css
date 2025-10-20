@@ -161,44 +161,6 @@ input:focus {
   font-size: 0.9rem;
 }
 
-.btn-primary {
-  background-color: #f06283;
-  color: #fff;
-  border: none;
-  padding: 0.9rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.95rem;
-  margin-top: 0.5rem;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #e25476;
-}
-
-.btn-primary:disabled {
-  background-color: #f5a3b5;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: none;
-  border: 2px solid #f06283;
-  color: #f06283;
-  padding: 0.8rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.95rem;
-}
-
-.btn-secondary:hover {
-  background-color: #f06283;
-  color: white;
-}
 
 @media (max-width: 480px) {
   .login-card {
@@ -207,7 +169,7 @@ input:focus {
   }
 
   .login-logo {
-    width: 130px;
+    width: 210px;
   }
 
   .session-expired-alert {
