@@ -71,8 +71,8 @@
 
     <div class="form-row">
       <div class="form-field form-field-full">
-        <label class="field-label">URL de la Imagen (Opcional)</label>
-        <input type="text" class="form-input" formControlName="image_url" placeholder="https://ejemplo.com/logo.png">
+        <label class="field-label">Certificaciones Sanitarias(Opcional)</label>
+        <input type="text" class="form-input" formControlName="image_url" placeholder="Certificacion ABC123">
       </div>
     </div>
 
@@ -83,13 +83,7 @@
     </div>
   </form>
 
-  <div class="toast-container">
-    <div *ngIf="toastMessage" class="toast" [ngClass]="{
-      'toast-success': toastType === 'success',
-      'toast-error': toastType === 'error'
-    }">
-      <mat-icon class="toast-icon">{{ toastType === 'success' ? 'check_circle' : 'error' }}</mat-icon>
-      <span>{{ toastMessage }}</span>
-    </div>
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
   </div>
 </div>
