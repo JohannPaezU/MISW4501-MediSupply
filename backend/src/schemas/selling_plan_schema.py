@@ -10,7 +10,7 @@ from src.schemas.zone_schema import ZoneBase
 
 class SellingPlanBase(BaseModel):
     id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
-    period: Annotated[str, Field(min_length=1, max_length=6)]
+    period: Annotated[str, Field(min_length=1, max_length=20)]
     goal: Annotated[int, Field(gt=0)]
     created_at: Annotated[datetime | None, Field()] = None
     product: Annotated[ProductBase | None, Field()] = None
