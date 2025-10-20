@@ -193,7 +193,7 @@ describe('ListaVendedorComponent', () => {
 
   describe('CSV Export', () => {
 
-  it('should export data correctly', fakeAsync(() => {
+    it('should export data correctly', fakeAsync(() => {
       fixture.detectChanges();
       component.exportarCSV();
 
@@ -205,8 +205,8 @@ describe('ListaVendedorComponent', () => {
       expect(filename).toBe('vendedores');
       expect(headers).toBeDefined();
       if (headers) {
-         expect(headers['full_name']).toBe('Nombre completo');
-         expect(headers['zone_description']).toBe('Zona asignada');
+        expect(headers['full_name']).toBe('Nombre completo');
+        expect(headers['zone_description']).toBe('Zona asignada');
       }
 
       expect(data[0].id).toBe('v1');
@@ -263,5 +263,30 @@ describe('ListaVendedorComponent', () => {
 
       expect(component.toastMessage).toBeNull();
     }));
+  });
+
+  describe('Branches no cubiertos', () => {
+
+    it('nextPage should not increment if already on last page', () => {
+      fixture.detectChanges();
+      component.currentPage = 2;
+      component.nextPage();
+      expect(component.currentPage).toBe(2);
+    });
+
+    it('startItem should return 0 if no items', () => {
+      component.vendedoresFiltrados = [];
+      expect(component.startItem).toBe(0);
+    });
+
+    it('copyToClipboard should handle error', fakeAsync(() => {
+      (navigator.clipboard.writeText as jasmine.Spy).and.returnValue(Promise.reject('Error'));
+      spyOn(console, 'error');
+      component.copyToClipboard('fail-id');
+      tick();
+      expect(console.error).toHaveBeenCalledWith('Error al copiar ID: ', 'Error');
+      expect(component.copiedId).toBeNull();
+    }));
+
   });
 });

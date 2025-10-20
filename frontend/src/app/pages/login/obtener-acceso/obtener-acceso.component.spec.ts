@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { ObtenerAccesoComponent } from './obtener-acceso.component';
 import { AuthService } from '../../../services/login/auth.service';
 import { Router } from '@angular/router';
@@ -61,6 +61,15 @@ describe('ObtenerAccesoComponent', () => {
     expect(input.focus).toHaveBeenCalled();
   });
 
+  it('ngAfterViewInit debe enfocar el input', fakeAsync(() => {
+    component.otpInputRef = { nativeElement: { focus: jasmine.createSpy('focus') } } as any;
+
+    component.ngAfterViewInit();
+    flush();
+
+    expect(component.otpInputRef.nativeElement.focus).toHaveBeenCalled();
+  }));
+
   it('no debe llamar a verifyOtp si el formulario es inválido o falta email', () => {
     component.userEmail = null;
     component.otpForm.setValue({ otp_code: '' });
@@ -75,16 +84,14 @@ describe('ObtenerAccesoComponent', () => {
     expect(authServiceMock.verifyOtp).toHaveBeenCalledWith('test@mail.com', '123456');
   });
 
-  it('debe manejar éxito en la verificación OTP y redirigir a /home', (done) => {
+  it('debe manejar éxito en la verificación OTP y redirigir a /home', fakeAsync(() => {
     component.userEmail = 'test@mail.com';
     component.otpForm.setValue({ otp_code: '123456' });
     component.onSubmit();
-    setTimeout(() => {
-      expect(component.successMessage).toBe('Verificado correctamente');
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/home']);
-      done();
-    }, 800);
-  });
+    flush();
+    expect(component.successMessage).toBe('Verificado correctamente');
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/home']);
+  }));
 
   it('debe manejar error con status 401', () => {
     authServiceMock.verifyOtp.and.returnValue(throwError(() => ({ status: 401, message: 'OTP inválido' })));
@@ -129,4 +136,52 @@ describe('ObtenerAccesoComponent', () => {
     component.ngOnDestroy();
     expect(subSpy.unsubscribe).toHaveBeenCalled();
   });
+
+
+  it('parseError con null o undefined debe retornar valores por defecto', () => {
+    let result = (component as any).parseError(null);
+    expect(result.status).toBeNull();
+    expect(result.message).toBe('Error desconocido');
+
+    result = (component as any).parseError(undefined);
+    expect(result.status).toBeNull();
+    expect(result.message).toBe('Error desconocido');
+  });
+
+  it('parseError con objeto vacío debe retornar valores por defecto', () => {
+    const result = (component as any).parseError({});
+    expect(result.status).toBeNull();
+    expect(result.message).toBeNull();
+  });
+
+  it('getErrorMessage con status inesperado debe retornar mensaje genérico', () => {
+    const msg = (component as any).getErrorMessage(999, null);
+    expect(msg).toContain('Ocurrió un error');
+  });
+
+  it('handleError con string directamente debe asignar errorMessage', () => {
+    (component as any).handleError('Error directo');
+    expect(component.errorMessage).toBe('Error directo');
+  });
+
+  it('handleError con null debe asignar mensaje genérico', () => {
+    (component as any).handleError(null);
+    expect(component.errorMessage).toContain('Ocurrió un error');
+  });
+
+  it('parseError debe interpretar correctamente distintos tipos de error', () => {
+    expect((component as any).parseError(null)).toEqual({ status: null, message: 'Error desconocido' });
+    expect((component as any).parseError({ status: 401, error: { message: 'Fail' } })).toEqual({ status: 401, message: 'Fail' });
+    expect((component as any).parseError('Error string')).toEqual({ status: null, message: 'Error string' });
+  });
+
+  it('getErrorMessage retorna correcto según status y mensaje', () => {
+    const getter = (component as any).getErrorMessage.bind(component);
+    expect(getter(401, 'Inválido')).toBe('Inválido');
+    expect(getter(400, 'Bad request')).toBe('Bad request');
+    expect(getter(0, null)).toContain('No se pudo conectar');
+    expect(getter(500, null)).toContain('Ocurrió un error');
+    expect(getter(null, 'Error desconocido')).toContain('Ocurrió un error');
+  });
+
 });
