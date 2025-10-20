@@ -1,0 +1,81 @@
+<div class="crear-proveedor-container">
+  <h1 class="page-title">Crear proveedor</h1>
+
+
+  <form [formGroup]="proveedorForm" class="proveedor-form" (ngSubmit)="crearProveedor()">
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Nombre</label>
+        <input type="text" class="form-input" formControlName="name" placeholder="Laboratorios Pfizer S.A.S.">
+        <div *ngIf="f['name'].touched && f['name'].invalid" class="validation-error">
+          <small *ngIf="f['name'].errors?.['required']">El nombre es requerido.</small>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Número de RIT</label>
+        <input type="text" class="form-input" formControlName="rit" placeholder="900.123.456-7">
+        <div *ngIf="f['rit'].touched && f['rit'].invalid" class="validation-error">
+          <small *ngIf="f['rit'].errors?.['required']">El RIT es requerido.</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Ciudad</label>
+        <input type="text" class="form-input" formControlName="city" placeholder="Bogotá D.C.">
+        <div *ngIf="f['city'].touched && f['city'].invalid" class="validation-error">
+          <small *ngIf="f['city'].errors?.['required']">La ciudad es requerida.</small>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">País</label>
+        <input type="text" class="form-input" formControlName="country" placeholder="Colombia">
+        <div *ngIf="f['country'].touched && f['country'].invalid" class="validation-error">
+          <small *ngIf="f['country'].errors?.['required']">El país es requerido.</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label class="field-label">Correo electrónico</label>
+        <input type="email" class="form-input" formControlName="email" placeholder="contacto@pfizer.co">
+        <div *ngIf="f['email'].touched && f['email'].invalid" class="validation-error">
+          <small *ngIf="f['email'].errors?.['required']">El correo es requerido.</small>
+          <small *ngIf="f['email'].errors?.['email']">Formato de correo inválido.</small>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Teléfono</label>
+        <input type="tel" class="form-input" formControlName="phone" placeholder="6014278800">
+        <div *ngIf="f['phone'].touched && f['phone'].invalid" class="validation-error">
+          <small *ngIf="f['phone'].errors?.['required']">El teléfono es requerido.</small>
+          <small *ngIf="f['phone'].errors?.['pattern']">Solo debe contener números.</small>
+          <small *ngIf="f['phone'].errors?.['minlength'] || f['phone'].errors?.['maxlength']">Debe tener entre 9 y 15
+            dígitos.</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field form-field-full">
+        <label class="field-label">Certificaciones Sanitarias(Opcional)</label>
+        <input type="text" class="form-input" formControlName="image_url" placeholder="Certificacion ABC123">
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="isLoading || proveedorForm.invalid">
+        {{ isLoading ? 'CREANDO...' : 'CREAR PROVEEDOR' }}
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
+</div>

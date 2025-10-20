@@ -1,0 +1,85 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Planes de venta</h1>
+    <div class="page-actions">
+      <button class="btn-secondary" (click)="exportarCSV()" [disabled]="isLoading || planesVenta.length === 0">
+        EXPORTAR A CSV
+      </button>
+      <button class="btn-primary" (click)="crearPlanVenta()" [disabled]="isLoading">
+        CREAR PLAN
+      </button>
+    </div>
+  </div>
+
+  <app-loading-spinner *ngIf="isLoading" message="Cargando planes de venta..."></app-loading-spinner>
+
+  <div *ngIf="error && !isLoading" class="alert alert-error">
+    <mat-icon class="alert-icon">error</mat-icon>
+    <span>{{ error }}</span>
+    <button class="btn-primary btn-retry" (click)="cargarPlanesVenta()">Reintentar</button>
+  </div>
+
+  <div *ngIf="!isLoading && !error" class="table-container">
+    <table class="planes-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Periodo</th>
+          <th>Meta (Unidades)</th>
+          <th>Producto</th>
+          <th>Zona</th>
+          <th>Vendedor</th>
+          <th>Fecha de creación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let plan of planesPaginados">
+          <td>
+            <div class="id-cell" (click)="copyToClipboard(plan.id!)" title="Copiar ID">
+              <mat-icon>content_copy</mat-icon>
+              <span *ngIf="copiedId !== plan.id" class="id-text">{{ plan.id | slice:0:8 }}...</span>
+              <span *ngIf="copiedId === plan.id" class="copy-success-text">¡Copiado!</span>
+            </div>
+          </td>
+          <td>{{ plan.period }}</td>
+          <td>{{ plan.goal }}</td>
+          <td>{{ plan.product?.name || 'Sin producto' }}</td>
+          <td>
+            <span class="zone-badge">{{ plan.zone?.description || 'Sin zona' }}</span>
+          </td>
+          <td>{{ plan.seller?.full_name || 'Sin vendedor' }}</td>
+          <td>{{ plan.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </tr>
+        <tr *ngIf="planesVenta.length === 0">
+          <td colspan="7" class="no-data-cell">No se encontraron planes de venta.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer *ngIf="!isLoading && !error && planesVenta.length > 0" class="pagination-controls">
+    <div class="page-size-selector">
+      <label for="pageSize">Filas por página:</label>
+      <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+    </div>
+    <div class="page-info">
+      <span>{{ startItem }} - {{ endItem }} de {{ totalItems }}</span>
+    </div>
+    <div class="page-navigation">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <button (click)="nextPage()" [disabled]="endItem >= totalItems">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </div>
+  </footer>
+
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
+</div>

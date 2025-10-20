@@ -1,0 +1,64 @@
+.card-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 12px;
+  background-color: #ffffff;
+  overflow: visible;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #f7f2fb;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid #f1eaf7;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2d2d2d;
+  font-size: 0.95rem;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.user-button:hover {
+  color: #5e35b1;
+}
+
+.user-button mat-icon {
+  font-size: 1.3rem;
+  color: #4a4a4a;
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.card-content.centered {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .card-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .user-button {
+    font-size: 0.9rem;
+  }
+}

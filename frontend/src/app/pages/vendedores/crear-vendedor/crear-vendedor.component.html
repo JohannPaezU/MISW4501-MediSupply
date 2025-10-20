@@ -1,0 +1,110 @@
+<div class="crear-vendedor-container">
+  <h1 class="page-title">Crear vendedor</h1>
+
+
+  <app-loading-spinner *ngIf="isLoadingZones" message="Cargando zonas..."></app-loading-spinner>
+
+  <form *ngIf="!isLoadingZones" [formGroup]="vendedorForm" (ngSubmit)="crearVendedor()" class="vendedor-form">
+    <div class="form-content">
+
+      <div class="form-field">
+        <label class="field-label">Nombre completo *</label>
+        <input type="text" class="form-input" formControlName="nombreCompleto"
+          placeholder="Juan Sebastián Cervantes Restrepo"
+          [class.error]="nombreCompleto?.invalid && (nombreCompleto?.dirty || nombreCompleto?.touched)">
+        <div *ngIf="nombreCompleto?.invalid && (nombreCompleto?.dirty || nombreCompleto?.touched)"
+          class="error-message">
+          <div *ngIf="nombreCompleto?.errors?.['required']">
+            El nombre completo es requerido.
+          </div>
+          <div *ngIf="nombreCompleto?.errors?.['minlength']">
+            El nombre debe tener al menos 1 carácter.
+          </div>
+          <div *ngIf="nombreCompleto?.errors?.['maxlength']">
+            El nombre no puede exceder 100 caracteres.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Documento *</label>
+        <input type="text" class="form-input" formControlName="documento" placeholder="70267411"
+          [class.error]="documento?.invalid && (documento?.dirty || documento?.touched)">
+        <div *ngIf="documento?.invalid && (documento?.dirty || documento?.touched)" class="error-message">
+          <div *ngIf="documento?.errors?.['required']">
+            El documento es requerido.
+          </div>
+          <div *ngIf="documento?.errors?.['minlength']">
+            El documento debe tener al menos 1 carácter.
+          </div>
+          <div *ngIf="documento?.errors?.['maxlength']">
+            El documento no puede exceder 50 caracteres.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Correo electrónico *</label>
+        <input type="email" class="form-input" formControlName="correoElectronico" placeholder="juansebastian@gmail.com"
+          [class.error]="correoElectronico?.invalid && (correoElectronico?.dirty || correoElectronico?.touched)">
+        <div *ngIf="correoElectronico?.invalid && (correoElectronico?.dirty || correoElectronico?.touched)"
+          class="error-message">
+          <div *ngIf="correoElectronico?.errors?.['required']">
+            El correo electrónico es requerido.
+          </div>
+          <div *ngIf="correoElectronico?.errors?.['email']">
+            El formato del correo no es válido.
+          </div>
+          <div *ngIf="correoElectronico?.errors?.['minlength']">
+            El correo debe tener al menos 5 caracteres.
+          </div>
+          <div *ngIf="correoElectronico?.errors?.['maxlength']">
+            El correo no puede exceder 120 caracteres.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Teléfono *</label>
+        <input type="tel" class="form-input" formControlName="telefono" placeholder="947891236"
+          [class.error]="telefono?.invalid && (telefono?.dirty || telefono?.touched)">
+        <small class="field-hint">Solo números, entre 9 y 15 dígitos</small>
+        <div *ngIf="telefono?.invalid && (telefono?.dirty || telefono?.touched)" class="error-message">
+          <div *ngIf="telefono?.errors?.['required']">
+            El teléfono es requerido.
+          </div>
+          <div *ngIf="telefono?.errors?.['pattern']">
+            El teléfono debe contener solo dígitos (9-15 caracteres).
+          </div>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Zona asignada *</label>
+        <select title="Zona Asignada" class="form-select" formControlName="zonaAsignada"
+          [class.error]="zonaAsignada?.invalid && (zonaAsignada?.dirty || zonaAsignada?.touched)">
+          <option [ngValue]="null" disabled>Seleccione una zona</option>
+          <option *ngFor="let zona of zonas" [value]="zona.id">
+            {{ zona.description }}
+          </option>
+        </select>
+        <div *ngIf="zonaAsignada?.invalid && (zonaAsignada?.dirty || zonaAsignada?.touched)" class="error-message">
+          <div *ngIf="zonaAsignada?.errors?.['required']">
+            Debe seleccionar una zona.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        {{ isLoading ? 'CREANDO...' : 'CREAR VENDEDOR' }}
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
+</div>

@@ -1,0 +1,143 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    id 'jacoco'
+}
+
+android {
+    namespace 'com.mfpe.medisupply'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.mfpe.medisupply"
+        minSdk 29
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+            buildConfigField "String", "BASE_API_URL", "\"https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1/\""
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_API_URL", "\"https://medi-supply-staging-9d42f48051e1.herokuapp.com/api/v1/\""
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+    
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
+dependencies {
+
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+    testImplementation libs.junit
+    testImplementation libs.mockito.core
+    testImplementation libs.hamcrest
+    testImplementation libs.androidx.arch.core.testing
+    testImplementation libs.robolectric
+    testImplementation libs.androidx.fragment.testing
+    
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    androidTestImplementation libs.androidx.espresso.contrib
+    androidTestImplementation libs.androidx.espresso.intents
+    androidTestImplementation libs.androidx.espresso.accessibility
+    androidTestImplementation libs.androidx.espresso.web
+    androidTestImplementation libs.androidx.espresso.idling.resource
+    androidTestImplementation libs.androidx.test.uiautomator
+    androidTestImplementation libs.androidx.test.rules
+    androidTestImplementation libs.mockito.android
+    //
+    implementation libs.retrofit
+    implementation libs.converter.gson
+    implementation libs.glide
+}
+
+// Configuración de Jacoco para reportes de cobertura
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+// Configuración de tareas de Jacoco
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+
+    def fileFilter = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Test*.*',
+        'android/**/*.*',
+        '**/di/**',
+        '**/hilt/**',
+        '**/databinding/**',
+        '**/jacocoDebug/**',
+        '**/ui/**', // UI should be tested using E2E tests
+        // Excluir adapters completos ya que requieren inflación de layouts para pruebas completas
+        '**/adapters/*.class' // Excluir todos los adapters del reporte de cobertura
+    ]
+
+    def debugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files([mainSrc]))
+    classDirectories.setFrom(files([debugTree]))
+    executionData.setFrom(fileTree(dir: buildDir, includes: [
+        'jacoco/testDebugUnitTest.exec',
+        'outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec'
+    ]))
+    
+    // Configuración específica para excluir adapters del reporte de cobertura
+    doLast {
+        println "Excluyendo adapters del reporte de cobertura ya que requieren inflación de layouts para pruebas completas"
+        println "Adapters excluidos: ProductsAdapter, OrderSummaryAdapter, OrderListAdapter, OrderProductsAdapter"
+    }
+}
+
+task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80
+            }
+        }
+    }
+}
