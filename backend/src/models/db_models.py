@@ -169,7 +169,7 @@ class SellingPlan(Base):
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
     )
-    period: Mapped[str] = mapped_column(String(6), nullable=False)
+    period: Mapped[str] = mapped_column(String(20), nullable=False)
     goal: Mapped[int] = mapped_column(Integer, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
