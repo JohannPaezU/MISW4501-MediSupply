@@ -146,6 +146,10 @@ export class CrearPlanVentaComponent implements OnInit {
   }
 
   private obtenerMensajeDeError(err: any): string {
+    if (!err) {
+      return 'Hubo un error al crear el plan de venta.';
+    }
+
     const statusMessages: Record<number, string> = {
       409: 'Ya existe un plan de venta con estos mismos datos.',
       422: 'Uno de los datos seleccionados no es válido.'
@@ -155,7 +159,7 @@ export class CrearPlanVentaComponent implements OnInit {
       return statusMessages[err.status];
     }
 
-    const detail = err?.error?.detail;
+    const detail = err.error?.detail;
 
     if (typeof detail === 'string') {
       return detail;
