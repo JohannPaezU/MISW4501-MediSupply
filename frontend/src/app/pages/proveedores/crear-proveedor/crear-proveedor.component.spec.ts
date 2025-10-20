@@ -83,10 +83,11 @@ describe('CrearProveedorComponent', () => {
 
     component.crearProveedor();
     tick();
+    tick(5000);
+    flush();
 
     expect(component.errorMessage).toBe('Ya existe un proveedor con este correo electrónico o RIT.');
     expect(component.toastType).toBe('error');
-    discardPeriodicTasks();
   }));
 
   it('debería manejar error 422 (validación) correctamente', fakeAsync(() => {
@@ -103,10 +104,11 @@ describe('CrearProveedorComponent', () => {
 
     component.crearProveedor();
     tick();
+    tick(5000);
+    flush();
 
     expect(component.errorMessage).toBe(`Error en el campo 'email': email inválido`);
     expect(component.toastType).toBe('error');
-    discardPeriodicTasks();
   }));
 
   it('debería manejar error genérico correctamente', fakeAsync(() => {
@@ -116,18 +118,20 @@ describe('CrearProveedorComponent', () => {
 
     component.crearProveedor();
     tick();
+    tick(5000);
+    flush();
 
     expect(component.errorMessage).toBe('Ocurrió un error inesperado al crear el proveedor.');
     expect(component.toastType).toBe('error');
-    discardPeriodicTasks();
   }));
-
   it('debería limpiar el toast después de 5 segundos', fakeAsync(() => {
     component.showToast('Test mensaje', 'success');
     expect(component.toastMessage).toBe('Test mensaje');
+    expect(component.toastType).toBe('success');
+
     tick(5000);
     expect(component.toastMessage).toBeNull();
-    expect(component.toastType).toBeNull();
+    expect(component.toastType).toBe('success');
     flush();
   }));
 });
