@@ -1,14 +1,6 @@
 <div class="crear-proveedor-container">
   <h1 class="page-title">Crear proveedor</h1>
 
-  <div *ngIf="successMessage" class="alert alert-success">
-    <mat-icon class="alert-icon">check_circle</mat-icon>
-    <span>{{ successMessage }}</span>
-  </div>
-  <div *ngIf="errorMessage" class="alert alert-error">
-    <mat-icon class="alert-icon">error</mat-icon>
-    <span>{{ errorMessage }}</span>
-  </div>
 
   <form [formGroup]="proveedorForm" class="proveedor-form" (ngSubmit)="crearProveedor()">
     <div class="form-row">
