@@ -1,7 +1,36 @@
 export interface Vendedor {
-  nombre: string;
-  documento: string;
-  telefono: string;
+  id?: string;
+  full_name: string;
+  doi: string;
   email: string;
-  zonaAsignada: string;
+  phone: string;
+  created_at?: string;
+  zone?: Zone;
+}
+
+export interface VendedorResponse {
+  total_count: number;
+  sellers: Vendedor[];
+}
+
+export interface VendedorDetailResponse extends Vendedor { }
+
+export interface CreateVendedorRequest {
+  full_name: string;
+  doi: string;
+  email: string;
+  phone: string;
+  zone_id: string;
+}
+
+export interface CreateVendedorResponse extends Vendedor { }
+
+export interface Zone {
+  id: string;
+  description: string;
+}
+
+export interface ZonesResponse {
+  total_count: number;
+  zones: Zone[];
 }

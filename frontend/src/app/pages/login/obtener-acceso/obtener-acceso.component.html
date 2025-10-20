@@ -1,0 +1,40 @@
+<div class="recover-container">
+  <div class="recover-card">
+    <img src="../../../../assets/images/MediSupply.png" alt="MediSupply Logo" class="recover-logo" />
+
+    <h2 class="recover-title">Código de Verificación</h2>
+    <p class="recover-subtitle">
+      Hemos enviado un código a <strong>{{ userEmail }}</strong>. Por favor, ingrésalo a continuación.
+    </p>
+
+    <form [formGroup]="otpForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-group" (click)="focusInput(otpInput)">
+        <label for="otp-input">Código de 6 dígitos</label>
+
+        <div class="otp-visual-container">
+          <div *ngFor="let digit of otpDisplay; let i = index" class="otp-digit-wrapper"
+            [class.active]="otpCode?.value.length === i">
+            <div class="otp-digit">{{ digit || '' }}</div>
+            <div class="otp-underline"></div>
+          </div>
+        </div>
+
+        <input id="otp-input" #otpInput type="tel" formControlName="otp_code" autocomplete="one-time-code" maxlength="6"
+          oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
+      </div>
+
+      <div *ngIf="errorMessage" class="server-error-text">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading || otpForm.invalid">
+        {{ isLoading ? 'VERIFICANDO...' : 'VERIFICAR Y ACCEDER' }}
+      </button>
+    </form>
+
+
+    <button class="btn-secondary" (click)="goToLogin()" type="button">
+      ← Regresar al login
+    </button>
+  </div>
+</div>
