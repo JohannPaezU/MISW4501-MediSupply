@@ -1,10 +1,6 @@
-<div class="toast-container" *ngIf="toastMessage">
-  <div class="toast" [ngClass]="{'toast-success': toastType === 'success', 'toast-error': toastType === 'error'}">
-    <mat-icon class="toast-icon">{{ toastType === 'success' ? 'check_circle' : 'error' }}</mat-icon>
-    <span>{{ toastMessage }}</span>
-  </div>
+<div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+  {{ toastMessage }}
 </div>
-
 <div class="crear-producto-container">
   <h1 class="page-title">Crear producto</h1>
 

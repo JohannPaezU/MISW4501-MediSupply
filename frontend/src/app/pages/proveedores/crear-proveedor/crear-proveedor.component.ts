@@ -32,7 +32,7 @@ export class CrearProveedorComponent {
   errorMessage: string | null = null;
 
   toastMessage: string | null = null;
-  toastType: 'success' | 'error' | null = null;
+  toastType: 'success' | 'error' = 'success';
 
   get f() { return this.proveedorForm.controls; }
 
@@ -95,16 +95,18 @@ export class CrearProveedorComponent {
     });
   }
 
-  public showToast(message: string, type: 'success' | 'error'): void {
+
+  showToast(message: string, type: 'success' | 'error'): void {
     this.toastMessage = message;
     this.toastType = type;
     this.cdr.detectChanges();
 
-    timer(5000).subscribe(() => {
+    setTimeout(() => {
       this.toastMessage = null;
-      this.toastType = null;
       this.cdr.detectChanges();
-    });
+    }, 5000);
   }
+
+
 }
 
