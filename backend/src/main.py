@@ -7,6 +7,7 @@ from src.core.logging_config import logger
 from src.db.database import init_database
 from src.errors.exception_handlers import setup_exception_handlers
 from src.routers.auth_router import auth_router
+from src.routers.distribution_center_router import distribution_center_router
 from src.routers.health_check_router import health_check_router
 from src.routers.product_router import product_router
 from src.routers.provider_router import provider_router
@@ -35,6 +36,7 @@ app.include_router(seller_router, prefix=prefix)
 app.include_router(provider_router, prefix=prefix)
 app.include_router(product_router, prefix=prefix)
 app.include_router(selling_plan_router, prefix=prefix)
+app.include_router(distribution_center_router, prefix=prefix)
 setup_exception_handlers(app)
 
 

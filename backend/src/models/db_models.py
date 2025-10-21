@@ -15,6 +15,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.db.database import Base
+from src.models.enums.order_status import OrderStatus
 from src.models.enums.user_role import UserRole
 
 
@@ -66,6 +67,12 @@ class User(Base):
     )
     selling_plans: Mapped[list["SellingPlan"]] = relationship(
         "SellingPlan", back_populates="seller"
+    )
+    orders: Mapped[list["Order"]] = relationship(
+        "Order", foreign_keys="[Order.client_id]", back_populates="client"
+    )
+    managed_orders: Mapped[list["Order"]] = relationship(
+        "Order", foreign_keys="[Order.seller_id]", back_populates="seller"
     )
 
     @validates("phone")
@@ -167,6 +174,9 @@ class Product(Base):
     selling_plans: Mapped[list["SellingPlan"]] = relationship(
         "SellingPlan", back_populates="product", cascade="all, delete-orphan"
     )
+    order_items: Mapped[list["OrderProduct"]] = relationship(
+        "OrderProduct", back_populates="product"
+    )
 
 
 class SellingPlan(Base):
@@ -209,7 +219,7 @@ class SellingPlan(Base):
     zone: Mapped[Optional["Zone"]] = relationship("Zone", passive_deletes=True)
     seller: Mapped[Optional["User"]] = relationship("User", passive_deletes=True)
 
-"""
+
 class DistributionCenter(Base):
     __tablename__ = "distribution_centers"
 
@@ -228,4 +238,64 @@ class DistributionCenter(Base):
     orders: Mapped[list["Order"]] = relationship(
         "Order", back_populates="distribution_center", cascade="all, delete-orphan"
     )
-"""
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    comments: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    delivery_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    status: Mapped[OrderStatus] = mapped_column(Enum(OrderStatus), nullable=False, default=OrderStatus.RECEIVED)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    seller_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    client_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    distribution_center_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("distribution_centers.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    seller: Mapped[Optional["User"]] = relationship(
+        "User", foreign_keys=[seller_id], back_populates="managed_orders"
+    )
+    client: Mapped["User"] = relationship(
+        "User", foreign_keys=[client_id], back_populates="orders"
+    )
+    distribution_center: Mapped["DistributionCenter"] = relationship(
+        "DistributionCenter", back_populates="orders"
+    )
+    products: Mapped[list["OrderProduct"]] = relationship(
+        "OrderProduct", back_populates="order", cascade="all, delete-orphan"
+    )
+
+
+class OrderProduct(Base):
+    __tablename__ = "order_products"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    order_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("orders.id", ondelete="CASCADE"), nullable=False
+    )
+    product_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("products.id", ondelete="RESTRICT"), nullable=False
+    )
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    order: Mapped["Order"] = relationship("Order", back_populates="products")
+    product: Mapped["Product"] = relationship("Product", back_populates="order_items")

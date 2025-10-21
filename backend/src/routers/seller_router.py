@@ -103,7 +103,15 @@ async def get_seller(
 @seller_router.get(
     "/me/clients",
     response_model=GetClientsResponse,
-    dependencies=[Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL]))],
+    status_code=status.HTTP_200_OK,
+    summary="Get clients for the current seller",
+    description="""
+Retrieve a list of clients associated with the currently authenticated seller.
+
+### Response
+Returns a list of clients along with the total count. Each client includes `id`, `full_name`, `doi`, `email`,
+`address`, `phone` and `created_at` information.
+""",
 )
 async def get_clients(
     *,
