@@ -145,9 +145,9 @@ def get_permissions(
             if hasattr(dep.call, "allowed_roles"):
                 roles.extend([r.value for r in dep.call.allowed_roles])
 
-        roles = list(set(roles)) or ["PUBLIC"]
+        roles = list(set(roles)) or ["public"]
 
-        if "PUBLIC" in roles or user_role in roles:
+        if "public" in roles or user_role in roles:
             grouped[(route.path, frozenset(roles))].update(
                 route.methods - {"HEAD", "OPTIONS"}
             )
