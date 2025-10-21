@@ -1,13 +1,14 @@
 from datetime import datetime
 from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import EmailStr, Field, field_validator
 
 from src.errors.errors import BadRequestException
 from src.models.enums.user_role import UserRole
+from src.schemas.base_schema import BaseSchema
 
 
-class UserBase(BaseModel):
+class UserBase(BaseSchema):
     id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
     email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
     full_name: Annotated[str, Field(min_length=1, max_length=100)]
@@ -20,8 +21,8 @@ class UserBase(BaseModel):
         ),
     ]
     address: Annotated[str | None, Field(min_length=1, max_length=255)] = None
-    phone: str
-    role: UserRole
+    phone: Annotated[str, Field(min_length=9, max_length=15)]
+    role: Annotated[UserRole | None, Field()] = None
 
     @field_validator("phone")
     def validate_phone(cls, value: str) -> str:
@@ -29,14 +30,12 @@ class UserBase(BaseModel):
             raise BadRequestException("Phone must be between 9 and 15 digits")
         return value
 
-    model_config = {"str_strip_whitespace": True, "from_attributes": True}
-
 
 class UserCreateRequest(UserBase):
     address: Annotated[str, Field(min_length=1, max_length=255)]
     password: Annotated[str, Field(min_length=6, max_length=12)]
 
 
-class UserCreateResponse(BaseModel):
+class UserCreateResponse(BaseSchema):
     id: str
     created_at: datetime

@@ -4,19 +4,19 @@ from sqlalchemy.orm import Session
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import NotFoundException
+from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import (
     GetSellerResponse,
     GetSellersResponse,
     SellerCreateRequest,
-    SellerCreateResponse,
+    SellerCreateResponse, GetClientsResponse,
 )
-from src.services.seller_service import create_seller, get_seller_by_id, get_sellers
+from src.services.seller_service import create_seller, get_seller_by_id, get_sellers, get_clients_by_seller_id
 
 seller_router = APIRouter(
     tags=["Sellers"],
     prefix="/sellers",
-    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
 )
 
 
@@ -24,6 +24,7 @@ seller_router = APIRouter(
     "",
     response_model=SellerCreateResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
     summary="Register a new seller",
     description="""
 Create a new seller account.
@@ -51,6 +52,7 @@ async def register_seller(
     "",
     response_model=GetSellersResponse,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
     summary="Get all sellers",
     description="""
 Retrieve a list of all registered sellers.
@@ -73,6 +75,7 @@ async def get_all_sellers(
     "/{seller_id}",
     response_model=GetSellerResponse,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
     summary="Get seller by ID",
     description="""
 Retrieve a seller's details by their unique ID.
@@ -95,3 +98,18 @@ async def get_seller(
         raise NotFoundException("Seller not found")
 
     return seller
+
+
+@seller_router.get(
+    "/me/clients",
+    response_model=GetClientsResponse,
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL]))],
+)
+async def get_clients(
+    *,
+    current_user: User = Depends(require_roles([UserRole.COMMERCIAL])),
+    db: Session = Depends(get_db),
+) -> GetClientsResponse:
+    clients = get_clients_by_seller_id(db=db, seller_id=current_user.id)
+
+    return GetClientsResponse(total_count=len(clients), clients=clients)

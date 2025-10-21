@@ -1,14 +1,15 @@
 from datetime import datetime
 from typing import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from src.schemas.base_schema import BaseSchema
 from src.schemas.product_schema import ProductBase
 from src.schemas.seller_schema import SellerBase
 from src.schemas.zone_schema import ZoneBase
 
 
-class SellingPlanBase(BaseModel):
+class SellingPlanBase(BaseSchema):
     id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
     period: Annotated[str, Field(min_length=1, max_length=20)]
     goal: Annotated[int, Field(gt=0)]
@@ -16,8 +17,6 @@ class SellingPlanBase(BaseModel):
     product: Annotated[ProductBase | None, Field()] = None
     zone: Annotated[ZoneBase | None, Field()] = None
     seller: Annotated[SellerBase | None, Field()] = None
-
-    model_config = {"str_strip_whitespace": True, "from_attributes": True}
 
 
 class SellingPlanCreateRequest(SellingPlanBase):
@@ -34,6 +33,6 @@ class GetSellingPlanResponse(SellingPlanBase):
     pass
 
 
-class GetSellingPlansResponse(BaseModel):
+class GetSellingPlansResponse(BaseSchema):
     total_count: int
     selling_plans: list[SellingPlanBase]

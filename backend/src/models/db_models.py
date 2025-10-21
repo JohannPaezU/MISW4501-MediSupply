@@ -43,8 +43,23 @@ class User(Base):
         ForeignKey("zones.id", ondelete="SET NULL"),
         nullable=True,
     )
+    seller_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     zone: Mapped[Optional["Zone"]] = relationship(
         "Zone", back_populates="users", passive_deletes=True
+    )
+    seller: Mapped[Optional["User"]] = relationship(
+        "User",
+        remote_side="User.id",
+        back_populates="clients",
+    )
+    clients: Mapped[list["User"]] = relationship(
+        "User",
+        back_populates="seller",
+        cascade="all, delete-orphan",
     )
     otps: Mapped[list["OTP"]] = relationship(
         "OTP", back_populates="user", cascade="all, delete-orphan"
@@ -193,3 +208,24 @@ class SellingPlan(Base):
     product: Mapped["Product"] = relationship("Product")
     zone: Mapped[Optional["Zone"]] = relationship("Zone", passive_deletes=True)
     seller: Mapped[Optional["User"]] = relationship("User", passive_deletes=True)
+
+"""
+class DistributionCenter(Base):
+    __tablename__ = "distribution_centers"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    address: Mapped[str] = mapped_column(String(255), nullable=False)
+    city: Mapped[str] = mapped_column(String(100), nullable=False)
+    country: Mapped[str] = mapped_column(String(100), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    orders: Mapped[list["Order"]] = relationship(
+        "Order", back_populates="distribution_center", cascade="all, delete-orphan"
+    )
+"""
