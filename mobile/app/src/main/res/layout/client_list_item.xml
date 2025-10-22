@@ -5,14 +5,12 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:clickable="true"
-    android:background="@color/white"
-    android:backgroundTint="@color/white"
+    android:background="@color/pink_background"
+    android:backgroundTint="@color/pink_background"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="8dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="@color/pink"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,24 +18,77 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/textClientName"
+        <!-- Header Section with Avatar and Company Info -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nombre de la empresa"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Avatar Circle -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:cardCornerRadius="24dp"
+                app:cardBackgroundColor="@color/pink"
+                app:cardElevation="2dp">
+
+                <TextView
+                    android:id="@+id/textAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="A"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Company Info -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textClientName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Empresa 1"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textClientNIT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="NIT: 12345678"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <!-- Company Name (repeated) -->
+        <TextView
+            android:id="@+id/textClientNameRepeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Empresa 1"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textClientNIT"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="NIT"
-            android:textColor="@color/dark_gray"
-            android:textSize="14sp" />
-
+        <!-- Contact Information Section -->
         <LinearLayout
             android:id="@+id/expandedDetails"
             android:layout_width="match_parent"
@@ -46,19 +97,11 @@
             android:layout_marginTop="8dp"
             android:visibility="gone">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/pink" />
-
             <TextView
                 android:id="@+id/textClientPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Teléfono"
+                android:text="Teléfono: 3003553391"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -67,7 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Dirección"
+                android:text="Dirección: calle 104 #15-82 bogota"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -76,9 +119,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Correo"
+                android:text="Correo: empresa1@gmail.com"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Action Buttons Section -->
+        <LinearLayout
+            android:id="@+id/buttonsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:visibility="gone">
+
+            <!-- Product Recommendations Button -->
+            <Button
+                android:id="@+id/buttonRecommendations"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:padding="12dp"
+                android:backgroundTint="@color/gray"
+                android:text="Recomendaciones de Productos"
+                android:textColor="@color/dark_gray"
+                android:textSize="12sp" />
+
+            <!-- Visit Button -->
+            <Button
+                android:id="@+id/buttonVisit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Visita"
+                android:backgroundTint="@color/pink"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:padding="12dp" />
 
         </LinearLayout>
 
