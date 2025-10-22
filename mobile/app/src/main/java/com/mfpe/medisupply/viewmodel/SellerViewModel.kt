@@ -11,8 +11,8 @@ class SellerViewModel(
     private val sellerRepository: SellerRepository = SellerRepository()
 ) : ViewModel() {
 
-    fun getHome(onResult: (Boolean, String, SellerHomeResponse?) -> Unit) {
-        sellerRepository.getHome().enqueue(object :
+    fun getHome(authToken: String, onResult: (Boolean, String, SellerHomeResponse?) -> Unit) {
+        sellerRepository.getHome(authToken).enqueue(object :
             Callback<SellerHomeResponse> {
             override fun onResponse(call: Call<SellerHomeResponse>, res: Response<SellerHomeResponse>) {
                 if (res.isSuccessful && res.body() != null) {

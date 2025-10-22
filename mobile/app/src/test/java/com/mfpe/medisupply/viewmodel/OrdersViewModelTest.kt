@@ -97,7 +97,7 @@ class OrdersViewModelTest {
 
         // Then
         assertNotNull(parameterTypes)
-        assertEquals(3, parameterTypes?.size)
+        assertEquals(4, parameterTypes?.size)
     }
 
     @Test
@@ -121,7 +121,7 @@ class OrdersViewModelTest {
         val sellerId = "2"
         val mockOrderResponse = OrderListResponse(emptyList())
         
-        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockOrderRepository.getOrders("",clientId, sellerId)).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(true)
         `when`(mockResponse.body()).thenReturn(mockOrderResponse)
         
@@ -136,14 +136,14 @@ class OrdersViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getOrders(clientId, sellerId) { success, message, response ->
+        viewModel.getOrders("",clientId, sellerId) { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockOrderRepository).getOrders("",clientId, sellerId)
         verify(mockCall).enqueue(any())
         assertTrue("Should return success", successResult)
         assertEquals("Orders obtained.", messageResult)
@@ -156,7 +156,7 @@ class OrdersViewModelTest {
         val clientId = "1"
         val sellerId = "2"
         
-        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockOrderRepository.getOrders("",clientId, sellerId)).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(404)
         
@@ -171,14 +171,14 @@ class OrdersViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getOrders(clientId, sellerId) { success, message, response ->
+        viewModel.getOrders("",clientId, sellerId) { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockOrderRepository).getOrders("",clientId, sellerId)
         verify(mockCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertEquals("Error obtaining orders: 404", messageResult)
@@ -191,7 +191,7 @@ class OrdersViewModelTest {
         val clientId = "1"
         val sellerId = "2"
         
-        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockOrderRepository.getOrders("",clientId, sellerId)).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(true)
         `when`(mockResponse.body()).thenReturn(null)
         
@@ -206,14 +206,14 @@ class OrdersViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getOrders(clientId, sellerId) { success, message, response ->
+        viewModel.getOrders("",clientId, sellerId) { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockOrderRepository).getOrders("",clientId, sellerId)
         verify(mockCall).enqueue(any())
         assertFalse("Should return failure when body is null", successResult)
         assertTrue("Should contain error message", messageResult.contains("Error obtaining orders"))
@@ -229,7 +229,7 @@ class OrdersViewModelTest {
 
         // When - This will trigger the actual method execution
         try {
-            viewModel.getOrders(clientId, sellerId) { success, message, response ->
+            viewModel.getOrders("",clientId, sellerId) { success, message, response ->
                 callbackExecuted = true
             }
 
@@ -256,7 +256,7 @@ class OrdersViewModelTest {
 
         // When & Then - All should be able to call the method
         testCases.forEach { (clientId, sellerId) ->
-            `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+            `when`(mockOrderRepository.getOrders("",clientId, sellerId)).thenReturn(mockCall)
             `when`(mockResponse.isSuccessful).thenReturn(false)
             `when`(mockResponse.code()).thenReturn(500)
             
@@ -266,9 +266,9 @@ class OrdersViewModelTest {
                 null
             }.`when`(mockCall).enqueue(any())
 
-            viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+            viewModel.getOrders("",clientId, sellerId) { _, _, _ -> }
             
-            verify(mockOrderRepository).getOrders(clientId, sellerId)
+            verify(mockOrderRepository).getOrders("",clientId, sellerId)
         }
     }
 
@@ -278,15 +278,15 @@ class OrdersViewModelTest {
         val clientId = "1"
         val sellerId = "2"
         
-        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockOrderRepository.getOrders("",clientId, sellerId)).thenReturn(mockCall)
 
         // When - Call the same method multiple times
-        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
-        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+        viewModel.getOrders("",clientId, sellerId) { _, _, _ -> }
+        viewModel.getOrders("",clientId, sellerId) { _, _, _ -> }
+        viewModel.getOrders("",clientId, sellerId) { _, _, _ -> }
 
         // Then
-        verify(mockOrderRepository, times(3)).getOrders(clientId, sellerId)
+        verify(mockOrderRepository, times(3)).getOrders("", clientId, sellerId)
         verify(mockCall, times(3)).enqueue(any())
     }
 
@@ -296,13 +296,13 @@ class OrdersViewModelTest {
         val clientId = "0"
         val sellerId = "0"
         
-        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockOrderRepository.getOrders("",clientId, sellerId)).thenReturn(mockCall)
 
         // When
-        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+        viewModel.getOrders("",clientId, sellerId) { _, _, _ -> }
 
         // Then
-        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockOrderRepository).getOrders("",clientId, sellerId)
         verify(mockCall).enqueue(any())
     }
 
@@ -312,13 +312,13 @@ class OrdersViewModelTest {
         val clientId = "-1"
         val sellerId = "-1"
         
-        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockOrderRepository.getOrders("",clientId, sellerId)).thenReturn(mockCall)
 
         // When
-        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+        viewModel.getOrders("",clientId, sellerId) { _, _, _ -> }
 
         // Then
-        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockOrderRepository).getOrders("",clientId, sellerId)
         verify(mockCall).enqueue(any())
     }
 
@@ -328,13 +328,13 @@ class OrdersViewModelTest {
         val clientId = Int.MAX_VALUE.toString()
         val sellerId = Int.MAX_VALUE.toString()
         
-        `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+        `when`(mockOrderRepository.getOrders("",clientId, sellerId)).thenReturn(mockCall)
 
         // When
-        viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+        viewModel.getOrders("",clientId, sellerId) { _, _, _ -> }
 
         // Then
-        verify(mockOrderRepository).getOrders(clientId, sellerId)
+        verify(mockOrderRepository).getOrders("",clientId, sellerId)
         verify(mockCall).enqueue(any())
     }
 
@@ -347,8 +347,8 @@ class OrdersViewModelTest {
         val sellerId = "2"
 
         // When
-        viewModel1.getOrders(clientId, sellerId) { _, _, _ -> }
-        viewModel2.getOrders(clientId, sellerId) { _, _, _ -> }
+        viewModel1.getOrders("", clientId, sellerId) { _, _, _ -> }
+        viewModel2.getOrders("", clientId, sellerId) { _, _, _ -> }
 
         // Then
         assertNotNull("First viewModel should exist", viewModel1)
@@ -365,13 +365,13 @@ class OrdersViewModelTest {
         // When - Execute methods concurrently
         try {
             val thread1 = Thread {
-                viewModel.getOrders(clientId, sellerId) { _, _, _ -> }
+                viewModel.getOrders("", clientId, sellerId) { _, _, _ -> }
             }
             val thread2 = Thread {
-                viewModel.getOrders(clientId + 1, sellerId + 1) { _, _, _ -> }
+                viewModel.getOrders("", clientId + 1, sellerId + 1) { _, _, _ -> }
             }
             val thread3 = Thread {
-                viewModel.getOrders(clientId + 2, sellerId + 2) { _, _, _ -> }
+                viewModel.getOrders("", clientId + 2, sellerId + 2) { _, _, _ -> }
             }
 
             thread1.start()
@@ -402,7 +402,7 @@ class OrdersViewModelTest {
 
         // When
         testCases.forEach { (clientId, sellerId) ->
-            `when`(mockOrderRepository.getOrders(clientId, sellerId)).thenReturn(mockCall)
+            `when`(mockOrderRepository.getOrders("", clientId, sellerId)).thenReturn(mockCall)
             `when`(mockResponse.isSuccessful).thenReturn(false)
             `when`(mockResponse.code()).thenReturn(500)
             
@@ -412,11 +412,11 @@ class OrdersViewModelTest {
                 null
             }.`when`(mockCall).enqueue(any())
 
-            viewModel.getOrders(clientId, sellerId) { success, message, response ->
+            viewModel.getOrders("", clientId, sellerId) { success, message, response ->
                 // Callback executed
             }
             
-            verify(mockOrderRepository).getOrders(clientId, sellerId)
+            verify(mockOrderRepository).getOrders("", clientId, sellerId)
         }
     }
 }

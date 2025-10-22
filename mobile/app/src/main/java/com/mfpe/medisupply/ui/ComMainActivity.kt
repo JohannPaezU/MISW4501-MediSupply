@@ -1,5 +1,6 @@
 package com.mfpe.medisupply.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -37,7 +38,8 @@ class ComMainActivity : AppCompatActivity() {
         }
 
         binding.fabAdd.setOnClickListener {
-            // TODO: Implementar acción del FAB para usuarios comerciales
+            val intent = Intent(this, OrderActivity::class.java)
+            startActivity(intent)
         }
     }
 }

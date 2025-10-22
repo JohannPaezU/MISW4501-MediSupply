@@ -30,9 +30,12 @@
     <string name="title_order_summary">Resumen de pedido</string>
     <string name="title_products">Productos</string>
     <string name="label_delivery_date">Fecha de entrega</string>
+    <string name="label_select_client">Seleccionar cliente</string>
+    <string name="label_select_distribution_center">Seleccionar centro de distribución</string>
     <string name="label_total_value">Valor total: %s</string>
     <string name="do_create_order">CREAR PEDIDO</string>
     <string name="do_back">Atrás</string>
     <string name="error_select_delivery_date">Por favor seleccione una fecha de entrega</string>
     <string name="error_no_products_selected">Por favor seleccione al menos un producto</string>
+    <string name="label_visit_date">Fecha de visita</string>
 </resources>

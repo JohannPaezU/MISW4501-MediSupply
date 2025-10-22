@@ -10,8 +10,8 @@ class SellerRepository {
         RetrofitApiClient.createRetrofitService(SellerService::class.java)
     }
 
-    fun getHome(): Call<SellerHomeResponse> {
-        return sellerService.getHome()
+    fun getHome(authToken: String): Call<SellerHomeResponse> {
+        return sellerService.getHome(authToken)
     }
 
 }

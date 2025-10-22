@@ -14,8 +14,8 @@ class ProductsViewModel(
 
     private var currentProducts: List<Product> = emptyList()
 
-    fun getProducts(onResult: (Boolean, String, ProductListResponse?) -> Unit) {
-        productRepository.getProducts().enqueue(object :
+    fun getProducts(authToken:String, onResult: (Boolean, String, ProductListResponse?) -> Unit) {
+        productRepository.getProducts(authToken).enqueue(object :
             Callback<ProductListResponse> {
             override fun onResponse(call: Call<ProductListResponse>, res: Response<ProductListResponse>) {
                 if (res.isSuccessful && res.body() != null) {
