@@ -10,8 +10,8 @@ class ProductRepository {
         RetrofitApiClient.createRetrofitService(ProductService::class.java)
     }
 
-    fun getProducts(): Call<ProductListResponse> {
-        return productService.getProducts()
+    fun getProducts(authToken: String): Call<ProductListResponse> {
+        return productService.getProducts(authToken)
     }
 
 }

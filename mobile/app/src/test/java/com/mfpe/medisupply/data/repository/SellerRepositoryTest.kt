@@ -32,7 +32,7 @@ class SellerRepositoryTest {
     @Test
     fun `getHome should return Call with correct type`() {
         // When
-        val result = sellerRepository.getHome()
+        val result = sellerRepository.getHome("")
 
         // Then
         assertNotNull("Result should not be null", result)
@@ -42,7 +42,7 @@ class SellerRepositoryTest {
     @Test
     fun `getHome should return Call with correct generic type`() {
         // When
-        val result = sellerRepository.getHome()
+        val result = sellerRepository.getHome("")
 
         // Then
         assertNotNull("Result should not be null", result)
@@ -52,8 +52,8 @@ class SellerRepositoryTest {
     @Test
     fun `getHome should return different Call instances`() {
         // When
-        val result1 = sellerRepository.getHome()
-        val result2 = sellerRepository.getHome()
+        val result1 = sellerRepository.getHome("")
+        val result2 = sellerRepository.getHome("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -64,9 +64,9 @@ class SellerRepositoryTest {
     @Test
     fun `getHome should be callable multiple times`() {
         // When
-        val result1 = sellerRepository.getHome()
-        val result2 = sellerRepository.getHome()
-        val result3 = sellerRepository.getHome()
+        val result1 = sellerRepository.getHome("")
+        val result2 = sellerRepository.getHome("")
+        val result3 = sellerRepository.getHome("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -79,10 +79,10 @@ class SellerRepositoryTest {
         // When & Then
         try {
             val thread1 = Thread {
-                sellerRepository.getHome()
+                sellerRepository.getHome("")
             }
             val thread2 = Thread {
-                sellerRepository.getHome()
+                sellerRepository.getHome("")
             }
 
             thread1.start()
@@ -101,13 +101,13 @@ class SellerRepositoryTest {
         val results = mutableListOf<Call<SellerHomeResponse>>()
         
         val thread1 = Thread {
-            results.add(sellerRepository.getHome())
+            results.add(sellerRepository.getHome(""))
         }
         val thread2 = Thread {
-            results.add(sellerRepository.getHome())
+            results.add(sellerRepository.getHome(""))
         }
         val thread3 = Thread {
-            results.add(sellerRepository.getHome())
+            results.add(sellerRepository.getHome(""))
         }
 
         thread1.start()
@@ -133,8 +133,8 @@ class SellerRepositoryTest {
         val repository2 = SellerRepository()
 
         // When
-        val result1 = repository1.getHome()
-        val result2 = repository2.getHome()
+        val result1 = repository1.getHome("")
+        val result2 = repository2.getHome("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -148,7 +148,7 @@ class SellerRepositoryTest {
         val results = mutableListOf<Call<SellerHomeResponse>>()
         
         for (i in 1..10) {
-            results.add(sellerRepository.getHome())
+            results.add(sellerRepository.getHome(""))
         }
 
         // Then
@@ -162,8 +162,8 @@ class SellerRepositoryTest {
     @Test
     fun `SellerRepository should maintain consistency`() {
         // When
-        val result1 = sellerRepository.getHome()
-        val result2 = sellerRepository.getHome()
+        val result1 = sellerRepository.getHome("")
+        val result2 = sellerRepository.getHome("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -175,7 +175,7 @@ class SellerRepositoryTest {
     fun `getHome should handle edge cases`() {
         // When & Then
         try {
-            val result = sellerRepository.getHome()
+            val result = sellerRepository.getHome("")
             assertNotNull("Result should not be null", result)
             assertTrue("Result should be Call type", result is Call<*>)
         } catch (e: Exception) {
@@ -192,7 +192,7 @@ class SellerRepositoryTest {
         assertEquals("Should create 5 repositories", 5, repositories.size)
         repositories.forEach { repository ->
             assertNotNull("Each repository should not be null", repository)
-            val result = repository.getHome()
+            val result = repository.getHome("")
             assertNotNull("Each repository should return valid result", result)
             assertTrue("Each result should be Call type", result is Call<*>)
         }
@@ -201,8 +201,8 @@ class SellerRepositoryTest {
     @Test
     fun `getHome should maintain service state across calls`() {
         // When
-        val result1 = sellerRepository.getHome()
-        val result2 = sellerRepository.getHome()
+        val result1 = sellerRepository.getHome("")
+        val result2 = sellerRepository.getHome("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -224,7 +224,7 @@ class SellerRepositoryTest {
         assertEquals("Should create 20 repositories", 20, repositories.size)
         repositories.forEach { repository ->
             assertNotNull("Each repository should not be null", repository)
-            val result = repository.getHome()
+            val result = repository.getHome("")
             assertNotNull("Each repository should return valid result", result)
             assertTrue("Each result should be Call type", result is Call<*>)
         }

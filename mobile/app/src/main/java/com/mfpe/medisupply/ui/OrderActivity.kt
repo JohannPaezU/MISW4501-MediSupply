@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.adapters.OrderProductsAdapter
 import com.mfpe.medisupply.databinding.ActivityOrderBinding
+import com.mfpe.medisupply.utils.PrefsManager
 import com.mfpe.medisupply.viewmodel.ProductsViewModel
 
 class OrderActivity : AppCompatActivity() {
@@ -79,7 +80,7 @@ class OrderActivity : AppCompatActivity() {
     }
 
     private fun loadProducts() {
-        productsViewModel.getProducts() { success, message, response ->
+        productsViewModel.getProducts(PrefsManager.getInstance(this).getAuthToken!!) { success, message, response ->
             if (success && response != null) {
                 orderProductsAdapter.submitList(response.products)
             } else {

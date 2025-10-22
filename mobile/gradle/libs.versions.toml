@@ -1,6 +1,8 @@
 [versions]
 agp = "8.7.0"
 glide = "4.16.0"
+osmdroidAndroid = "6.1.20"
+playServicesLocation = "21.3.0"
 retrofit = "2.11.0"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
@@ -44,6 +46,8 @@ mockito-android = { group = "org.mockito", name = "mockito-android", version.ref
 hamcrest = { group = "org.hamcrest", name = "hamcrest", version.ref = "hamcrest" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCoreTesting" }
+osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 androidx-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTesting" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
