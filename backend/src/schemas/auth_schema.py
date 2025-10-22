@@ -2,8 +2,7 @@ from typing import Annotated
 
 from pydantic import EmailStr, Field
 
-from src.schemas.base_schema import BaseSchema
-from src.schemas.user_schema import UserBase
+from src.schemas.base_schema import BaseSchema, UserBase
 
 
 class LoginRequest(BaseSchema):

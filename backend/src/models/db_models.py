@@ -50,7 +50,7 @@ class User(Base):
         nullable=True,
     )
     zone: Mapped[Optional["Zone"]] = relationship(
-        "Zone", back_populates="users", passive_deletes=True
+        "Zone", back_populates="sellers", passive_deletes=True
     )
     seller: Mapped[Optional["User"]] = relationship(
         "User",
@@ -111,7 +111,7 @@ class Zone(Base):
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
     )
-    users: Mapped[list["User"]] = relationship("User", back_populates="zone")
+    sellers: Mapped[list["User"]] = relationship("User", back_populates="zone")
     selling_plans: Mapped[list["SellingPlan"]] = relationship(
         "SellingPlan", back_populates="zone"
     )
@@ -174,7 +174,7 @@ class Product(Base):
     selling_plans: Mapped[list["SellingPlan"]] = relationship(
         "SellingPlan", back_populates="product", cascade="all, delete-orphan"
     )
-    order_items: Mapped[list["OrderProduct"]] = relationship(
+    order_products: Mapped[list["OrderProduct"]] = relationship(
         "OrderProduct", back_populates="product"
     )
 
@@ -247,7 +247,7 @@ class Order(Base):
         String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
     )
     comments: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    delivery_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    delivery_date: Mapped[date] = mapped_column(Date, nullable=False)
     status: Mapped[OrderStatus] = mapped_column(Enum(OrderStatus), nullable=False, default=OrderStatus.RECEIVED)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -278,7 +278,7 @@ class Order(Base):
     distribution_center: Mapped["DistributionCenter"] = relationship(
         "DistributionCenter", back_populates="orders"
     )
-    products: Mapped[list["OrderProduct"]] = relationship(
+    order_products: Mapped[list["OrderProduct"]] = relationship(
         "OrderProduct", back_populates="order", cascade="all, delete-orphan"
     )
 
@@ -289,13 +289,12 @@ class OrderProduct(Base):
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
     )
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
     order_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("orders.id", ondelete="CASCADE"), nullable=False
     )
     product_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("products.id", ondelete="RESTRICT"), nullable=False
     )
-    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    order: Mapped["Order"] = relationship("Order", back_populates="products")
-    product: Mapped["Product"] = relationship("Product", back_populates="order_items")
+    order: Mapped["Order"] = relationship("Order", back_populates="order_products")
+    product: Mapped["Product"] = relationship("Product", back_populates="order_products")

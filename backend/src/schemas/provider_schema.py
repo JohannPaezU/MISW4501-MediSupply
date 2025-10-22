@@ -4,10 +4,10 @@ from typing import Annotated
 from pydantic import EmailStr, Field, field_validator
 
 from src.errors.errors import BadRequestException
-from src.schemas.base_schema import BaseSchema
+from src.schemas.base_schema import BaseSchema, ProviderBase, ProductBase
 
 
-class ProviderBase(BaseSchema):
+class ProviderCreateRequest(BaseSchema):
     id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
     name: Annotated[str, Field(min_length=1, max_length=100)]
     rit: Annotated[str, Field(min_length=1, max_length=50)]
@@ -25,17 +25,8 @@ class ProviderBase(BaseSchema):
         return value
 
 
-
-class ProviderCreateRequest(ProviderBase):
-    pass
-
-
-class ProviderCreateResponse(ProviderBase):
-    pass
-
-
-class GetProviderResponse(ProviderBase):
-    pass
+class ProviderResponse(ProviderBase):
+    products: list[ProductBase]
 
 
 class GetProvidersResponse(BaseSchema):

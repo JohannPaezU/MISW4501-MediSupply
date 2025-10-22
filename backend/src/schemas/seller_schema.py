@@ -1,16 +1,15 @@
-from datetime import datetime
 from typing import Annotated
 
 from pydantic import EmailStr, Field, field_validator
 
 from src.errors.errors import BadRequestException
-from src.schemas.base_schema import BaseSchema
-from src.schemas.zone_schema import ZoneBase
+from src.schemas.base_schema import BaseSchema, SellerBase, UserBase, SellingPlanBase, OrderBase, ZoneBase
 
 
-class SellerBase(BaseSchema):
-    id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
+class SellerCreateRequest(BaseSchema):
     full_name: Annotated[str, Field(min_length=1, max_length=100)]
+    email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
+    phone: Annotated[str, Field(min_length=9, max_length=15)]
     doi: Annotated[
         str,
         Field(
@@ -19,11 +18,8 @@ class SellerBase(BaseSchema):
             description="Unique user identification number (NIT, RUC, ID, etc.)",
         ),
     ]
-    email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
     address: Annotated[str | None, Field(min_length=1, max_length=255)] = None
-    phone: Annotated[str, Field(min_length=9, max_length=15)]
-    created_at: Annotated[datetime | None, Field()] = None
-    zone: Annotated[ZoneBase | None, Field()] = None
+    zone_id: Annotated[str, Field(min_length=36, max_length=36)]
 
     @field_validator("phone")
     def validate_phone(cls, value: str) -> str:
@@ -32,16 +28,11 @@ class SellerBase(BaseSchema):
         return value
 
 
-class SellerCreateRequest(SellerBase):
-    zone_id: Annotated[str, Field(min_length=36, max_length=36)]
-
-
-class SellerCreateResponse(SellerBase):
-    pass
-
-
-class GetSellerResponse(SellerBase):
-    pass
+class SellerResponse(SellerBase):
+    zone: ZoneBase
+    clients: list[UserBase]
+    selling_plans: list[SellingPlanBase]
+    managed_orders: list[OrderBase]
 
 
 class GetSellersResponse(BaseSchema):
@@ -51,4 +42,4 @@ class GetSellersResponse(BaseSchema):
 
 class GetClientsResponse(BaseSchema):
     total_count: int
-    clients: list[SellerBase]
+    clients: list[UserBase]

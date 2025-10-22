@@ -1,36 +1,20 @@
-from datetime import datetime
 from typing import Annotated
-
 from pydantic import Field
-
-from src.schemas.base_schema import BaseSchema
-from src.schemas.product_schema import ProductBase
-from src.schemas.seller_schema import SellerBase
-from src.schemas.zone_schema import ZoneBase
+from src.schemas.base_schema import BaseSchema, SellingPlanBase, ProductBase, ZoneBase, SellerBase
 
 
-class SellingPlanBase(BaseSchema):
-    id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
+class SellingPlanCreateRequest(BaseSchema):
     period: Annotated[str, Field(min_length=1, max_length=20)]
     goal: Annotated[int, Field(gt=0)]
-    created_at: Annotated[datetime | None, Field()] = None
-    product: Annotated[ProductBase | None, Field()] = None
-    zone: Annotated[ZoneBase | None, Field()] = None
-    seller: Annotated[SellerBase | None, Field()] = None
-
-
-class SellingPlanCreateRequest(SellingPlanBase):
     product_id: Annotated[str, Field(min_length=36, max_length=36)]
     zone_id: Annotated[str, Field(min_length=36, max_length=36)]
     seller_id: Annotated[str, Field(min_length=36, max_length=36)]
 
 
-class SellingPlanCreateResponse(SellingPlanBase):
-    pass
-
-
-class GetSellingPlanResponse(SellingPlanBase):
-    pass
+class SellingPlanResponse(SellingPlanBase):
+    product: ProductBase
+    zone: ZoneBase | None = None
+    seller: SellerBase | None = None
 
 
 class GetSellingPlansResponse(BaseSchema):
