@@ -31,9 +31,9 @@ class TestSellerRouter(BaseTest):
         json_response = response.json()
         assert response.status_code == 422
         assert json_response["detail"][0]["loc"] == ["body", "full_name"]
-        assert json_response["detail"][1]["loc"] == ["body", "doi"]
-        assert json_response["detail"][2]["loc"] == ["body", "email"]
-        assert json_response["detail"][3]["loc"] == ["body", "phone"]
+        assert json_response["detail"][1]["loc"] == ["body", "email"]
+        assert json_response["detail"][2]["loc"] == ["body", "phone"]
+        assert json_response["detail"][3]["loc"] == ["body", "doi"]
         assert json_response["detail"][4]["loc"] == ["body", "zone_id"]
 
     def test_register_seller_with_invalid_phone(self, authorized_client):

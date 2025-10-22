@@ -1,14 +1,12 @@
-from datetime import date, datetime
+from datetime import date
 from typing import Annotated
 
 from pydantic import Field
 
-from src.schemas.base_schema import BaseSchema
-from src.schemas.provider_schema import ProviderBase
+from src.schemas.base_schema import BaseSchema, ProductBase, ProviderBase, SellingPlanBase, OrderProductBase
 
 
-class ProductBase(BaseSchema):
-    id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
+class ProductCreateRequest(BaseSchema):
     name: Annotated[str, Field(min_length=3, max_length=100)]
     details: Annotated[str, Field(min_length=10, max_length=255)]
     store: Annotated[str, Field(min_length=3, max_length=100)]
@@ -17,19 +15,16 @@ class ProductBase(BaseSchema):
     due_date: Annotated[date, Field()]
     stock: Annotated[int, Field(gt=0)]
     price_per_unite: Annotated[float, Field(gt=0)]
-    created_at: Annotated[datetime | None, Field()] = None
-    provider: Annotated[ProviderBase | None, Field()] = None
-
-
-class ProductCreateRequest(ProductBase):
     provider_id: Annotated[str, Field(min_length=36, max_length=36)]
 
 
-class ProductCreateResponse(ProductBase):
-    pass
+class ProductResponse(ProductBase):
+    provider: ProviderBase
+    selling_plans: list[SellingPlanBase]
+    order_products: list[OrderProductBase]
 
 
-class ProductCreateBulkRequest(BaseSchema):
+class ProductCreateBulkRequest(BaseSchema): # noqa
     products: list[ProductCreateRequest]
 
 
@@ -39,10 +34,6 @@ class ProductCreateBulkResponse(BaseSchema):
     rows_inserted: int
     errors: int
     errors_details: list[str]
-
-
-class GetProductResponse(ProductBase):
-    pass
 
 
 class GetProductsResponse(BaseSchema):

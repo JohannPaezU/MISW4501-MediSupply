@@ -6,12 +6,11 @@ from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.product_schema import (
-    GetProductResponse,
+    ProductResponse,
     GetProductsResponse,
     ProductCreateBulkRequest,
     ProductCreateBulkResponse,
-    ProductCreateRequest,
-    ProductCreateResponse,
+    ProductCreateRequest
 )
 from src.services.product_service import (
     create_product,
@@ -29,7 +28,7 @@ product_router = APIRouter(
 
 @product_router.post(
     "",
-    response_model=ProductCreateResponse,
+    response_model=ProductResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new product",
     description="""
@@ -47,15 +46,26 @@ Register a new product in the system.
 - **provider_id**: ID of the provider supplying the product (36 characters)
 
 ### Response
-Returns the details of the newly created product including `id`, `name`, `details`, `store`, `batch`, `image_url`,
-`due_date`, `stock`, `price_per_unite`, `created_at` and associated `provider` information.
+- **id**: Unique product ID
+- **name**: Name of the product
+- **details**: Details about the product
+- **store**: Store where the product is available
+- **batch**: Batch identifier of the product
+- **image_url**: URL of the product's image
+- **due_date**: Due date of the product
+- **stock**: Stock quantity of the product
+- **price_per_unite**: Price per unit of the product
+- **created_at**: Timestamp of product creation
+- **provider**: Associated provider details
+- **selling_plans**: List of associated selling plans
+- **order_products**: List of associated order products
 """,
 )
 async def register_product(
-    *,
-    product_create_request: ProductCreateRequest,
-    db: Session = Depends(get_db),
-) -> ProductCreateResponse:
+        *,
+        product_create_request: ProductCreateRequest,
+        db: Session = Depends(get_db),
+) -> ProductResponse:
     return create_product(db=db, product_create_request=product_create_request)
 
 
@@ -88,9 +98,9 @@ Register multiple products in the system in a single request.
 """,
 )
 async def register_products_bulk(
-    *,
-    product_create_bulk_request: ProductCreateBulkRequest,
-    db: Session = Depends(get_db),
+        *,
+        product_create_bulk_request: ProductCreateBulkRequest,
+        db: Session = Depends(get_db),
 ) -> ProductCreateBulkResponse:
     return create_products_bulk(
         db=db, product_create_bulk_request=product_create_bulk_request
@@ -106,13 +116,22 @@ async def register_products_bulk(
 Retrieve a list of all products in the system.
 
 ### Response
-Returns a list of products along with the total count. Each product includes `id`, `name`, `details`, `store`, `batch`,
-`image_url`, `due_date`, `stock`, `price_per_unite`, `created_at` and associated `provider` information.
+Returns a list of products with the following details for each product:
+- **id**: Unique identifier of the product.
+- **name**: Name of the product.
+- **details**: Details about the product.
+- **store**: Store where the product is available.
+- **batch**: Batch identifier of the product.
+- **image_url**: URL of the product's image.
+- **due_date**: Due date of the product.
+- **stock**: Stock quantity of the product.
+- **price_per_unite**: Price per unit of the product.
+- **created_at**: Timestamp when the product was created.
 """,
 )
 async def get_all_products(
-    *,
-    db: Session = Depends(get_db),
+        *,
+        db: Session = Depends(get_db),
 ) -> GetProductsResponse:
     products = get_products(db=db)
 
@@ -121,7 +140,7 @@ async def get_all_products(
 
 @product_router.get(
     "/{product_id}",
-    response_model=GetProductResponse,
+    response_model=ProductResponse,
     status_code=status.HTTP_200_OK,
     summary="Get product by ID",
     description="""
@@ -131,15 +150,26 @@ Retrieve a product's details by their unique ID.
 - **product_id**: The unique identifier of the product (36 characters)
 
 ### Response
-Returns the details of the product including `id`, `name`, `details`, `store`, `batch`, `image_url`, `due_date`,
-`stock`, `price_per_unite`, `created_at` and associated `provider` information.
+- **id**: Unique identifier of the product.
+- **name**: Name of the product.
+- **details**: Details about the product.
+- **store**: Store where the product is available.
+- **batch**: Batch identifier of the product.
+- **image_url**: URL of the product's image.
+- **due_date**: Due date of the product.
+- **stock**: Stock quantity of the product.
+- **price_per_unite**: Price per unit of the product.
+- **created_at**: Timestamp when the product was created.
+- **provider**: Associated provider details.
+- **selling_plans**: List of associated selling plans.
+- **order_products**: List of associated order products.
 """,
 )
 async def get_product(
-    *,
-    product_id: str,
-    db: Session = Depends(get_db),
-) -> GetProductResponse:
+        *,
+        product_id: str,
+        db: Session = Depends(get_db),
+) -> ProductResponse:
     product = get_product_by_id(db=db, product_id=product_id)
     if not product:
         raise NotFoundException("Product not found")

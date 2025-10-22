@@ -1,13 +1,9 @@
-from typing import Annotated
-
-from pydantic import Field
-
-from src.schemas.base_schema import BaseSchema
+from src.schemas.base_schema import BaseSchema, ZoneBase, SellerBase, SellingPlanBase
 
 
-class ZoneBase(BaseSchema):
-    id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
-    description: Annotated[str, Field(min_length=1, max_length=255)]
+class ZoneResponse(ZoneBase):
+    sellers: list[SellerBase]
+    selling_plans: list[SellingPlanBase]
 
 
 class GetZonesResponse(BaseSchema):

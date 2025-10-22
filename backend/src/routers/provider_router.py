@@ -6,10 +6,9 @@ from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.provider_schema import (
-    GetProviderResponse,
     GetProvidersResponse,
     ProviderCreateRequest,
-    ProviderCreateResponse,
+    ProviderResponse,
 )
 from src.services.provider_service import (
     create_provider,
@@ -26,7 +25,7 @@ provider_router = APIRouter(
 
 @provider_router.post(
     "",
-    response_model=ProviderCreateResponse,
+    response_model=ProviderResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new provider",
     description="""
@@ -42,15 +41,23 @@ Register a new provider in the system.
 - **phone**: Phone number of the provider (9-15 digits)
 
 ### Response
-Returns the details of the newly created provider including `id`, `name`, `rit`, `city`, `country`, `image_url`,
-`email`, `phone`, and `created_at`.
+- **id**: Unique identifier of the provider
+- **name**: Full name of the provider
+- **rit**: RIT of the provider
+- **city**: City where the provider is located
+- **country**: Country where the provider is located
+- **image_url**: URL of the provider's image
+- **email**: Email address of the provider
+- **phone**: Phone number of the provider
+- **created_at**: Timestamp when the provider was created
+- **products**: List of products associated with the provider
 """,
 )
 async def register_provider(
     *,
     provider_create_request: ProviderCreateRequest,
     db: Session = Depends(get_db),
-) -> ProviderCreateResponse:
+) -> ProviderResponse:
     return create_provider(db=db, provider_create_request=provider_create_request)
 
 
@@ -63,8 +70,16 @@ async def register_provider(
 Retrieve a list of all providers in the system.
 
 ### Response
-Returns a list of providers along with the total count. Each provider includes `id`, `name`, `rit`, `city`, `country`,
-`image_url`, `email`, `phone`, and `created_at`.
+Returns a list of providers with the following details for each provider:
+- **id**: Unique identifier of the provider.
+- **name**: Full name of the provider.
+- **rit**: RIT of the provider.
+- **city**: City where the provider is located.
+- **country**: Country where the provider is located.
+- **image_url**: URL of the provider's image.
+- **email**: Email address of the provider.
+- **phone**: Phone number of the provider.
+- **created_at**: Timestamp when the provider was created.
 """,
 )
 async def get_all_providers(
@@ -78,7 +93,7 @@ async def get_all_providers(
 
 @provider_router.get(
     "/{provider_id}",
-    response_model=GetProviderResponse,
+    response_model=ProviderResponse,
     status_code=status.HTTP_200_OK,
     summary="Get provider by ID",
     description="""
@@ -88,15 +103,23 @@ Retrieve a provider's details by their unique ID.
 - **provider_id**: The unique identifier of the provider (36 characters)
 
 ### Response
-Returns the details of the provider including `id`, `name`, `rit`, `city`, `country`, `image_url`, `email`,
-`phone`, and `created_at`.
+- **id**: Unique identifier of the provider.
+- **name**: Full name of the provider.
+- **rit**: RIT of the provider.
+- **city**: City where the provider is located.
+- **country**: Country where the provider is located.
+- **image_url**: URL of the provider's image.
+- **email**: Email address of the provider.
+- **phone**: Phone number of the provider.
+- **created_at**: Timestamp when the provider was created.
+- **products**: List of products associated with the provider.
 """,
 )
 async def get_provider(
     *,
     provider_id: str,
     db: Session = Depends(get_db),
-) -> GetProviderResponse:
+) -> ProviderResponse:
     provider = get_provider_by_id(db=db, provider_id=provider_id)
     if not provider:
         raise NotFoundException("Provider not found")
