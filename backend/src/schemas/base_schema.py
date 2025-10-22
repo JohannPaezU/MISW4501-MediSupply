@@ -8,14 +8,18 @@ from src.models.enums.user_role import UserRole
 
 
 class BaseSchema(BaseModel):
-    @model_serializer(mode='wrap') # noqa
-    def _serialize(self, serializer: Any, info) -> Any:
+    model_config = {
+        "str_strip_whitespace": True,
+        "from_attributes": True,
+        "extra": "ignore",
+    }
+
+    @model_serializer(mode='wrap')
+    def _serialize(self, serializer: Any, info):
         data = serializer(self)
         if isinstance(data, dict):
             return {k: v for k, v in data.items() if v is not None}
         return data
-
-    model_config = {"str_strip_whitespace": True, "from_attributes": True}
 
 
 class UserBase(BaseSchema):
