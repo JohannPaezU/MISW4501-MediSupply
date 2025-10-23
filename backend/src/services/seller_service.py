@@ -68,6 +68,10 @@ def get_clients_by_seller_id(*, db: Session, seller_id: str) -> list[User]:
     return seller.clients
 
 
+def get_institutional_client_for_seller(*, db: Session, seller_id: str, client_id: str) -> User | None:
+    return db.query(User).filter_by(id=client_id, role=UserRole.INSTITUTIONAL, seller_id=seller_id).first()
+
+
 def _generate_temporary_password() -> str:
     length = 8
     safe_symbols = "@#$-_!"

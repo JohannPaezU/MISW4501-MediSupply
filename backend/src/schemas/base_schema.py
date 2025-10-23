@@ -14,7 +14,7 @@ class BaseSchema(BaseModel):
         "extra": "ignore",
     }
 
-    @model_serializer(mode='wrap')
+    @model_serializer(mode="wrap")
     def _serialize(self, serializer: Any, info):
         data = serializer(self)
         if isinstance(data, dict):
@@ -64,7 +64,7 @@ class ProductBase(BaseSchema):
     image_url: str | None = None
     due_date: date
     stock: int
-    price_per_unite: float
+    price_per_unit: float
     created_at: datetime
 
 
@@ -91,9 +91,3 @@ class OrderBase(BaseSchema):
     status: OrderStatus
     created_at: datetime
 
-
-class OrderProductBase(BaseSchema):
-    id: str
-    quantity: int
-    order: OrderBase
-    product: ProductBase

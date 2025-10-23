@@ -1,9 +1,11 @@
-from datetime import date
+from datetime import date, datetime
 from typing import Annotated
 
 from pydantic import Field
 
-from src.schemas.base_schema import BaseSchema, ProductBase, ProviderBase, SellingPlanBase, OrderProductBase
+from src.models.db_models import OrderProduct
+from src.models.enums.order_status import OrderStatus
+from src.schemas.base_schema import BaseSchema, ProductBase, ProviderBase, SellingPlanBase
 
 
 class ProductCreateRequest(BaseSchema):
@@ -14,18 +16,36 @@ class ProductCreateRequest(BaseSchema):
     image_url: Annotated[str | None, Field(min_length=10, max_length=255)] = None
     due_date: Annotated[date, Field()]
     stock: Annotated[int, Field(gt=0)]
-    price_per_unite: Annotated[float, Field(gt=0)]
+    price_per_unit: Annotated[float, Field(gt=0)]
     provider_id: Annotated[str, Field(min_length=36, max_length=36)]
+
+
+class OrderProductDetail(BaseSchema):
+    id: str
+    delivery_date: date
+    status: OrderStatus
+    quantity: int
+    created_at: datetime
+
+    @classmethod
+    def from_order_product(cls, order_product: OrderProduct) -> "OrderProductDetail":
+        return cls(
+            id=order_product.order.id,
+            delivery_date=order_product.order.delivery_date,
+            status=order_product.order.status,
+            quantity=order_product.quantity,
+            created_at=order_product.order.created_at,
+        )
 
 
 class ProductResponse(ProductBase):
     provider: ProviderBase
     selling_plans: list[SellingPlanBase]
-    order_products: list[OrderProductBase]
+    orders: list[OrderProductDetail]
 
 
-class ProductCreateBulkRequest(BaseSchema): # noqa
-    products: list[ProductCreateRequest]
+class ProductCreateBulkRequest(BaseSchema):  # noqa
+    products: Annotated[list[ProductCreateRequest], Field(min_items=1)]
 
 
 class ProductCreateBulkResponse(BaseSchema):
