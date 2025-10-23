@@ -6,7 +6,7 @@ from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.zone_schema import GetZonesResponse, ZoneResponse
-from src.services.zone_service import get_zones, get_zone_by_id
+from src.services.zone_service import get_zone_by_id, get_zones
 
 zone_router = APIRouter(
     tags=["Zones"],

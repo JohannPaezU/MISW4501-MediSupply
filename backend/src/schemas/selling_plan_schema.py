@@ -1,6 +1,14 @@
 from typing import Annotated
+
 from pydantic import Field
-from src.schemas.base_schema import BaseSchema, SellingPlanBase, ProductBase, ZoneBase, SellerBase
+
+from src.schemas.base_schema import (
+    BaseSchema,
+    ProductBase,
+    SellerBase,
+    SellingPlanBase,
+    ZoneBase,
+)
 
 
 class SellingPlanCreateRequest(BaseSchema):

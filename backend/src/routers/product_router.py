@@ -7,11 +7,12 @@ from src.errors.errors import NotFoundException
 from src.models.db_models import Product
 from src.models.enums.user_role import UserRole
 from src.schemas.product_schema import (
-    ProductResponse,
     GetProductsResponse,
+    OrderProductDetail,
     ProductCreateBulkRequest,
     ProductCreateBulkResponse,
-    ProductCreateRequest, OrderProductDetail
+    ProductCreateRequest,
+    ProductResponse,
 )
 from src.services.product_service import (
     create_product,
@@ -63,9 +64,9 @@ Register a new product in the system.
 """,
 )
 async def register_product(
-        *,
-        product_create_request: ProductCreateRequest,
-        db: Session = Depends(get_db),
+    *,
+    product_create_request: ProductCreateRequest,
+    db: Session = Depends(get_db),
 ) -> ProductResponse:
     product = create_product(db=db, product_create_request=product_create_request)
 
@@ -101,9 +102,9 @@ Register multiple products in the system in a single request.
 """,
 )
 async def register_products_bulk(
-        *,
-        product_create_bulk_request: ProductCreateBulkRequest,
-        db: Session = Depends(get_db),
+    *,
+    product_create_bulk_request: ProductCreateBulkRequest,
+    db: Session = Depends(get_db),
 ) -> ProductCreateBulkResponse:
     return create_products_bulk(
         db=db, product_create_bulk_request=product_create_bulk_request
@@ -133,8 +134,8 @@ Returns a list of products with the following details for each product:
 """,
 )
 async def get_all_products(
-        *,
-        db: Session = Depends(get_db),
+    *,
+    db: Session = Depends(get_db),
 ) -> GetProductsResponse:
     products = get_products(db=db)
 
@@ -169,9 +170,9 @@ Retrieve a product's details by their unique ID.
 """,
 )
 async def get_product(
-        *,
-        product_id: str,
-        db: Session = Depends(get_db),
+    *,
+    product_id: str,
+    db: Session = Depends(get_db),
 ) -> ProductResponse:
     product = get_product_by_id(db=db, product_id=product_id)
     if not product:
@@ -185,6 +186,8 @@ def _build_product_response(product: Product) -> ProductResponse:
         **product.__dict__,
         provider=product.provider,
         selling_plans=product.selling_plans,
-        orders=[OrderProductDetail.from_order_product(order_product=order_product) for order_product in
-                product.order_products]
+        orders=[
+            OrderProductDetail.from_order_product(order_product=order_product)
+            for order_product in product.order_products
+        ],
     )

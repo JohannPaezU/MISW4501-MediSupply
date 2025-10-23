@@ -7,12 +7,17 @@ from src.errors.errors import NotFoundException
 from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import (
+    GetClientsResponse,
     GetSellersResponse,
     SellerCreateRequest,
     SellerResponse,
-    GetClientsResponse,
 )
-from src.services.seller_service import create_seller, get_seller_by_id, get_sellers, get_clients_by_seller_id
+from src.services.seller_service import (
+    create_seller,
+    get_clients_by_seller_id,
+    get_seller_by_id,
+    get_sellers,
+)
 
 seller_router = APIRouter(
     tags=["Sellers"],

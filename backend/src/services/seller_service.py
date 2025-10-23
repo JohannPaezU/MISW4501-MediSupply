@@ -59,7 +59,12 @@ def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:
 
 
 def get_random_seller(*, db: Session) -> User | None:
-    return db.query(User).filter_by(role=UserRole.COMMERCIAL).order_by(func.random()).first()
+    return (
+        db.query(User)
+        .filter_by(role=UserRole.COMMERCIAL)
+        .order_by(func.random())
+        .first()
+    )
 
 
 def get_clients_by_seller_id(*, db: Session, seller_id: str) -> list[User]:
@@ -68,8 +73,14 @@ def get_clients_by_seller_id(*, db: Session, seller_id: str) -> list[User]:
     return seller.clients
 
 
-def get_institutional_client_for_seller(*, db: Session, seller_id: str, client_id: str) -> User | None:
-    return db.query(User).filter_by(id=client_id, role=UserRole.INSTITUTIONAL, seller_id=seller_id).first()
+def get_institutional_client_for_seller(
+    *, db: Session, seller_id: str, client_id: str
+) -> User | None:
+    return (
+        db.query(User)
+        .filter_by(id=client_id, role=UserRole.INSTITUTIONAL, seller_id=seller_id)
+        .first()
+    )
 
 
 def _generate_temporary_password() -> str:

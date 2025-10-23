@@ -1,10 +1,16 @@
 from datetime import date
-from typing import Optional, Annotated
+from typing import Annotated, Optional
 
 from pydantic import Field
 
 from src.models.db_models import OrderProduct
-from src.schemas.base_schema import BaseSchema, OrderBase, SellerBase, UserBase, DistributionCenterBase
+from src.schemas.base_schema import (
+    BaseSchema,
+    DistributionCenterBase,
+    OrderBase,
+    SellerBase,
+    UserBase,
+)
 
 
 class OrderProductCreateRequest(BaseSchema):

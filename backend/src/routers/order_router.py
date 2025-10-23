@@ -1,19 +1,18 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+
 from src.core.security import require_roles
 from src.db.database import get_db
-from src.errors.errors import NotFoundException, BadRequestException
-from src.models.db_models import User, Order
+from src.errors.errors import BadRequestException, NotFoundException
+from src.models.db_models import Order, User
 from src.models.enums.user_role import UserRole
 from src.schemas.order_schema import (
     GetOrdersResponse,
-    OrderResponse,
     OrderCreateRequest,
     OrderProductDetail,
+    OrderResponse,
 )
-from src.services.order_service import (
-    create_order, get_all_orders, get_order_by_id
-)
+from src.services.order_service import create_order, get_all_orders, get_order_by_id
 
 order_router = APIRouter(tags=["Orders"], prefix="/orders")
 
@@ -51,15 +50,23 @@ async def register_order(
     *,
     order_create_request: OrderCreateRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    current_user: User = Depends(
+        require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+    ),
 ) -> OrderResponse:
     if current_user.role == UserRole.COMMERCIAL:
         if not order_create_request.client_id:
             raise BadRequestException("Client ID must be provided for commercial users")
-        order = create_order(db=db, order_create_request=order_create_request, client_id=order_create_request.client_id,
-                             seller_id=current_user.id)
+        order = create_order(
+            db=db,
+            order_create_request=order_create_request,
+            client_id=order_create_request.client_id,
+            seller_id=current_user.id,
+        )
     else:
-        order = create_order(db=db, order_create_request=order_create_request, client_id=current_user.id)
+        order = create_order(
+            db=db, order_create_request=order_create_request, client_id=current_user.id
+        )
 
     return _build_order_response(order=order)
 
@@ -85,7 +92,9 @@ Retrieve a list of all orders created by the current user.
 async def get_orders(
     *,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    current_user: User = Depends(
+        require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+    ),
 ) -> GetOrdersResponse:
     orders = get_all_orders(db=db, current_user=current_user)
 
@@ -119,7 +128,9 @@ async def get_order(
     *,
     order_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    current_user: User = Depends(
+        require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+    ),
 ) -> OrderResponse:
     order = get_order_by_id(db=db, current_user=current_user, order_id=order_id)
     if not order:
@@ -134,6 +145,8 @@ def _build_order_response(order: Order) -> OrderResponse:
         seller=order.seller,
         client=order.client,
         distribution_center=order.distribution_center,
-        products=[OrderProductDetail.from_order_product(order_product=order_product) for order_product in
-                  order.order_products]
+        products=[
+            OrderProductDetail.from_order_product(order_product=order_product)
+            for order_product in order.order_products
+        ],
     )
