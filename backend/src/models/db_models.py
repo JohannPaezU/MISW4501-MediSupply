@@ -216,8 +216,12 @@ class SellingPlan(Base):
     )
 
     product: Mapped["Product"] = relationship("Product", back_populates="selling_plans")
-    zone: Mapped[Optional["Zone"]] = relationship("Zone", back_populates="selling_plans", passive_deletes=True)
-    seller: Mapped[Optional["User"]] = relationship("User", back_populates="selling_plans", passive_deletes=True)
+    zone: Mapped[Optional["Zone"]] = relationship(
+        "Zone", back_populates="selling_plans", passive_deletes=True
+    )
+    seller: Mapped[Optional["User"]] = relationship(
+        "User", back_populates="selling_plans", passive_deletes=True
+    )
 
 
 class DistributionCenter(Base):
@@ -248,7 +252,9 @@ class Order(Base):
     )
     comments: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     delivery_date: Mapped[date] = mapped_column(Date, nullable=False)
-    status: Mapped[OrderStatus] = mapped_column(Enum(OrderStatus), nullable=False, default=OrderStatus.RECEIVED)
+    status: Mapped[OrderStatus] = mapped_column(
+        Enum(OrderStatus), nullable=False, default=OrderStatus.RECEIVED
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
@@ -297,4 +303,6 @@ class OrderProduct(Base):
         String(36), ForeignKey("products.id", ondelete="RESTRICT"), nullable=False
     )
     order: Mapped["Order"] = relationship("Order", back_populates="order_products")
-    product: Mapped["Product"] = relationship("Product", back_populates="order_products")
+    product: Mapped["Product"] = relationship(
+        "Product", back_populates="order_products"
+    )

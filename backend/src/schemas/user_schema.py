@@ -1,7 +1,9 @@
 from typing import Annotated
+
 from pydantic import EmailStr, Field, field_validator
+
 from src.errors.errors import BadRequestException
-from src.schemas.base_schema import BaseSchema, UserBase, SellerBase, OrderBase
+from src.schemas.base_schema import BaseSchema, OrderBase, SellerBase, UserBase
 
 
 class UserCreateRequest(BaseSchema):

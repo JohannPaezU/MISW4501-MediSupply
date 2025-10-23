@@ -5,7 +5,12 @@ from pydantic import Field
 
 from src.models.db_models import OrderProduct
 from src.models.enums.order_status import OrderStatus
-from src.schemas.base_schema import BaseSchema, ProductBase, ProviderBase, SellingPlanBase
+from src.schemas.base_schema import (
+    BaseSchema,
+    ProductBase,
+    ProviderBase,
+    SellingPlanBase,
+)
 
 
 class ProductCreateRequest(BaseSchema):

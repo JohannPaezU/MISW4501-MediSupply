@@ -1,4 +1,4 @@
-from src.schemas.base_schema import BaseSchema, ZoneBase, SellerBase, SellingPlanBase
+from src.schemas.base_schema import BaseSchema, SellerBase, SellingPlanBase, ZoneBase
 
 
 class ZoneResponse(ZoneBase):

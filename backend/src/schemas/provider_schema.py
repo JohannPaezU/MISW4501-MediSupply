@@ -4,7 +4,7 @@ from typing import Annotated
 from pydantic import EmailStr, Field, field_validator
 
 from src.errors.errors import BadRequestException
-from src.schemas.base_schema import BaseSchema, ProviderBase, ProductBase
+from src.schemas.base_schema import BaseSchema, ProductBase, ProviderBase
 
 
 class ProviderCreateRequest(BaseSchema):

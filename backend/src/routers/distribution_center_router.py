@@ -5,13 +5,21 @@ from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
-from src.schemas.distribution_center_schema import GetDistributionCentersResponse, DistributionCenterResponse
-from src.services.distribution_center_service import get_distribution_centers, get_distribution_center_by_id
+from src.schemas.distribution_center_schema import (
+    DistributionCenterResponse,
+    GetDistributionCentersResponse,
+)
+from src.services.distribution_center_service import (
+    get_distribution_center_by_id,
+    get_distribution_centers,
+)
 
 distribution_center_router = APIRouter(
     tags=["Distribution Centers"],
     prefix="/distribution-centers",
-    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL]))],
+    dependencies=[
+        Depends(require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL]))
+    ],
 )
 
 
@@ -33,11 +41,14 @@ Returns a list of distribution centers with the following details for each cente
 - **created_at**: Timestamp when the distribution center was created.
 """,
 )
-async def get_all_distribution_centers(db: Session = Depends(get_db)) -> GetDistributionCentersResponse:
+async def get_all_distribution_centers(
+    db: Session = Depends(get_db),
+) -> GetDistributionCentersResponse:
     distribution_centers = get_distribution_centers(db=db)
 
-    return GetDistributionCentersResponse(total_count=len(distribution_centers),
-                                          distribution_centers=distribution_centers)
+    return GetDistributionCentersResponse(
+        total_count=len(distribution_centers), distribution_centers=distribution_centers
+    )
 
 
 @distribution_center_router.get(
@@ -65,8 +76,10 @@ async def get_distribution_center(
     distribution_center_id: str,
     db: Session = Depends(get_db),
 ) -> DistributionCenterResponse:
-    distribution_center = get_distribution_center_by_id(db=db, distribution_center_id=distribution_center_id)
+    distribution_center = get_distribution_center_by_id(
+        db=db, distribution_center_id=distribution_center_id
+    )
     if not distribution_center:
         raise NotFoundException("Distribution center not found")
-    
+
     return distribution_center
