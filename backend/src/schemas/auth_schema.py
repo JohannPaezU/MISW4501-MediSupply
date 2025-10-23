@@ -1,21 +1,21 @@
 from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import EmailStr, Field
 
-from src.schemas.user_schema import UserBase
+from src.schemas.base_schema import BaseSchema, UserBase
 
 
-class LoginRequest(BaseModel):
+class LoginRequest(BaseSchema):
     email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
     password: Annotated[str, Field(min_length=6, max_length=12)]
 
 
-class LoginResponse(BaseModel):
+class LoginResponse(BaseSchema):
     message: str
     otp_expiration_minutes: int
 
 
-class OTPVerifyRequest(BaseModel):
+class OTPVerifyRequest(BaseSchema):
     email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
     otp_code: Annotated[
         str,
@@ -28,7 +28,7 @@ class OTPVerifyRequest(BaseModel):
     ]
 
 
-class OTPVerifyResponse(BaseModel):
+class OTPVerifyResponse(BaseSchema):
     message: str
     access_token: str
     token_type: str

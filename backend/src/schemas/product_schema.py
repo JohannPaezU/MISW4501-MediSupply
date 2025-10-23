@@ -1,13 +1,19 @@
 from datetime import date, datetime
 from typing import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from src.schemas.provider_schema import ProviderBase
+from src.models.db_models import OrderProduct
+from src.models.enums.order_status import OrderStatus
+from src.schemas.base_schema import (
+    BaseSchema,
+    ProductBase,
+    ProviderBase,
+    SellingPlanBase,
+)
 
 
-class ProductBase(BaseModel):
-    id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
+class ProductCreateRequest(BaseSchema):
     name: Annotated[str, Field(min_length=3, max_length=100)]
     details: Annotated[str, Field(min_length=10, max_length=255)]
     store: Annotated[str, Field(min_length=3, max_length=100)]
@@ -15,26 +21,39 @@ class ProductBase(BaseModel):
     image_url: Annotated[str | None, Field(min_length=10, max_length=255)] = None
     due_date: Annotated[date, Field()]
     stock: Annotated[int, Field(gt=0)]
-    price_per_unite: Annotated[float, Field(gt=0)]
-    created_at: Annotated[datetime | None, Field()] = None
-    provider: Annotated[ProviderBase | None, Field()] = None
-
-    model_config = {"str_strip_whitespace": True, "from_attributes": True}
-
-
-class ProductCreateRequest(ProductBase):
+    price_per_unit: Annotated[float, Field(gt=0)]
     provider_id: Annotated[str, Field(min_length=36, max_length=36)]
 
 
-class ProductCreateResponse(ProductBase):
-    pass
+class OrderProductDetail(BaseSchema):
+    id: str
+    delivery_date: date
+    status: OrderStatus
+    quantity: int
+    created_at: datetime
+
+    @classmethod
+    def from_order_product(cls, order_product: OrderProduct) -> "OrderProductDetail":
+        return cls(
+            id=order_product.order.id,
+            delivery_date=order_product.order.delivery_date,
+            status=order_product.order.status,
+            quantity=order_product.quantity,
+            created_at=order_product.order.created_at,
+        )
 
 
-class ProductCreateBulkRequest(BaseModel):
-    products: list[ProductCreateRequest]
+class ProductResponse(ProductBase):
+    provider: ProviderBase
+    selling_plans: list[SellingPlanBase]
+    orders: list[OrderProductDetail]
 
 
-class ProductCreateBulkResponse(BaseModel):
+class ProductCreateBulkRequest(BaseSchema):  # noqa
+    products: Annotated[list[ProductCreateRequest], Field(min_items=1)]
+
+
+class ProductCreateBulkResponse(BaseSchema):
     success: bool
     rows_total: int
     rows_inserted: int
@@ -42,10 +61,6 @@ class ProductCreateBulkResponse(BaseModel):
     errors_details: list[str]
 
 
-class GetProductResponse(ProductBase):
-    pass
-
-
-class GetProductsResponse(BaseModel):
+class GetProductsResponse(BaseSchema):
     total_count: int
     products: list[ProductBase]

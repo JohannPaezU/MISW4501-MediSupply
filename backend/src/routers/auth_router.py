@@ -15,7 +15,7 @@ from src.schemas.auth_schema import (
     OTPVerifyRequest,
     OTPVerifyResponse,
 )
-from src.schemas.user_schema import UserCreateRequest, UserCreateResponse
+from src.schemas.user_schema import UserCreateRequest, UserResponse
 from src.services.auth_service import login_user, verify_otp_and_get_token
 from src.services.user_service import create_user, get_user_by_email
 
@@ -24,7 +24,7 @@ auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @auth_router.post(
     "/register",
-    response_model=UserCreateResponse,
+    response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
     description="""
@@ -40,14 +40,23 @@ Create a new user account.
 - **password**: Between 6–12 characters
 
 ### Response
-Returns the created user's `id` and `created_at` timestamp.
+- **id**: Unique user ID
+- **full_name**: Full name
+- **email**: Email address
+- **phone**: Phone number
+- **doi**: NIT
+- **address**: Address
+- **role**: User role
+- **created_at**: Timestamp of account creation
+- **seller**: Associated seller details
+- **orders**: List of associated orders
 """,
 )
 async def register_user(
     *,
     user_create_request: UserCreateRequest,
     db: Session = Depends(get_db),
-) -> UserCreateResponse:
+) -> UserResponse:
     return create_user(db=db, user_create_request=user_create_request)
 
 
@@ -145,9 +154,9 @@ def get_permissions(
             if hasattr(dep.call, "allowed_roles"):
                 roles.extend([r.value for r in dep.call.allowed_roles])
 
-        roles = list(set(roles)) or ["PUBLIC"]
+        roles = list(set(roles)) or ["public"]
 
-        if "PUBLIC" in roles or user_role in roles:
+        if "public" in roles or user_role in roles:
             grouped[(route.path, frozenset(roles))].update(
                 route.methods - {"HEAD", "OPTIONS"}
             )
