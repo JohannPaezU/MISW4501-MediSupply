@@ -48,10 +48,10 @@ Create a new order in the system.
 """,
 )
 async def register_order(
-        *,
-        order_create_request: OrderCreateRequest,
-        db: Session = Depends(get_db),
-        current_user: User = Depends(require_roles([UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    *,
+    order_create_request: OrderCreateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
 ) -> OrderResponse:
     if current_user.role == UserRole.COMMERCIAL:
         if not order_create_request.client_id:
@@ -83,9 +83,9 @@ Retrieve a list of all orders created by the current user.
 """,
 )
 async def get_all_orders(
-        *,
-        db: Session = Depends(get_db),
-        current_user: User = Depends(require_roles([UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    *,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
 ) -> GetOrdersResponse:
     orders = get_orders(db=db, current_user=current_user)
 
@@ -116,10 +116,10 @@ Retrieve detailed information about a specific order by its ID for the current u
 """,
 )
 async def get_order_by_id(
-        *,
-        order_id: str,
-        db: Session = Depends(get_db),
-        current_user: User = Depends(require_roles([UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    *,
+    order_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
 ) -> OrderResponse:
     order = get_order_by_id(db=db, current_user=current_user, order_id=order_id)
     if not order:
