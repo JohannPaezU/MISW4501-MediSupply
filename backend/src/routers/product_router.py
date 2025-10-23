@@ -4,13 +4,14 @@ from sqlalchemy.orm import Session
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import NotFoundException
+from src.models.db_models import Product
 from src.models.enums.user_role import UserRole
 from src.schemas.product_schema import (
     ProductResponse,
     GetProductsResponse,
     ProductCreateBulkRequest,
     ProductCreateBulkResponse,
-    ProductCreateRequest
+    ProductCreateRequest, OrderProductDetail
 )
 from src.services.product_service import (
     create_product,
@@ -42,7 +43,7 @@ Register a new product in the system.
 - **image_url**: URL of the product's image (optional, max 300 characters)
 - **due_date**: Due date of the product (datetime)
 - **stock**: Stock quantity of the product (greater than 0)
-- **price_per_unite**: Price per unit of the product (greater than 0)
+- **price_per_unit**: Price per unit of the product (greater than 0)
 - **provider_id**: ID of the provider supplying the product (36 characters)
 
 ### Response
@@ -54,7 +55,7 @@ Register a new product in the system.
 - **image_url**: URL of the product's image
 - **due_date**: Due date of the product
 - **stock**: Stock quantity of the product
-- **price_per_unite**: Price per unit of the product
+- **price_per_unit**: Price per unit of the product
 - **created_at**: Timestamp of product creation
 - **provider**: Associated provider details
 - **selling_plans**: List of associated selling plans
@@ -66,7 +67,9 @@ async def register_product(
         product_create_request: ProductCreateRequest,
         db: Session = Depends(get_db),
 ) -> ProductResponse:
-    return create_product(db=db, product_create_request=product_create_request)
+    product = create_product(db=db, product_create_request=product_create_request)
+
+    return _build_product_response(product=product)
 
 
 @product_router.post(
@@ -86,7 +89,7 @@ Register multiple products in the system in a single request.
 - **image_url**: URL of the product's image (optional, max 300 characters)
 - **due_date**: Due date of the product (datetime)
 - **stock**: Stock quantity of the product (greater than 0)
-- **price_per_unite**: Price per unit of the product (greater than 0)
+- **price_per_unit**: Price per unit of the product (greater than 0)
 - **provider_id**: ID of the provider supplying the product (36 characters)
 
 ### Response
@@ -125,7 +128,7 @@ Returns a list of products with the following details for each product:
 - **image_url**: URL of the product's image.
 - **due_date**: Due date of the product.
 - **stock**: Stock quantity of the product.
-- **price_per_unite**: Price per unit of the product.
+- **price_per_unit**: Price per unit of the product.
 - **created_at**: Timestamp when the product was created.
 """,
 )
@@ -158,7 +161,7 @@ Retrieve a product's details by their unique ID.
 - **image_url**: URL of the product's image.
 - **due_date**: Due date of the product.
 - **stock**: Stock quantity of the product.
-- **price_per_unite**: Price per unit of the product.
+- **price_per_unit**: Price per unit of the product.
 - **created_at**: Timestamp when the product was created.
 - **provider**: Associated provider details.
 - **selling_plans**: List of associated selling plans.
@@ -174,4 +177,14 @@ async def get_product(
     if not product:
         raise NotFoundException("Product not found")
 
-    return product
+    return _build_product_response(product=product)
+
+
+def _build_product_response(product: Product) -> ProductResponse:
+    return ProductResponse(
+        **product.__dict__,
+        provider=product.provider,
+        selling_plans=product.selling_plans,
+        orders=[OrderProductDetail.from_order_product(order_product=order_product) for order_product in
+                product.order_products]
+    )

@@ -161,7 +161,7 @@ class Product(Base):
     image_url: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     due_date: Mapped[date] = mapped_column(Date, nullable=False)
     stock: Mapped[int] = mapped_column(Integer, nullable=False)
-    price_per_unite: Mapped[float] = mapped_column(nullable=False)
+    price_per_unit: Mapped[float] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
@@ -215,9 +215,9 @@ class SellingPlan(Base):
         nullable=True,
     )
 
-    product: Mapped["Product"] = relationship("Product")
-    zone: Mapped[Optional["Zone"]] = relationship("Zone", passive_deletes=True)
-    seller: Mapped[Optional["User"]] = relationship("User", passive_deletes=True)
+    product: Mapped["Product"] = relationship("Product", back_populates="selling_plans")
+    zone: Mapped[Optional["Zone"]] = relationship("Zone", back_populates="selling_plans", passive_deletes=True)
+    seller: Mapped[Optional["User"]] = relationship("User", back_populates="selling_plans", passive_deletes=True)
 
 
 class DistributionCenter(Base):

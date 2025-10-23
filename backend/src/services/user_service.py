@@ -16,6 +16,10 @@ def get_user_by_doi(*, db: Session, doi: str) -> User | None:
     return db.query(User).filter_by(doi=doi).first()
 
 
+def get_user_by_id(*, db: Session, user_id: str) -> User | None:
+    return db.query(User).filter_by(id=user_id, role=UserRole.INSTITUTIONAL).first()
+
+
 def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
     from src.services.seller_service import get_random_seller  # Imported here to avoid circular dependency
     existing_user = get_user_by_email(
