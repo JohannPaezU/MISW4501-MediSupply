@@ -1,6 +1,7 @@
 import random
 import string
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from src.core.config import settings
@@ -55,6 +56,31 @@ def get_sellers(*, db: Session) -> list[User]:
 
 def get_seller_by_id(*, db: Session, seller_id: str) -> User | None:
     return db.query(User).filter_by(id=seller_id, role=UserRole.COMMERCIAL).first()
+
+
+def get_random_seller(*, db: Session) -> User | None:
+    return (
+        db.query(User)
+        .filter_by(role=UserRole.COMMERCIAL)
+        .order_by(func.random())
+        .first()
+    )
+
+
+def get_clients_by_seller_id(*, db: Session, seller_id: str) -> list[User]:
+    seller = get_seller_by_id(db=db, seller_id=seller_id)
+
+    return seller.clients
+
+
+def get_institutional_client_for_seller(
+    *, db: Session, seller_id: str, client_id: str
+) -> User | None:
+    return (
+        db.query(User)
+        .filter_by(id=client_id, role=UserRole.INSTITUTIONAL, seller_id=seller_id)
+        .first()
+    )
 
 
 def _generate_temporary_password() -> str:

@@ -15,6 +15,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from src.db.database import Base
+from src.models.enums.order_status import OrderStatus
 from src.models.enums.user_role import UserRole
 
 
@@ -43,14 +44,35 @@ class User(Base):
         ForeignKey("zones.id", ondelete="SET NULL"),
         nullable=True,
     )
+    seller_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     zone: Mapped[Optional["Zone"]] = relationship(
-        "Zone", back_populates="users", passive_deletes=True
+        "Zone", back_populates="sellers", passive_deletes=True
+    )
+    seller: Mapped[Optional["User"]] = relationship(
+        "User",
+        remote_side="User.id",
+        back_populates="clients",
+    )
+    clients: Mapped[list["User"]] = relationship(
+        "User",
+        back_populates="seller",
+        cascade="all, delete-orphan",
     )
     otps: Mapped[list["OTP"]] = relationship(
         "OTP", back_populates="user", cascade="all, delete-orphan"
     )
     selling_plans: Mapped[list["SellingPlan"]] = relationship(
         "SellingPlan", back_populates="seller"
+    )
+    orders: Mapped[list["Order"]] = relationship(
+        "Order", foreign_keys="[Order.client_id]", back_populates="client"
+    )
+    managed_orders: Mapped[list["Order"]] = relationship(
+        "Order", foreign_keys="[Order.seller_id]", back_populates="seller"
     )
 
     @validates("phone")
@@ -89,7 +111,7 @@ class Zone(Base):
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
     )
-    users: Mapped[list["User"]] = relationship("User", back_populates="zone")
+    sellers: Mapped[list["User"]] = relationship("User", back_populates="zone")
     selling_plans: Mapped[list["SellingPlan"]] = relationship(
         "SellingPlan", back_populates="zone"
     )
@@ -139,7 +161,7 @@ class Product(Base):
     image_url: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     due_date: Mapped[date] = mapped_column(Date, nullable=False)
     stock: Mapped[int] = mapped_column(Integer, nullable=False)
-    price_per_unite: Mapped[float] = mapped_column(nullable=False)
+    price_per_unit: Mapped[float] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
@@ -151,6 +173,9 @@ class Product(Base):
     provider: Mapped["Provider"] = relationship("Provider", back_populates="products")
     selling_plans: Mapped[list["SellingPlan"]] = relationship(
         "SellingPlan", back_populates="product", cascade="all, delete-orphan"
+    )
+    order_products: Mapped[list["OrderProduct"]] = relationship(
+        "OrderProduct", back_populates="product"
     )
 
 
@@ -190,6 +215,94 @@ class SellingPlan(Base):
         nullable=True,
     )
 
-    product: Mapped["Product"] = relationship("Product")
-    zone: Mapped[Optional["Zone"]] = relationship("Zone", passive_deletes=True)
-    seller: Mapped[Optional["User"]] = relationship("User", passive_deletes=True)
+    product: Mapped["Product"] = relationship("Product", back_populates="selling_plans")
+    zone: Mapped[Optional["Zone"]] = relationship(
+        "Zone", back_populates="selling_plans", passive_deletes=True
+    )
+    seller: Mapped[Optional["User"]] = relationship(
+        "User", back_populates="selling_plans", passive_deletes=True
+    )
+
+
+class DistributionCenter(Base):
+    __tablename__ = "distribution_centers"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    address: Mapped[str] = mapped_column(String(255), nullable=False)
+    city: Mapped[str] = mapped_column(String(100), nullable=False)
+    country: Mapped[str] = mapped_column(String(100), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    orders: Mapped[list["Order"]] = relationship(
+        "Order", back_populates="distribution_center", cascade="all, delete-orphan"
+    )
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    comments: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    delivery_date: Mapped[date] = mapped_column(Date, nullable=False)
+    status: Mapped[OrderStatus] = mapped_column(
+        Enum(OrderStatus), nullable=False, default=OrderStatus.RECEIVED
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    seller_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    client_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    distribution_center_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("distribution_centers.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    seller: Mapped[Optional["User"]] = relationship(
+        "User", foreign_keys=[seller_id], back_populates="managed_orders"
+    )
+    client: Mapped["User"] = relationship(
+        "User", foreign_keys=[client_id], back_populates="orders"
+    )
+    distribution_center: Mapped["DistributionCenter"] = relationship(
+        "DistributionCenter", back_populates="orders"
+    )
+    order_products: Mapped[list["OrderProduct"]] = relationship(
+        "OrderProduct", back_populates="order", cascade="all, delete-orphan"
+    )
+
+
+class OrderProduct(Base):
+    __tablename__ = "order_products"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+    order_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("orders.id", ondelete="CASCADE"), nullable=False
+    )
+    product_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("products.id", ondelete="RESTRICT"), nullable=False
+    )
+    order: Mapped["Order"] = relationship("Order", back_populates="order_products")
+    product: Mapped["Product"] = relationship(
+        "Product", back_populates="order_products"
+    )

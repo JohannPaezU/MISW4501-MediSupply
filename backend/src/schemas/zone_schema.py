@@ -1,15 +1,11 @@
-from typing import Annotated
-
-from pydantic import BaseModel, Field
+from src.schemas.base_schema import BaseSchema, SellerBase, SellingPlanBase, ZoneBase
 
 
-class ZoneBase(BaseModel):
-    id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
-    description: Annotated[str, Field(min_length=1, max_length=255)]
-
-    model_config = {"str_strip_whitespace": True, "from_attributes": True}
+class ZoneResponse(ZoneBase):
+    sellers: list[SellerBase]
+    selling_plans: list[SellingPlanBase]
 
 
-class GetZonesResponse(BaseModel):
+class GetZonesResponse(BaseSchema):
     total_count: int
     zones: list[ZoneBase]
