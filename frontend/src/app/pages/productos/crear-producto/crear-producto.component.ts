@@ -49,7 +49,7 @@ export class CrearProductoComponent {
       due_date: ['', Validators.required],
       details: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       stock: [null, [Validators.required, Validators.min(1)]],
-      price_per_unite: [null, [Validators.required, Validators.min(0.01)]],
+      price_per_unit: [null, [Validators.required, Validators.min(0.01)]],
       provider_id: ['', [Validators.required, Validators.minLength(36), Validators.maxLength(36)]]
     });
   }

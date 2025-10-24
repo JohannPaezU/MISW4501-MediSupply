@@ -166,7 +166,7 @@ def _populate_products(db: Session, providers: list[Provider]) -> list[Product]:
             image_url="http://example.com/product1.jpg",
             due_date="2024-12-31",
             stock=100,
-            price_per_unite=10.5,
+            price_per_unit=10.5,
             provider_id=next(iter(providers)).id,
         ),
         Product(
@@ -177,7 +177,7 @@ def _populate_products(db: Session, providers: list[Provider]) -> list[Product]:
             image_url="http://example.com/product2.jpg",
             due_date="2025-01-31",
             stock=200,
-            price_per_unite=20.0,
+            price_per_unit=20.0,
             provider_id=providers[1].id,
         ),
     ]

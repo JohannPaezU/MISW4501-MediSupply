@@ -28,7 +28,7 @@ def create_product(
         image_url=product_create_request.image_url,
         due_date=product_create_request.due_date,
         stock=product_create_request.stock,
-        price_per_unite=product_create_request.price_per_unite,
+        price_per_unit=product_create_request.price_per_unit,
         provider_id=product_create_request.provider_id,
     )
 

@@ -1,12 +1,13 @@
 from datetime import datetime
 from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import EmailStr, Field, field_validator
 
 from src.errors.errors import BadRequestException
+from src.schemas.base_schema import BaseSchema, ProductBase, ProviderBase
 
 
-class ProviderBase(BaseModel):
+class ProviderCreateRequest(BaseSchema):
     id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
     name: Annotated[str, Field(min_length=1, max_length=100)]
     rit: Annotated[str, Field(min_length=1, max_length=50)]
@@ -23,21 +24,11 @@ class ProviderBase(BaseModel):
             raise BadRequestException("Phone must be between 9 and 15 digits")
         return value
 
-    model_config = {"str_strip_whitespace": True, "from_attributes": True}
+
+class ProviderResponse(ProviderBase):
+    products: list[ProductBase]
 
 
-class ProviderCreateRequest(ProviderBase):
-    pass
-
-
-class ProviderCreateResponse(ProviderBase):
-    pass
-
-
-class GetProviderResponse(ProviderBase):
-    pass
-
-
-class GetProvidersResponse(BaseModel):
+class GetProvidersResponse(BaseSchema):
     total_count: int
     providers: list[ProviderBase]
