@@ -6,7 +6,7 @@ export interface ProductCreateRequest {
   image_url?: string | null;
   due_date: string;
   stock: number;
-  price_per_unite: number;
+  price_per_unit: number;
   provider_id: string;
 }
 
@@ -19,7 +19,7 @@ export interface ProductCreateResponse {
   image_url: string | null;
   due_date: string;
   stock: number;
-  price_per_unite: number;
+  price_per_unit: number;
   provider_id: string;
   created_at: string;
 }
@@ -44,6 +44,6 @@ export interface ProductRow {
   image_url?: string;
   due_date: string;
   stock: number | string;
-  price_per_unite: number | string;
+  price_per_unit: number | string;
   provider_id: string;
 }
