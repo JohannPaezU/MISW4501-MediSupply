@@ -69,9 +69,9 @@ def _populate_initial_data(engine: create_engine) -> dict[str, Any]:
     data = {}
     session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     with session_factory() as db:
+        data["zones"] = _populate_zones(db=db)
         data["users"] = _populate_users(db=db)
         data["providers"] = _populate_providers(db=db)
-        data["zones"] = _populate_zones(db=db)
         data["products"] = _populate_products(db=db)
         data["distribution_centers"] = _populate_distribution_centers(db=db)
         data["orders"] = _populate_orders(db=db, products=data["products"])
@@ -98,6 +98,7 @@ def _populate_users(db: Session) -> list[User]:
             phone="123456789",
             role=UserRole.COMMERCIAL,
             doi="1111111111-1",
+            zone_id=_get_random_zone(db=db).id,
         ),
         User(
             full_name="Institutional",
@@ -265,6 +266,10 @@ def _populate_orders(db: Session, products: list[Product]) -> list[Order]:
         db.expunge(order)
 
     return orders
+
+
+def _get_random_zone(*, db: Session) -> Zone | None:
+    return db.query(Zone).order_by(func.random()).first()
 
 
 def _get_random_provider(*, db: Session) -> Provider | None:
