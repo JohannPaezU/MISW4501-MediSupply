@@ -44,7 +44,7 @@ class SellerResponse(SellerBase):
 
 class GetSellersResponse(BaseSchema):
     total_count: int
-    sellers: list[SellerBase]
+    sellers: list[SellerResponse]
 
 
 class GetClientsResponse(BaseSchema):
