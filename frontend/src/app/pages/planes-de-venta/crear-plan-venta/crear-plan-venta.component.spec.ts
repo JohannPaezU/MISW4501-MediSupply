@@ -29,7 +29,7 @@ const mockProductos: ProductCreateResponse[] = [
     image_url: null,
     due_date: '2025-12-31',
     stock: 100,
-    price_per_unite: 10,
+    price_per_unit: 10,
     provider_id: 'prov1',
     created_at: '2025-01-01T00:00:00Z'
   },

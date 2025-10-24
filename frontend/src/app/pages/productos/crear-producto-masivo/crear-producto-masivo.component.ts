@@ -247,7 +247,7 @@ export class CrearProductoMasivoComponent {
       }
 
       // Validar price_per_unite (mayor a 0)
-      const price = Number(producto.price_per_unite);
+      const price = Number(producto.price_per_unit);
       if (isNaN(price) || price <= 0) {
         rowErrors.push('Precio por unidad debe ser un número mayor a 0');
       }
@@ -268,7 +268,7 @@ export class CrearProductoMasivoComponent {
           image_url: producto.image_url?.trim() || null,
           due_date: producto.due_date.trim(),
           stock: Number(producto.stock),
-          price_per_unite: Number(producto.price_per_unite),
+          price_per_unit: Number(producto.price_per_unit),
           provider_id: producto.provider_id.trim()
         });
       }
@@ -340,7 +340,7 @@ export class CrearProductoMasivoComponent {
       'image_url',
       'due_date',
       'stock',
-      'price_per_unite',
+      'price_per_unit',
       'provider_id'
     ];
 

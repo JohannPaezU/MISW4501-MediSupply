@@ -48,7 +48,7 @@
           <td>{{ producto.batch }}</td>
           <td>{{ producto.due_date | date: 'dd/MM/yyyy' }}</td>
           <td>{{ producto.stock | number }}</td>
-          <td>{{ producto.price_per_unite | currency:'USD' }}</td>
+          <td>{{ producto.price_per_unit | currency:'USD' }}</td>
           <td>
             <a *ngIf="producto.image_url" [href]="producto.image_url" target="_blank">Ver imagen</a>
             <span *ngIf="!producto.image_url">—</span>

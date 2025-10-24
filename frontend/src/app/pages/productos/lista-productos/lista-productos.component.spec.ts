@@ -42,8 +42,8 @@ describe('ListaProductosComponent', () => {
     const mockData = {
       total_count: 2,
       products: [
-        { id: '1', name: 'A', details: '', store: '', batch: '', image_url: null, due_date: '', stock: 10, price_per_unite: 5, provider_id: '', created_at: '' },
-        { id: '2', name: 'B', details: '', store: '', batch: '', image_url: null, due_date: '', stock: 5, price_per_unite: 3, provider_id: '', created_at: '' }
+        { id: '1', name: 'A', details: '', store: '', batch: '', image_url: null, due_date: '', stock: 10, price_per_unit: 5, provider_id: '', created_at: '' },
+        { id: '2', name: 'B', details: '', store: '', batch: '', image_url: null, due_date: '', stock: 5, price_per_unit: 3, provider_id: '', created_at: '' }
       ]
     };
     productServiceSpy.getProducts.and.returnValue(of(mockData));
@@ -142,7 +142,7 @@ describe('ListaProductosComponent', () => {
 
   it('should export CSV if products exist', fakeAsync(() => {
     component.productos = [
-      { id: '1', name: 'A', details: '', store: '', batch: '', image_url: null, due_date: '', stock: 5, price_per_unite: 3, provider_id: '', created_at: '' }
+      { id: '1', name: 'A', details: '', store: '', batch: '', image_url: null, due_date: '', stock: 5, price_per_unit: 3, provider_id: '', created_at: '' }
     ];
 
     component.exportarCSV();
