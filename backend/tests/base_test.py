@@ -2,7 +2,14 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.core.security import create_access_token
-from src.models.db_models import Product, Provider, User, Zone, DistributionCenter, Order
+from src.models.db_models import (
+    DistributionCenter,
+    Order,
+    Product,
+    Provider,
+    User,
+    Zone,
+)
 from src.models.enums.user_role import UserRole
 
 
