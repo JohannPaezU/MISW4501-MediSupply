@@ -1,8 +1,9 @@
 from unittest.mock import patch
 
+import pytest
+
 from src.models.enums.user_role import UserRole
 from tests.base_test import BaseTest
-import pytest
 
 
 class TestOrderRouter(BaseTest):
@@ -15,12 +16,7 @@ class TestOrderRouter(BaseTest):
             "delivery_date": "2025-10-22",
             "distribution_center_id": next(iter(self.distribution_centers)).id,
             "client_id": str(client.id),
-            "products": [
-                {
-                    "product_id": next(iter(self.products)).id,
-                    "quantity": 20
-                }
-            ]
+            "products": [{"product_id": next(iter(self.products)).id, "quantity": 20}],
         }
 
     def create_order_by_client_payload(self) -> dict:
@@ -28,12 +24,7 @@ class TestOrderRouter(BaseTest):
             "comments": "Leave at the front desk if not available",
             "delivery_date": "2025-11-15",
             "distribution_center_id": next(iter(self.distribution_centers)).id,
-            "products": [
-                {
-                    "product_id": next(iter(self.products)).id,
-                    "quantity": 10
-                }
-            ]
+            "products": [{"product_id": next(iter(self.products)).id, "quantity": 10}],
         }
 
     @pytest.mark.parametrize(
@@ -44,7 +35,9 @@ class TestOrderRouter(BaseTest):
         ],
         indirect=["authorized_client"],
     )
-    def test_register_order_with_invalid_parameters(self, authorized_client, payload_fn):
+    def test_register_order_with_invalid_parameters(
+        self, authorized_client, payload_fn
+    ):
         payload = getattr(self, payload_fn)()
         payload["delivery_date"] = "invalid-date"
         payload["distribution_center_id"] = "invalid-uuid"
@@ -57,17 +50,22 @@ class TestOrderRouter(BaseTest):
         assert response.status_code == 422
         assert json_response["detail"][0]["loc"] == ["body", "delivery_date"]
         assert json_response["detail"][1]["loc"] == ["body", "distribution_center_id"]
-        assert json_response["detail"][2]["loc"] == ["body", "products", 0, "product_id"]
+        assert json_response["detail"][2]["loc"] == [
+            "body",
+            "products",
+            0,
+            "product_id",
+        ]
         assert json_response["detail"][3]["loc"] == ["body", "products", 0, "quantity"]
 
     @pytest.mark.parametrize(
         "authorized_client,payload_fn",
-        [
-            ("commercial_token", "create_order_by_seller_payload")
-        ],
+        [("commercial_token", "create_order_by_seller_payload")],
         indirect=["authorized_client"],
     )
-    def test_register_order_by_seller_with_missing_client_id(self, authorized_client, payload_fn):
+    def test_register_order_by_seller_with_missing_client_id(
+        self, authorized_client, payload_fn
+    ):
         payload = getattr(self, payload_fn)()
         del payload["client_id"]
 
@@ -75,7 +73,10 @@ class TestOrderRouter(BaseTest):
         json_response = response.json()
 
         assert response.status_code == 400
-        assert json_response["message"] == "Client ID must be provided for commercial users"
+        assert (
+            json_response["message"]
+            == "Client ID must be provided for commercial users"
+        )
 
     @pytest.mark.parametrize(
         "authorized_client,payload_fn",
@@ -85,7 +86,9 @@ class TestOrderRouter(BaseTest):
         ],
         indirect=["authorized_client"],
     )
-    def test_register_order_with_duplicate_products(self, authorized_client, payload_fn):
+    def test_register_order_with_duplicate_products(
+        self, authorized_client, payload_fn
+    ):
         payload = getattr(self, payload_fn)()
         product_id = next(iter(self.products)).id
         payload["products"] = [
@@ -106,7 +109,9 @@ class TestOrderRouter(BaseTest):
         ],
         indirect=["authorized_client"],
     )
-    def test_register_order_with_invalid_distribution_center(self, authorized_client, payload_fn):
+    def test_register_order_with_invalid_distribution_center(
+        self, authorized_client, payload_fn
+    ):
         payload = getattr(self, payload_fn)()
         payload["distribution_center_id"] = "123e4567-e89b-12d3-a456-426614174000"
 
@@ -151,7 +156,10 @@ class TestOrderRouter(BaseTest):
         response = authorized_client.post(f"{self.prefix}/orders", json=payload)
         json_response = response.json()
         assert response.status_code == 409
-        assert f"Insufficient stock for product '{product.name}'." in json_response["message"]
+        assert (
+            f"Insufficient stock for product '{product.name}'."
+            in json_response["message"]
+        )
 
     @pytest.mark.parametrize(
         "authorized_client,payload_fn",
@@ -163,12 +171,16 @@ class TestOrderRouter(BaseTest):
     )
     def test_register_order_failed(self, authorized_client, payload_fn):
         payload = getattr(self, payload_fn)()
-        with patch("sqlalchemy.orm.Session.commit", side_effect=Exception("Unexpected error")) as mock_db_commit:
+        with patch(
+            "sqlalchemy.orm.Session.commit", side_effect=Exception("Unexpected error")
+        ) as mock_db_commit:
             response = authorized_client.post(f"{self.prefix}/orders", json=payload)
             json_response = response.json()
 
             assert response.status_code == 500
-            assert json_response["message"] == "An error occurred while creating the order"
+            assert (
+                json_response["message"] == "An error occurred while creating the order"
+            )
             mock_db_commit.assert_called_once()
 
     @pytest.mark.parametrize(
@@ -188,10 +200,15 @@ class TestOrderRouter(BaseTest):
         assert json_response["comments"] == payload["comments"]
         assert json_response["delivery_date"] == payload["delivery_date"]
         assert json_response["status"] == "received"
-        assert json_response["distribution_center"]["id"] == payload["distribution_center_id"]
+        assert (
+            json_response["distribution_center"]["id"]
+            == payload["distribution_center_id"]
+        )
         assert len(json_response["products"]) == len(payload["products"])
 
-    @pytest.mark.parametrize("authorized_client", ["commercial_token", "institutional_token"], indirect=True)
+    @pytest.mark.parametrize(
+        "authorized_client", ["commercial_token", "institutional_token"], indirect=True
+    )
     def test_get_all_orders(self, authorized_client):
         response = authorized_client.get(f"{self.prefix}/orders")
         json_response = response.json()
@@ -200,7 +217,9 @@ class TestOrderRouter(BaseTest):
         assert "total_count" in json_response
         assert "orders" in json_response
 
-    @pytest.mark.parametrize("authorized_client", ["commercial_token", "institutional_token"], indirect=True)
+    @pytest.mark.parametrize(
+        "authorized_client", ["commercial_token", "institutional_token"], indirect=True
+    )
     def test_get_order_by_id_not_found(self, authorized_client):
         response = authorized_client.get(
             f"{self.prefix}/orders/123e4567-e89b-12d3-a456-426614174000"
@@ -231,5 +250,8 @@ class TestOrderRouter(BaseTest):
         assert json_response["comments"] == payload["comments"]
         assert json_response["delivery_date"] == payload["delivery_date"]
         assert json_response["status"] == "received"
-        assert json_response["distribution_center"]["id"] == payload["distribution_center_id"]
+        assert (
+            json_response["distribution_center"]["id"]
+            == payload["distribution_center_id"]
+        )
         assert len(json_response["products"]) == len(payload["products"])

@@ -1,5 +1,3 @@
-import pytest
-
 from tests.base_test import BaseTest
 
 
@@ -24,9 +22,7 @@ class TestZoneRouter(BaseTest):
 
     def test_get_zone_success(self, authorized_client):
         zone = self.zones[0]
-        response = authorized_client.get(
-            f"{self.prefix}/zones/{zone.id}"
-        )
+        response = authorized_client.get(f"{self.prefix}/zones/{zone.id}")
         json_response = response.json()
         assert response.status_code == 200
         assert json_response["id"] == zone.id

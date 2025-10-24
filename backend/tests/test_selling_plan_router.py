@@ -1,5 +1,3 @@
-import pytest
-
 from src.models.enums.user_role import UserRole
 from tests.base_test import BaseTest
 

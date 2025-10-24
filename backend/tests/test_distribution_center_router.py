@@ -7,13 +7,30 @@ class TestDistributionCenterRouter(BaseTest):
         json_response = response.json()
         assert response.status_code == 200
         assert json_response["total_count"] == len(self.distribution_centers)
-        assert len(json_response["distribution_centers"]) == len(self.distribution_centers)
+        assert len(json_response["distribution_centers"]) == len(
+            self.distribution_centers
+        )
         for i in range(len(self.distribution_centers)):
-            assert json_response["distribution_centers"][i]["id"] == self.distribution_centers[i].id
-            assert json_response["distribution_centers"][i]["name"] == self.distribution_centers[i].name
-            assert json_response["distribution_centers"][i]["address"] == self.distribution_centers[i].address
-            assert json_response["distribution_centers"][i]["city"] == self.distribution_centers[i].city
-            assert json_response["distribution_centers"][i]["country"] == self.distribution_centers[i].country
+            assert (
+                json_response["distribution_centers"][i]["id"]
+                == self.distribution_centers[i].id
+            )
+            assert (
+                json_response["distribution_centers"][i]["name"]
+                == self.distribution_centers[i].name
+            )
+            assert (
+                json_response["distribution_centers"][i]["address"]
+                == self.distribution_centers[i].address
+            )
+            assert (
+                json_response["distribution_centers"][i]["city"]
+                == self.distribution_centers[i].city
+            )
+            assert (
+                json_response["distribution_centers"][i]["country"]
+                == self.distribution_centers[i].country
+            )
 
     def test_get_distribution_center_not_found(self, authorized_client):
         response = authorized_client.get(

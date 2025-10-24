@@ -135,7 +135,17 @@ async def verify_otp(
     status_code=status.HTTP_200_OK,
     summary="Dynamically check accessible endpoints by role",
     description="Retrieve a list of API endpoints accessible to the current user based on their role.",
-    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]))],
+    dependencies=[
+        Depends(
+            require_roles(
+                allowed_roles=[
+                    UserRole.ADMIN,
+                    UserRole.COMMERCIAL,
+                    UserRole.INSTITUTIONAL,
+                ]
+            )
+        )
+    ],
 )
 def get_permissions(
     current_user: User = Depends(get_current_user),

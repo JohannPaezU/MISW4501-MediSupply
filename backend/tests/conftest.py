@@ -9,7 +9,15 @@ from sqlalchemy.orm import Session, sessionmaker
 from src.core.logging_config import logger
 from src.core.security import hash_password
 from src.db.database import Base
-from src.models.db_models import Product, Provider, User, Zone, DistributionCenter, Order, OrderProduct
+from src.models.db_models import (
+    DistributionCenter,
+    Order,
+    OrderProduct,
+    Product,
+    Provider,
+    User,
+    Zone,
+)
 from src.models.enums.user_role import UserRole
 from tests.containers.postgres_test_container import PostgresTestContainer
 
@@ -31,7 +39,7 @@ def postgres_container() -> Generator[PostgresTestContainer, None, None]:
 
 @pytest.fixture(scope="session")
 def test_client(
-        postgres_container: PostgresTestContainer,
+    postgres_container: PostgresTestContainer,
 ) -> Generator[TestClient, None, None]:
     logger.info("Configuring test client...")
     from src.main import app
@@ -43,7 +51,7 @@ def test_client(
 
 @pytest.fixture(autouse=True)
 def setup_teardown_db(
-        postgres_container: PostgresTestContainer,
+    postgres_container: PostgresTestContainer,
 ) -> Generator[dict[str, Any], None, None]:
     engine = create_engine(postgres_container.get_connection_url())
     logger.info("Setting up database schema...")
@@ -99,7 +107,7 @@ def _populate_users(db: Session) -> list[User]:
             role=UserRole.INSTITUTIONAL,
             doi="0000000000-0",
             seller_id="11111111-1111-1111-1111-111111111111",
-        )
+        ),
     ]
     db.add_all(users)
     db.flush()
@@ -224,13 +232,19 @@ def _populate_orders(db: Session, products: list[Product]) -> list[Order]:
         Order(
             comments="First order",
             delivery_date="2024-07-01",
-            client_id=db.query(User).filter(User.role == UserRole.INSTITUTIONAL).first().id,
+            client_id=db.query(User)
+            .filter(User.role == UserRole.INSTITUTIONAL)
+            .first()
+            .id,
             distribution_center_id=db.query(DistributionCenter).first().id,
         ),
         Order(
             comments="Second order",
             delivery_date="2024-08-01",
-            client_id=db.query(User).filter(User.role == UserRole.INSTITUTIONAL).first().id,
+            client_id=db.query(User)
+            .filter(User.role == UserRole.INSTITUTIONAL)
+            .first()
+            .id,
             distribution_center_id=db.query(DistributionCenter).first().id,
         ),
     ]
@@ -255,4 +269,3 @@ def _populate_orders(db: Session, products: list[Product]) -> list[Order]:
 
 def _get_random_provider(*, db: Session) -> Provider | None:
     return db.query(Provider).order_by(func.random()).first()
-
