@@ -10,12 +10,6 @@ class TestSellingPlanRouter(BaseTest):
         "goal": 100,
     }
 
-    @pytest.fixture
-    def authorized_client(self):
-        client = self.client.__class__(self.client.app)
-        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
-        return client
-
     def test_register_selling_plan_with_invalid_parameters(self, authorized_client):
         payload = self.create_selling_plan_payload.copy()
         payload["period"] = ""

@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.core.security import create_access_token
-from src.models.db_models import Product, Provider, User, Zone
+from src.models.db_models import Product, Provider, User, Zone, DistributionCenter, Order
 from src.models.enums.user_role import UserRole
 
 
@@ -16,10 +16,21 @@ class BaseTest:
     providers: list[Provider]
     zones: list[Zone]
     products: list[Product]
+    distribution_centers: list[DistributionCenter]
+    orders: list[Order]
 
     @pytest.fixture(autouse=True)
     def _inject_client(self, test_client):
         self.client = test_client
+
+    @pytest.fixture
+    def authorized_client(self, request):
+        token_name = getattr(request, "param", None)
+        token = getattr(self, token_name) if token_name else self.admin_token
+        client = self.client.__class__(self.client.app)
+        client.headers.update({"Authorization": f"Bearer {token}"})
+
+        return client
 
     @pytest.fixture(autouse=True)
     def _create_authorization_tokens(self, setup_teardown_db):
@@ -49,3 +60,5 @@ class BaseTest:
         self.providers = setup_teardown_db["providers"]
         self.zones = setup_teardown_db["zones"]
         self.products = setup_teardown_db["products"]
+        self.distribution_centers = setup_teardown_db["distribution_centers"]
+        self.orders = setup_teardown_db["orders"]
