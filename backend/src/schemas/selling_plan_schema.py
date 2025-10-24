@@ -27,4 +27,4 @@ class SellingPlanResponse(SellingPlanBase):
 
 class GetSellingPlansResponse(BaseSchema):
     total_count: int
-    selling_plans: list[SellingPlanBase]
+    selling_plans: list[SellingPlanResponse]

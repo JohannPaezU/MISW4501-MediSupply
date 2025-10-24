@@ -15,7 +15,7 @@ class BaseSchema(BaseModel):
     }
 
     @model_serializer(mode="wrap")
-    def _serialize(self, serializer: Any, info):
+    def _serialize(self, serializer: Any, info):  # pragma: no cover
         data = serializer(self)
         if isinstance(data, dict):
             return {k: v for k, v in data.items() if v is not None}

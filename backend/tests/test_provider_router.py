@@ -1,5 +1,3 @@
-import pytest
-
 from tests.base_test import BaseTest
 
 
@@ -13,12 +11,6 @@ class TestProviderRouter(BaseTest):
         "email": "test@mail.com",
         "phone": "1234567890",
     }
-
-    @pytest.fixture
-    def authorized_client(self):
-        client = self.client.__class__(self.client.app)
-        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
-        return client
 
     def test_register_provider_with_invalid_parameters(self, authorized_client):
         payload = self.create_provider_payload.copy()

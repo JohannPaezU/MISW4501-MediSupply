@@ -5,10 +5,11 @@ from fastapi.routing import APIRoute
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
-from src.core.security import get_current_user
+from src.core.security import get_current_user, require_roles
 from src.db.database import get_db
 from src.errors.errors import UnauthorizedException
 from src.models.db_models import User
+from src.models.enums.user_role import UserRole
 from src.schemas.auth_schema import (
     LoginRequest,
     LoginResponse,
@@ -134,6 +135,17 @@ async def verify_otp(
     status_code=status.HTTP_200_OK,
     summary="Dynamically check accessible endpoints by role",
     description="Retrieve a list of API endpoints accessible to the current user based on their role.",
+    dependencies=[
+        Depends(
+            require_roles(
+                allowed_roles=[
+                    UserRole.ADMIN,
+                    UserRole.COMMERCIAL,
+                    UserRole.INSTITUTIONAL,
+                ]
+            )
+        )
+    ],
 )
 def get_permissions(
     current_user: User = Depends(get_current_user),

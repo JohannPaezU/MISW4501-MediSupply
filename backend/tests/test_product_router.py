@@ -1,7 +1,5 @@
 from unittest.mock import patch
 
-import pytest
-
 from tests.base_test import BaseTest
 
 
@@ -16,12 +14,6 @@ class TestProductRouter(BaseTest):
         "stock": 100,
         "price_per_unit": 9.99,
     }
-
-    @pytest.fixture
-    def authorized_client(self):
-        client = self.client.__class__(self.client.app)
-        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
-        return client
 
     def test_register_product_with_invalid_parameters(self, authorized_client):
         payload = self.create_product_payload.copy()
@@ -188,18 +180,17 @@ class TestProductRouter(BaseTest):
         assert json_response["message"] == "Product not found"
 
     def test_get_product_success(self, authorized_client):
-        payload = self.create_product_payload.copy()
-        payload["provider_id"] = next(iter(self.providers)).id
-
-        create_response = authorized_client.post(
-            f"{self.prefix}/products", json=payload
-        )
-        assert create_response.status_code == 201
-
-        create_json_response = create_response.json()
-        product_id = create_json_response["id"]
-
-        response = authorized_client.get(f"{self.prefix}/products/{product_id}")
+        product = next(iter(self.products))
+        response = authorized_client.get(f"{self.prefix}/products/{product.id}")
         json_response = response.json()
+
         assert response.status_code == 200
-        assert json_response["id"] == product_id
+        assert json_response["id"] == product.id
+        assert json_response["name"] == product.name
+        assert json_response["details"] == product.details
+        assert json_response["store"] == product.store
+        assert json_response["batch"] == product.batch
+        assert json_response["image_url"] == product.image_url
+        assert json_response["due_date"] == str(product.due_date)
+        assert json_response["stock"] == product.stock
+        assert json_response["price_per_unit"] == product.price_per_unit
