@@ -42,9 +42,13 @@ class SellerResponse(SellerBase):
     managed_orders: list[OrderBase]
 
 
+class SellerMinimalResponse(SellerBase):
+    zone: ZoneBase | None = None
+
+
 class GetSellersResponse(BaseSchema):
     total_count: int
-    sellers: list[SellerResponse]
+    sellers: list[SellerMinimalResponse]
 
 
 class GetClientsResponse(BaseSchema):
