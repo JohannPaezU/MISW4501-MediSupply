@@ -2,11 +2,10 @@ from sqlalchemy.orm import Session
 
 from src.core.logging_config import logger
 from src.core.security import hash_password
-from src.errors.errors import ConflictException, UnprocessableEntityException
+from src.errors.errors import ConflictException
 from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.user_schema import UserCreateRequest
-from src.services.zone_service import get_random_zone
 
 
 def get_user_by_email(*, db: Session, email: str) -> User | None:
@@ -17,11 +16,14 @@ def get_user_by_doi(*, db: Session, doi: str) -> User | None:
     return db.query(User).filter_by(doi=doi).first()
 
 
+def get_user_by_id(*, db: Session, user_id: str) -> User | None:
+    return db.query(User).filter_by(id=user_id, role=UserRole.INSTITUTIONAL).first()
+
+
 def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
-    if user_create_request.role not in {UserRole.INSTITUTIONAL, UserRole.COMMERCIAL}:
-        raise UnprocessableEntityException(
-            "Role must be either 'institutional' or 'commercial'"
-        )
+    from src.services.seller_service import (
+        get_random_seller,
+    )  # Imported here to avoid circular dependency
 
     existing_user = get_user_by_email(
         db=db, email=user_create_request.email
@@ -34,14 +36,10 @@ def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
         email=user_create_request.email,
         hashed_password=hash_password(user_create_request.password),
         phone=user_create_request.phone,
-        role=user_create_request.role,
+        role=UserRole.INSTITUTIONAL,
         doi=user_create_request.doi,
         address=user_create_request.address,
-        zone_id=(
-            get_random_zone(db=db).id
-            if user_create_request.role == UserRole.COMMERCIAL
-            else None
-        ),
+        seller_id=get_random_seller(db=db).id,
     )
     db.add(user)
     db.commit()
