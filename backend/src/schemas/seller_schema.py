@@ -43,7 +43,7 @@ class SellerResponse(SellerBase):
 
 
 class SellerMinimalResponse(SellerBase):
-    zone: ZoneBase | None = None
+    zone: ZoneBase
 
 
 class GetSellersResponse(BaseSchema):
