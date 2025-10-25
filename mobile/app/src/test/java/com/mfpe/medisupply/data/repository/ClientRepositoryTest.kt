@@ -1,6 +1,8 @@
 package com.mfpe.medisupply.data.repository
 
 import com.mfpe.medisupply.data.model.ClientListResponse
+import com.mfpe.medisupply.data.model.VisitRequest
+import com.mfpe.medisupply.data.model.VisitResponse
 import com.mfpe.medisupply.data.network.ClientService
 import org.junit.Assert.*
 import org.junit.Before
@@ -345,5 +347,168 @@ class ClientRepositoryTest {
         assertNotNull(repositoryClass)
         assertTrue("ClientRepository should be instantiable", 
             !repositoryClass.isInterface)
+    }
+
+    @Test
+    fun `createVisit should return Call with correct type`() {
+        // Given
+        val authToken = "Bearer test-token"
+        val visitRequest = VisitRequest("2025-12-12T10:00:00Z")
+
+        // When
+        val result = clientRepository.createVisit(authToken, visitRequest)
+
+        // Then
+        assertNotNull("Result should not be null", result)
+        assertTrue("Result should be Call type", result is Call<*>)
+    }
+
+    @Test
+    fun `createVisit should return Call with correct generic type`() {
+        // Given
+        val authToken = "Bearer test-token"
+        val visitRequest = VisitRequest("2025-12-12T10:00:00Z")
+
+        // When
+        val result = clientRepository.createVisit(authToken, visitRequest)
+
+        // Then
+        assertNotNull("Result should not be null", result)
+        assertTrue("Result should be Call<VisitResponse>", result is Call<VisitResponse>)
+    }
+
+    @Test
+    fun `createVisit should return different Call instances`() {
+        // Given
+        val authToken = "Bearer test-token"
+        val visitRequest1 = VisitRequest("2025-12-12T10:00:00Z")
+        val visitRequest2 = VisitRequest("2025-12-13T10:00:00Z")
+
+        // When
+        val result1 = clientRepository.createVisit(authToken, visitRequest1)
+        val result2 = clientRepository.createVisit(authToken, visitRequest2)
+
+        // Then
+        assertNotNull("First result should not be null", result1)
+        assertNotNull("Second result should not be null", result2)
+        assertNotEquals("Different calls should be different instances", result1, result2)
+    }
+
+    @Test
+    fun `createVisit should handle different auth tokens`() {
+        // Given
+        val visitRequest = VisitRequest("2025-12-12T10:00:00Z")
+        val authToken1 = "Bearer token-1"
+        val authToken2 = "Bearer token-2"
+
+        // When
+        val result1 = clientRepository.createVisit(authToken1, visitRequest)
+        val result2 = clientRepository.createVisit(authToken2, visitRequest)
+
+        // Then
+        assertNotNull("First result should not be null", result1)
+        assertNotNull("Second result should not be null", result2)
+        assertNotEquals("Different auth tokens should produce different calls", result1, result2)
+    }
+
+    @Test
+    fun `createVisit should handle different visit requests`() {
+        // Given
+        val authToken = "Bearer test-token"
+        val visitRequest1 = VisitRequest("2025-12-12T10:00:00Z")
+        val visitRequest2 = VisitRequest("2025-12-13T10:00:00Z")
+
+        // When
+        val result1 = clientRepository.createVisit(authToken, visitRequest1)
+        val result2 = clientRepository.createVisit(authToken, visitRequest2)
+
+        // Then
+        assertNotNull("First result should not be null", result1)
+        assertNotNull("Second result should not be null", result2)
+        assertNotEquals("Different visit requests should produce different calls", result1, result2)
+    }
+
+    @Test
+    fun `createVisit should handle empty auth token`() {
+        // Given
+        val authToken = ""
+        val visitRequest = VisitRequest("2025-12-12T10:00:00Z")
+
+        // When
+        val result = clientRepository.createVisit(authToken, visitRequest)
+
+        // Then
+        assertNotNull("Result should not be null", result)
+        assertTrue("Result should be Call type", result is Call<*>)
+    }
+
+    @Test
+    fun `createVisit should handle special characters in auth token`() {
+        // Given
+        val authToken = "Bearer test-token-with-special-chars-123!@#"
+        val visitRequest = VisitRequest("2025-12-12T10:00:00Z")
+
+        // When
+        val result = clientRepository.createVisit(authToken, visitRequest)
+
+        // Then
+        assertNotNull("Result should not be null", result)
+        assertTrue("Result should be Call type", result is Call<*>)
+    }
+
+    @Test
+    fun `createVisit should handle different date formats`() {
+        // Given
+        val authToken = "Bearer test-token"
+        val dates = listOf(
+            "2025-12-12T10:00:00Z",
+            "2025-01-01T00:00:00Z",
+            "2025-06-15T14:30:00Z"
+        )
+
+        dates.forEach { date ->
+            val visitRequest = VisitRequest(date)
+            
+            // When
+            val result = clientRepository.createVisit(authToken, visitRequest)
+
+            // Then
+            assertNotNull("Result should not be null for date: $date", result)
+            assertTrue("Result should be Call type for date: $date", result is Call<*>)
+        }
+    }
+
+    @Test
+    fun `createVisit should be callable multiple times`() {
+        // Given
+        val authToken = "Bearer test-token"
+        val visitRequest = VisitRequest("2025-12-12T10:00:00Z")
+
+        // When & Then
+        repeat(5) {
+            val result = clientRepository.createVisit(authToken, visitRequest)
+            assertNotNull("Result should not be null on call ${it + 1}", result)
+            assertTrue("Result should be Call type on call ${it + 1}", result is Call<*>)
+        }
+    }
+
+    @Test
+    fun `createVisit should handle concurrent calls`() {
+        // Given
+        val authToken = "Bearer test-token"
+        val visitRequest = VisitRequest("2025-12-12T10:00:00Z")
+
+        // When
+        val results = mutableListOf<Call<VisitResponse>>()
+        repeat(10) {
+            results.add(clientRepository.createVisit(authToken, visitRequest))
+        }
+
+        // Then
+        assertEquals("Should create 10 results", 10, results.size)
+        results.forEach { result ->
+            assertNotNull("Each result should not be null", result)
+            assertTrue("Each result should be Call type", result is Call<*>)
+        }
     }
 }
