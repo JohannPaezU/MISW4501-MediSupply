@@ -2,6 +2,7 @@ package com.mfpe.medisupply.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.mfpe.medisupply.data.model.SellerHomeResponse
+import com.mfpe.medisupply.data.model.SellerVisitResponse
 import com.mfpe.medisupply.data.repository.SellerRepository
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,6 +24,23 @@ class SellerViewModel(
             }
 
             override fun onFailure(call: Call<SellerHomeResponse>, t: Throwable) {
+                onResult(false, "Connection error: ${t.message}", null)
+            }
+        })
+    }
+
+    fun getVisits(authToken: String, date: String, onResult: (Boolean, String, SellerVisitResponse?) -> Unit) {
+        sellerRepository.getVisits(authToken, date).enqueue(object :
+            Callback<SellerVisitResponse> {
+            override fun onResponse(call: Call<SellerVisitResponse>, res: Response<SellerVisitResponse>) {
+                if (res.isSuccessful && res.body() != null) {
+                    onResult(true, "Seller visits obtained.", res.body())
+                } else {
+                    onResult(false, "Error obtaining seller visits: ${res.code()}", null)
+                }
+            }
+
+            override fun onFailure(call: Call<SellerVisitResponse>, t: Throwable) {
                 onResult(false, "Connection error: ${t.message}", null)
             }
         })
