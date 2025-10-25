@@ -16,9 +16,8 @@ interface ClientService {
         @Query("seller_id") sellerId: String,
     ): Call<ClientListResponse>
 
-    @GET("clients/{clientId}/recommended-products")
+    @GET("clients/me/recommended-products")
     fun getRecommendedProducts(
-        @Path("clientId") clientId: String,
         @Header("Authorization") authorization: String
     ): Call<ProductListResponse>
 
