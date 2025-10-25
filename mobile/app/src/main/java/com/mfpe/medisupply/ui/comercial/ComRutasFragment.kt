@@ -17,8 +17,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.mfpe.medisupply.databinding.FragmentComRutasBinding
+import com.mfpe.medisupply.databinding.DialogVisitDetailsBinding
 import com.mfpe.medisupply.utils.PrefsManager
 import com.mfpe.medisupply.viewmodel.SellerViewModel
+import com.mfpe.medisupply.viewmodel.VisitsViewModel
+import com.mfpe.medisupply.data.model.Visit
+import com.mfpe.medisupply.data.model.RegisterVisitRequest
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase
 import org.osmdroid.util.GeoPoint
@@ -31,6 +35,7 @@ import kotlinx.coroutines.*
 import java.net.URL
 import org.json.JSONObject
 import org.osmdroid.views.CustomZoomButtonsController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ComRutasFragment : Fragment() {
 
@@ -39,6 +44,7 @@ class ComRutasFragment : Fragment() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var sellerViewModel: SellerViewModel
+    private lateinit var visitsViewModel: VisitsViewModel
     private var userLocationMarker: Marker? = null
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -88,6 +94,7 @@ class ComRutasFragment : Fragment() {
         val root: View = binding.root
 
         sellerViewModel = ViewModelProvider(this)[SellerViewModel::class.java]
+        visitsViewModel = ViewModelProvider(this)[VisitsViewModel::class.java]
 
         Configuration.getInstance().load(
             requireContext(),
@@ -216,7 +223,7 @@ class ComRutasFragment : Fragment() {
                                 position = geoPoint
                                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                                 title = visit.client.name
-                                snippet = "Estado: ${visit.status}\n${if (visit.observations.isNotEmpty()) "Obs: ${visit.observations}" else ""}"
+                                snippet = "Estado: ${visit.status}<br>${if (visit.observations.isNotEmpty())"Observaciones: ${visit.observations}" else ""}"
 
                                 icon = if (visit.status == "completed") {
                                     ResourcesCompat.getDrawable(
@@ -231,6 +238,14 @@ class ComRutasFragment : Fragment() {
                                         null
                                     )
                                 }
+
+                                if (visit.status == "pending") {
+                                    setOnMarkerClickListener { _, _ ->
+                                        showVisitDialog(visit)
+                                        true
+                                    }
+                                }
+
                                 binding.mapView.overlays.add(this)
                             }
 
@@ -327,6 +342,66 @@ class ComRutasFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun showVisitDialog(visit: Visit) {
+        val dialogBinding = DialogVisitDetailsBinding.inflate(LayoutInflater.from(requireContext()))
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogBinding.root)
+            .setCancelable(true)
+            .create()
+
+        dialogBinding.tvClientName.text = visit.client.name
+
+        dialogBinding.btnSelectFile.setOnClickListener {
+            // TODO: Implementar selección de archivo/imagen
+        }
+
+        dialogBinding.btnRegisterVisit.setOnClickListener {
+            val observations = dialogBinding.inputObservations.text.toString()
+
+            if (observations.isEmpty()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor ingrese observaciones.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            // Crear el request para registrar la visita
+            val registerRequest = RegisterVisitRequest(
+                visitDate = Date(),
+                observations = observations,
+                visualEvidence = "",
+                geolocation = visit.client.geolocation
+            )
+
+            val authToken = PrefsManager.getInstance(requireContext()).getAuthToken
+            visitsViewModel.registerCompletedVisit( authToken!!, visit.id, registerRequest) { success, message, _ ->
+                if (success) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Visita registrada exitosamente para ${visit.client.name}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    dialog.dismiss()
+
+                    val currentDate = binding.inputVisitDate.text.toString()
+                    if (currentDate.isNotEmpty()) {
+                        loadVisitLocations(currentDate)
+                    }
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error al registrar visita: $message",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+
+        dialog.show()
     }
 
     override fun onResume() {

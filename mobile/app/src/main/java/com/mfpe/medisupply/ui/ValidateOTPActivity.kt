@@ -54,10 +54,20 @@ class ValidateOTPActivity : AppCompatActivity() {
                     val intent = when (response.user.role.lowercase()) {
                         "commercial" -> Intent(this, ComMainActivity::class.java)
                         "institutional" -> Intent(this, MainActivity::class.java)
-                        else -> Intent(this, MainActivity::class.java)
+                        else -> {
+                            Toast.makeText(
+                                this,
+                                "Rol de usuario no válido para la aplicación móvil.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            null
+                        }
                     }
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+
+                    intent?.let {
+                        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(it)
+                    }
                 } else {
                     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                 }
