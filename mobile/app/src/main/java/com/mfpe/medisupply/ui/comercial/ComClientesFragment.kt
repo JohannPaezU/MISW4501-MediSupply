@@ -61,7 +61,7 @@ class ComClientesFragment : Fragment(), ClientListAdapter.OnClientActionListener
 
     override fun onRecommendationsClick(client: Client) {
         // Navegar a la pantalla de productos recomendados
-        RecommendedProductsActivity.start(requireActivity(), client.id)
+        RecommendedProductsActivity.start(requireActivity())
     }
 
     override fun onVisitClick(client: Client) {
