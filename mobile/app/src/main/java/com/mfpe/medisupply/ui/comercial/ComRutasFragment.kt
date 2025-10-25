@@ -11,16 +11,26 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.mfpe.medisupply.databinding.FragmentComRutasBinding
+import com.mfpe.medisupply.utils.PrefsManager
+import com.mfpe.medisupply.viewmodel.SellerViewModel
 import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.util.MapTileIndex
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlinx.coroutines.*
+import java.net.URL
+import org.json.JSONObject
+import org.osmdroid.views.CustomZoomButtonsController
 
 class ComRutasFragment : Fragment() {
 
@@ -28,8 +38,29 @@ class ComRutasFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var sellerViewModel: SellerViewModel
     private var userLocationMarker: Marker? = null
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val routingScope = CoroutineScope(Dispatchers.IO + Job())
+
+    // Tile source personalizado con estilo más limpio (CartoDB Voyager)
+    private val cartoDbVoyager = object : OnlineTileSourceBase(
+        "CartoDBVoyager",
+        0, 22, 256, ".png",
+        arrayOf(
+            "https://a.basemaps.cartocdn.com/rastertiles/voyager/",
+            "https://b.basemaps.cartocdn.com/rastertiles/voyager/",
+            "https://c.basemaps.cartocdn.com/rastertiles/voyager/",
+            "https://d.basemaps.cartocdn.com/rastertiles/voyager/"
+        )
+    ) {
+        override fun getTileURLString(pMapTileIndex: Long): String {
+            return baseUrl + MapTileIndex.getZoom(pMapTileIndex) +
+                    "/" + MapTileIndex.getX(pMapTileIndex) +
+                    "/" + MapTileIndex.getY(pMapTileIndex) + mImageFilenameEnding
+        }
+    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -56,6 +87,8 @@ class ComRutasFragment : Fragment() {
         _binding = FragmentComRutasBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        sellerViewModel = ViewModelProvider(this)[SellerViewModel::class.java]
+
         Configuration.getInstance().load(
             requireContext(),
             requireContext().getSharedPreferences("osmdroid", 0)
@@ -70,9 +103,11 @@ class ComRutasFragment : Fragment() {
 
     private fun setupMap() {
         binding.mapView.apply {
-            setTileSource(TileSourceFactory.MAPNIK)
+            setTileSource(cartoDbVoyager)
             setMultiTouchControls(true)
-            controller.setZoom(15.0)
+            controller.setZoom(18.0)
+            zoomController.setVisibility(CustomZoomButtonsController.Visibility.ALWAYS)
+            setUseDataConnection(true)
         }
     }
 
@@ -123,6 +158,7 @@ class ComRutasFragment : Fragment() {
             if (location != null) {
                 val userGeoPoint = GeoPoint(location.latitude, location.longitude)
                 binding.mapView.controller.setCenter(userGeoPoint)
+                binding.mapView.controller.zoomTo(18.0)
 
                 // Agregar marcador de ubicación del usuario
                 if (userLocationMarker == null) {
@@ -132,6 +168,11 @@ class ComRutasFragment : Fragment() {
                         setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                         title = "Mi ubicación"
                         binding.mapView.overlays.add(this)
+                        icon = ResourcesCompat.getDrawable(
+                            resources,
+                            com.mfpe.medisupply.R.drawable.ic_marker_blue,
+                            null
+                        )
                     }
                 } else {
                     userLocationMarker?.position = userGeoPoint
@@ -149,39 +190,143 @@ class ComRutasFragment : Fragment() {
     }
 
     private fun loadVisitLocations(date: String) {
-        // TODO: Aquí se debe hacer el request al API con la fecha seleccionada
-        // Por ahora usamos datos hardcodeados para probar
+        val calendar = Calendar.getInstance()
+        calendar.time = dateFormat.parse(date) ?: Date()
+        val apiDate = apiDateFormat.format(calendar.time)
 
-        // Limpiar marcadores existentes excepto el del usuario
-        binding.mapView.overlays.removeAll { it is Marker && it != userLocationMarker }
+        binding.mapView.overlays.removeAll { it !is Marker || it != userLocationMarker }
 
-        // Datos de prueba hardcodeados (ubicaciones en Bogotá)
-        val visitLocations = listOf(
-            VisitLocation("Cliente 1", 4.6533, -74.0836),
-            VisitLocation("Cliente 2", 4.6097, -74.0817),
-            VisitLocation("Cliente 3", 4.6351, -74.0703),
-            VisitLocation("Cliente 4", 4.6482, -74.0587)
-        )
+        val authToken = PrefsManager.getInstance(requireContext()).getAuthToken
+        sellerViewModel.getVisits(authToken!!, apiDate) { success, message, data ->
+            if (success && data != null) {
+                val pendingPoints = mutableListOf<GeoPoint>()
 
-        // Agregar marcadores al mapa
-        visitLocations.forEach { location ->
-            val marker = Marker(binding.mapView)
-            marker.apply {
-                position = GeoPoint(location.latitude, location.longitude)
-                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                title = location.name
-                snippet = "Lat: ${location.latitude}, Lon: ${location.longitude}"
-                binding.mapView.overlays.add(this)
+                data.visits.forEach { visit ->
+                    val geolocation = visit.client.geolocation
+                    val coordinates = geolocation.split(",").map { it.trim() }
+
+                    if (coordinates.size == 2) {
+                        try {
+                            val latitude = coordinates[0].toDouble()
+                            val longitude = coordinates[1].toDouble()
+                            val geoPoint = GeoPoint(latitude, longitude)
+
+                            val marker = Marker(binding.mapView)
+                            marker.apply {
+                                position = geoPoint
+                                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                                title = visit.client.name
+                                snippet = "Estado: ${visit.status}\n${if (visit.observations.isNotEmpty()) "Obs: ${visit.observations}" else ""}"
+
+                                icon = if (visit.status == "completed") {
+                                    ResourcesCompat.getDrawable(
+                                        resources,
+                                        com.mfpe.medisupply.R.drawable.ic_marker_green,
+                                        null
+                                    )
+                                } else {
+                                    ResourcesCompat.getDrawable(
+                                        resources,
+                                        com.mfpe.medisupply.R.drawable.ic_marker_red,
+                                        null
+                                    )
+                                }
+                                binding.mapView.overlays.add(this)
+                            }
+
+                            if (visit.status == "pending") {
+                                pendingPoints.add(geoPoint)
+                            }
+                        } catch (e: NumberFormatException) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+
+                if (pendingPoints.size >= 1 && userLocationMarker?.position != null) {
+                    val routePoints = mutableListOf<GeoPoint>()
+                    routePoints.add(userLocationMarker!!.position)
+                    routePoints.addAll(pendingPoints)
+                    getRouteFromOSRM(routePoints)
+                }
+
+                binding.mapView.invalidate()
+
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Error al cargar visitas: $message",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
+    }
 
-        binding.mapView.invalidate()
+    private fun getRouteFromOSRM(points: List<GeoPoint>) {
+        routingScope.launch {
+            try {
+                // Construir URL para OSRM (servicio público de routing)
+                val coordinates = points.joinToString(";") { "${it.longitude},${it.latitude}" }
+                val urlString = "https://router.project-osrm.org/route/v1/driving/$coordinates?overview=full&geometries=geojson"
 
-        Toast.makeText(
-            requireContext(),
-            "Cargadas ${visitLocations.size} ubicaciones para $date",
-            Toast.LENGTH_SHORT
-        ).show()
+                val url = URL(urlString)
+                val connection = url.openConnection()
+                connection.connectTimeout = 10000
+                connection.readTimeout = 10000
+
+                val response = connection.getInputStream().bufferedReader().readText()
+                val jsonResponse = JSONObject(response)
+
+                if (jsonResponse.getString("code") == "Ok") {
+                    val routes = jsonResponse.getJSONArray("routes")
+                    if (routes.length() > 0) {
+                        val route = routes.getJSONObject(0)
+                        val geometry = route.getJSONObject("geometry")
+                        val coordinatesArray = geometry.getJSONArray("coordinates")
+                        val duration = route.getDouble("duration")
+                        val distance = route.getDouble("distance")
+
+                        val routePoints = mutableListOf<GeoPoint>()
+                        for (i in 0 until coordinatesArray.length()) {
+                            val coord = coordinatesArray.getJSONArray(i)
+                            val lon = coord.getDouble(0)
+                            val lat = coord.getDouble(1)
+                            routePoints.add(GeoPoint(lat, lon))
+                        }
+
+                        withContext(Dispatchers.Main) {
+                            val routeLine = Polyline().apply {
+                                outlinePaint.color = android.graphics.Color.BLACK
+                                outlinePaint.strokeWidth = 10f
+                                outlinePaint.alpha = 200
+                                outlinePaint.strokeCap = android.graphics.Paint.Cap.ROUND
+                                outlinePaint.strokeJoin = android.graphics.Paint.Join.ROUND
+                                setPoints(routePoints)
+                            }
+                            binding.mapView.overlays.add(0, routeLine)
+                            binding.mapView.invalidate()
+
+                            val durationMinutes = (duration / 60).toInt()
+                            val distanceKm = (distance / 1000).let { "%.2f".format(it) }
+                            Toast.makeText(
+                                requireContext(),
+                                "Ruta: $distanceKm km - Duración: $durationMinutes min",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "No se pudo calcular la ruta por calles.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -196,13 +341,7 @@ class ComRutasFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        routingScope.cancel()
         _binding = null
     }
-
-    // Data class para las ubicaciones de visita
-    data class VisitLocation(
-        val name: String,
-        val latitude: Double,
-        val longitude: Double
-    )
 }
