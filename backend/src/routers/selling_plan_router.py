@@ -6,10 +6,9 @@ from src.db.database import get_db
 from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.selling_plan_schema import (
-    GetSellingPlanResponse,
     GetSellingPlansResponse,
     SellingPlanCreateRequest,
-    SellingPlanCreateResponse,
+    SellingPlanResponse,
 )
 from src.services.selling_plan_service import (
     create_selling_plan,
@@ -26,7 +25,7 @@ selling_plan_router = APIRouter(
 
 @selling_plan_router.post(
     "",
-    response_model=SellingPlanCreateResponse,
+    response_model=SellingPlanResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new selling plan",
     description="""
@@ -40,15 +39,20 @@ Create a new selling plan in the system.
 - **seller_id**: ID of the associated seller (36 characters)
 
 ### Response
-Returns the details of the newly created selling plan including `id`, `period`, `goal`, `created_at`,
-`product`, `zone`, and `seller`.
+- **id**: Unique identifier of the selling plan
+- **period**: Period of the selling plan
+- **goal**: Goal of the selling plan
+- **created_at**: Timestamp of when the selling plan was created
+- **product**: Details of the associated product
+- **zone**: Details of the associated zone
+- **seller**: Details of the associated seller
 """,
 )
-async def create_new_selling_plan(
+async def register_selling_plan(
     *,
     selling_plan_create_request: SellingPlanCreateRequest,
     db: Session = Depends(get_db),
-) -> SellingPlanCreateResponse:
+) -> SellingPlanResponse:
     return create_selling_plan(
         db=db, selling_plan_create_request=selling_plan_create_request
     )
@@ -63,8 +67,11 @@ async def create_new_selling_plan(
 Retrieve a list of all selling plans in the system.
 
 ### Response
-Returns a list of selling plans along with the total count. Each selling plan includes `id`, `period`, `goal`,
-`created_at`, `product`, `zone`, and `seller`.
+Returns a list of selling plans with the following details for each selling plan:
+- **id**: Unique identifier of the selling plan.
+- **period**: Period of the selling plan.
+- **goal**: Goal of the selling plan.
+- **created_at**: Timestamp when the selling plan was created.
 """,
 )
 async def get_all_selling_plans(
@@ -80,7 +87,7 @@ async def get_all_selling_plans(
 
 @selling_plan_router.get(
     "/{selling_plan_id}",
-    response_model=GetSellingPlanResponse,
+    response_model=SellingPlanResponse,
     status_code=status.HTTP_200_OK,
     summary="Get selling plan by ID",
     description="""
@@ -90,14 +97,20 @@ Retrieve a selling plan's details by its unique ID.
 - **selling_plan_id**: The unique identifier of the selling plan (36 characters)
 
 ### Response
-Returns the details of the selling plan including `id`, `period`, `goal`, `created_at`, `product`, `zone`, and `seller`.
+- **id**: Unique identifier of the selling plan.
+- **period**: Period of the selling plan.
+- **goal**: Goal of the selling plan.
+- **created_at**: Timestamp when the selling plan was created.
+- **product**: Details of the associated product.
+- **zone**: Details of the associated zone.
+- **seller**: Details of the associated seller.
 """,
 )
 async def get_selling_plan(
     *,
     selling_plan_id: str,
     db: Session = Depends(get_db),
-) -> GetSellingPlanResponse:
+) -> SellingPlanResponse:
     selling_plan = get_selling_plan_by_id(db=db, selling_plan_id=selling_plan_id)
     if not selling_plan:
         raise NotFoundException("Selling plan not found")

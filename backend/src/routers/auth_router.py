@@ -5,17 +5,18 @@ from fastapi.routing import APIRoute
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
-from src.core.security import get_current_user
+from src.core.security import get_current_user, require_roles
 from src.db.database import get_db
 from src.errors.errors import UnauthorizedException
 from src.models.db_models import User
+from src.models.enums.user_role import UserRole
 from src.schemas.auth_schema import (
     LoginRequest,
     LoginResponse,
     OTPVerifyRequest,
     OTPVerifyResponse,
 )
-from src.schemas.user_schema import UserCreateRequest, UserCreateResponse
+from src.schemas.user_schema import UserCreateRequest, UserResponse
 from src.services.auth_service import login_user, verify_otp_and_get_token
 from src.services.user_service import create_user, get_user_by_email
 
@@ -24,7 +25,7 @@ auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @auth_router.post(
     "/register",
-    response_model=UserCreateResponse,
+    response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
     description="""
@@ -40,14 +41,23 @@ Create a new user account.
 - **password**: Between 6–12 characters
 
 ### Response
-Returns the created user's `id` and `created_at` timestamp.
+- **id**: Unique user ID
+- **full_name**: Full name
+- **email**: Email address
+- **phone**: Phone number
+- **doi**: NIT
+- **address**: Address
+- **role**: User role
+- **created_at**: Timestamp of account creation
+- **seller**: Associated seller details
+- **orders**: List of associated orders
 """,
 )
 async def register_user(
     *,
     user_create_request: UserCreateRequest,
     db: Session = Depends(get_db),
-) -> UserCreateResponse:
+) -> UserResponse:
     return create_user(db=db, user_create_request=user_create_request)
 
 
@@ -125,6 +135,17 @@ async def verify_otp(
     status_code=status.HTTP_200_OK,
     summary="Dynamically check accessible endpoints by role",
     description="Retrieve a list of API endpoints accessible to the current user based on their role.",
+    dependencies=[
+        Depends(
+            require_roles(
+                allowed_roles=[
+                    UserRole.ADMIN,
+                    UserRole.COMMERCIAL,
+                    UserRole.INSTITUTIONAL,
+                ]
+            )
+        )
+    ],
 )
 def get_permissions(
     current_user: User = Depends(get_current_user),
@@ -145,9 +166,9 @@ def get_permissions(
             if hasattr(dep.call, "allowed_roles"):
                 roles.extend([r.value for r in dep.call.allowed_roles])
 
-        roles = list(set(roles)) or ["PUBLIC"]
+        roles = list(set(roles)) or ["public"]
 
-        if "PUBLIC" in roles or user_role in roles:
+        if "public" in roles or user_role in roles:
             grouped[(route.path, frozenset(roles))].update(
                 route.methods - {"HEAD", "OPTIONS"}
             )

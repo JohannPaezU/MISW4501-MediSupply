@@ -21,7 +21,7 @@ class StubLoadingSpinnerComponent { }
 
 const mockProduct: ProductCreateResponse = {
   id: 'p1', name: 'Producto Test', details: '', store: '', batch: '',
-  image_url: null, due_date: '', stock: 0, price_per_unite: 0,
+  image_url: null, due_date: '', stock: 0, price_per_unit: 0,
   provider_id: '', created_at: '2023-01-01T00:00:00Z'
 };
 const mockZone: Zone = { id: 'z1', description: 'Zona Norte' };

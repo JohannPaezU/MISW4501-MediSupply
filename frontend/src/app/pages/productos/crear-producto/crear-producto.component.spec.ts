@@ -40,7 +40,7 @@ describe('CrearProductoComponent', () => {
 
     component.productoForm.setValue({
       name: '', batch: '', store: '', image_url: null, due_date: '',
-      details: '', stock: null, price_per_unite: null,
+      details: '', stock: null, price_per_unit: null,
       provider_id: ''
     });
 
@@ -54,7 +54,7 @@ describe('CrearProductoComponent', () => {
     const mockResponse = {
       id: '1', name: 'Producto A', details: 'Detalles', store: 'Bodega',
       batch: 'Lote01', image_url: null, due_date: '2025-12-31',
-      stock: 10, price_per_unite: 5.5,
+      stock: 10, price_per_unit: 5.5,
       provider_id: '123e4567-e89b-12d3-a456-426614174000',
       created_at: '2025-10-17T00:00:00Z'
     };
@@ -64,7 +64,7 @@ describe('CrearProductoComponent', () => {
       name: 'Producto A', batch: 'Lote01', store: 'Bodega',
       image_url: null, due_date: '2025-12-31',
       details: 'Detalles del producto', stock: 10,
-      price_per_unite: 5.5,
+      price_per_unit: 5.5,
       provider_id: '123e4567-e89b-12d3-a456-426614174000'
     });
 
@@ -90,7 +90,7 @@ describe('CrearProductoComponent', () => {
       name: 'Producto Test', batch: 'Lote123', store: 'Bodega Central',
       image_url: null, due_date: '2025-12-31',
       details: 'Detalles completos del producto', stock: 10,
-      price_per_unite: 5.5,
+      price_per_unit: 5.5,
       provider_id: '123e4567-e89b-12d3-a456-426614174000'
     });
 
@@ -112,7 +112,7 @@ describe('CrearProductoComponent', () => {
       name: 'Producto Test', batch: 'Lote123', store: 'Bodega Central',
       image_url: null, due_date: '2025-12-31',
       details: 'Detalles completos del producto', stock: 10,
-      price_per_unite: 5.5,
+      price_per_unit: 5.5,
       provider_id: '123e4567-e89b-12d3-a456-426614174000'
     });
 
@@ -134,7 +134,7 @@ describe('CrearProductoComponent', () => {
       name: 'Producto Test', batch: 'Lote123', store: 'Bodega Central',
       image_url: null, due_date: '2025-12-31',
       details: 'Detalles completos del producto', stock: 10,
-      price_per_unite: 5.5,
+      price_per_unit: 5.5,
       provider_id: '123e4567-e89b-12d3-a456-426614174000'
     });
 

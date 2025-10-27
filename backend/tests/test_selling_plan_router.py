@@ -1,5 +1,3 @@
-import pytest
-
 from src.models.enums.user_role import UserRole
 from tests.base_test import BaseTest
 
@@ -9,12 +7,6 @@ class TestSellingPlanRouter(BaseTest):
         "period": "3",
         "goal": 100,
     }
-
-    @pytest.fixture
-    def authorized_client(self):
-        client = self.client.__class__(self.client.app)
-        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
-        return client
 
     def test_register_selling_plan_with_invalid_parameters(self, authorized_client):
         payload = self.create_selling_plan_payload.copy()
