@@ -1,7 +1,5 @@
 from unittest.mock import patch
 
-import pytest
-
 from tests.base_test import BaseTest
 
 
@@ -14,14 +12,8 @@ class TestProductRouter(BaseTest):
         "image_url": "http://example.com/image.jpg",
         "due_date": "2025-12-31",
         "stock": 100,
-        "price_per_unite": 9.99,
+        "price_per_unit": 9.99,
     }
-
-    @pytest.fixture
-    def authorized_client(self):
-        client = self.client.__class__(self.client.app)
-        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
-        return client
 
     def test_register_product_with_invalid_parameters(self, authorized_client):
         payload = self.create_product_payload.copy()
@@ -31,7 +23,7 @@ class TestProductRouter(BaseTest):
         payload["batch"] = "123"
         payload["due_date"] = "invalid-date"
         payload["stock"] = -10
-        payload["price_per_unite"] = 0
+        payload["price_per_unit"] = 0
         payload["provider_id"] = "invalid-uuid"
 
         response = authorized_client.post(f"{self.prefix}/products", json=payload)
@@ -43,7 +35,7 @@ class TestProductRouter(BaseTest):
         assert json_response["detail"][3]["loc"] == ["body", "batch"]
         assert json_response["detail"][4]["loc"] == ["body", "due_date"]
         assert json_response["detail"][5]["loc"] == ["body", "stock"]
-        assert json_response["detail"][6]["loc"] == ["body", "price_per_unite"]
+        assert json_response["detail"][6]["loc"] == ["body", "price_per_unit"]
         assert json_response["detail"][7]["loc"] == ["body", "provider_id"]
 
     def test_register_product_with_invalid_provider(self, authorized_client):
@@ -69,7 +61,7 @@ class TestProductRouter(BaseTest):
         assert json_response["image_url"] == payload["image_url"]
         assert json_response["due_date"] == payload["due_date"]
         assert json_response["stock"] == payload["stock"]
-        assert json_response["price_per_unite"] == payload["price_per_unite"]
+        assert json_response["price_per_unit"] == payload["price_per_unit"]
         assert json_response["provider"]["id"] == payload["provider_id"]
 
     def test_register_products_bulk_with_invalid_provider(self, authorized_client):
@@ -83,7 +75,7 @@ class TestProductRouter(BaseTest):
                     "image_url": "http://example.com/bulk1.jpg",
                     "due_date": "2025-11-30",
                     "stock": 50,
-                    "price_per_unite": 19.99,
+                    "price_per_unit": 19.99,
                     "provider_id": "123e4567-e89b-12d3-a456-426614174000",
                 },
                 {
@@ -94,7 +86,7 @@ class TestProductRouter(BaseTest):
                     "image_url": "http://example.com/bulk2.jpg",
                     "due_date": "2025-10-31",
                     "stock": 75,
-                    "price_per_unite": 29.99,
+                    "price_per_unit": 29.99,
                     "provider_id": next(iter(self.providers)).id,
                 },
             ]
@@ -126,7 +118,7 @@ class TestProductRouter(BaseTest):
                     "image_url": "http://example.com/bulk1.jpg",
                     "due_date": "2025-11-30",
                     "stock": 50,
-                    "price_per_unite": 19.99,
+                    "price_per_unit": 19.99,
                     "provider_id": next(iter(self.providers)).id,
                 },
                 {
@@ -137,7 +129,7 @@ class TestProductRouter(BaseTest):
                     "image_url": "http://example.com/bulk2.jpg",
                     "due_date": "2025-10-31",
                     "stock": 75,
-                    "price_per_unite": 29.99,
+                    "price_per_unit": 29.99,
                     "provider_id": next(iter(self.providers)).id,
                 },
             ]
@@ -188,18 +180,17 @@ class TestProductRouter(BaseTest):
         assert json_response["message"] == "Product not found"
 
     def test_get_product_success(self, authorized_client):
-        payload = self.create_product_payload.copy()
-        payload["provider_id"] = next(iter(self.providers)).id
-
-        create_response = authorized_client.post(
-            f"{self.prefix}/products", json=payload
-        )
-        assert create_response.status_code == 201
-
-        create_json_response = create_response.json()
-        product_id = create_json_response["id"]
-
-        response = authorized_client.get(f"{self.prefix}/products/{product_id}")
+        product = next(iter(self.products))
+        response = authorized_client.get(f"{self.prefix}/products/{product.id}")
         json_response = response.json()
+
         assert response.status_code == 200
-        assert json_response["id"] == product_id
+        assert json_response["id"] == product.id
+        assert json_response["name"] == product.name
+        assert json_response["details"] == product.details
+        assert json_response["store"] == product.store
+        assert json_response["batch"] == product.batch
+        assert json_response["image_url"] == product.image_url
+        assert json_response["due_date"] == str(product.due_date)
+        assert json_response["stock"] == product.stock
+        assert json_response["price_per_unit"] == product.price_per_unit
