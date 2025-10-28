@@ -3,5 +3,6 @@ package com.mfpe.medisupply.data.model
 import java.io.Serializable
 
 data class ClientListResponse(
-    val clients: List<Client>
+    val clients: List<Client>,
+    val totalCount: Int = 0
 ): Serializable

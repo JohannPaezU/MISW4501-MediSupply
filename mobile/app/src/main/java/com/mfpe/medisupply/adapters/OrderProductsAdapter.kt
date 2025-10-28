@@ -62,11 +62,21 @@ class OrderProductsAdapter : ListAdapter<Product, OrderProductsAdapter.OrderProd
             binding.apply {
                 tvProductName.text = product.name
                 val formato = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-                tvProductPrice.text = formato.format(product.pricePerUnite)
-                val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
-                tvProductExpiry.text = "Vence: ${dateFormat.format(product.dueDate)}"
+                tvProductPrice.text = formato.format(product.price_per_unit)
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val displayFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
+                try {
+                    val date = dateFormat.parse(product.due_date)
+                    if (date != null) {
+                        tvProductExpiry.text = "Vence: ${displayFormat.format(date)}"
+                    } else {
+                        tvProductExpiry.text = "Vence: ${product.due_date}"
+                    }
+                } catch (e: Exception) {
+                    tvProductExpiry.text = "Vence: ${product.due_date}"
+                }
                 Glide.with(ivProductImage.context)
-                    .load(product.imageUrl)
+                    .load(product.image_url)
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .into(ivProductImage)

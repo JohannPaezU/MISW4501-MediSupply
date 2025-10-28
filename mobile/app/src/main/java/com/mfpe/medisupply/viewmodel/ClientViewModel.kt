@@ -11,8 +11,8 @@ class ClientViewModel(
     private val clientRepository: ClientRepository = ClientRepository()
 ) : ViewModel() {
 
-    fun getClients(authToken : String, sellerId : String, onResult: (Boolean, String, ClientListResponse?) -> Unit) {
-        clientRepository.getClients(authToken, sellerId).enqueue(object :
+    fun getClients(authToken : String, onResult: (Boolean, String, ClientListResponse?) -> Unit) {
+        clientRepository.getClients(authToken).enqueue(object :
             Callback<ClientListResponse> {
             override fun onResponse(call: Call<ClientListResponse>, res: Response<ClientListResponse>) {
                 if (res.isSuccessful && res.body() != null) {

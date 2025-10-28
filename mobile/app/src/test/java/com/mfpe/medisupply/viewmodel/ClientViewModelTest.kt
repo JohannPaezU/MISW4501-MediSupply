@@ -85,7 +85,6 @@ class ClientViewModelTest {
         // When & Then
         assertNotNull(viewModelClass.getDeclaredMethod("getClients", 
             String::class.java, 
-            String::class.java, 
             kotlin.Function3::class.java))
     }
 
@@ -95,25 +94,23 @@ class ClientViewModelTest {
     fun `getClients should call repository`() {
         // Given
         val authToken = "Bearer test-token"
-        val sellerId = "seller-123"
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         
         // When
-        clientViewModel.getClients(authToken, sellerId) { _, _, _ -> }
+        clientViewModel.getClients(authToken) { _, _, _ -> }
         
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
     }
 
     @Test
     fun `getClients should handle successful response`() {
         // Given
         val authToken = "Bearer test-token"
-        val sellerId = "seller-123"
         val mockClientsResponse = ClientListResponse(emptyList())
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         `when`(mockGetClientsResponse.isSuccessful).thenReturn(true)
         `when`(mockGetClientsResponse.body()).thenReturn(mockClientsResponse)
         
@@ -128,14 +125,14 @@ class ClientViewModelTest {
             null
         }.`when`(mockGetClientsCall).enqueue(any())
 
-        clientViewModel.getClients(authToken, sellerId) { success, message, response ->
+        clientViewModel.getClients(authToken) { success, message, response ->
             successResult = success
             messageResult = message
             responseData = response
         }
 
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
         verify(mockGetClientsCall).enqueue(any())
         assertTrue("Should return success", successResult)
         assertEquals("Clients obtained.", messageResult)
@@ -146,9 +143,8 @@ class ClientViewModelTest {
     fun `getClients should handle unsuccessful response`() {
         // Given
         val authToken = "Bearer test-token"
-        val sellerId = "seller-123"
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         `when`(mockGetClientsResponse.isSuccessful).thenReturn(false)
         `when`(mockGetClientsResponse.code()).thenReturn(404)
         
@@ -163,14 +159,14 @@ class ClientViewModelTest {
             null
         }.`when`(mockGetClientsCall).enqueue(any())
 
-        clientViewModel.getClients(authToken, sellerId) { success, message, response ->
+        clientViewModel.getClients(authToken) { success, message, response ->
             successResult = success
             messageResult = message
             responseData = response
         }
 
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
         verify(mockGetClientsCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertTrue("Should contain error message", messageResult.contains("Error obtaining clients"))
@@ -181,10 +177,9 @@ class ClientViewModelTest {
     fun `getClients should handle network failure`() {
         // Given
         val authToken = "Bearer test-token"
-        val sellerId = "seller-123"
         val exception = RuntimeException("Network error")
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         
         var successResult = true
         var messageResult = ""
@@ -197,14 +192,14 @@ class ClientViewModelTest {
             null
         }.`when`(mockGetClientsCall).enqueue(any())
 
-        clientViewModel.getClients(authToken, sellerId) { success, message, response ->
+        clientViewModel.getClients(authToken) { success, message, response ->
             successResult = success
             messageResult = message
             responseData = response
         }
 
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
         verify(mockGetClientsCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertTrue("Should contain connection error message", messageResult.contains("Connection error"))
@@ -215,9 +210,8 @@ class ClientViewModelTest {
     fun `getClients should handle successful response with null body`() {
         // Given
         val authToken = "Bearer test-token"
-        val sellerId = "seller-123"
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         `when`(mockGetClientsResponse.isSuccessful).thenReturn(true)
         `when`(mockGetClientsResponse.body()).thenReturn(null)
         
@@ -232,14 +226,14 @@ class ClientViewModelTest {
             null
         }.`when`(mockGetClientsCall).enqueue(any())
 
-        clientViewModel.getClients(authToken, sellerId) { success, message, response ->
+        clientViewModel.getClients(authToken) { success, message, response ->
             successResult = success
             messageResult = message
             responseData = response
         }
 
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
         verify(mockGetClientsCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertTrue("Should contain error message", messageResult.contains("Error obtaining clients"))
@@ -250,60 +244,56 @@ class ClientViewModelTest {
     fun `getClients should handle empty auth token`() {
         // Given
         val authToken = ""
-        val sellerId = "seller-123"
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         
         // When
-        clientViewModel.getClients(authToken, sellerId) { _, _, _ -> }
+        clientViewModel.getClients(authToken) { _, _, _ -> }
         
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
     }
 
     @Test
-    fun `getClients should handle empty seller id`() {
+    fun `getClients should handle valid auth token`() {
         // Given
         val authToken = "Bearer test-token"
-        val sellerId = ""
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         
         // When
-        clientViewModel.getClients(authToken, sellerId) { _, _, _ -> }
+        clientViewModel.getClients(authToken) { _, _, _ -> }
         
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
     }
 
     @Test
-    fun `getClients should handle special characters in seller id`() {
+    fun `getClients should handle special characters in auth token`() {
         // Given
-        val authToken = "Bearer test-token"
-        val sellerId = "seller-id-with-special-chars-123"
+        val authToken = "Bearer test-token-with-special-chars-123"
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         
         // When
-        clientViewModel.getClients(authToken, sellerId) { _, _, _ -> }
+        clientViewModel.getClients(authToken) { _, _, _ -> }
         
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
     }
 
     @Test
-    fun `getClients should handle numeric seller id`() {
+    fun `getClients should handle numeric auth token`() {
         // Given
-        val authToken = "Bearer test-token"
-        val sellerId = "12345"
+        val authToken = "Bearer 12345"
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         
         // When
-        clientViewModel.getClients(authToken, sellerId) { _, _, _ -> }
+        clientViewModel.getClients(authToken) { _, _, _ -> }
         
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
     }
 
     @Test
@@ -312,12 +302,12 @@ class ClientViewModelTest {
         val authToken = "Bearer very-long-token-that-might-be-used-in-some-systems-with-many-characters-and-special-symbols"
         val sellerId = "seller-123"
         
-        `when`(mockClientRepository.getClients(authToken, sellerId)).thenReturn(mockGetClientsCall)
+        `when`(mockClientRepository.getClients(authToken)).thenReturn(mockGetClientsCall)
         
         // When
-        clientViewModel.getClients(authToken, sellerId) { _, _, _ -> }
+        clientViewModel.getClients(authToken) { _, _, _ -> }
         
         // Then
-        verify(mockClientRepository).getClients(authToken, sellerId)
+        verify(mockClientRepository).getClients(authToken)
     }
 }
