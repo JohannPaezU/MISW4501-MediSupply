@@ -6,19 +6,19 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mfpe.medisupply.R
 import com.mfpe.medisupply.adapters.OrderSummaryAdapter
 import com.mfpe.medisupply.data.model.Client
 import com.mfpe.medisupply.data.model.DistributionCenter
-import com.mfpe.medisupply.data.model.OrderSummaryItem
 import com.mfpe.medisupply.data.model.Product
 import com.mfpe.medisupply.databinding.ActivityOrderSummaryBinding
 import com.mfpe.medisupply.utils.PrefsManager
-import com.mfpe.medisupply.viewmodel.ClientViewModel
-import com.mfpe.medisupply.viewmodel.DistributionCenterViewModel
+import com.mfpe.medisupply.viewmodel.OrderSummaryViewModel
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -28,17 +28,13 @@ class OrderSummaryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOrderSummaryBinding
     private lateinit var orderSummaryAdapter: OrderSummaryAdapter
-    private lateinit var clientViewModel: ClientViewModel
-    private lateinit var distributionCenterViewModel: DistributionCenterViewModel
     private lateinit var prefsManager: PrefsManager
-    private var selectedDeliveryDate: Calendar? = null
+    private val orderSummaryViewModel: OrderSummaryViewModel by viewModels()
+    
     private var products: List<Product> = emptyList()
     private var quantities: Map<String, Int> = emptyMap()
     private var clientsList: List<Client> = emptyList()
     private var centersList: List<DistributionCenter> = emptyList()
-    private var selectedClient: Client? = null
-    private var selectedCenter: DistributionCenter? = null
-    private var selectedDistributionCenter: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +42,7 @@ class OrderSummaryActivity : AppCompatActivity() {
         binding = ActivityOrderSummaryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inicializar ViewModel y PrefsManager
-        clientViewModel = ClientViewModel()
-        distributionCenterViewModel = DistributionCenterViewModel()
+        // Inicializar PrefsManager
         prefsManager = PrefsManager.getInstance(this)
 
         // Obtener datos del intent
@@ -60,7 +54,8 @@ class OrderSummaryActivity : AppCompatActivity() {
         setupToolbar()
         setupRecyclerView()
         setupClientVisibility()
-        loadCenters()
+        setupObservers()
+        loadData()
         setupClientDropdown()
         setupDistributionCenterDropdown()
         setupDeliveryDatePicker()
@@ -71,6 +66,62 @@ class OrderSummaryActivity : AppCompatActivity() {
     private fun setupToolbar() {
         binding.btnBack.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun setupObservers() {
+        orderSummaryViewModel.clients.observe(this, Observer { clients ->
+            clientsList = clients
+            val clientNames = clients.map { it.fullName }
+            val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, clientNames)
+            binding.inputClient.setAdapter(adapter)
+        })
+
+        orderSummaryViewModel.distributionCenters.observe(this, Observer { centers ->
+            centersList = centers
+            val centerNames = centers.map { it.name }
+            val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, centerNames)
+            binding.inputDistributionCenter.setAdapter(adapter)
+        })
+
+        orderSummaryViewModel.orderSummaryItems.observe(this, Observer { items ->
+            orderSummaryAdapter.submitList(items)
+        })
+
+        orderSummaryViewModel.totalValue.observe(this, Observer { total ->
+            val formato = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
+            binding.tvTotalLabel.text = getString(R.string.label_total_value, formato.format(total))
+        })
+
+        orderSummaryViewModel.isLoading.observe(this, Observer { isLoading ->
+            binding.btnCreateOrder.isEnabled = !isLoading
+            binding.btnCreateOrder.text = if (isLoading) "Creando pedido..." else getString(R.string.do_create_order)
+        })
+
+        orderSummaryViewModel.errorMessage.observe(this, Observer { message ->
+            message?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                orderSummaryViewModel.clearError()
+            }
+        })
+
+        orderSummaryViewModel.orderCreated.observe(this, Observer { created ->
+            if (created) {
+                Toast.makeText(this, "Pedido creado exitosamente.", Toast.LENGTH_LONG).show()
+                setResult(RESULT_OK)
+                finish()
+                orderSummaryViewModel.clearOrderCreated()
+            }
+        })
+    }
+
+    private fun loadData() {
+        val authToken = prefsManager.getAuthToken ?: ""
+        orderSummaryViewModel.loadDistributionCenters(authToken)
+        
+        val userRole = prefsManager.getUserRole?.lowercase()
+        if (userRole == "commercial") {
+            orderSummaryViewModel.loadClients(authToken)
         }
     }
 
@@ -89,7 +140,7 @@ class OrderSummaryActivity : AppCompatActivity() {
     }
 
     private fun showDatePicker() {
-        val calendar = selectedDeliveryDate ?: Calendar.getInstance()
+        val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -99,7 +150,7 @@ class OrderSummaryActivity : AppCompatActivity() {
             { _, selectedYear, selectedMonth, selectedDay ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(selectedYear, selectedMonth, selectedDay)
-                selectedDeliveryDate = selectedDate
+                orderSummaryViewModel.setSelectedDeliveryDate(selectedDate)
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 binding.inputDeliveryDate.setText(dateFormat.format(selectedDate.time))
             },
@@ -125,8 +176,8 @@ class OrderSummaryActivity : AppCompatActivity() {
     }
 
     private fun setupClientDropdown() {
-        binding.inputClient.setOnItemClickListener { parent, _, position, _ ->
-            selectedClient = clientsList[position]
+        binding.inputClient.setOnItemClickListener { _, _, position, _ ->
+            orderSummaryViewModel.setSelectedClient(clientsList[position])
         }
     }
 
@@ -134,7 +185,6 @@ class OrderSummaryActivity : AppCompatActivity() {
         val userRole = prefsManager.getUserRole?.lowercase()
         if (userRole == "commercial") {
             binding.inputClientLayout.visibility = View.VISIBLE
-            loadClients()
         } else {
             binding.inputClientLayout.visibility = View.GONE
         }
@@ -142,86 +192,23 @@ class OrderSummaryActivity : AppCompatActivity() {
 
     private fun setupDistributionCenterDropdown() {
         binding.inputDistributionCenter.setOnItemClickListener { _, _, position, _ ->
-            selectedCenter = centersList[position]
-        }
-    }
-
-    private fun loadClients() {
-        val authToken = prefsManager.getAuthToken ?: ""
-        val sellerId = prefsManager.getuserId
-
-        clientViewModel.getClients(authToken, sellerId) { success, message, response ->
-            if (success && response != null) {
-                clientsList = response.clients
-                val clientNames = clientsList.map { it.fullName }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, clientNames)
-                binding.inputClient.setAdapter(adapter)
-            } else {
-                Toast.makeText(this, "Error al cargar clientes: $message", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun loadCenters() {
-        val authToken = prefsManager.getAuthToken ?: ""
-
-        distributionCenterViewModel.getDistributionCenters(authToken) { success, message, response ->
-            if (success && response != null) {
-                centersList = response.centers
-                val centerNames = centersList.map { it.description }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, centerNames)
-                binding.inputDistributionCenter.setAdapter(adapter)
-            } else {
-                Toast.makeText(this, "Error al cargar centros: $message", Toast.LENGTH_SHORT).show()
-            }
+            orderSummaryViewModel.setSelectedCenter(centersList[position])
         }
     }
 
     private fun loadOrderSummary() {
-        val summaryItems = mutableListOf<OrderSummaryItem>()
-        var totalValue = 0.0
-
-        products.forEach { product ->
-            val quantity = quantities[product.id] ?: 0
-            if (quantity > 0) {
-                val itemTotal = product.pricePerUnite * quantity
-                totalValue += itemTotal
-                summaryItems.add(
-                    OrderSummaryItem(
-                        id = product.id,
-                        name = product.name,
-                        imageUrl = product.imageUrl,
-                        price = itemTotal,
-                        quantity = quantity
-                    )
-                )
-            }
-        }
-
-        orderSummaryAdapter.submitList(summaryItems)
-        val formato = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-        binding.tvTotalLabel.text = getString(R.string.label_total_value, formato.format(totalValue))
+        orderSummaryViewModel.calculateOrderSummary(products, quantities)
     }
 
     private fun validateOrder(): Boolean {
-        if (binding.inputClientLayout.visibility == View.VISIBLE && selectedClient == null) {
-            Toast.makeText(this, "Por favor seleccione un cliente", Toast.LENGTH_SHORT).show()
+        val userRole = prefsManager.getUserRole ?: ""
+        val errorMessage = orderSummaryViewModel.validateOrder(userRole, products, quantities)
+        
+        if (errorMessage != null) {
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
             return false
         }
-
-        if (selectedDistributionCenter == null) {
-            Toast.makeText(this, "Por favor seleccione un centro de distribución", Toast.LENGTH_SHORT).show()
-            return false
-        }
-
-        if (selectedDeliveryDate == null) {
-            Toast.makeText(
-                this,
-                getString(R.string.error_select_delivery_date),
-                Toast.LENGTH_SHORT
-            ).show()
-            return false
-        }
+        
         return true
     }
 
@@ -230,13 +217,24 @@ class OrderSummaryActivity : AppCompatActivity() {
             .setTitle("Confirmar pedido")
             .setMessage("¿Estás seguro que deseas confirmar este pedido?")
             .setPositiveButton("Confirmar") { _, _ ->
-                Toast.makeText(this, "Pedido creado exitosamente.", Toast.LENGTH_LONG).show()
-                setResult(RESULT_OK)
-                finish()
+                performCreateOrder()
             }
             .setNegativeButton("Cancelar") { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun performCreateOrder() {
+        val authToken = prefsManager.getAuthToken ?: ""
+        if (authToken.isEmpty()) {
+            Toast.makeText(this, "Error: Token de autenticación no encontrado", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val userRole = prefsManager.getUserRole ?: ""
+        val comments = binding.inputComments.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }
+        
+        orderSummaryViewModel.createOrder(authToken, userRole, comments, products, quantities)
     }
 }

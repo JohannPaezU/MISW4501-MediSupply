@@ -14,10 +14,9 @@ import retrofit2.http.Query
 
 interface ClientService {
 
-    @GET("clients")
+    @GET("sellers/me/clients")
     fun getClients(
-        @Header("Authorization") authToken: String,
-        @Query("seller_id") sellerId: String,
+        @Header("Authorization") authToken: String
     ): Call<ClientListResponse>
 
     @GET("clients/me/recommended-products")

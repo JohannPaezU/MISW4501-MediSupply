@@ -48,11 +48,18 @@ class ComClientesFragment : Fragment(), ClientListAdapter.OnClientActionListener
 
     private fun loadClients() {
         clientViewModel.getClients(
-            PrefsManager.getInstance(requireContext()).getAuthToken!!,
-            PrefsManager.getInstance(requireContext()).getuserId
+            PrefsManager.getInstance(requireContext()).getAuthToken!!
         ) { success, message, response ->
             if (success && response != null) {
                 clientListAdapter.updateClients(response.clients)
+                // Show empty state if there are no clients
+                if (response.clients.isEmpty()) {
+                    binding.emptyStateLayout.visibility = View.VISIBLE
+                    binding.recyclerViewClients.visibility = View.GONE
+                } else {
+                    binding.emptyStateLayout.visibility = View.GONE
+                    binding.recyclerViewClients.visibility = View.VISIBLE
+                }
             } else {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
             }

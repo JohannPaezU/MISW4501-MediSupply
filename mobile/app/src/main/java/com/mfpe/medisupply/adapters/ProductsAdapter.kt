@@ -38,15 +38,25 @@ class ProductsAdapter : ListAdapter<Product, ProductsAdapter.ProductoViewHolder>
 
                 // Formatear precio
                 val formato = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
-                tvProductPrice.text = formato.format(product.pricePerUnite)
+                tvProductPrice.text = formato.format(product.price_per_unit)
 
                 // Formatear fecha de vencimiento
-                val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
-                tvProductExpiry.text = "Vence: ${dateFormat.format(product.dueDate)}"
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val displayFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
+                try {
+                    val date = dateFormat.parse(product.due_date)
+                    if (date != null) {
+                        tvProductExpiry.text = "Vence: ${displayFormat.format(date)}"
+                    } else {
+                        tvProductExpiry.text = "Vence: ${product.due_date}"
+                    }
+                } catch (e: Exception) {
+                    tvProductExpiry.text = "Vence: ${product.due_date}"
+                }
 
                 // Cargar imagen con Glide
                 Glide.with(ivProductImage.context)
-                    .load(product.imageUrl)
+                    .load(product.image_url)
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .into(ivProductImage)

@@ -160,14 +160,12 @@ class ProductsViewModelTest {
             name = "Test Product",
             details = "Test Details",
             store = "Test Store",
-            lote = "L1",
-            imageUrl = "test-url",
-            dueDate = now,
+            batch = "L1",
+            image_url = "test-url",
+            due_date = "2026-09-24",
             stock = 5,
-            pricePerUnite = 10.0,
-            providerId = 1,
-            providerName = "Test Provider",
-            createdAt = now
+            price_per_unit = 10.0,
+            created_at = "2025-10-23T05:44:07.144451Z"
         )
         val mockProductListResponse = ProductListResponse(products = listOf(mockProduct))
         
@@ -411,14 +409,12 @@ class ProductsViewModelTest {
             name = "Test Product",
             details = "Test Details",
             store = "Test Store",
-            lote = "L1",
-            imageUrl = "test-url",
-            dueDate = now,
+            batch = "L1",
+            image_url = "test-url",
+            due_date = "2026-09-24",
             stock = 5,
-            pricePerUnite = 10.0,
-            providerId = 1,
-            providerName = "Test Provider",
-            createdAt = now
+            price_per_unit = 10.0,
+            created_at = "2025-10-23T05:44:07.144451Z"
         )
         val mockProductListResponse = ProductListResponse(products = listOf(mockProduct))
         
