@@ -5,6 +5,7 @@ import com.mfpe.medisupply.utils.TestUtils
 import org.junit.Assert.*
 import org.junit.Test
 import retrofit2.Call
+import java.util.Collections
 
 /**
  * Tests unitarios para OrderService
@@ -162,7 +163,7 @@ class OrderServiceTest {
         val orderService = RetrofitApiClient.createRetrofitService(OrderService::class.java)
 
         // When
-        val calls = mutableListOf<Call<OrderListResponse>>()
+        val calls = Collections.synchronizedList(mutableListOf<Call<OrderListResponse>>())
         
         // Execute multiple calls concurrently
         val thread1 = Thread {

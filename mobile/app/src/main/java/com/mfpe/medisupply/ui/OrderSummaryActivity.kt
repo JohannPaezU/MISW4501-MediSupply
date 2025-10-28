@@ -46,9 +46,10 @@ class OrderSummaryActivity : AppCompatActivity() {
         prefsManager = PrefsManager.getInstance(this)
 
         // Obtener datos del intent
-        @Suppress("DEPRECATION")
+        @Suppress("DEPRECATION", "UNCHECKED_CAST")
         products = intent.getSerializableExtra("products") as? List<Product> ?: emptyList()
-        @Suppress("UNCHECKED_CAST")
+        
+        @Suppress("DEPRECATION", "UNCHECKED_CAST")
         quantities = intent.getSerializableExtra("quantities") as? Map<String, Int> ?: emptyMap()
 
         setupToolbar()
