@@ -12,7 +12,7 @@ import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loa
 @Component({
   selector: 'app-lista-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule,LoadingSpinnerComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, LoadingSpinnerComponent],
   templateUrl: './lista-productos.component.html',
   styleUrls: ['./lista-productos.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,7 +35,7 @@ export class ListaProductosComponent {
     private productService: ProductService,
     private csvExportService: CsvExportService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.cargarProductos();

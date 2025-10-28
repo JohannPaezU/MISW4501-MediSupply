@@ -1,1 +1,175 @@
-<p>reportes works!</p>,
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Reportes</h1>
+  </div>
+
+  <div class="filtros-section">
+    <div class="filtros-grid">
+      <div class="filtro-card">
+        <div class="filtro-header">
+          <span class="filtro-label">Selecciona vendedores</span>
+        </div>
+        <div class="filtro-content">
+          <mat-icon class="filtro-icon">search</mat-icon>
+          <span class="filtro-value">vendedores (1)</span>
+        </div>
+      </div>
+
+      <div class="filtro-card">
+        <div class="filtro-header">
+          <span class="filtro-label">Selecciona zona</span>
+        </div>
+        <div class="filtro-content">
+          <mat-icon class="filtro-icon">search</mat-icon>
+          <span class="filtro-value">zonas (1)</span>
+        </div>
+      </div>
+
+      <div class="filtro-card">
+        <div class="filtro-header">
+          <span class="filtro-label">Selecciona productos</span>
+        </div>
+        <div class="filtro-content">
+          <mat-icon class="filtro-icon">search</mat-icon>
+          <span class="filtro-value">productos (1)</span>
+        </div>
+      </div>
+
+      <div class="filtro-card">
+        <div class="filtro-header">
+          <span class="filtro-label">Rango de fechas</span>
+        </div>
+        <div class="filtro-content">
+          <mat-icon class="filtro-icon">search</mat-icon>
+          <span class="filtro-value">15 set - 20 set</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-container">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar...">
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="reportes-table">
+      <thead>
+        <tr>
+          <th>Vendedor</th>
+          <th>Producto</th>
+          <th>Zona</th>
+          <th>Ventas</th>
+          <th>% Meta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tiger Nixon</td>
+          <td>Medicamentos</td>
+          <td>Bogotá</td>
+          <td>61000</td>
+          <td>
+            <div class="meta-container">
+              <span class="meta-text">45 %</span>
+              <div class="meta-bar">
+                <div class="meta-progress"></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>Sonya Frost</td>
+          <td>Medicamentos</td>
+          <td>Bogotá</td>
+          <td>23500</td>
+          <td>
+            <div class="meta-container">
+              <span class="meta-text">80 %</span>
+              <div class="meta-bar">
+                <div class="meta-progress success"></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>Rhona Davidson</td>
+          <td>Medicamentos</td>
+          <td>Bogotá</td>
+          <td>5500</td>
+          <td>
+            <div class="meta-container">
+              <span class="meta-text">5 %</span>
+              <div class="meta-bar">
+                <div class="meta-progress danger"></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-section">
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-label">Total de ventas</span>
+        </div>
+        <div class="stat-value">1,200,000.00</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-label">Pedidos pendientes</span>
+        </div>
+        <div class="stat-value">23</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-label">Cumplimiento</span>
+        </div>
+        <div class="stat-value success">82 %</div>
+      </div>
+    </div>
+
+    <div class="footer-actions">
+      <div class="pagination-controls">
+        <div class="page-size-selector">
+          <label for="pageSize">Filas por página:</label>
+          <select id="pageSize">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+          </select>
+        </div>
+
+        <div class="page-info">
+          <span>1 - 10 de 14</span>
+        </div>
+
+        <div class="page-navigation">
+          <button>
+            <mat-icon>keyboard_arrow_left</mat-icon>
+          </button>
+          <button>
+            <mat-icon>keyboard_arrow_right</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="export-buttons">
+        <button class="btn-secondary">
+          EXPORTAR A EXCEL
+        </button>
+        <button class="btn-primary">
+          EXPORTAR A PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
