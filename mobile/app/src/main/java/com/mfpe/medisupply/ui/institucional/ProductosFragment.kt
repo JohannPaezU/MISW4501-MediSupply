@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mfpe.medisupply.adapters.ProductsAdapter
 import com.mfpe.medisupply.databinding.FragmentProductosBinding
+import com.mfpe.medisupply.utils.PrefsManager
 import com.mfpe.medisupply.viewmodel.ProductsViewModel
 
 class ProductosFragment : Fragment() {
@@ -44,7 +45,8 @@ class ProductosFragment : Fragment() {
     }
 
     private fun loadProducts() {
-        productsViewModel.getProducts() { success, message, response ->
+        productsViewModel.getProducts(PrefsManager.getInstance(requireContext()).getAuthToken!!)
+        { success, message, response ->
             if (success && response != null) {
                 productsAdapter.submitList(response.products)
             } else {

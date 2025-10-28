@@ -97,7 +97,7 @@ class SellerViewModelTest {
 
         // Then
         assertNotNull(parameterTypes)
-        assertEquals(1, parameterTypes?.size)
+        assertEquals(2, parameterTypes?.size)
     }
 
     @Test
@@ -124,7 +124,7 @@ class SellerViewModelTest {
             vendorZone = "Zona 1"
         )
         
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(true)
         `when`(mockResponse.body()).thenReturn(mockSellerResponse)
         
@@ -139,14 +139,14 @@ class SellerViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getHome { success, message, response ->
+        viewModel.getHome("") { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockSellerRepository).getHome()
+        verify(mockSellerRepository).getHome("")
         verify(mockCall).enqueue(any())
         assertTrue("Should return success", successResult)
         assertEquals("Seller home obtained.", messageResult)
@@ -156,7 +156,7 @@ class SellerViewModelTest {
     @Test
     fun `getHome should handle unsuccessful response`() {
         // Given
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(404)
         
@@ -171,14 +171,14 @@ class SellerViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getHome { success, message, response ->
+        viewModel.getHome("") { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockSellerRepository).getHome()
+        verify(mockSellerRepository).getHome("")
         verify(mockCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertEquals("Error obtaining seller home: 404", messageResult)
@@ -188,7 +188,7 @@ class SellerViewModelTest {
     @Test
     fun `getHome should handle null response body`() {
         // Given
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(true)
         `when`(mockResponse.body()).thenReturn(null)
         `when`(mockResponse.code()).thenReturn(200)
@@ -204,14 +204,14 @@ class SellerViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getHome { success, message, response ->
+        viewModel.getHome("") { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockSellerRepository).getHome()
+        verify(mockSellerRepository).getHome("")
         verify(mockCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertEquals("Error obtaining seller home: 200", messageResult)
@@ -223,7 +223,7 @@ class SellerViewModelTest {
         // Given
         val throwable = RuntimeException("Network error")
         
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         
         var successResult = false
         var messageResult = ""
@@ -236,14 +236,14 @@ class SellerViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getHome { success, message, response ->
+        viewModel.getHome("") { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockSellerRepository).getHome()
+        verify(mockSellerRepository).getHome("")
         verify(mockCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertEquals("Connection error: Network error", messageResult)
@@ -253,7 +253,7 @@ class SellerViewModelTest {
     @Test
     fun `getHome should handle multiple calls`() {
         // Given
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -264,12 +264,12 @@ class SellerViewModelTest {
         }.`when`(mockCall).enqueue(any())
 
         // When - Call the same method multiple times
-        viewModel.getHome { _, _, _ -> }
-        viewModel.getHome { _, _, _ -> }
-        viewModel.getHome { _, _, _ -> }
+        viewModel.getHome("") { _, _, _ -> }
+        viewModel.getHome("") { _, _, _ -> }
+        viewModel.getHome("") { _, _, _ -> }
 
         // Then
-        verify(mockSellerRepository, times(3)).getHome()
+        verify(mockSellerRepository, times(3)).getHome("")
         verify(mockCall, times(3)).enqueue(any())
     }
 
@@ -279,7 +279,7 @@ class SellerViewModelTest {
         val viewModel1 = SellerViewModel(mockSellerRepository)
         val viewModel2 = SellerViewModel(mockSellerRepository)
         
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -290,20 +290,20 @@ class SellerViewModelTest {
         }.`when`(mockCall).enqueue(any())
 
         // When
-        viewModel1.getHome { _, _, _ -> }
-        viewModel2.getHome { _, _, _ -> }
+        viewModel1.getHome("") { _, _, _ -> }
+        viewModel2.getHome("") { _, _, _ -> }
 
         // Then
         assertNotNull("First viewModel should exist", viewModel1)
         assertNotNull("Second viewModel should exist", viewModel2)
         assertNotEquals("ViewModels should be different instances", viewModel1, viewModel2)
-        verify(mockSellerRepository, times(2)).getHome()
+        verify(mockSellerRepository, times(2)).getHome("")
     }
 
     @Test
     fun `getHome should handle concurrent calls`() {
         // Given
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -315,13 +315,13 @@ class SellerViewModelTest {
 
         // When - Execute methods concurrently
         val thread1 = Thread {
-            viewModel.getHome { _, _, _ -> }
+            viewModel.getHome("") { _, _, _ -> }
         }
         val thread2 = Thread {
-            viewModel.getHome { _, _, _ -> }
+            viewModel.getHome("") { _, _, _ -> }
         }
         val thread3 = Thread {
-            viewModel.getHome { _, _, _ -> }
+            viewModel.getHome("") { _, _, _ -> }
         }
 
         thread1.start()
@@ -333,7 +333,7 @@ class SellerViewModelTest {
         thread3.join()
 
         // Then - Method should exist and be callable
-        verify(mockSellerRepository, times(3)).getHome()
+        verify(mockSellerRepository, times(3)).getHome("")
         verify(mockCall, times(3)).enqueue(any())
     }
 
@@ -343,7 +343,7 @@ class SellerViewModelTest {
         var successCallbackCount = 0
         var failureCallbackCount = 0
         
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -354,7 +354,7 @@ class SellerViewModelTest {
         }.`when`(mockCall).enqueue(any())
 
         // When
-        viewModel.getHome { success, message, response ->
+        viewModel.getHome("") { success, message, response ->
             if (success) {
                 successCallbackCount++
             } else {
@@ -363,7 +363,7 @@ class SellerViewModelTest {
         }
 
         // Then - Method should have been called
-        verify(mockSellerRepository).getHome()
+        verify(mockSellerRepository).getHome("")
         verify(mockCall).enqueue(any())
         assertEquals(0, successCallbackCount)
         assertEquals(1, failureCallbackCount)
@@ -380,7 +380,7 @@ class SellerViewModelTest {
         // Then
         assertNotNull("getHome method should exist", method)
         assertNotNull("Parameter types should not be null", parameterTypes)
-        assertEquals("Should have 1 parameter", 1, parameterTypes?.size)
+        assertEquals("Should have 2 parameter", 2, parameterTypes?.size)
     }
 
     @Test
@@ -388,7 +388,7 @@ class SellerViewModelTest {
         // Given & When
         val viewModels = (1..5).map { SellerViewModel(mockSellerRepository) }
         
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -399,7 +399,7 @@ class SellerViewModelTest {
         }.`when`(mockCall).enqueue(any())
         
         viewModels.forEach { vm ->
-            vm.getHome { _, _, _ -> }
+            vm.getHome("") { _, _, _ -> }
         }
 
         // Then
@@ -407,13 +407,13 @@ class SellerViewModelTest {
         viewModels.forEach { vm ->
             assertNotNull("Each viewModel should not be null", vm)
         }
-        verify(mockSellerRepository, times(5)).getHome()
+        verify(mockSellerRepository, times(5)).getHome("")
     }
 
     @Test
     fun `getHome should handle callback with null response`() {
         // Given
-        `when`(mockSellerRepository.getHome()).thenReturn(mockCall)
+        `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -424,7 +424,7 @@ class SellerViewModelTest {
         }.`when`(mockCall).enqueue(any())
 
         // When
-        viewModel.getHome { success, message, response ->
+        viewModel.getHome("") { success, message, response ->
             // Callback should handle null response gracefully
             if (success) {
                 assertNotNull("Response should not be null on success", response)
@@ -434,7 +434,7 @@ class SellerViewModelTest {
         }
 
         // Then
-        verify(mockSellerRepository).getHome()
+        verify(mockSellerRepository).getHome("")
         verify(mockCall).enqueue(any())
     }
 }

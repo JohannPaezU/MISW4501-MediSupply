@@ -148,7 +148,7 @@ class ProductsViewModelTest {
 
         // Then
         assertNotNull(parameterTypes)
-        assertEquals(1, parameterTypes?.size)
+        assertEquals(2, parameterTypes?.size)
     }
 
     @Test
@@ -171,7 +171,7 @@ class ProductsViewModelTest {
         )
         val mockProductListResponse = ProductListResponse(products = listOf(mockProduct))
         
-        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockProductRepository.getProducts("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(true)
         `when`(mockResponse.body()).thenReturn(mockProductListResponse)
         
@@ -186,14 +186,14 @@ class ProductsViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getProducts { success, message, response ->
+        viewModel.getProducts("") { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockProductRepository).getProducts()
+        verify(mockProductRepository).getProducts("")
         verify(mockCall).enqueue(any())
         assertTrue("Should return success", successResult)
         assertEquals("Products obtained.", messageResult)
@@ -208,7 +208,7 @@ class ProductsViewModelTest {
     @Test
     fun `getProducts should handle unsuccessful response`() {
         // Given
-        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockProductRepository.getProducts("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(404)
         
@@ -223,14 +223,14 @@ class ProductsViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getProducts { success, message, response ->
+        viewModel.getProducts("") { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockProductRepository).getProducts()
+        verify(mockProductRepository).getProducts("")
         verify(mockCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertEquals("Error obtaining products: 404", messageResult)
@@ -240,7 +240,7 @@ class ProductsViewModelTest {
     @Test
     fun `getProducts should handle null response body`() {
         // Given
-        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockProductRepository.getProducts("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(true)
         `when`(mockResponse.body()).thenReturn(null)
         `when`(mockResponse.code()).thenReturn(200)
@@ -256,14 +256,14 @@ class ProductsViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getProducts { success, message, response ->
+        viewModel.getProducts("") { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockProductRepository).getProducts()
+        verify(mockProductRepository).getProducts("")
         verify(mockCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertEquals("Error obtaining products: 200", messageResult)
@@ -275,7 +275,7 @@ class ProductsViewModelTest {
         // Given
         val throwable = RuntimeException("Network error")
         
-        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockProductRepository.getProducts("")).thenReturn(mockCall)
         
         var successResult = false
         var messageResult = ""
@@ -288,14 +288,14 @@ class ProductsViewModelTest {
             null
         }.`when`(mockCall).enqueue(any())
 
-        viewModel.getProducts { success, message, response ->
+        viewModel.getProducts("") { success, message, response ->
             successResult = success
             messageResult = message
             responseResult = response
         }
 
         // Then
-        verify(mockProductRepository).getProducts()
+        verify(mockProductRepository).getProducts("")
         verify(mockCall).enqueue(any())
         assertFalse("Should return failure", successResult)
         assertEquals("Connection error: Network error", messageResult)
@@ -305,7 +305,7 @@ class ProductsViewModelTest {
     @Test
     fun `getProducts should handle multiple calls`() {
         // Given
-        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockProductRepository.getProducts("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -316,12 +316,12 @@ class ProductsViewModelTest {
         }.`when`(mockCall).enqueue(any())
 
         // When - Call the same method multiple times
-        viewModel.getProducts { _, _, _ -> }
-        viewModel.getProducts { _, _, _ -> }
-        viewModel.getProducts { _, _, _ -> }
+        viewModel.getProducts("") { _, _, _ -> }
+        viewModel.getProducts("") { _, _, _ -> }
+        viewModel.getProducts("") { _, _, _ -> }
 
         // Then
-        verify(mockProductRepository, times(3)).getProducts()
+        verify(mockProductRepository, times(3)).getProducts("")
         verify(mockCall, times(3)).enqueue(any())
     }
 
@@ -331,7 +331,7 @@ class ProductsViewModelTest {
         val viewModel1 = ProductsViewModel(mockProductRepository)
         val viewModel2 = ProductsViewModel(mockProductRepository)
         
-        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockProductRepository.getProducts("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -342,20 +342,20 @@ class ProductsViewModelTest {
         }.`when`(mockCall).enqueue(any())
 
         // When
-        viewModel1.getProducts { _, _, _ -> }
-        viewModel2.getProducts { _, _, _ -> }
+        viewModel1.getProducts("") { _, _, _ -> }
+        viewModel2.getProducts("") { _, _, _ -> }
 
         // Then
         assertNotNull("First viewModel should exist", viewModel1)
         assertNotNull("Second viewModel should exist", viewModel2)
         assertNotEquals("ViewModels should be different instances", viewModel1, viewModel2)
-        verify(mockProductRepository, times(2)).getProducts()
+        verify(mockProductRepository, times(2)).getProducts("")
     }
 
     @Test
     fun `getProducts should handle concurrent calls`() {
         // Given
-        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockProductRepository.getProducts("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(false)
         `when`(mockResponse.code()).thenReturn(500)
         
@@ -367,13 +367,13 @@ class ProductsViewModelTest {
 
         // When - Execute methods concurrently
         val thread1 = Thread {
-            viewModel.getProducts { _, _, _ -> }
+            viewModel.getProducts("") { _, _, _ -> }
         }
         val thread2 = Thread {
-            viewModel.getProducts { _, _, _ -> }
+            viewModel.getProducts("") { _, _, _ -> }
         }
         val thread3 = Thread {
-            viewModel.getProducts { _, _, _ -> }
+            viewModel.getProducts("") { _, _, _ -> }
         }
 
         thread1.start()
@@ -385,7 +385,7 @@ class ProductsViewModelTest {
         thread3.join()
 
         // Then - Method should exist and be callable
-        verify(mockProductRepository, times(3)).getProducts()
+        verify(mockProductRepository, times(3)).getProducts("")
         verify(mockCall, times(3)).enqueue(any())
     }
 
@@ -422,7 +422,7 @@ class ProductsViewModelTest {
         )
         val mockProductListResponse = ProductListResponse(products = listOf(mockProduct))
         
-        `when`(mockProductRepository.getProducts()).thenReturn(mockCall)
+        `when`(mockProductRepository.getProducts("")).thenReturn(mockCall)
         `when`(mockResponse.isSuccessful).thenReturn(true)
         `when`(mockResponse.body()).thenReturn(mockProductListResponse)
         
@@ -434,7 +434,7 @@ class ProductsViewModelTest {
 
         // When
         val initialProducts = viewModel.getCurrentProducts()
-        viewModel.getProducts { _, _, _ -> }
+        viewModel.getProducts("") { _, _, _ -> }
         val updatedProducts = viewModel.getCurrentProducts()
 
         // Then

@@ -46,7 +46,7 @@ class ValidateOTPActivity : AppCompatActivity() {
             userViewModel.validateOTP(otpRequest) { success, message, response ->
                 if (success && response != null) {
                     PrefsManager.getInstance(this).saveUserId(response.user.id)
-                    PrefsManager.getInstance(this).saveAuthToken(response.accessToken)
+                    PrefsManager.getInstance(this).saveAuthToken("Bearer " + response.accessToken)
                     PrefsManager.getInstance(this).saveUserFullName(response.user.fullName)
                     PrefsManager.getInstance(this).saveUserEmail(response.user.email)
                     PrefsManager.getInstance(this).saveUserRole(response.user.role)
@@ -54,10 +54,20 @@ class ValidateOTPActivity : AppCompatActivity() {
                     val intent = when (response.user.role.lowercase()) {
                         "commercial" -> Intent(this, ComMainActivity::class.java)
                         "institutional" -> Intent(this, MainActivity::class.java)
-                        else -> Intent(this, MainActivity::class.java)
+                        else -> {
+                            Toast.makeText(
+                                this,
+                                "Rol de usuario no válido para la aplicación móvil.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            null
+                        }
                     }
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+
+                    intent?.let {
+                        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(it)
+                    }
                 } else {
                     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                 }
