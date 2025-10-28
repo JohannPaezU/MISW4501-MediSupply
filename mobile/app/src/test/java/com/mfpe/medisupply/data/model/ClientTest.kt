@@ -4,19 +4,19 @@ import com.mfpe.medisupply.utils.TestUtils
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.Serializable
-import java.util.Date
 
 /**
  * Tests unitarios para el modelo Client
  */
 class ClientTest {
 
+
     @Test
     fun `Client should have correct properties`() {
         // Given
         val id = "client-123"
         val fullName = TestUtils.TestData.VALID_FULL_NAME
-        val doi = Date()
+        val doi = "1234567890"
         val email = TestUtils.TestData.VALID_EMAIL
         val phone = TestUtils.TestData.VALID_PHONE
         val address = TestUtils.TestData.VALID_ADDRESS
@@ -52,7 +52,7 @@ class ClientTest {
     @Test
     fun `Client should support equals and hashCode`() {
         // Given
-        val date = Date()
+        val date = "1234567890"
         val client1 = Client(
             id = "client-123",
             fullName = "John Doe",
@@ -106,7 +106,7 @@ class ClientTest {
         val client = Client(
             id = "",
             fullName = "",
-            doi = Date(),
+            doi = "1234567890",
             email = "",
             phone = "",
             address = ""
@@ -126,7 +126,7 @@ class ClientTest {
         val client = Client(
             id = "client-123!@#",
             fullName = "José María O'Connor-Smith",
-            doi = Date(),
+            doi = "1234567890",
             email = "josé.maría@example.com",
             phone = "+57-300-123-4567",
             address = "Calle 123 #45-67, Apt 8B"
@@ -152,7 +152,7 @@ class ClientTest {
         val client = Client(
             id = longId,
             fullName = longName,
-            doi = Date(),
+            doi = "1234567890",
             email = longEmail,
             phone = longPhone,
             address = longAddress
@@ -172,7 +172,7 @@ class ClientTest {
         val client = Client(
             id = "12345",
             fullName = "Client 123",
-            doi = Date(),
+            doi = "1234567890",
             email = "client123@example.com",
             phone = "1234567890",
             address = "123 Main Street"
@@ -187,43 +187,43 @@ class ClientTest {
     }
 
     @Test
-    fun `Client should handle different date values`() {
+    fun `Client should handle different DOI values`() {
         // Given
-        val pastDate = Date(System.currentTimeMillis() - 86400000) // Yesterday
-        val currentDate = Date()
-        val futureDate = Date(System.currentTimeMillis() + 86400000) // Tomorrow
+        val nit1 = "1234567890"
+        val nit2 = "9876543210"
+        val nit3 = "5555555555"
 
         val client1 = Client(
             id = "client-1",
-            fullName = "Past Client",
-            doi = pastDate,
-            email = "past@example.com",
+            fullName = "Client 1",
+            doi = nit1,
+            email = "client1@example.com",
             phone = "3001111111",
-            address = "Past Address"
+            address = "Address 1"
         )
 
         val client2 = Client(
             id = "client-2",
-            fullName = "Current Client",
-            doi = currentDate,
-            email = "current@example.com",
+            fullName = "Client 2",
+            doi = nit2,
+            email = "client2@example.com",
             phone = "3002222222",
-            address = "Current Address"
+            address = "Address 2"
         )
 
         val client3 = Client(
             id = "client-3",
-            fullName = "Future Client",
-            doi = futureDate,
-            email = "future@example.com",
+            fullName = "Client 3",
+            doi = nit3,
+            email = "client3@example.com",
             phone = "3003333333",
-            address = "Future Address"
+            address = "Address 3"
         )
 
         // When & Then
-        assertEquals("Past date should be preserved", pastDate, client1.doi)
-        assertEquals("Current date should be preserved", currentDate, client2.doi)
-        assertEquals("Future date should be preserved", futureDate, client3.doi)
+        assertEquals("DOI 1 should be preserved", nit1, client1.doi)
+        assertEquals("DOI 2 should be preserved", nit2, client2.doi)
+        assertEquals("DOI 3 should be preserved", nit3, client3.doi)
     }
 
     @Test
@@ -282,7 +282,7 @@ class ClientTest {
         val client = Client(
             id = "null",
             fullName = "null",
-            doi = Date(),
+            doi = "1234567890",
             email = "null@null.com",
             phone = "null",
             address = "null"
@@ -302,7 +302,7 @@ class ClientTest {
         val client = Client(
             id = "   ",
             fullName = "   ",
-            doi = Date(),
+            doi = "1234567890",
             email = "   ",
             phone = "   ",
             address = "   "
@@ -322,7 +322,7 @@ class ClientTest {
         val client = Client(
             id = "cliente-ñ-123",
             fullName = "José María Ñoño",
-            doi = Date(),
+            doi = "1234567890",
             email = "josé.maría@español.com",
             phone = "+57-300-ñ-4567",
             address = "Calle Ñoño #123-45"
@@ -339,7 +339,7 @@ class ClientTest {
     @Test
     fun `Client should handle multiple clients with same properties`() {
         // Given
-        val date = Date()
+        val date = "1234567890"
         val client1 = Client(
             id = "client-1",
             fullName = "John Doe",
@@ -381,7 +381,7 @@ class ClientTest {
         return Client(
             id = "test-client-123",
             fullName = TestUtils.TestData.VALID_FULL_NAME,
-            doi = Date(),
+            doi = "1234567890",
             email = TestUtils.TestData.VALID_EMAIL,
             phone = TestUtils.TestData.VALID_PHONE,
             address = TestUtils.TestData.VALID_ADDRESS
