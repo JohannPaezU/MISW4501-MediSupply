@@ -39,7 +39,8 @@
           <td>
             <div class="id-cell" (click)="copyToClipboard(producto.id, 'product', producto.id)" title="Copiar ID">
               <mat-icon>content_copy</mat-icon>
-              <span *ngIf="copiedCell !== 'product-' + producto.id" class="id-text">{{ producto.id | slice:0:8 }}...</span>
+              <span *ngIf="copiedCell !== 'product-' + producto.id" class="id-text">{{ producto.id | slice:0:8
+                }}...</span>
               <span *ngIf="copiedCell === 'product-' + producto.id" class="copy-success-text">¡Copiado!</span>
             </div>
           </td>

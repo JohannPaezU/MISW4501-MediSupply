@@ -21,12 +21,11 @@ export class VendedorService {
 
   constructor(private http: HttpClient) { }
 
-  getZonas(): Observable<Zone[]> {
-    return this.http.get<ZonesResponse>(`${this.apiUrl}/zones`).pipe(
-      map(response => response.zones)
-    );
-  }
-
+getZonas(): Observable<Zone[]> {
+  return this.http.get<ZonesResponse>(`${this.apiUrl}/zones`).pipe(
+    map(response => response.zones) // extrae el array
+  );
+}
   createVendedor(vendedorData: CreateVendedorRequest): Observable<CreateVendedorResponse> {
     return this.http.post<CreateVendedorResponse>(`${this.apiUrl}/sellers`, vendedorData);
   }
