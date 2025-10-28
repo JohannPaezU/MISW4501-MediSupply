@@ -8,5 +8,7 @@ data class Client(
     val doi: String,
     val email: String,
     val phone: String,
-    val address: String
+    val address: String,
+    val role: String = "",
+    val createdAt: String = ""
 ): Serializable

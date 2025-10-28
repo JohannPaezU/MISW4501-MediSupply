@@ -211,20 +211,17 @@ class DataModelTest {
 
     @Test
     fun `ProductListResponse should have correct properties`() {
-        val now = java.util.Date()
         val product = Product(
             id = "p1",
             name = "Test",
             details = "Detalles",
             store = "Tienda",
-            lote = "L1",
-            imageUrl = "url",
-            dueDate = now,
+            batch = "L1",
+            image_url = "url",
+            due_date = "2026-09-24",
             stock = 5,
-            pricePerUnite = 10.0,
-            providerId = 1,
-            providerName = "Proveedor",
-            createdAt = now
+            price_per_unit = 10.0,
+            created_at = "2025-10-23T05:44:07.144451Z"
         )
         val products = listOf(product)
         val response = ProductListResponse(products = products)
@@ -273,32 +270,346 @@ class DataModelTest {
 
     @Test
     fun `Product should have correct properties`() {
-        val now = java.util.Date()
         val product = Product(
             id = "p1",
             name = "Test",
             details = "Detalles",
             store = "Tienda",
-            lote = "L1",
-            imageUrl = "url",
-            dueDate = now,
+            batch = "L1",
+            image_url = "url",
+            due_date = "2026-09-24",
             stock = 5,
-            pricePerUnite = 10.0,
-            providerId = 1,
-            providerName = "Proveedor",
-            createdAt = now
+            price_per_unit = 10.0,
+            created_at = "2025-10-23T05:44:07.144451Z"
         )
         assertEquals("p1", product.id)
         assertEquals("Test", product.name)
         assertEquals("Detalles", product.details)
         assertEquals("Tienda", product.store)
-        assertEquals("L1", product.lote)
-        assertEquals("url", product.imageUrl)
-        assertEquals(now, product.dueDate)
+        assertEquals("L1", product.batch)
+        assertEquals("url", product.image_url)
+        assertEquals("2026-09-24", product.due_date)
         assertEquals(5, product.stock)
-        assertEquals(10.0, product.pricePerUnite, 0.0)
-        assertEquals(1, product.providerId)
-        assertEquals("Proveedor", product.providerName)
-        assertEquals(now, product.createdAt)
+        assertEquals(10.0, product.price_per_unit, 0.0)
+        assertEquals("2025-10-23T05:44:07.144451Z", product.created_at)
+    }
+
+    @Test
+    fun `OrderProductRequest should have correct properties`() {
+        // Given
+        val productId = "prod123"
+        val quantity = 5
+
+        // When
+        val orderProductRequest = OrderProductRequest(product_id = productId, quantity = quantity)
+
+        // Then
+        assertEquals("Product ID should match", productId, orderProductRequest.product_id)
+        assertEquals("Quantity should match", quantity, orderProductRequest.quantity)
+    }
+
+    @Test
+    fun `OrderProductRequest with zero quantity should be valid`() {
+        // Given
+        val productId = "prod123"
+        val quantity = 0
+
+        // When
+        val orderProductRequest = OrderProductRequest(product_id = productId, quantity = quantity)
+
+        // Then
+        assertEquals("Product ID should match", productId, orderProductRequest.product_id)
+        assertEquals("Quantity should be zero", quantity, orderProductRequest.quantity)
+    }
+
+    @Test
+    fun `OrderProductRequest with negative quantity should be valid`() {
+        // Given
+        val productId = "prod123"
+        val quantity = -1
+
+        // When
+        val orderProductRequest = OrderProductRequest(product_id = productId, quantity = quantity)
+
+        // Then
+        assertEquals("Product ID should match", productId, orderProductRequest.product_id)
+        assertEquals("Quantity should be negative", quantity, orderProductRequest.quantity)
+    }
+
+    @Test
+    fun `OrderProductRequest with empty product_id should be valid`() {
+        // Given
+        val productId = ""
+        val quantity = 5
+
+        // When
+        val orderProductRequest = OrderProductRequest(product_id = productId, quantity = quantity)
+
+        // Then
+        assertTrue("Product ID should be empty", orderProductRequest.product_id.isEmpty())
+        assertEquals("Quantity should match", quantity, orderProductRequest.quantity)
+    }
+
+    @Test
+    fun `CreateOrderRequest should have correct properties`() {
+        // Given
+        val comments = "Test comments"
+        val deliveryDate = "2025-12-31"
+        val distributionCenterId = "dc123"
+        val clientId = "client456"
+        val products = listOf(
+            OrderProductRequest(product_id = "prod1", quantity = 2),
+            OrderProductRequest(product_id = "prod2", quantity = 3)
+        )
+
+        // When
+        val createOrderRequest = CreateOrderRequest(
+            comments = comments,
+            delivery_date = deliveryDate,
+            distribution_center_id = distributionCenterId,
+            client_id = clientId,
+            products = products
+        )
+
+        // Then
+        assertEquals("Comments should match", comments, createOrderRequest.comments)
+        assertEquals("Delivery date should match", deliveryDate, createOrderRequest.delivery_date)
+        assertEquals("Distribution center ID should match", distributionCenterId, createOrderRequest.distribution_center_id)
+        assertEquals("Client ID should match", clientId, createOrderRequest.client_id)
+        assertEquals("Products should match", products, createOrderRequest.products)
+        assertEquals("Products size should be 2", 2, createOrderRequest.products.size)
+    }
+
+    @Test
+    fun `CreateOrderRequest with null comments should be valid`() {
+        // Given
+        val deliveryDate = "2025-12-31"
+        val distributionCenterId = "dc123"
+        val clientId = "client456"
+        val products = listOf(OrderProductRequest(product_id = "prod1", quantity = 2))
+
+        // When
+        val createOrderRequest = CreateOrderRequest(
+            comments = null,
+            delivery_date = deliveryDate,
+            distribution_center_id = distributionCenterId,
+            client_id = clientId,
+            products = products
+        )
+
+        // Then
+        assertNull("Comments should be null", createOrderRequest.comments)
+        assertEquals("Delivery date should match", deliveryDate, createOrderRequest.delivery_date)
+        assertEquals("Distribution center ID should match", distributionCenterId, createOrderRequest.distribution_center_id)
+        assertEquals("Client ID should match", clientId, createOrderRequest.client_id)
+    }
+
+    @Test
+    fun `CreateOrderRequest with null client_id should be valid`() {
+        // Given
+        val comments = "Test comments"
+        val deliveryDate = "2025-12-31"
+        val distributionCenterId = "dc123"
+        val products = listOf(OrderProductRequest(product_id = "prod1", quantity = 2))
+
+        // When
+        val createOrderRequest = CreateOrderRequest(
+            comments = comments,
+            delivery_date = deliveryDate,
+            distribution_center_id = distributionCenterId,
+            client_id = null,
+            products = products
+        )
+
+        // Then
+        assertEquals("Comments should match", comments, createOrderRequest.comments)
+        assertNull("Client ID should be null", createOrderRequest.client_id)
+        assertEquals("Distribution center ID should match", distributionCenterId, createOrderRequest.distribution_center_id)
+    }
+
+    @Test
+    fun `CreateOrderRequest with empty products list should be valid`() {
+        // Given
+        val comments = "Test comments"
+        val deliveryDate = "2025-12-31"
+        val distributionCenterId = "dc123"
+
+        // When
+        val createOrderRequest = CreateOrderRequest(
+            comments = comments,
+            delivery_date = deliveryDate,
+            distribution_center_id = distributionCenterId,
+            client_id = "client456",
+            products = emptyList()
+        )
+
+        // Then
+        assertTrue("Products list should be empty", createOrderRequest.products.isEmpty())
+    }
+
+    @Test
+    fun `CreateOrderResponse should have correct properties`() {
+        // Given
+        val id = "order123"
+        val createdAt = "2025-01-01T10:00:00Z"
+        val deliveryDate = "2025-12-31T10:00:00Z"
+        val distributionCenterId = "dc123"
+        val distributionCenterName = "Centro Distribución Norte"
+        val comments = "Test comments"
+        val clientId = "client456"
+        val sellerId = "seller789"
+        val status = "pending"
+        val products = listOf(
+            OrderProduct(productId = "prod1", productName = "Producto 1", quantity = 2),
+            OrderProduct(productId = "prod2", productName = "Producto 2", quantity = 3)
+        )
+
+        // When
+        val createOrderResponse = CreateOrderResponse(
+            id = id,
+            createdAt = createdAt,
+            deliveryDate = deliveryDate,
+            distributionCenterId = distributionCenterId,
+            distributionCenterName = distributionCenterName,
+            comments = comments,
+            clientId = clientId,
+            sellerId = sellerId,
+            status = status,
+            products = products
+        )
+
+        // Then
+        assertEquals("ID should match", id, createOrderResponse.id)
+        assertEquals("Created at should match", createdAt, createOrderResponse.createdAt)
+        assertEquals("Delivery date should match", deliveryDate, createOrderResponse.deliveryDate)
+        assertEquals("Distribution center ID should match", distributionCenterId, createOrderResponse.distributionCenterId)
+        assertEquals("Distribution center name should match", distributionCenterName, createOrderResponse.distributionCenterName)
+        assertEquals("Comments should match", comments, createOrderResponse.comments)
+        assertEquals("Client ID should match", clientId, createOrderResponse.clientId)
+        assertEquals("Seller ID should match", sellerId, createOrderResponse.sellerId)
+        assertEquals("Status should match", status, createOrderResponse.status)
+        assertEquals("Products should match", products, createOrderResponse.products)
+        assertEquals("Products size should be 2", 2, createOrderResponse.products.size)
+    }
+
+    @Test
+    fun `CreateOrderResponse with null comments should be valid`() {
+        // Given
+        val id = "order123"
+        val createdAt = "2025-01-01T10:00:00Z"
+        val deliveryDate = "2025-12-31T10:00:00Z"
+        val distributionCenterId = "dc123"
+        val distributionCenterName = "Centro Distribución Norte"
+        val clientId = "client456"
+        val sellerId = "seller789"
+        val status = "pending"
+        val products = listOf(OrderProduct(productId = "prod1", productName = "Producto 1", quantity = 2))
+
+        // When
+        val createOrderResponse = CreateOrderResponse(
+            id = id,
+            createdAt = createdAt,
+            deliveryDate = deliveryDate,
+            distributionCenterId = distributionCenterId,
+            distributionCenterName = distributionCenterName,
+            comments = null,
+            clientId = clientId,
+            sellerId = sellerId,
+            status = status,
+            products = products
+        )
+
+        // Then
+        assertNull("Comments should be null", createOrderResponse.comments)
+        assertEquals("ID should match", id, createOrderResponse.id)
+        assertEquals("Status should match", status, createOrderResponse.status)
+    }
+
+    @Test
+    fun `CreateOrderResponse with null client_id should be valid`() {
+        // Given
+        val id = "order123"
+        val createdAt = "2025-01-01T10:00:00Z"
+        val deliveryDate = "2025-12-31T10:00:00Z"
+        val distributionCenterId = "dc123"
+        val distributionCenterName = "Centro Distribución Norte"
+        val comments = "Test comments"
+        val sellerId = "seller789"
+        val status = "pending"
+        val products = listOf(OrderProduct(productId = "prod1", productName = "Producto 1", quantity = 2))
+
+        // When
+        val createOrderResponse = CreateOrderResponse(
+            id = id,
+            createdAt = createdAt,
+            deliveryDate = deliveryDate,
+            distributionCenterId = distributionCenterId,
+            distributionCenterName = distributionCenterName,
+            comments = comments,
+            clientId = null,
+            sellerId = sellerId,
+            status = status,
+            products = products
+        )
+
+        // Then
+        assertNull("Client ID should be null", createOrderResponse.clientId)
+        assertEquals("ID should match", id, createOrderResponse.id)
+        assertEquals("Status should match", status, createOrderResponse.status)
+    }
+
+    @Test
+    fun `CreateOrderResponse with empty products list should be valid`() {
+        // Given
+        val id = "order123"
+        val createdAt = "2025-01-01T10:00:00Z"
+        val deliveryDate = "2025-12-31T10:00:00Z"
+        val distributionCenterId = "dc123"
+        val distributionCenterName = "Centro Distribución Norte"
+        val sellerId = "seller789"
+        val status = "pending"
+
+        // When
+        val createOrderResponse = CreateOrderResponse(
+            id = id,
+            createdAt = createdAt,
+            deliveryDate = deliveryDate,
+            distributionCenterId = distributionCenterId,
+            distributionCenterName = distributionCenterName,
+            comments = null,
+            clientId = null,
+            sellerId = sellerId,
+            status = status,
+            products = emptyList()
+        )
+
+        // Then
+        assertTrue("Products list should be empty", createOrderResponse.products.isEmpty())
+        assertEquals("ID should match", id, createOrderResponse.id)
+        assertEquals("Status should match", status, createOrderResponse.status)
+    }
+
+    @Test
+    fun `CreateOrderResponse with different statuses should be valid`() {
+        // Given
+        val statuses = listOf("pending", "confirmed", "shipped", "delivered", "cancelled")
+        val baseResponse = CreateOrderResponse(
+            id = "order123",
+            createdAt = "2025-01-01T10:00:00Z",
+            deliveryDate = "2025-12-31T10:00:00Z",
+            distributionCenterId = "dc123",
+            distributionCenterName = "Centro",
+            comments = null,
+            clientId = null,
+            sellerId = "seller789",
+            status = "",
+            products = emptyList()
+        )
+
+        // When & Then
+        statuses.forEach { status ->
+            val response = baseResponse.copy(status = status)
+            assertEquals("Status should be $status", status, response.status)
+        }
     }
 }

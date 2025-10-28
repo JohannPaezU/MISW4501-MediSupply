@@ -422,28 +422,24 @@ class RecommendedProductsViewModelTest {
                 name = "Paracetamol 500mg",
                 details = "Analgésico y antipirético",
                 store = "Bodega A - Estante 15",
-                lote = "LOT20251015A",
-                imageUrl = "https://example.com/images/paracetamol-500mg.jpg",
-                dueDate = Date(),
+                batch = "LOT20251015A",
+                image_url = "https://example.com/images/paracetamol-500mg.jpg",
+                due_date = "2026-09-24",
                 stock = 5000,
-                pricePerUnite = 0.50,
-                providerId = 301,
-                providerName = "Farmacias del Valle S.A.",
-                createdAt = Date()
+                price_per_unit = 0.50,
+                created_at = "2025-10-23T05:44:07.144451Z"
             ),
             Product(
                 id = "prod-002",
                 name = "Ibuprofeno 400mg",
                 details = "Antiinflamatorio no esteroideo",
                 store = "Bodega A - Estante 16",
-                lote = "LOT20251020B",
-                imageUrl = "https://example.com/images/ibuprofeno-400mg.jpg",
-                dueDate = Date(),
+                batch = "LOT20251020B",
+                image_url = "https://example.com/images/ibuprofeno-400mg.jpg",
+                due_date = "2026-09-24",
                 stock = 3500,
-                pricePerUnite = 0.75,
-                providerId = 301,
-                providerName = "Farmacias del Valle S.A.",
-                createdAt = Date()
+                price_per_unit = 0.75,
+                created_at = "2025-10-23T05:44:07.144451Z"
             )
         )
     }

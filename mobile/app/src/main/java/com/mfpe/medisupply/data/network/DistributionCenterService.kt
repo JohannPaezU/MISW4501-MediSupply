@@ -7,7 +7,7 @@ import retrofit2.http.Header
 
 interface DistributionCenterService {
 
-    @GET("centers")
+    @GET("distribution-centers")
     fun getDistributionCenters(
         @Header("Authorization") authToken: String,
     ): Call<CenterListResponse>
