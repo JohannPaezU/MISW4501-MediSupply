@@ -12,8 +12,8 @@ class ClientRepository {
         RetrofitApiClient.createRetrofitService(ClientService::class.java)
     }
 
-    fun getClients(authToken: String, sellerId: String): Call<ClientListResponse> {
-        return clientService.getClients(authToken, sellerId)
+    fun getClients(authToken: String): Call<ClientListResponse> {
+        return clientService.getClients(authToken)
     }
 
     fun createVisit(authToken: String, visitRequest: VisitRequest): Call<VisitResponse> {
