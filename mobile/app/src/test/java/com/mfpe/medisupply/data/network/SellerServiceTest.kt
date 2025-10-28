@@ -40,7 +40,7 @@ class SellerServiceTest {
         val sellerService = RetrofitApiClient.createRetrofitService(SellerService::class.java)
 
         // When
-        val getHomeCall = sellerService.getHome()
+        val getHomeCall = sellerService.getHome("")
 
         // Then
         assertNotNull("Get home call should not be null", getHomeCall)
@@ -92,7 +92,7 @@ class SellerServiceTest {
         val sellerService = RetrofitApiClient.createRetrofitService(SellerService::class.java)
 
         // When
-        val call = sellerService.getHome()
+        val call = sellerService.getHome("")
 
         // Then
         assertNotNull("Call should not be null", call)
@@ -105,9 +105,9 @@ class SellerServiceTest {
         val sellerService = RetrofitApiClient.createRetrofitService(SellerService::class.java)
 
         // When
-        val call1 = sellerService.getHome()
-        val call2 = sellerService.getHome()
-        val call3 = sellerService.getHome()
+        val call1 = sellerService.getHome("")
+        val call2 = sellerService.getHome("")
+        val call3 = sellerService.getHome("")
 
         // Then
         assertNotNull("First call should not be null", call1)
@@ -126,7 +126,7 @@ class SellerServiceTest {
 
         // Then
         assertNotNull("getHome method should exist", getHomeMethod)
-        assertEquals("getHome should have no parameters", 0, getHomeMethod?.parameterCount)
+        assertEquals("getHome should have no parameters", 1, getHomeMethod?.parameterCount)
     }
 
     @Test
@@ -141,17 +141,17 @@ class SellerServiceTest {
         // Execute multiple calls concurrently
         val thread1 = Thread {
             synchronized(lock) {
-                calls.add(sellerService.getHome())
+                calls.add(sellerService.getHome(""))
             }
         }
         val thread2 = Thread {
             synchronized(lock) {
-                calls.add(sellerService.getHome())
+                calls.add(sellerService.getHome(""))
             }
         }
         val thread3 = Thread {
             synchronized(lock) {
-                calls.add(sellerService.getHome())
+                calls.add(sellerService.getHome(""))
             }
         }
 
@@ -179,10 +179,10 @@ class SellerServiceTest {
         // When & Then
         try {
             val thread1 = Thread {
-                sellerService.getHome()
+                sellerService.getHome("")
             }
             val thread2 = Thread {
-                sellerService.getHome()
+                sellerService.getHome("")
             }
 
             thread1.start()
@@ -201,8 +201,8 @@ class SellerServiceTest {
         val sellerService = RetrofitApiClient.createRetrofitService(SellerService::class.java)
 
         // When
-        val call1 = sellerService.getHome()
-        val call2 = sellerService.getHome()
+        val call1 = sellerService.getHome("")
+        val call2 = sellerService.getHome("")
 
         // Then
         assertNotNull("First call should not be null", call1)
@@ -219,7 +219,7 @@ class SellerServiceTest {
         val calls = mutableListOf<Call<SellerHomeResponse>>()
         
         for (i in 1..10) {
-            calls.add(sellerService.getHome())
+            calls.add(sellerService.getHome(""))
         }
 
         // Then
@@ -236,8 +236,8 @@ class SellerServiceTest {
         val sellerService = RetrofitApiClient.createRetrofitService(SellerService::class.java)
 
         // When
-        val call1 = sellerService.getHome()
-        val call2 = sellerService.getHome()
+        val call1 = sellerService.getHome("")
+        val call2 = sellerService.getHome("")
 
         // Then
         assertNotNull("First call should not be null", call1)
