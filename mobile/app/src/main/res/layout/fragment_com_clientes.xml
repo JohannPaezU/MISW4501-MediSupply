@@ -62,7 +62,7 @@
             android:layout_height="100dp"
             android:src="@android:drawable/ic_menu_info_details"
             android:contentDescription="@string/no_clients_message"
-            android:tint="@color/pink" />
+            app:tint="@color/pink" />
 
         <TextView
             android:layout_width="wrap_content"
