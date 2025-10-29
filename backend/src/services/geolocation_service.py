@@ -16,3 +16,15 @@ def create_geolocation(*, db: Session, address: str) -> Geolocation:
     db.refresh(geolocation)
 
     return geolocation
+
+
+def create_geolocation_with_coordinates(*, db: Session, latitude: float, longitude: float) -> Geolocation:
+    geolocation = Geolocation(
+        latitude=latitude,
+        longitude=longitude,
+    )
+    db.add(geolocation)
+    db.commit()
+    db.refresh(geolocation)
+
+    return geolocation

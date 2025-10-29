@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     cors_origins: str
     login_url: str
     google_maps_api_key: str
+    bucket_name: str
+    gcp_credentials: str
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

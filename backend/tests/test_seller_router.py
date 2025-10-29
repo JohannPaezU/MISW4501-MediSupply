@@ -132,3 +132,13 @@ class TestSellerRouter(BaseTest):
         assert response.status_code == 200
         assert json_response["id"] == seller_id
         mock_send_email.assert_called_once()
+
+    @pytest.mark.parametrize("authorized_client", ["commercial_token"], indirect=True)
+    def test_get_seller_summary_success(self, authorized_client):
+        response = authorized_client.get(f"{self.prefix}/sellers/me")
+        json_response = response.json()
+        assert response.status_code == 200
+        assert "id" in json_response
+        assert "clients_count" in json_response
+        assert "orders_count" in json_response
+        assert "zone" in json_response

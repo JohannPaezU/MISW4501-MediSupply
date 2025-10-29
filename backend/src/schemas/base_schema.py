@@ -93,9 +93,17 @@ class OrderBase(BaseSchema):
     created_at: datetime
 
 
+class GeolocationBase(BaseSchema):
+    id: str
+    address: str | None = None
+    latitude: float
+    longitude: float
+    created_at: datetime
+
+
 class VisitBase(BaseSchema):
     id: str
-    expected_date: datetime
+    expected_date: date
     visit_date: datetime | None = None
     observations: str | None = None
     visual_evidence_url: str | None = None
