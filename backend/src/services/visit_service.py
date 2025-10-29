@@ -67,8 +67,10 @@ def report_visit(*, db: Session, visit_report_request: VisitReportRequest, curre
                  storage_client: storage.Client, visual_evidence: UploadFile | None = None) -> Visit:
     try:
         visit = get_visit_by_id(db=db, current_user=current_user, visit_id=visit_report_request.visit_id)
-        if not visit or visit.status == VisitStatus.COMPLETED:
-            raise NotFoundException("Visit not found or already reported")
+        if not visit:
+            raise NotFoundException("Visit not found")
+        if visit.status == VisitStatus.COMPLETED:
+            raise BadRequestException("Visit has already been reported")
         visit_date = visit_report_request.visit_date or datetime.now(timezone.utc)
         if visit_date.date() < visit.expected_date:
             raise BadRequestException("Visit date cannot be before expected date")
@@ -97,7 +99,7 @@ def report_visit(*, db: Session, visit_report_request: VisitReportRequest, curre
         raise ApiError("An error occurred while reporting the visit")
 
 
-def _validate_visual_evidence(visual_evidence: UploadFile | None = None) -> None:  # pragma: no cover
+def _validate_visual_evidence(visual_evidence: UploadFile | None = None) -> None:
     if not visual_evidence:
         return
     allowed_image_formats = {"jpg", "jpeg", "png", "bmp"}

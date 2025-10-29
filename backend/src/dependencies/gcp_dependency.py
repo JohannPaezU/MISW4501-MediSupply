@@ -6,7 +6,7 @@ from google.oauth2 import service_account
 from src.core.config import settings
 
 
-class StorageClientSingleton:
+class StorageClientSingleton:  # pragma: no cover
     _instance = None
 
     def __new__(cls):
