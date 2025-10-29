@@ -40,7 +40,7 @@ class ProductServiceTest {
         val productService = RetrofitApiClient.createRetrofitService(ProductService::class.java)
 
         // When
-        val getProductsCall = productService.getProducts()
+        val getProductsCall = productService.getProducts("")
 
         // Then
         assertNotNull("Get products call should not be null", getProductsCall)
@@ -92,7 +92,7 @@ class ProductServiceTest {
         val productService = RetrofitApiClient.createRetrofitService(ProductService::class.java)
 
         // When
-        val call = productService.getProducts()
+        val call = productService.getProducts("")
 
         // Then
         assertNotNull("Call should not be null", call)
@@ -105,9 +105,9 @@ class ProductServiceTest {
         val productService = RetrofitApiClient.createRetrofitService(ProductService::class.java)
 
         // When
-        val call1 = productService.getProducts()
-        val call2 = productService.getProducts()
-        val call3 = productService.getProducts()
+        val call1 = productService.getProducts("")
+        val call2 = productService.getProducts("")
+        val call3 = productService.getProducts("")
 
         // Then
         assertNotNull("First call should not be null", call1)
@@ -126,7 +126,7 @@ class ProductServiceTest {
 
         // Then
         assertNotNull("getProducts method should exist", getProductsMethod)
-        assertEquals("getProducts should have no parameters", 0, getProductsMethod?.parameterCount)
+        assertEquals("getProducts should have no parameters", 1, getProductsMethod?.parameterCount)
     }
 
     @Test
@@ -139,13 +139,13 @@ class ProductServiceTest {
         
         // Execute multiple calls concurrently
         val thread1 = Thread {
-            calls.add(productService.getProducts())
+            calls.add(productService.getProducts(""))
         }
         val thread2 = Thread {
-            calls.add(productService.getProducts())
+            calls.add(productService.getProducts(""))
         }
         val thread3 = Thread {
-            calls.add(productService.getProducts())
+            calls.add(productService.getProducts(""))
         }
 
         thread1.start()
@@ -172,10 +172,10 @@ class ProductServiceTest {
         // When & Then
         try {
             val thread1 = Thread {
-                productService.getProducts()
+                productService.getProducts("")
             }
             val thread2 = Thread {
-                productService.getProducts()
+                productService.getProducts("")
             }
 
             thread1.start()
