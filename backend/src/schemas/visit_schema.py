@@ -5,10 +5,10 @@ from pydantic import Field
 
 from src.schemas.base_schema import (
     BaseSchema,
-    VisitBase,
+    GeolocationBase,
     SellerBase,
     UserBase,
-    GeolocationBase,
+    VisitBase,
 )
 
 
@@ -53,4 +53,3 @@ class GetSellerVisitsResponse(GetVisitsResponse):
 
 class GetClientVisitsResponse(GetVisitsResponse):
     visits: list[ClientVisitResponse]
-

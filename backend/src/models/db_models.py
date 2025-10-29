@@ -54,7 +54,7 @@ class User(Base):
         String(36),
         ForeignKey("geolocations.id", ondelete="RESTRICT"),
         nullable=True,
-        unique=True
+        unique=True,
     )
     zone: Mapped[Optional["Zone"]] = relationship(
         "Zone", back_populates="sellers", passive_deletes=True
@@ -363,10 +363,16 @@ class Visit(Base):
         String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
     )
     expected_date: Mapped[date] = mapped_column(Date, nullable=False)
-    visit_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    visit_date: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     observations: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    visual_evidence_path: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    status: Mapped[VisitStatus] = mapped_column(Enum(VisitStatus), nullable=False, default=VisitStatus.PENDING)
+    visual_evidence_path: Mapped[Optional[str]] = mapped_column(
+        String(255), nullable=True
+    )
+    status: Mapped[VisitStatus] = mapped_column(
+        Enum(VisitStatus), nullable=False, default=VisitStatus.PENDING
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

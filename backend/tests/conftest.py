@@ -14,13 +14,14 @@ from src.db.database import Base
 from src.dependencies.gcp_dependency import StorageClientSingleton
 from src.models.db_models import (
     DistributionCenter,
+    Geolocation,
     Order,
     OrderProduct,
     Product,
     Provider,
     User,
+    Visit,
     Zone,
-    Geolocation, Visit,
 )
 from src.models.enums.user_role import UserRole
 from src.models.enums.visit_status import VisitStatus
@@ -48,7 +49,10 @@ def test_client(
 ) -> Generator[TestClient, None, None]:
     logger.info("Configuring test client...")
     from src.main import app
-    app.dependency_overrides[StorageClientSingleton] = _override_storage_client_singleton
+
+    app.dependency_overrides[StorageClientSingleton] = (
+        _override_storage_client_singleton
+    )
     client = TestClient(app)
     logger.info("Test client configured.")
     yield client
@@ -109,14 +113,10 @@ def _populate_zones(db: Session) -> list[Zone]:
 def _populate_geolocations(db: Session) -> list[Geolocation]:
     geolocations = [
         Geolocation(
-            address="123 Main St, Bogotá, Colombia",
-            latitude=4.7110,
-            longitude=-74.0721
+            address="123 Main St, Bogotá, Colombia", latitude=4.7110, longitude=-74.0721
         ),
         Geolocation(
-            address="456 Side St, Lima, Peru",
-            latitude=-12.0464,
-            longitude=-77.0428
+            address="456 Side St, Lima, Peru", latitude=-12.0464, longitude=-77.0428
         ),
     ]
     db.add_all(geolocations)
@@ -341,11 +341,21 @@ def _get_random_geolocation(*, db: Session) -> Geolocation | None:
 
 
 def _get_random_client(*, db: Session) -> User | None:
-    return db.query(User).filter(User.role == UserRole.INSTITUTIONAL).order_by(func.random()).first()
+    return (
+        db.query(User)
+        .filter(User.role == UserRole.INSTITUTIONAL)
+        .order_by(func.random())
+        .first()
+    )
 
 
 def _get_random_seller(*, db: Session) -> User | None:
-    return db.query(User).filter(User.role == UserRole.COMMERCIAL).order_by(func.random()).first()
+    return (
+        db.query(User)
+        .filter(User.role == UserRole.COMMERCIAL)
+        .order_by(func.random())
+        .first()
+    )
 
 
 def _override_storage_client_singleton():

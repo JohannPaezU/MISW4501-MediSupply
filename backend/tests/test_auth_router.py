@@ -45,7 +45,10 @@ class TestAuthRouter(BaseTest):
         assert response.status_code == 400
         assert json_response["message"] == "Phone must be between 9 and 15 digits"
 
-    @patch("src.services.geolocation_service.get_validated_address", return_value=mocks.VALIDATED_ADDRESS_MOCK)
+    @patch(
+        "src.services.geolocation_service.get_validated_address",
+        return_value=mocks.VALIDATED_ADDRESS_MOCK,
+    )
     def test_create_existing_user(self, mock_get_validated_address):
         response1 = self.client.post(
             f"{self.prefix}/auth/register", json=self.create_user_payload
@@ -61,7 +64,10 @@ class TestAuthRouter(BaseTest):
         }
         mock_get_validated_address.assert_called_once()
 
-    @patch("src.services.geolocation_service.get_validated_address", return_value=mocks.VALIDATED_ADDRESS_MOCK)
+    @patch(
+        "src.services.geolocation_service.get_validated_address",
+        return_value=mocks.VALIDATED_ADDRESS_MOCK,
+    )
     def test_register_institutional_user_successfully(self, mock_get_validated_address):
         response = self.client.post(
             f"{self.prefix}/auth/register", json=self.create_user_payload
@@ -92,7 +98,10 @@ class TestAuthRouter(BaseTest):
         assert response.status_code == 401
         assert response.json() == {"message": "Invalid email or password"}
 
-    @patch("src.services.geolocation_service.get_validated_address", return_value=mocks.VALIDATED_ADDRESS_MOCK)
+    @patch(
+        "src.services.geolocation_service.get_validated_address",
+        return_value=mocks.VALIDATED_ADDRESS_MOCK,
+    )
     def test_login_with_incorrect_password(self, mock_get_validated_address):
         register_response = self.client.post(
             f"{self.prefix}/auth/register", json=self.create_user_payload
@@ -108,7 +117,10 @@ class TestAuthRouter(BaseTest):
         assert response.json() == {"message": "Invalid email or password"}
         mock_get_validated_address.assert_called_once()
 
-    @patch("src.services.geolocation_service.get_validated_address", return_value=mocks.VALIDATED_ADDRESS_MOCK)
+    @patch(
+        "src.services.geolocation_service.get_validated_address",
+        return_value=mocks.VALIDATED_ADDRESS_MOCK,
+    )
     @patch("src.services.auth_service.send_email")
     def test_login_successfully(self, mock_send_email, mock_get_validated_address):
         register_response = self.client.post(
@@ -125,7 +137,7 @@ class TestAuthRouter(BaseTest):
         assert json_response["message"] == "OTP generated successfully"
         assert "otp_expiration_minutes" in json_response
         assert (
-                json_response["otp_expiration_minutes"] == settings.otp_expiration_minutes
+            json_response["otp_expiration_minutes"] == settings.otp_expiration_minutes
         )
         mock_send_email.assert_called_once()
         mock_get_validated_address.assert_called_once()
@@ -150,10 +162,15 @@ class TestAuthRouter(BaseTest):
         assert response.status_code == 401
         assert response.json() == {"message": "Invalid or expired OTP"}
 
-    @patch("src.services.geolocation_service.get_validated_address", return_value=mocks.VALIDATED_ADDRESS_MOCK)
+    @patch(
+        "src.services.geolocation_service.get_validated_address",
+        return_value=mocks.VALIDATED_ADDRESS_MOCK,
+    )
     @patch("src.services.otp_service.random.randint", return_value=123456)
     @patch("src.services.auth_service.send_email")
-    def test_verify_with_incorrect_otp(self, mock_send_email, mock_randint, mock_get_validated_address):
+    def test_verify_with_incorrect_otp(
+        self, mock_send_email, mock_randint, mock_get_validated_address
+    ):
         register_response = self.client.post(
             f"{self.prefix}/auth/register", json=self.create_user_payload
         )
@@ -174,10 +191,15 @@ class TestAuthRouter(BaseTest):
         mock_randint.assert_called_once()
         mock_get_validated_address.assert_called_once()
 
-    @patch("src.services.geolocation_service.get_validated_address", return_value=mocks.VALIDATED_ADDRESS_MOCK)
+    @patch(
+        "src.services.geolocation_service.get_validated_address",
+        return_value=mocks.VALIDATED_ADDRESS_MOCK,
+    )
     @patch("src.services.otp_service.random.randint", return_value=123456)
     @patch("src.services.auth_service.send_email")
-    def test_verify_otp_successfully(self, mock_send_email, mock_randint, mock_get_validated_address):
+    def test_verify_otp_successfully(
+        self, mock_send_email, mock_randint, mock_get_validated_address
+    ):
         register_response = self.client.post(
             f"{self.prefix}/auth/register", json=self.create_user_payload
         )

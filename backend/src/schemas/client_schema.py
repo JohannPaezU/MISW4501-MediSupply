@@ -1,7 +1,4 @@
-from src.schemas.base_schema import (
-    BaseSchema,
-    UserBase,
-)
+from src.schemas.base_schema import BaseSchema, UserBase
 
 
 class GetClientsResponse(BaseSchema):

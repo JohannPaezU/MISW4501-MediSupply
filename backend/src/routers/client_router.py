@@ -35,9 +35,9 @@ Returns a list of clients of the seller with the following details for each clie
 """,
 )
 async def get_clients(
-        *,
-        current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL])),
-        db: Session = Depends(get_db),
+    *,
+    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL])),
+    db: Session = Depends(get_db),
 ) -> GetClientsResponse:
     clients = get_clients_by_seller_id(db=db, seller_id=current_user.id)
 

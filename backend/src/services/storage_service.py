@@ -1,12 +1,16 @@
+from datetime import timedelta
+
 from fastapi import UploadFile
 from google.cloud import storage
-from datetime import timedelta
+
 from src.core.config import settings
 from src.core.logging_config import logger
 from src.errors.errors import ApiError
 
 
-def upload_to_gcs(storage_client: storage.Client, file: UploadFile, file_path: str) -> None:
+def upload_to_gcs(
+    storage_client: storage.Client, file: UploadFile, file_path: str
+) -> None:
     try:
         bucket = storage_client.bucket(settings.bucket_name)
         blob = bucket.blob(file_path)
@@ -14,10 +18,12 @@ def upload_to_gcs(storage_client: storage.Client, file: UploadFile, file_path: s
         blob.upload_from_file(file.file, content_type=file.content_type)
     except Exception as e:  # pragma: no cover
         logger.error(f"Error uploading file to GCS: {e}")
-        raise ApiError(f"Failed to upload file to GCS")
+        raise ApiError("Failed to upload file to GCS")
 
 
-def generate_signed_url(storage_client: storage.Client, blob_name: str, expiration_minutes: int = 5) -> str:
+def generate_signed_url(
+    storage_client: storage.Client, blob_name: str, expiration_minutes: int = 5
+) -> str:
     try:
         bucket = storage_client.bucket(settings.bucket_name)
         blob = bucket.blob(blob_name)
@@ -26,4 +32,4 @@ def generate_signed_url(storage_client: storage.Client, blob_name: str, expirati
         return url
     except Exception as e:  # pragma: no cover
         logger.error(f"Error generating signed URL: {e}")
-        raise ApiError(f"Failed to generate signed URL")
+        raise ApiError("Failed to generate signed URL")

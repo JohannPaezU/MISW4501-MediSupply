@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+
 from src.models.db_models import Geolocation
 from src.services.geocoding_service import get_validated_address
 
@@ -18,7 +19,9 @@ def create_geolocation(*, db: Session, address: str) -> Geolocation:
     return geolocation
 
 
-def create_geolocation_with_coordinates(*, db: Session, latitude: float, longitude: float) -> Geolocation:
+def create_geolocation_with_coordinates(
+    *, db: Session, latitude: float, longitude: float
+) -> Geolocation:
     geolocation = Geolocation(
         latitude=latitude,
         longitude=longitude,

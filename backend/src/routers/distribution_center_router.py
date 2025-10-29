@@ -18,8 +18,15 @@ distribution_center_router = APIRouter(
     tags=["Distribution Centers"],
     prefix="/distribution-centers",
     dependencies=[
-        Depends(require_roles(allowed_roles=[
-                UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]))
+        Depends(
+            require_roles(
+                allowed_roles=[
+                    UserRole.ADMIN,
+                    UserRole.COMMERCIAL,
+                    UserRole.INSTITUTIONAL,
+                ]
+            )
+        )
     ],
 )
 
