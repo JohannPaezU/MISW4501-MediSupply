@@ -5,6 +5,7 @@ from pydantic import BaseModel, model_serializer
 
 from src.models.enums.order_status import OrderStatus
 from src.models.enums.user_role import UserRole
+from src.models.enums.visit_status import VisitStatus
 
 
 class BaseSchema(BaseModel):
@@ -89,4 +90,14 @@ class OrderBase(BaseSchema):
     comments: str | None = None
     delivery_date: date
     status: OrderStatus
+    created_at: datetime
+
+
+class VisitBase(BaseSchema):
+    id: str
+    expected_date: datetime
+    visit_date: datetime | None = None
+    observations: str | None = None
+    visual_evidence_url: str | None = None
+    status: VisitStatus
     created_at: datetime

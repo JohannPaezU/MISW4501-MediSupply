@@ -17,6 +17,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from src.db.database import Base
 from src.models.enums.order_status import OrderStatus
 from src.models.enums.user_role import UserRole
+from src.models.enums.visit_status import VisitStatus
 
 
 class User(Base):
@@ -49,6 +50,12 @@ class User(Base):
         ForeignKey("users.id", ondelete="SET NULL"),
         nullable=True,
     )
+    geolocation_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("geolocations.id", ondelete="RESTRICT"),
+        nullable=True,
+        unique=True
+    )
     zone: Mapped[Optional["Zone"]] = relationship(
         "Zone", back_populates="sellers", passive_deletes=True
     )
@@ -73,6 +80,25 @@ class User(Base):
     )
     managed_orders: Mapped[list["Order"]] = relationship(
         "Order", foreign_keys="[Order.seller_id]", back_populates="seller"
+    )
+    geolocation: Mapped[Optional["Geolocation"]] = relationship(
+        "Geolocation",
+        back_populates="user",
+        foreign_keys=[geolocation_id],
+        uselist=False,
+        cascade="save-update, merge",
+        passive_deletes=True,
+    )
+    requested_visits: Mapped[list["Visit"]] = relationship(
+        "Visit",
+        foreign_keys="[Visit.client_id]",
+        back_populates="client",
+        cascade="all, delete-orphan",
+    )
+    assigned_visits: Mapped[list["Visit"]] = relationship(
+        "Visit",
+        foreign_keys="[Visit.seller_id]",
+        back_populates="seller",
     )
 
     @validates("phone")
@@ -305,4 +331,80 @@ class OrderProduct(Base):
     order: Mapped["Order"] = relationship("Order", back_populates="order_products")
     product: Mapped["Product"] = relationship(
         "Product", back_populates="order_products"
+    )
+
+
+class Geolocation(Base):
+    __tablename__ = "geolocations"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid.uuid4())
+    )
+    address: Mapped[str] = mapped_column(String(255), nullable=False)
+    latitude: Mapped[float] = mapped_column(nullable=False)
+    longitude: Mapped[float] = mapped_column(nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+    user: Mapped[Optional["User"]] = relationship(
+        "User",
+        back_populates="geolocation",
+        uselist=False,
+        passive_deletes=True,
+    )
+
+
+class Visit(Base):
+    __tablename__ = "visits"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    expected_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    visit_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    observations: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    visual_evidence_url: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    status: Mapped[VisitStatus] = mapped_column(Enum(VisitStatus), nullable=False, default=VisitStatus.PENDING)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+    expected_geolocation_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("geolocations.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    report_geolocation_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("geolocations.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    client_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    seller_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    expected_geolocation: Mapped["Geolocation"] = relationship(
+        "Geolocation",
+        foreign_keys=[expected_geolocation_id],
+        passive_deletes=True,
+    )
+    report_geolocation: Mapped["Geolocation"] = relationship(
+        "Geolocation",
+        foreign_keys=[report_geolocation_id],
+        passive_deletes=True,
+    )
+    client: Mapped["User"] = relationship(
+        "User", foreign_keys=[client_id], back_populates="requested_visits"
+    )
+    seller: Mapped["User"] = relationship(
+        "User", foreign_keys=[seller_id], back_populates="assigned_visits"
     )

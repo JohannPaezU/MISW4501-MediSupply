@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     email_api_key: str
     cors_origins: str
     login_url: str
+    google_maps_api_key: str
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
