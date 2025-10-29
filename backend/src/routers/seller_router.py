@@ -4,11 +4,12 @@ from sqlalchemy.orm import Session
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import NotFoundException
+from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import (
     GetSellersResponse,
     SellerCreateRequest,
-    SellerResponse,
+    SellerResponse, SellerSummaryResponse,
 )
 from src.services.seller_service import (
     create_seller,
@@ -20,6 +21,36 @@ seller_router = APIRouter(
     tags=["Sellers"],
     prefix="/sellers",
 )
+
+
+@seller_router.get(
+    "/me",
+    response_model=SellerSummaryResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get seller summary",
+    description="""
+Retrieve a summary of the authenticated seller's account.
+
+### Response
+- **id**: Unique identifier of the seller
+- **clients_count**: Total number of clients associated with the seller
+- **orders_count**: Total number of orders managed by the seller
+- **zone**: Zone associated with the seller
+""",
+)
+async def get_seller_summary(
+    *,
+    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL])),
+) -> SellerSummaryResponse:
+    clients_count = len(current_user.clients)
+    orders_count = len(current_user.managed_orders)
+
+    return SellerSummaryResponse(
+        id=current_user.id,
+        clients_count=clients_count,
+        orders_count=orders_count,
+        zone=current_user.zone.description,
+    )
 
 
 @seller_router.post(

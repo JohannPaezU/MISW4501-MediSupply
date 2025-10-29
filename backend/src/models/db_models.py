@@ -340,7 +340,7 @@ class Geolocation(Base):
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid.uuid4())
     )
-    address: Mapped[str] = mapped_column(String(255), nullable=False)
+    address: Mapped[str] = mapped_column(String(255), nullable=True)
     latitude: Mapped[float] = mapped_column(nullable=False)
     longitude: Mapped[float] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -362,10 +362,10 @@ class Visit(Base):
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
     )
-    expected_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    expected_date: Mapped[date] = mapped_column(Date, nullable=False)
     visit_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     observations: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    visual_evidence_url: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    visual_evidence_path: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     status: Mapped[VisitStatus] = mapped_column(Enum(VisitStatus), nullable=False, default=VisitStatus.PENDING)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

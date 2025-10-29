@@ -4,8 +4,6 @@ from src.core.config import settings
 from src.core.logging_config import logger
 from src.errors.errors import BadRequestException, ApiError
 
-gmaps = googlemaps.Client(key=settings.google_maps_api_key)
-
 
 class ValidatedAddress(BaseModel):
     formatted_address: str
@@ -34,9 +32,10 @@ def get_validated_address(address: str) -> ValidatedAddress:  # pragma: no cover
         raise BadRequestException("Address is too short or empty.")
 
     address = address.strip()
+    gmaps_client = _get_gmaps_client()
 
     try:
-        results = gmaps.geocode(address)  # type: ignore
+        results = gmaps_client.geocode(address)  # type: ignore
     except Exception as e:
         logger.error(f"Google Maps API error: {e}")
         raise ApiError(f"Error communicating with Google Maps: {e}")
@@ -69,3 +68,7 @@ def get_validated_address(address: str) -> ValidatedAddress:  # pragma: no cover
     logger.info(f"Validated address: {validated_address}")
 
     return validated_address
+
+
+def _get_gmaps_client() -> googlemaps.Client:  # pragma: no cover
+    return googlemaps.Client(key=settings.google_maps_api_key)
