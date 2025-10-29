@@ -68,8 +68,7 @@ async def register_product(
     product_create_request: ProductCreateRequest,
     db: Session = Depends(get_db),
 ) -> ProductResponse:
-    product = create_product(
-        db=db, product_create_request=product_create_request)
+    product = create_product(db=db, product_create_request=product_create_request)
 
     return _build_product_response(product=product)
 
@@ -118,8 +117,17 @@ async def register_products_bulk(
     response_model=GetProductsResponse,
     status_code=status.HTTP_200_OK,
     summary="Get all products",
-    dependencies=[Depends(require_roles(
-        allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL, UserRole.ADMIN]))],
+    dependencies=[
+        Depends(
+            require_roles(
+                allowed_roles=[
+                    UserRole.COMMERCIAL,
+                    UserRole.INSTITUTIONAL,
+                    UserRole.ADMIN,
+                ]
+            )
+        )
+    ],
     description="""
 Retrieve a list of all products in the system.
 
@@ -151,8 +159,17 @@ async def get_all_products(
     response_model=ProductResponse,
     status_code=status.HTTP_200_OK,
     summary="Get product by ID",
-    dependencies=[Depends(require_roles(
-        allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]))],
+    dependencies=[
+        Depends(
+            require_roles(
+                allowed_roles=[
+                    UserRole.ADMIN,
+                    UserRole.COMMERCIAL,
+                    UserRole.INSTITUTIONAL,
+                ]
+            )
+        )
+    ],
     description="""
 Retrieve a product's details by their unique ID.
 

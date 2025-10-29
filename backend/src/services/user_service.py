@@ -6,6 +6,7 @@ from src.errors.errors import ConflictException
 from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.user_schema import UserCreateRequest
+from src.services.geolocation_service import create_geolocation
 
 
 def get_user_by_email(*, db: Session, email: str) -> User | None:
@@ -31,6 +32,7 @@ def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
     if existing_user:
         raise ConflictException("User with this email or DOI already exists")
 
+    geolocation = create_geolocation(db=db, address=user_create_request.address)
     user = User(
         full_name=user_create_request.full_name,
         email=user_create_request.email,
@@ -40,6 +42,7 @@ def create_user(*, db: Session, user_create_request: UserCreateRequest) -> User:
         doi=user_create_request.doi,
         address=user_create_request.address,
         seller_id=get_random_seller(db=db).id,
+        geolocation_id=geolocation.id,
     )
     db.add(user)
     db.commit()
