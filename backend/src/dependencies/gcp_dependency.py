@@ -12,7 +12,9 @@ class StorageClientSingleton:  # pragma: no cover
     def __new__(cls):
         if cls._instance is None:
             info = json.loads(settings.gcp_credentials)
-            credentials = service_account.Credentials.from_service_account_info(info=info)
+            credentials = service_account.Credentials.from_service_account_info(
+                info=info
+            )
             cls._instance = storage.Client(credentials=credentials)
 
         return cls._instance

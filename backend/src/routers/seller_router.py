@@ -9,13 +9,10 @@ from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import (
     GetSellersResponse,
     SellerCreateRequest,
-    SellerResponse, SellerSummaryResponse,
+    SellerResponse,
+    SellerSummaryResponse,
 )
-from src.services.seller_service import (
-    create_seller,
-    get_seller_by_id,
-    get_sellers,
-)
+from src.services.seller_service import create_seller, get_seller_by_id, get_sellers
 
 seller_router = APIRouter(
     tags=["Sellers"],

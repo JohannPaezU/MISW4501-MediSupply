@@ -7,8 +7,8 @@ from src.models.db_models import (
     Product,
     Provider,
     User,
-    Zone,
     Visit,
+    Zone,
 )
 from src.models.enums.user_role import UserRole
 

@@ -1,7 +1,7 @@
 from datetime import date, datetime
-from typing import Annotated, Union
+from typing import Union
 
-from fastapi import APIRouter, Depends, status, Query, Form, UploadFile, File
+from fastapi import APIRouter, Depends, File, Form, Query, UploadFile, status
 from google.cloud import storage
 from sqlalchemy.orm import Session
 
@@ -13,12 +13,21 @@ from src.models.db_models import User, Visit
 from src.models.enums.user_role import UserRole
 from src.models.enums.visit_status import VisitStatus
 from src.schemas.visit_schema import (
+    ClientVisitResponse,
+    GetClientVisitsResponse,
+    GetSellerVisitsResponse,
+    SellerVisitResponse,
     VisitCreateRequest,
-    VisitResponse, VisitReportRequest, GetSellerVisitsResponse, GetClientVisitsResponse,
-    SellerVisitResponse, ClientVisitResponse
+    VisitReportRequest,
+    VisitResponse,
 )
 from src.services.storage_service import generate_signed_url
-from src.services.visit_service import create_visit, get_all_visits, get_visit_by_id, report_visit
+from src.services.visit_service import (
+    create_visit,
+    get_all_visits,
+    get_visit_by_id,
+    report_visit,
+)
 
 visit_router = APIRouter(tags=["Visits"], prefix="/visits")
 
@@ -51,7 +60,9 @@ async def register_visit(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles(allowed_roles=[UserRole.INSTITUTIONAL])),
 ) -> VisitResponse:
-    return create_visit(db=db, visit_create_request=visit_create_request, current_user=current_user)
+    return create_visit(
+        db=db, visit_create_request=visit_create_request, current_user=current_user
+    )
 
 
 @visit_router.get(
@@ -87,20 +98,29 @@ async def get_visits(
     expected_date: date | None = Query(None),
     visit_status: VisitStatus | None = Query(None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    current_user: User = Depends(
+        require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+    ),
     storage_client: storage.Client = Depends(StorageClientSingleton),
 ) -> Union[GetSellerVisitsResponse, GetClientVisitsResponse]:
-    visits = get_all_visits(db=db, current_user=current_user, expected_date=expected_date, visit_status=visit_status)
-    visit_responses = _build_visit_responses(visits=visits, storage_client=storage_client)
+    visits = get_all_visits(
+        db=db,
+        current_user=current_user,
+        expected_date=expected_date,
+        visit_status=visit_status,
+    )
+    visit_responses = _build_visit_responses(
+        visits=visits, storage_client=storage_client
+    )
     if current_user.role == UserRole.COMMERCIAL:
         return GetSellerVisitsResponse(
             total_count=len(visits),
-            visits=[SellerVisitResponse.model_validate(v) for v in visit_responses]
+            visits=[SellerVisitResponse.model_validate(v) for v in visit_responses],
         )
 
     return GetClientVisitsResponse(
         total_count=len(visits),
-        visits=[ClientVisitResponse.model_validate(v) for v in visit_responses]
+        visits=[ClientVisitResponse.model_validate(v) for v in visit_responses],
     )
 
 
@@ -133,7 +153,9 @@ async def get_visit(
     *,
     visit_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    current_user: User = Depends(
+        require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+    ),
     storage_client: storage.Client = Depends(StorageClientSingleton),
 ) -> VisitResponse:
     visit = get_visit_by_id(db=db, current_user=current_user, visit_id=visit_id)
@@ -188,20 +210,33 @@ async def report_visit_by_id(
     current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL])),
     storage_client: storage.Client = Depends(StorageClientSingleton),
 ) -> VisitResponse:
-    visit_report_request = VisitReportRequest(visit_id=visit_id, visit_date=visit_date, observations=observations,
-                                              latitude=latitude, longitude=longitude)
+    visit_report_request = VisitReportRequest(
+        visit_id=visit_id,
+        visit_date=visit_date,
+        observations=observations,
+        latitude=latitude,
+        longitude=longitude,
+    )
 
-    visit = report_visit(db=db, visit_report_request=visit_report_request, current_user=current_user,
-                         storage_client=storage_client, visual_evidence=visual_evidence)
+    visit = report_visit(
+        db=db,
+        visit_report_request=visit_report_request,
+        current_user=current_user,
+        storage_client=storage_client,
+        visual_evidence=visual_evidence,
+    )
 
     return _build_visit_response(visit=visit, storage_client=storage_client)
 
 
-def _build_visit_response(visit: Visit, storage_client: storage.Client) -> VisitResponse:
+def _build_visit_response(
+    visit: Visit, storage_client: storage.Client
+) -> VisitResponse:
     visual_evidence_url = None
     if visit.visual_evidence_path:
-        visual_evidence_url = generate_signed_url(storage_client=storage_client,
-                                                  blob_name=str(visit.visual_evidence_path))
+        visual_evidence_url = generate_signed_url(
+            storage_client=storage_client, blob_name=str(visit.visual_evidence_path)
+        )
 
     return VisitResponse(
         **visit.__dict__,
@@ -213,13 +248,16 @@ def _build_visit_response(visit: Visit, storage_client: storage.Client) -> Visit
     )
 
 
-def _build_visit_responses(visits: list[Visit], storage_client: storage.Client) -> list[VisitResponse]:
+def _build_visit_responses(
+    visits: list[Visit], storage_client: storage.Client
+) -> list[VisitResponse]:
     visit_responses = []
     for visit in visits:
         visual_evidence_url = None
         if visit.visual_evidence_path:
-            visual_evidence_url = generate_signed_url(storage_client=storage_client,
-                                                      blob_name=str(visit.visual_evidence_path))
+            visual_evidence_url = generate_signed_url(
+                storage_client=storage_client, blob_name=str(visit.visual_evidence_path)
+            )
         visit_response = VisitResponse(
             **visit.__dict__,
             visual_evidence_url=visual_evidence_url,

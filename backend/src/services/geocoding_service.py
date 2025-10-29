@@ -1,8 +1,9 @@
 import googlemaps
 from pydantic import BaseModel
+
 from src.core.config import settings
 from src.core.logging_config import logger
-from src.errors.errors import BadRequestException, ApiError
+from src.errors.errors import ApiError, BadRequestException
 
 
 class ValidatedAddress(BaseModel):
