@@ -35,3 +35,6 @@ pystache
 black
 isort
 flake8
+
+# Maps and Geocoding
+googlemaps

@@ -50,7 +50,3 @@ class GetSellersResponse(BaseSchema):
     total_count: int
     sellers: list[SellerMinimalResponse]
 
-
-class GetClientsResponse(BaseSchema):
-    total_count: int
-    clients: list[UserBase]
