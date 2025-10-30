@@ -12,7 +12,7 @@ export const routes: Routes = [
   {
     path: '',
     component: AuthLayoutComponent,
-    canActivate: [publicGuard], // Protege para que usuarios logueados no vean el login
+    canActivate: [publicGuard], // protege para que usuarios logueados no vean el login
     children: [
       { path: 'login', component: LoginComponent },
       { path: 'obtener-acceso', component: ObtenerAccesoComponent },
@@ -22,7 +22,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [authGuard], // Protege todas las rutas hijas
+    canActivate: [authGuard], // protege todas las rutas
     children: [
       { path: 'home', component: HomeComponent },
       {

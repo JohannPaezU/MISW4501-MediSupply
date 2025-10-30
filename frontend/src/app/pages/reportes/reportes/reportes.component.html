@@ -3,173 +3,259 @@
     <h1 class="page-title">Reportes</h1>
   </div>
 
-  <div class="filtros-section">
-    <div class="filtros-grid">
-      <div class="filtro-card">
-        <div class="filtro-header">
-          <span class="filtro-label">Selecciona vendedores</span>
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando reportes...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage && !isLoading" class="alert alert-error">
+    <mat-icon class="alert-icon">error</mat-icon>
+    <span>{{ errorMessage }}</span>
+    <button class="btn-primary btn-retry" (click)="cargarDatos()">Reintentar</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage">
+    <!-- Filtros -->
+    <div class="filtros-section">
+      <div class="filtros-grid">
+        <!-- Filtro Vendedores -->
+        <div class="filtro-card" (click)="showVendedoresModal = true">
+          <div class="filtro-header">
+            <span class="filtro-label">Selecciona vendedores</span>
+          </div>
+          <div class="filtro-content">
+            <mat-icon class="filtro-icon">search</mat-icon>
+            <span class="filtro-value">
+              vendedores ({{ vendedoresSeleccionadosCount || vendedores.length }})
+            </span>
+          </div>
         </div>
-        <div class="filtro-content">
-          <mat-icon class="filtro-icon">search</mat-icon>
-          <span class="filtro-value">vendedores (1)</span>
+
+        <!-- Filtro Zona -->
+        <div class="filtro-card" (click)="showZonasModal = true">
+          <div class="filtro-header">
+            <span class="filtro-label">Selecciona zona</span>
+          </div>
+          <div class="filtro-content">
+            <mat-icon class="filtro-icon">search</mat-icon>
+            <span class="filtro-value">
+              zonas ({{ zonasSeleccionadasCount || zonas.length }})
+            </span>
+          </div>
         </div>
+
+        <!-- Filtro Productos -->
+        <div class="filtro-card" (click)="showProductosModal = true">
+          <div class="filtro-header">
+            <span class="filtro-label">Selecciona productos</span>
+          </div>
+          <div class="filtro-content">
+            <mat-icon class="filtro-icon">search</mat-icon>
+            <span class="filtro-value">
+              productos ({{ productosSeleccionadosCount || productos.length }})
+            </span>
+          </div>
+        </div>
+
+        <!-- Botón Limpiar Filtros -->
+        <button class="btn-limpiar" (click)="limpiarFiltros()">
+          <mat-icon>filter_alt_off</mat-icon>
+          Limpiar filtros
+        </button>
       </div>
 
-      <div class="filtro-card">
-        <div class="filtro-header">
-          <span class="filtro-label">Selecciona zona</span>
-        </div>
-        <div class="filtro-content">
-          <mat-icon class="filtro-icon">search</mat-icon>
-          <span class="filtro-value">zonas (1)</span>
-        </div>
-      </div>
-
-      <div class="filtro-card">
-        <div class="filtro-header">
-          <span class="filtro-label">Selecciona productos</span>
-        </div>
-        <div class="filtro-content">
-          <mat-icon class="filtro-icon">search</mat-icon>
-          <span class="filtro-value">productos (1)</span>
-        </div>
-      </div>
-
-      <div class="filtro-card">
-        <div class="filtro-header">
-          <span class="filtro-label">Rango de fechas</span>
-        </div>
-        <div class="filtro-content">
-          <mat-icon class="filtro-icon">search</mat-icon>
-          <span class="filtro-value">15 set - 20 set</span>
-        </div>
+      <!-- Búsqueda -->
+      <div class="search-container">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Buscar por vendedor, producto o zona..."
+          [(ngModel)]="filtros.searchTerm"
+          (ngModelChange)="onSearchChange($event)">
       </div>
     </div>
 
-    <div class="search-container">
-      <mat-icon class="search-icon">search</mat-icon>
-      <input
-        type="text"
-        class="search-input"
-        placeholder="Buscar...">
+    <!-- Tabla de Reportes -->
+    <div class="table-container">
+      <table class="reportes-table">
+        <thead>
+          <tr>
+            <th>Vendedor</th>
+            <th>Producto</th>
+            <th>Zona</th>
+            <th>Ventas</th>
+            <th>% Meta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reporte of reportesPaginados">
+            <td>{{ reporte.vendedor }}</td>
+            <td>{{ reporte.producto }}</td>
+            <td>{{ reporte.zona }}</td>
+            <td>{{ reporte.ventas | number }}</td>
+            <td>
+              <div class="meta-container">
+                <span class="meta-text">{{ reporte.porcentajeMeta }} %</span>
+                <div class="meta-bar">
+                  <div
+                    class="meta-progress"
+                    [ngClass]="getProgressColor(reporte.porcentajeMeta)"
+                    [style.width.%]="reporte.porcentajeMeta"></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="reportesFiltrados.length === 0">
+            <td colspan="5" class="no-data-cell">No se encontraron reportes con los filtros seleccionados.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer con Estadísticas y Acciones -->
+    <div class="footer-section">
+      <!-- Estadísticas -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Total de ventas</span>
+          </div>
+          <div class="stat-value">{{ estadisticas.totalVentas | number:'1.2-2' }}</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Pedidos pendientes</span>
+          </div>
+          <div class="stat-value">{{ estadisticas.pedidosPendientes }}</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Cumplimiento</span>
+          </div>
+          <div class="stat-value" [ngClass]="{'success': estadisticas.cumplimientoPromedio >= 70}">
+            {{ estadisticas.cumplimientoPromedio }} %
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-actions">
+        <div class="pagination-controls">
+          <div class="page-size-selector">
+            <label for="pageSize">Filas por página:</label>
+            <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+
+          <div class="page-info">
+            <span>{{ startItem }} - {{ endItem }} de {{ totalItems }}</span>
+          </div>
+
+          <div class="page-navigation">
+            <button (click)="previousPage()" [disabled]="currentPage === 1">
+              <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+            <button (click)="nextPage()" [disabled]="endItem >= totalItems">
+              <mat-icon>keyboard_arrow_right</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="export-buttons">
+          <button class="btn-secondary" (click)="exportarExcel()">
+            EXPORTAR A EXCEL
+          </button>
+          <button class="btn-primary" (click)="exportarPDF()">
+            EXPORTAR A PDF
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="table-container">
-    <table class="reportes-table">
-      <thead>
-        <tr>
-          <th>Vendedor</th>
-          <th>Producto</th>
-          <th>Zona</th>
-          <th>Ventas</th>
-          <th>% Meta</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Tiger Nixon</td>
-          <td>Medicamentos</td>
-          <td>Bogotá</td>
-          <td>61000</td>
-          <td>
-            <div class="meta-container">
-              <span class="meta-text">45 %</span>
-              <div class="meta-bar">
-                <div class="meta-progress"></div>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>Sonya Frost</td>
-          <td>Medicamentos</td>
-          <td>Bogotá</td>
-          <td>23500</td>
-          <td>
-            <div class="meta-container">
-              <span class="meta-text">80 %</span>
-              <div class="meta-bar">
-                <div class="meta-progress success"></div>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>Rhona Davidson</td>
-          <td>Medicamentos</td>
-          <td>Bogotá</td>
-          <td>5500</td>
-          <td>
-            <div class="meta-container">
-              <span class="meta-text">5 %</span>
-              <div class="meta-bar">
-                <div class="meta-progress danger"></div>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="modal-overlay" *ngIf="showVendedoresModal" (click)="showVendedoresModal = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Seleccionar Vendedores</h3>
+        <button class="modal-close" (click)="showVendedoresModal = false">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="checkbox-list">
+          <label *ngFor="let vendedor of vendedores" class="checkbox-item">
+            <input
+              type="checkbox"
+              [checked]="filtros.vendedores.includes(vendedor.id!)"
+              (change)="toggleFiltroVendedor(vendedor.id!)">
+            <span>{{ vendedor.full_name }}</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" (click)="showVendedoresModal = false">Aplicar</button>
+      </div>
+    </div>
   </div>
 
-  <div class="footer-section">
-    <div class="stats-container">
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">Total de ventas</span>
-        </div>
-        <div class="stat-value">1,200,000.00</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">Pedidos pendientes</span>
-        </div>
-        <div class="stat-value">23</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <span class="stat-label">Cumplimiento</span>
-        </div>
-        <div class="stat-value success">82 %</div>
-      </div>
-    </div>
-
-    <div class="footer-actions">
-      <div class="pagination-controls">
-        <div class="page-size-selector">
-          <label for="pageSize">Filas por página:</label>
-          <select id="pageSize">
-            <option value="5">5</option>
-            <option value="10" selected>10</option>
-            <option value="20">20</option>
-          </select>
-        </div>
-
-        <div class="page-info">
-          <span>1 - 10 de 14</span>
-        </div>
-
-        <div class="page-navigation">
-          <button>
-            <mat-icon>keyboard_arrow_left</mat-icon>
-          </button>
-          <button>
-            <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
-        </div>
-      </div>
-
-      <div class="export-buttons">
-        <button class="btn-secondary">
-          EXPORTAR A EXCEL
-        </button>
-        <button class="btn-primary">
-          EXPORTAR A PDF
+  <div class="modal-overlay" *ngIf="showZonasModal" (click)="showZonasModal = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Seleccionar Zonas</h3>
+        <button class="modal-close" (click)="showZonasModal = false">
+          <mat-icon>close</mat-icon>
         </button>
       </div>
+      <div class="modal-body">
+        <div class="checkbox-list">
+          <label *ngFor="let zona of zonas" class="checkbox-item">
+            <input
+              type="checkbox"
+              [checked]="filtros.zonas.includes(zona.id)"
+              (change)="toggleFiltroZona(zona.id)">
+            <span>{{ zona.description }}</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" (click)="showZonasModal = false">Aplicar</button>
+      </div>
     </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showProductosModal" (click)="showProductosModal = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Seleccionar Productos</h3>
+        <button class="modal-close" (click)="showProductosModal = false">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="checkbox-list">
+          <label *ngFor="let producto of productos" class="checkbox-item">
+            <input
+              type="checkbox"
+              [checked]="filtros.productos.includes(producto.id)"
+              (change)="toggleFiltroProducto(producto.id)">
+            <span>{{ producto.name }}</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" (click)="showProductosModal = false">Aplicar</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="toastMessage" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
   </div>
 </div>

@@ -8,5 +8,5 @@ data class DistributionCenter(
     val address: String,
     val city: String,
     val country: String,
-    val created_at: String
+    val createdAt: String
 ): Serializable

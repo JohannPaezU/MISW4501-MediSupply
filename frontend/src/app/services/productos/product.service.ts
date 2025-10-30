@@ -25,9 +25,16 @@ export class ProductService {
     return this.http.post<ProductCreateBulkResponse>(`${this.apiUrl}-batch`, bulkData);
   }
 
-  getProducts(page: number, limit: number): Observable<{ total_count: number; products: ProductCreateResponse[] }> {
-    return this.http.get<{ total_count: number; products: ProductCreateResponse[] }>(
-      `${this.apiUrl}?page=${page}&limit=${limit}`
-    );
+  getProducts(page?: number, limit?: number): Observable<{ total_count: number; products: ProductCreateResponse[] }> {
+    if (page && limit) {
+      return this.http.get<{ total_count: number; products: ProductCreateResponse[] }>(
+        `${this.apiUrl}?page=${page}&limit=${limit}`
+      );
+    }
+    return this.http.get<{ total_count: number; products: ProductCreateResponse[] }>(this.apiUrl);
+  }
+
+  getAllProducts(): Observable<{ total_count: number; products: ProductCreateResponse[] }> {
+    return this.http.get<{ total_count: number; products: ProductCreateResponse[] }>(this.apiUrl);
   }
 }
