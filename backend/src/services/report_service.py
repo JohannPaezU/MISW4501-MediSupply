@@ -2,8 +2,9 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from models.enums.order_status import OrderStatus
+
 from src.models.db_models import Order
+from src.models.enums.order_status import OrderStatus
 
 
 def get_orders_report(

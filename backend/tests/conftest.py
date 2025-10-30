@@ -263,19 +263,15 @@ def _populate_orders(db: Session, products: list[Product]) -> list[Order]:
         Order(
             comments="First order",
             delivery_date="2024-07-01",
-            client_id=db.query(User)
-            .filter(User.role == UserRole.INSTITUTIONAL)
-            .first()
-            .id,
+            seller_id=_get_random_seller(db=db).id,
+            client_id=_get_random_client(db=db).id,
             distribution_center_id=db.query(DistributionCenter).first().id,
         ),
         Order(
             comments="Second order",
             delivery_date="2024-08-01",
-            client_id=db.query(User)
-            .filter(User.role == UserRole.INSTITUTIONAL)
-            .first()
-            .id,
+            seller_id=_get_random_seller(db=db).id,
+            client_id=_get_random_client(db=db).id,
             distribution_center_id=db.query(DistributionCenter).first().id,
         ),
     ]

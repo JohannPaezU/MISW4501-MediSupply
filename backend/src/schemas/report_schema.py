@@ -1,6 +1,6 @@
-from schemas.base_schema import BaseSchema, OrderBase
-from schemas.order_schema import OrderProductDetail
-from schemas.seller_schema import SellerMinimalResponse
+from src.schemas.base_schema import OrderBase, BaseSchema
+from src.schemas.order_schema import OrderProductDetail
+from src.schemas.seller_schema import SellerMinimalResponse
 
 
 class OrderReportResponse(OrderBase):

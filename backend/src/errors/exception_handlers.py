@@ -27,7 +27,7 @@ def setup_exception_handlers(app: FastAPI) -> None:
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content={
                 "message": "Validation Error",
-                "details": error.errors(),
+                "detail": error.errors(),
             },
         )
 
