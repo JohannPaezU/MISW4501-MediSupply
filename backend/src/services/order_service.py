@@ -70,7 +70,7 @@ def create_order(
     return order
 
 
-def get_all_orders(*, db: Session, current_user: User) -> list[Order]:
+def get_orders(*, db: Session, current_user: User) -> list[Order]:
     query = db.query(Order)
     if current_user.role == UserRole.COMMERCIAL:
         query = query.filter_by(seller_id=current_user.id)
