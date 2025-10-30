@@ -10,34 +10,47 @@ class RegisterVisitResponseTest {
     fun `RegisterVisitResponse should have correct properties`() {
         // Given
         val id = "visit-123"
-        val clientId = "client-456"
+        val client = VisitClient(id = "client-456", fullName = "John Doe")
         val expectedDate = Date()
         val visitDate = Date()
         val observations = "Test observations"
-        val visualEvidence = "https://example.com/image.jpg"
-        val geolocation = "4.6097,-74.0817"
+        val visualEvidenceUrl = "https://example.com/image.jpg"
+        val expectedGeoLocation = VisitGeolocation(
+            id = "geo-1",
+            address = "123 Main St",
+            latitude = 4.6097,
+            longitude = -74.0817
+        )
+        val reportGeoLocation = VisitGeolocation(
+            id = "geo-2",
+            address = "123 Main St",
+            latitude = 4.6097,
+            longitude = -74.0817
+        )
         val status = "completed"
 
         // When
         val response = RegisterVisitResponse(
             id = id,
-            clientId = clientId,
+            clientId = client,
             expectedDate = expectedDate,
             visitDate = visitDate,
             observations = observations,
-            visualEvidence = visualEvidence,
-            geolocation = geolocation,
+            visualEvidenceUrl = visualEvidenceUrl,
+            expectedGeoLocation = expectedGeoLocation,
+            reportGeoLocation = reportGeoLocation,
             status = status
         )
 
         // Then
         assertEquals("ID should match", id, response.id)
-        assertEquals("Client ID should match", clientId, response.clientId)
+        assertEquals("Client should match", client, response.clientId)
         assertEquals("Expected date should match", expectedDate, response.expectedDate)
         assertEquals("Visit date should match", visitDate, response.visitDate)
         assertEquals("Observations should match", observations, response.observations)
-        assertEquals("Visual evidence should match", visualEvidence, response.visualEvidence)
-        assertEquals("Geolocation should match", geolocation, response.geolocation)
+        assertEquals("Visual evidence URL should match", visualEvidenceUrl, response.visualEvidenceUrl)
+        assertEquals("Expected geolocation should match", expectedGeoLocation, response.expectedGeoLocation)
+        assertEquals("Report geolocation should match", reportGeoLocation, response.reportGeoLocation)
         assertEquals("Status should match", status, response.status)
     }
 
@@ -46,12 +59,23 @@ class RegisterVisitResponseTest {
         // Given
         val response = RegisterVisitResponse(
             id = "visit-123",
-            clientId = "client-456",
+            clientId = VisitClient(id = "client-456", fullName = "John Doe"),
             expectedDate = Date(),
             visitDate = Date(),
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
+            expectedGeoLocation = VisitGeolocation(
+                id = "geo-1",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
+            reportGeoLocation = VisitGeolocation(
+                id = "geo-2",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
             status = "completed"
         )
 
@@ -64,21 +88,33 @@ class RegisterVisitResponseTest {
         // Given & When
         val response = RegisterVisitResponse(
             id = "",
-            clientId = "",
+            clientId = VisitClient(id = "", fullName = ""),
             expectedDate = Date(),
             visitDate = Date(),
             observations = "",
-            visualEvidence = "",
-            geolocation = "",
+            visualEvidenceUrl = "",
+            expectedGeoLocation = VisitGeolocation(
+                id = "",
+                address = "",
+                latitude = 0.0,
+                longitude = 0.0
+            ),
+            reportGeoLocation = VisitGeolocation(
+                id = "",
+                address = "",
+                latitude = 0.0,
+                longitude = 0.0
+            ),
             status = ""
         )
 
         // Then
         assertTrue("ID should be empty", response.id.isEmpty())
-        assertTrue("Client ID should be empty", response.clientId.isEmpty())
+        assertTrue("Client ID should be empty", response.clientId.id.isEmpty())
         assertTrue("Observations should be empty", response.observations.isEmpty())
-        assertTrue("Visual evidence should be empty", response.visualEvidence.isEmpty())
-        assertTrue("Geolocation should be empty", response.geolocation.isEmpty())
+        assertTrue("Visual evidence URL should be empty", response.visualEvidenceUrl.isEmpty())
+        assertTrue("Expected geolocation ID should be empty", response.expectedGeoLocation.id.isEmpty())
+        assertTrue("Report geolocation ID should be empty", response.reportGeoLocation.id.isEmpty())
         assertTrue("Status should be empty", response.status.isEmpty())
     }
 
@@ -91,12 +127,23 @@ class RegisterVisitResponseTest {
         statuses.forEach { status ->
             val response = RegisterVisitResponse(
                 id = "visit-123",
-                clientId = "client-456",
+                clientId = VisitClient(id = "client-456", fullName = "John Doe"),
                 expectedDate = Date(),
                 visitDate = Date(),
                 observations = "Test",
-                visualEvidence = "https://example.com/image.jpg",
-                geolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image.jpg",
+                expectedGeoLocation = VisitGeolocation(
+                    id = "geo-1",
+                    address = "123 Main St",
+                    latitude = 4.6097,
+                    longitude = -74.0817
+                ),
+                reportGeoLocation = VisitGeolocation(
+                    id = "geo-2",
+                    address = "123 Main St",
+                    latitude = 4.6097,
+                    longitude = -74.0817
+                ),
                 status = status
             )
             assertEquals("Status should match", status, response.status)
@@ -108,12 +155,23 @@ class RegisterVisitResponseTest {
         // Given
         val original = RegisterVisitResponse(
             id = "visit-123",
-            clientId = "client-456",
+            clientId = VisitClient(id = "client-456", fullName = "John Doe"),
             expectedDate = Date(),
             visitDate = Date(),
             observations = "Original",
-            visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
+            expectedGeoLocation = VisitGeolocation(
+                id = "geo-1",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
+            reportGeoLocation = VisitGeolocation(
+                id = "geo-2",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
             status = "pending"
         )
 
@@ -135,12 +193,23 @@ class RegisterVisitResponseTest {
         // When
         val response = RegisterVisitResponse(
             id = "visit-123",
-            clientId = "client-456",
+            clientId = VisitClient(id = "client-456", fullName = "John Doe"),
             expectedDate = Date(),
             visitDate = Date(),
             observations = longText,
-            visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
+            expectedGeoLocation = VisitGeolocation(
+                id = "geo-1",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
+            reportGeoLocation = VisitGeolocation(
+                id = "geo-2",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
             status = "completed"
         )
 
@@ -156,23 +225,45 @@ class RegisterVisitResponseTest {
 
         val response1 = RegisterVisitResponse(
             id = "visit-123",
-            clientId = "client-456",
+            clientId = VisitClient(id = "client-456", fullName = "John Doe"),
             expectedDate = date1,
             visitDate = date2,
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
+            expectedGeoLocation = VisitGeolocation(
+                id = "geo-1",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
+            reportGeoLocation = VisitGeolocation(
+                id = "geo-2",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
             status = "completed"
         )
 
         val response2 = RegisterVisitResponse(
             id = "visit-123",
-            clientId = "client-456",
+            clientId = VisitClient(id = "client-456", fullName = "John Doe"),
             expectedDate = date1,
             visitDate = date2,
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
+            expectedGeoLocation = VisitGeolocation(
+                id = "geo-1",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
+            reportGeoLocation = VisitGeolocation(
+                id = "geo-2",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
             status = "completed"
         )
 
@@ -188,12 +279,23 @@ class RegisterVisitResponseTest {
 
         val response = RegisterVisitResponse(
             id = "visit-123",
-            clientId = "client-456",
+            clientId = VisitClient(id = "client-456", fullName = "John Doe"),
             expectedDate = date1,
             visitDate = date2,
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
+            expectedGeoLocation = VisitGeolocation(
+                id = "geo-1",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
+            reportGeoLocation = VisitGeolocation(
+                id = "geo-2",
+                address = "123 Main St",
+                latitude = 4.6097,
+                longitude = -74.0817
+            ),
             status = "completed"
         )
 

@@ -261,11 +261,11 @@ class DataModelTest {
 
     @Test
     fun `SellerHomeResponse should have correct properties`() {
-        val response = SellerHomeResponse(id = 1, numberClients = 5, numberOrders = 10, vendorZone = "Zona 1")
-        assertEquals(1, response.id)
-        assertEquals(5, response.numberClients)
-        assertEquals(10, response.numberOrders)
-        assertEquals("Zona 1", response.vendorZone)
+        val response = SellerHomeResponse(id = "1", clientsCount = 5, ordersCount = 10, zone = "Zona 1")
+        assertEquals("1", response.id)
+        assertEquals(5, response.clientsCount)
+        assertEquals(10, response.ordersCount)
+        assertEquals("Zona 1", response.zone)
     }
 
     @Test
