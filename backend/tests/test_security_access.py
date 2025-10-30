@@ -15,7 +15,7 @@ class TestSecurityAccess(BaseTest):
 
     def test_access_denied_without_token(self):
         response = self.client.get(self.endpoint)
-        assert response.status_code == 401
+        assert response.status_code == 403
         assert response.json()["detail"] == "Not authenticated"
 
     def test_access_denied_with_invalid_token(self):

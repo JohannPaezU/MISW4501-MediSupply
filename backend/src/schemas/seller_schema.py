@@ -51,6 +51,8 @@ class GetSellersResponse(BaseSchema):
     sellers: list[SellerMinimalResponse]
 
 
-class GetClientsResponse(BaseSchema):
-    total_count: int
-    clients: list[UserBase]
+class SellerSummaryResponse(BaseSchema):
+    id: str
+    clients_count: int
+    orders_count: int
+    zone: str
