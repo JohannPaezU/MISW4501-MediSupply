@@ -4,7 +4,6 @@ import java.io.Serializable
 
 data class VisitClient(
     val id: String,
-    val name: String,
-    val geolocation: String
+    val fullName: String
 ) : Serializable
 

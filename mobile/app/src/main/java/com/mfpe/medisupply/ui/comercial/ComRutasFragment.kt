@@ -209,52 +209,46 @@ class ComRutasFragment : Fragment() {
                 val pendingPoints = mutableListOf<GeoPoint>()
 
                 data.visits.forEach { visit ->
-                    val geolocation = visit.client.geolocation
-                    val coordinates = geolocation.split(",").map { it.trim() }
+                    val geolocation = visit.expectedGeolocation
+                    try {
+                        val geoPoint = GeoPoint(geolocation.latitude, geolocation.longitude)
 
-                    if (coordinates.size == 2) {
-                        try {
-                            val latitude = coordinates[0].toDouble()
-                            val longitude = coordinates[1].toDouble()
-                            val geoPoint = GeoPoint(latitude, longitude)
+                        val marker = Marker(binding.mapView)
+                        marker.apply {
+                            position = geoPoint
+                            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                            title = visit.client.fullName
+                            snippet = "Estado: ${visit.status}<br>${if (visit.observations.isNotEmpty())"Observaciones: ${visit.observations}" else ""}"
 
-                            val marker = Marker(binding.mapView)
-                            marker.apply {
-                                position = geoPoint
-                                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                                title = visit.client.name
-                                snippet = "Estado: ${visit.status}<br>${if (visit.observations.isNotEmpty())"Observaciones: ${visit.observations}" else ""}"
-
-                                icon = if (visit.status == "completed") {
-                                    ResourcesCompat.getDrawable(
-                                        resources,
-                                        com.mfpe.medisupply.R.drawable.ic_marker_green,
-                                        null
-                                    )
-                                } else {
-                                    ResourcesCompat.getDrawable(
-                                        resources,
-                                        com.mfpe.medisupply.R.drawable.ic_marker_red,
-                                        null
-                                    )
-                                }
-
-                                if (visit.status == "pending") {
-                                    setOnMarkerClickListener { _, _ ->
-                                        showVisitDialog(visit)
-                                        true
-                                    }
-                                }
-
-                                binding.mapView.overlays.add(this)
+                            icon = if (visit.status == "completed") {
+                                ResourcesCompat.getDrawable(
+                                    resources,
+                                    com.mfpe.medisupply.R.drawable.ic_marker_green,
+                                    null
+                                )
+                            } else {
+                                ResourcesCompat.getDrawable(
+                                    resources,
+                                    com.mfpe.medisupply.R.drawable.ic_marker_red,
+                                    null
+                                )
                             }
 
                             if (visit.status == "pending") {
-                                pendingPoints.add(geoPoint)
+                                setOnMarkerClickListener { _, _ ->
+                                    showVisitDialog(visit)
+                                    true
+                                }
                             }
-                        } catch (e: NumberFormatException) {
-                            e.printStackTrace()
+
+                            binding.mapView.overlays.add(this)
                         }
+
+                        if (visit.status == "pending") {
+                            pendingPoints.add(geoPoint)
+                        }
+                    } catch (e: NumberFormatException) {
+                        e.printStackTrace()
                     }
                 }
 
@@ -351,7 +345,7 @@ class ComRutasFragment : Fragment() {
             .setCancelable(true)
             .create()
 
-        dialogBinding.tvClientName.text = visit.client.name
+        dialogBinding.tvClientName.text = visit.client.fullName
 
         dialogBinding.btnSelectFile.setOnClickListener {
             // TODO: Implementar selección de archivo/imagen
@@ -374,7 +368,8 @@ class ComRutasFragment : Fragment() {
                 visitDate = Date(),
                 observations = observations,
                 visualEvidence = "",
-                geolocation = visit.client.geolocation
+                latitude = visit.expectedGeolocation.latitude,
+                longitude = visit.expectedGeolocation.longitude
             )
 
             val authToken = PrefsManager.getInstance(requireContext()).getAuthToken
@@ -382,7 +377,7 @@ class ComRutasFragment : Fragment() {
                 if (success) {
                     Toast.makeText(
                         requireContext(),
-                        "Visita registrada exitosamente para ${visit.client.name}",
+                        "Visita registrada exitosamente para ${visit.client.fullName}",
                         Toast.LENGTH_LONG
                     ).show()
                     dialog.dismiss()
