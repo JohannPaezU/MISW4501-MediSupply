@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from routers.report_router import report_router
 from src.core.config import settings
 from src.core.logging_config import logger
 from src.db.database import init_database
@@ -43,6 +44,7 @@ app.include_router(distribution_center_router, prefix=prefix)
 app.include_router(order_router, prefix=prefix)
 app.include_router(client_router, prefix=prefix)
 app.include_router(visit_router, prefix=prefix)
+app.include_router(report_router, prefix=prefix)
 setup_exception_handlers(app)
 
 
