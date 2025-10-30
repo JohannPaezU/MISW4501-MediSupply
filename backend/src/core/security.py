@@ -4,7 +4,7 @@ from typing import Any, Callable
 import bcrypt
 import jwt
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from src.core.config import settings
@@ -14,7 +14,17 @@ from src.errors.errors import ApiError, ForbiddenException, UnauthorizedExceptio
 from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+security = HTTPBearer(
+    scheme_name="Access Token",
+    description="""
+    ### How to obtain your token:
+    1. Call POST /api/v1/auth/login with your email and password
+    2. Check your email and get the OTP code
+    3. Call POST /api/v1/auth/verify-otp with the code
+    4. Copy the 'access_token' field from the response
+    5. Paste it here (just the token, without 'Bearer')
+    """,
+)
 
 
 def hash_password(password: str) -> str:
@@ -44,11 +54,14 @@ def create_access_token(data: dict[str, Any]) -> str:
 
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    http_authorization_credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db),
 ) -> User:
     try:
         payload = jwt.decode(
-            token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]
+            http_authorization_credentials.credentials,
+            settings.jwt_secret_key,
+            algorithms=[settings.jwt_algorithm],
         )
         sub: str = payload.get("sub")
         role: str = payload.get("role")
