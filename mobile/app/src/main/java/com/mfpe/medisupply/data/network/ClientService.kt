@@ -14,7 +14,7 @@ import retrofit2.http.Query
 
 interface ClientService {
 
-    @GET("sellers/me/clients")
+    @GET("clients")
     fun getClients(
         @Header("Authorization") authToken: String
     ): Call<ClientListResponse>
@@ -24,7 +24,7 @@ interface ClientService {
         @Header("Authorization") authorization: String
     ): Call<ProductListResponse>
 
-    @POST("clients/me/visits")
+    @POST("visits")
     fun createVisit(
         @Header("Authorization") authorization: String,
         @Body visitRequest: VisitRequest

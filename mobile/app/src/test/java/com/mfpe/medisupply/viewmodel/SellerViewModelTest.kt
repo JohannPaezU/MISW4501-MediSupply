@@ -125,10 +125,10 @@ class SellerViewModelTest {
     fun `getHome should call repository and handle successful response`() {
         // Given
         val mockSellerResponse = SellerHomeResponse(
-            id = 1,
-            numberClients = 5,
-            numberOrders = 10,
-            vendorZone = "Zona 1"
+            id = "1",
+            clientsCount = 5,
+            ordersCount = 10,
+            zone = "Zona 1"
         )
         
         `when`(mockSellerRepository.getHome("")).thenReturn(mockCall)
@@ -476,9 +476,7 @@ class SellerViewModelTest {
         val authToken = "Bearer test-token"
         val date = "2025-10-28"
         val mockVisitData = SellerVisitResponse(
-            sellerId = 1,
-            date = date,
-            totalVisits = 2,
+            totalCount = 2,
             visits = emptyList()
         )
 
@@ -678,9 +676,7 @@ class SellerViewModelTest {
         `when`(mockSellerRepository.getVisits(authToken, date)).thenReturn(mockVisitCall)
         `when`(mockVisitResponse.isSuccessful).thenReturn(true)
         `when`(mockVisitResponse.body()).thenReturn(SellerVisitResponse(
-            sellerId = 1,
-            date = date,
-            totalVisits = 0,
+            totalCount = 0,
             visits = emptyList()
         ))
 
@@ -710,9 +706,7 @@ class SellerViewModelTest {
         `when`(mockSellerRepository.getVisits(anyString(), anyString())).thenReturn(mockVisitCall)
         `when`(mockVisitResponse.isSuccessful).thenReturn(true)
         `when`(mockVisitResponse.body()).thenReturn(SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 0,
+            totalCount = 0,
             visits = emptyList()
         ))
 

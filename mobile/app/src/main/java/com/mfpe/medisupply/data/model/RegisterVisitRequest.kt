@@ -6,6 +6,7 @@ import java.util.Date
 data class RegisterVisitRequest (
     val visitDate: Date,
     val observations: String,
+    val latitude: Double,
+    val longitude: Double,
     val visualEvidence: String,
-    val geolocation: String
 ) : Serializable

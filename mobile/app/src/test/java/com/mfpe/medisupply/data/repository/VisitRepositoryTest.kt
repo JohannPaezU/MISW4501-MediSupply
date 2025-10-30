@@ -29,7 +29,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -49,7 +50,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -69,7 +71,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -91,7 +94,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -110,7 +114,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -129,7 +134,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -148,7 +154,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -171,7 +178,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When & Then
@@ -202,7 +210,8 @@ class VisitRepositoryTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
