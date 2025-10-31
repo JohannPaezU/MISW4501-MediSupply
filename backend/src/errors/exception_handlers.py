@@ -20,7 +20,9 @@ def setup_exception_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(_, error: RequestValidationError) -> JSONResponse:
+    async def validation_exception_handler(
+        _, error: RequestValidationError
+    ) -> JSONResponse:
         logger.exception(f"Validation error: {error}")
 
         return JSONResponse(
