@@ -23,6 +23,11 @@ Este repositorio contiene la API backend del proyecto MediSupply. La API es una 
   - [Proveedores](#proveedores)
   - [Productos](#productos)
   - [Planes de Venta](#planes-de-venta)
+  - [Centros de Distribución](#centros-de-distribución)
+  - [Órdenes](#órdenes)
+  - [Clientes](#clientes)
+  - [Visitas](#visitas)
+  - [Reportes](#reportes)
 - [Entorno en Vivo](#entorno-en-vivo)
   - [Prueba Rápida](#prueba-rápida)
   - [Documentación Interactiva](#documentación-interactiva)
@@ -81,38 +86,60 @@ Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ej
 │   ├── db/                   # Conexión y utilidades de base de datos
 │   │   ├── database.py       
 │   │   └── database_util.py  
+│   ├── dependencies/         # Dependencias inyectables
+│   │   └── gcp_dependency.py 
 │   ├── errors/               # Errores personalizados y manejadores de excepciones
 │   │   ├── errors.py         
 │   │   └── exception_handlers.py
 │   ├── models/               # Modelos ORM y enums
 │   │   ├── db_models.py      
 │   │   └── enums/            # Enumeraciones
-│   │       └── user_role.py  
+│   │       ├── user_role.py  
+│   │       ├── order_status.py
+│   │       └── visit_status.py
 │   ├── routers/              # Definiciones de rutas de API
 │   │   ├── auth_router.py    
+│   │   ├── client_router.py
+│   │   ├── distribution_center_router.py
 │   │   ├── health_check_router.py  
+│   │   ├── order_router.py
 │   │   ├── product_router.py       
 │   │   ├── provider_router.py      
+│   │   ├── report_router.py
 │   │   ├── seller_router.py        
 │   │   ├── selling_plan_router.py  
+│   │   ├── visit_router.py
 │   │   └── zone_router.py          
 │   ├── schemas/              # Schemas Pydantic de request/response
 │   │   ├── auth_schema.py    
-│   │   ├── user_schema.py    
+│   │   ├── base_schema.py
+│   │   ├── client_schema.py
+│   │   ├── distribution_center_schema.py
+│   │   ├── order_schema.py
 │   │   ├── product_schema.py 
 │   │   ├── provider_schema.py 
+│   │   ├── report_schema.py
 │   │   ├── seller_schema.py   
 │   │   ├── selling_plan_schema.py 
+│   │   ├── user_schema.py    
+│   │   ├── visit_schema.py
 │   │   └── zone_schema.py     
 │   ├── services/             # Lógica de negocio / capa de servicio
 │   │   ├── auth_service.py   
-│   │   ├── user_service.py   
+│   │   ├── distribution_center_service.py
 │   │   ├── email_service.py  
+│   │   ├── geocoding_service.py
+│   │   ├── geolocation_service.py
+│   │   ├── order_service.py
 │   │   ├── otp_service.py    
 │   │   ├── product_service.py 
 │   │   ├── provider_service.py 
+│   │   ├── report_service.py
 │   │   ├── seller_service.py   
 │   │   ├── selling_plan_service.py 
+│   │   ├── storage_service.py
+│   │   ├── user_service.py   
+│   │   ├── visit_service.py
 │   │   ├── zone_service.py     
 │   │   └── requests/           # Modelos de request
 │   │       └── email_request.py 
@@ -122,14 +149,20 @@ Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ej
 └── tests/                    # Pruebas de integración (usan fixtures de Testcontainers)
     ├── base_test.py          # Clase base para pruebas
     ├── conftest.py           # Configuración de fixtures pytest
+    ├── mocks.py              # Mocks para pruebas
     ├── test_auth_router.py   
+    ├── test_client_router.py
+    ├── test_distribution_center_router.py
     ├── test_health_check_router.py 
+    ├── test_order_router.py
     ├── test_product_router.py      
     ├── test_provider_router.py     
+    ├── test_report_router.py
+    ├── test_security_access.py     
     ├── test_seller_router.py       
     ├── test_selling_plan_router.py 
+    ├── test_visit_router.py
     ├── test_zone_router.py         
-    ├── test_security_access.py     
     └── containers/                 # Contenedores de prueba
         └── postgres_test_container.py 
 ```
@@ -143,15 +176,18 @@ El proyecto utiliza estas variables de entorno. Cree un archivo `.env` en la ra�
 | `APP_PORT` | Puerto en el que escucha la aplicación FastAPI | `8000` |
 | `CORS_ORIGINS` | Orígenes permitidos para CORS (separados por coma) | `http://localhost:3000,http://localhost:8080` |
 | `LOGIN_URL` | URL de login del frontend | `http://localhost:3000/login` |
+| `GOOGLE_MAPS_API_KEY` | Clave API de Google Maps para servicios de geolocalización y geocodificación | Tu clave API de Google Maps |
+| `BUCKET_NAME` | Nombre del bucket de almacenamiento en GCP | `medi-supply-bucket-stg` |
+| `GCP_CREDENTIALS` | Credenciales JSON de la cuenta de servicio de GCP (formato JSON en string) | JSON de credenciales de GCP |
 | `POSTGRES_HOST` | Hostname/nombre de servicio para Postgres | `postgres_db` (docker-compose) o `localhost` |
 | `POSTGRES_PORT` | Puerto para conexión Postgres | `5432` |
-| `POSTGRES_USER` | Nombre de usuario Postgres | `postgres` |
-| `POSTGRES_PASSWORD` | Contraseña Postgres | `postgres` |
-| `POSTGRES_DB` | Nombre de la base de datos Postgres | `medisupply` |
+| `POSTGRES_USER` | Nombre de usuario Postgres | `admin` |
+| `POSTGRES_PASSWORD` | Contraseña Postgres | `admin` |
+| `POSTGRES_DB` | Nombre de la base de datos Postgres | `medi_supply` |
 | `OTP_EXPIRATION_MINUTES` | Tiempo de expiración del código OTP en minutos | `5` |
 | `JWT_SECRET_KEY` | Clave secreta para firma de tokens JWT | Cadena segura aleatoria (ej., generada con `openssl rand -hex 32`) |
 | `JWT_ALGORITHM` | Algoritmo para codificación JWT | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Tiempo de expiración del token JWT en minutos | `60` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Tiempo de expiración del token JWT en minutos | `180` |
 | `EMAIL_SENDER` | Dirección de correo del remitente para notificaciones OTP | `noreply@medisupply.com` |
 | `EMAIL_API_KEY` | Clave API del proveedor de servicio de correo | Su clave API del servicio de correo |
 
@@ -211,11 +247,13 @@ La API proporciona los siguientes endpoints:
 
 ### Zonas
 - **GET** `/zones` - Obtener la lista de todas las zonas disponibles
+- **GET** `/zones/{zone_id}` - Obtener los detalles de una zona específica por su ID
 
 ### Vendedores
 - **GET** `/sellers` - Obtener la lista de todos los vendedores registrados
 - **POST** `/sellers` - Registrar un nuevo vendedor
 - **GET** `/sellers/{seller_id}` - Obtener los detalles de un vendedor específico por su ID
+- **GET** `/sellers/zone/{zone_id}` - Obtener la lista de vendedores asignados a una zona específica
 
 ### Proveedores
 - **GET** `/providers` - Obtener la lista de todos los proveedores registrados
@@ -232,6 +270,27 @@ La API proporciona los siguientes endpoints:
 - **GET** `/selling-plans` - Obtener la lista de todos los planes de venta
 - **POST** `/selling-plans` - Crear un nuevo plan de venta
 - **GET** `/selling-plans/{selling_plan_id}` - Obtener los detalles de un plan de venta específico por su ID
+
+### Centros de Distribución
+- **GET** `/distribution-centers` - Obtener la lista de todos los centros de distribución disponibles
+- **GET** `/distribution-centers/{distribution_center_id}` - Obtener los detalles de un centro de distribución específico por su ID
+
+### Órdenes
+- **POST** `/orders` - Crear una nueva orden en el sistema
+- **GET** `/orders` - Obtener la lista de todas las órdenes creadas por el usuario actual
+- **GET** `/orders/{order_id}` - Obtener los detalles de una orden específica por su ID
+
+### Clientes
+- **GET** `/clients` - Obtener la lista de clientes asociados al vendedor actual (solo usuarios comerciales)
+
+### Visitas
+- **POST** `/visits` - Solicitar una nueva visita (usuarios institucionales)
+- **GET** `/visits` - Obtener la lista de visitas del usuario actual (comerciales: visitas asignadas, institucionales: visitas solicitadas)
+- **GET** `/visits/{visit_id}` - Obtener los detalles de una visita específica por su ID
+- **PATCH** `/visits/{visit_id}/report` - Reportar una visita realizada con comentarios, ubicación y evidencia fotográfica
+
+### Reportes
+- **GET** `/reports/orders` - Generar un reporte de órdenes con filtros opcionales por vendedor, estado y rango de fechas (solo administradores)
 
 **Nota:** La documentación interactiva de la API está disponible en `/docs` (Swagger UI) y `/redoc` (ReDoc) cuando el servidor está en ejecución.
 

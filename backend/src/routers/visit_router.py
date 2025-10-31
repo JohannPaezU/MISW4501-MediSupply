@@ -24,8 +24,8 @@ from src.schemas.visit_schema import (
 from src.services.storage_service import generate_signed_url
 from src.services.visit_service import (
     create_visit,
-    get_all_visits,
     get_visit_by_id,
+    get_visits,
     report_visit,
 )
 
@@ -93,7 +93,7 @@ Retrieve all visits scheduled or assigned to the current user.
     - **seller**: Information about the seller associated with the visit (for clients).
 """,
 )
-async def get_visits(
+async def get_all_visits(
     *,
     expected_date: date | None = Query(None),
     visit_status: VisitStatus | None = Query(None),
@@ -103,7 +103,7 @@ async def get_visits(
     ),
     storage_client: storage.Client = Depends(StorageClientSingleton),
 ) -> Union[GetSellerVisitsResponse, GetClientVisitsResponse]:
-    visits = get_all_visits(
+    visits = get_visits(
         db=db,
         current_user=current_user,
         expected_date=expected_date,

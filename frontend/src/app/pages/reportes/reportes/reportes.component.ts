@@ -19,16 +19,15 @@ import { Vendedor, Zone } from '../../../interfaces/vendedor.interface';
   styleUrl: './reportes.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
 export class ReportesComponent implements OnInit {
   reportes: ReporteData[] = [];
   reportesFiltrados: ReporteData[] = [];
 
-  // Datos para filtros
   vendedores: Vendedor[] = [];
   zonas: Zone[] = [];
   productos: ProductCreateResponse[] = [];
 
-  // Filtros seleccionados
   filtros: FiltrosReporte = {
     vendedores: [],
     zonas: [],
@@ -36,20 +35,16 @@ export class ReportesComponent implements OnInit {
     searchTerm: ''
   };
 
-  // Estados UI
   isLoading = false;
   errorMessage: string | null = null;
 
-  // Modales de filtros
   showVendedoresModal = false;
   showZonasModal = false;
   showProductosModal = false;
 
-  // Paginación
   pageSize = 10;
   currentPage = 1;
 
-  // Estadísticas
   estadisticas: EstadisticasReporte = {
     totalVentas: 0,
     pedidosPendientes: 23, // Mock - no hay endpoint
@@ -251,7 +246,6 @@ export class ReportesComponent implements OnInit {
     return 'danger';
   }
 
-  // Paginación
   onPageSizeChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     this.pageSize = Number(target.value);
