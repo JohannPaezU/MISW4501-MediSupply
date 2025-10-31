@@ -12,21 +12,24 @@ class RegisterVisitRequestTest {
         val visitDate = Date()
         val observations = "Test observations"
         val visualEvidence = "https://example.com/image.jpg"
-        val geolocation = "4.6097,-74.0817"
+        val latitude = 4.6097
+        val longitude = -74.0817
 
         // When
         val request = RegisterVisitRequest(
             visitDate = visitDate,
             observations = observations,
             visualEvidence = visualEvidence,
-            geolocation = geolocation
+            latitude = latitude,
+            longitude = longitude
         )
 
         // Then
         assertEquals("Visit date should match", visitDate, request.visitDate)
         assertEquals("Observations should match", observations, request.observations)
         assertEquals("Visual evidence should match", visualEvidence, request.visualEvidence)
-        assertEquals("Geolocation should match", geolocation, request.geolocation)
+        assertEquals("Latitude should match", latitude, request.latitude, 0.0001)
+        assertEquals("Longitude should match", longitude, request.longitude, 0.0001)
     }
 
     @Test
@@ -36,7 +39,8 @@ class RegisterVisitRequestTest {
             visitDate = Date(),
             observations = "Test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When & Then
@@ -50,13 +54,15 @@ class RegisterVisitRequestTest {
             visitDate = Date(),
             observations = "",
             visualEvidence = "",
-            geolocation = ""
+            latitude = 0.0,
+            longitude = 0.0
         )
 
         // Then
         assertTrue("Observations should be empty", request.observations.isEmpty())
         assertTrue("Visual evidence should be empty", request.visualEvidence.isEmpty())
-        assertTrue("Geolocation should be empty", request.geolocation.isEmpty())
+        assertEquals("Latitude should be zero", 0.0, request.latitude, 0.0001)
+        assertEquals("Longitude should be zero", 0.0, request.longitude, 0.0001)
     }
 
     @Test
@@ -69,7 +75,8 @@ class RegisterVisitRequestTest {
             visitDate = Date(),
             observations = longText,
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // Then
@@ -83,7 +90,8 @@ class RegisterVisitRequestTest {
             visitDate = Date(),
             observations = "Original observations",
             visualEvidence = "https://example.com/original.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -108,14 +116,16 @@ class RegisterVisitRequestTest {
             visitDate = date,
             observations = "Test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         val request2 = RegisterVisitRequest(
             visitDate = date,
             observations = "Test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When & Then
@@ -129,7 +139,8 @@ class RegisterVisitRequestTest {
             visitDate = Date(),
             observations = "Test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When
@@ -143,21 +154,23 @@ class RegisterVisitRequestTest {
     @Test
     fun `RegisterVisitRequest should handle different geolocation formats`() {
         // Given
-        val geolocations = listOf(
-            "4.6097,-74.0817",
-            "40.7128,-74.0060",
-            "-33.8688,151.2093"
+        val coordinates = listOf(
+            Pair(4.6097, -74.0817),
+            Pair(40.7128, -74.0060),
+            Pair(-33.8688, 151.2093)
         )
 
         // When & Then
-        geolocations.forEach { geo ->
+        coordinates.forEach { (lat, lng) ->
             val request = RegisterVisitRequest(
                 visitDate = Date(),
                 observations = "Test",
                 visualEvidence = "https://example.com/image.jpg",
-                geolocation = geo
+                latitude = lat,
+                longitude = lng
             )
-            assertEquals("Geolocation should match", geo, request.geolocation)
+            assertEquals("Latitude should match", lat, request.latitude, 0.0001)
+            assertEquals("Longitude should match", lng, request.longitude, 0.0001)
         }
     }
 
@@ -176,7 +189,8 @@ class RegisterVisitRequestTest {
                 visitDate = Date(),
                 observations = "Test",
                 visualEvidence = url,
-                geolocation = "4.6097,-74.0817"
+                latitude = 4.6097,
+                longitude = -74.0817
             )
             assertEquals("Visual evidence should match", url, request.visualEvidence)
         }
@@ -192,7 +206,8 @@ class RegisterVisitRequestTest {
             visitDate = now,
             observations = "Current date test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // Then
@@ -210,7 +225,8 @@ class RegisterVisitRequestTest {
             visitDate = Date(),
             observations = specialText,
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // Then

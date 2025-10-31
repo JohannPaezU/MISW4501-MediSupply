@@ -3,6 +3,8 @@ package com.mfpe.medisupply.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.mfpe.medisupply.data.model.RegisterVisitRequest
 import com.mfpe.medisupply.data.model.RegisterVisitResponse
+import com.mfpe.medisupply.data.model.VisitClient
+import com.mfpe.medisupply.data.model.VisitGeolocation
 import com.mfpe.medisupply.data.repository.VisitRepository
 import org.junit.Assert.*
 import org.junit.Before
@@ -48,7 +50,8 @@ class VisitsViewModelTest {
             visitDate = Date(),
             observations = "Test observations",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         `when`(mockVisitRepository.registerCompletedVisit(authToken, id, request))
@@ -56,14 +59,16 @@ class VisitsViewModelTest {
 
         doAnswer { invocation ->
             val callback = invocation.getArgument<Callback<RegisterVisitResponse>>(0)
+            val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
             val response = Response.success(RegisterVisitResponse(
                 id = id,
-                clientId = "client-123",
+                clientId = VisitClient("client-123", "John Doe"),
                 expectedDate = Date(),
                 visitDate = Date(),
                 observations = "Test observations",
-                visualEvidence = "https://example.com/image.jpg",
-                geolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image.jpg",
+                expectedGeoLocation = geolocation,
+                reportGeoLocation = geolocation,
                 status = "completed"
             ))
             callback.onResponse(mockCall, response)
@@ -97,7 +102,8 @@ class VisitsViewModelTest {
             visitDate = Date(),
             observations = "Success test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         `when`(mockVisitRepository.registerCompletedVisit(authToken, id, request))
@@ -105,14 +111,16 @@ class VisitsViewModelTest {
 
         doAnswer { invocation ->
             val callback = invocation.getArgument<Callback<RegisterVisitResponse>>(0)
+            val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
             val response = Response.success(RegisterVisitResponse(
                 id = id,
-                clientId = "client-123",
+                clientId = VisitClient("client-123", "John Doe"),
                 expectedDate = Date(),
                 visitDate = Date(),
                 observations = "Success test",
-                visualEvidence = "https://example.com/image.jpg",
-                geolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image.jpg",
+                expectedGeoLocation = geolocation,
+                reportGeoLocation = geolocation,
                 status = "completed"
             ))
             callback.onResponse(mockCall, response)
@@ -150,7 +158,8 @@ class VisitsViewModelTest {
             visitDate = Date(),
             observations = "Error test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         `when`(mockVisitRepository.registerCompletedVisit(authToken, id, request))
@@ -193,7 +202,8 @@ class VisitsViewModelTest {
             visitDate = Date(),
             observations = "Failure test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         `when`(mockVisitRepository.registerCompletedVisit(authToken, id, request))
@@ -232,7 +242,8 @@ class VisitsViewModelTest {
             visitDate = Date(),
             observations = "Null response test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         `when`(mockVisitRepository.registerCompletedVisit(authToken, id, request))
@@ -269,7 +280,8 @@ class VisitsViewModelTest {
             visitDate = Date(),
             observations = "Empty token test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         `when`(mockVisitRepository.registerCompletedVisit(authToken, id, request))
@@ -309,19 +321,22 @@ class VisitsViewModelTest {
             visitDate = Date(),
             observations = "Multiple calls test 1",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
         val request2 = RegisterVisitRequest(
             visitDate = Date(),
             observations = "Multiple calls test 2",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
         val request3 = RegisterVisitRequest(
             visitDate = Date(),
             observations = "Multiple calls test 3",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         `when`(mockVisitRepository.registerCompletedVisit(authToken, id, request1))
@@ -333,14 +348,16 @@ class VisitsViewModelTest {
 
         doAnswer { invocation ->
             val callback = invocation.getArgument<Callback<RegisterVisitResponse>>(0)
+            val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
             val response = Response.success(RegisterVisitResponse(
                 id = id,
-                clientId = "client-123",
+                clientId = VisitClient("client-123", "John Doe"),
                 expectedDate = Date(),
                 visitDate = Date(),
                 observations = "Multiple calls test",
-                visualEvidence = "https://example.com/image.jpg",
-                geolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image.jpg",
+                expectedGeoLocation = geolocation,
+                reportGeoLocation = geolocation,
                 status = "completed"
             ))
             callback.onResponse(mockCall, response)
@@ -382,7 +399,8 @@ class VisitsViewModelTest {
             visitDate = Date(),
             observations = "State test",
             visualEvidence = "https://example.com/image.jpg",
-            geolocation = "4.6097,-74.0817"
+            latitude = 4.6097,
+            longitude = -74.0817
         )
 
         // When & Then
@@ -397,3 +415,4 @@ class VisitsViewModelTest {
         verify(mockVisitRepository, times(2)).registerCompletedVisit(authToken, id, request)
     }
 }
+
