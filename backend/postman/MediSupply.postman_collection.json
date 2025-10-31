@@ -244,7 +244,6 @@
 									"    pm.expect(jsonData.user).to.have.property('email');\r",
 									"    pm.expect(jsonData.user).to.have.property('full_name');\r",
 									"    pm.expect(jsonData.user).to.have.property('doi');\r",
-									"    pm.expect(jsonData.user).to.have.property('address');\r",
 									"    pm.expect(jsonData.user).to.have.property('phone');\r",
 									"    pm.expect(jsonData.user).to.have.property('role');\r",
 									"});\r",
@@ -263,7 +262,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"228959\"\r\n}",
+							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"419187\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -467,22 +466,39 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
-									"key": "date",
-									"value": "Thu, 23 Oct 2025 01:59:34 GMT"
-								},
-								{
-									"key": "server",
-									"value": "uvicorn"
-								},
-								{
-									"key": "content-length",
-									"value": "491"
+									"key": "Content-Length",
+									"value": "726"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
+									"name": "Content-Type",
 									"description": "",
 									"type": "text"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 31 Oct 2025 00:08:41 GMT"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=%2Bm1cwN4Wj4FE9JtPcHYEP4S1vW1jHVH0VP7icqBNes8%3D\\u0026sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d\\u0026ts=1761869321\"}],\"max_age\":3600}"
+								},
+								{
+									"key": "Reporting-Endpoints",
+									"value": "heroku-nel=\"https://nel.heroku.com/reports?s=%2Bm1cwN4Wj4FE9JtPcHYEP4S1vW1jHVH0VP7icqBNes8%3D&sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d&ts=1761869321\""
+								},
+								{
+									"key": "Server",
+									"value": "Heroku"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 heroku-router"
 								}
 							],
 							"cookie": [
@@ -492,7 +508,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"total_count\": 2,\n    \"sellers\": [\n        {\n            \"id\": \"44444444-4444-4444-4444-444444444444\",\n            \"full_name\": \"Johann Sebastian Páez Campos\",\n            \"email\": \"sebastian.paezcampos@gmail.com\",\n            \"phone\": \"123456789\",\n            \"doi\": \"4444444444-4\",\n            \"role\": \"commercial\",\n            \"created_at\": \"2025-10-23T01:57:23.938432Z\"\n        },\n        {\n            \"id\": \"55555555-5555-5555-5555-555555555555\",\n            \"full_name\": \"Miguel Fernando Padilla Espino\",\n            \"email\": \"najoh2907@hotmail.com\",\n            \"phone\": \"123456789\",\n            \"doi\": \"5555555555-5\",\n            \"role\": \"commercial\",\n            \"created_at\": \"2025-10-23T01:57:23.938432Z\"\n        }\n    ]\n}"
+							"body": "{\n    \"total_count\": 2,\n    \"sellers\": [\n        {\n            \"id\": \"20a48247-c6e3-48ff-af6a-89b6ba452bfb\",\n            \"full_name\": \"Miguel Padilla\",\n            \"email\": \"miguelpadillaespino@gmail.com\",\n            \"phone\": \"947891236\",\n            \"doi\": \"70267411\",\n            \"role\": \"commercial\",\n            \"created_at\": \"2025-10-30T19:02:22.515114Z\",\n            \"zone\": {\n                \"id\": \"9015936e-36b2-43c6-a363-70616a795732\",\n                \"description\": \"San José\",\n                \"created_at\": \"2025-10-29T22:17:31.608995Z\"\n            }\n        },\n        {\n            \"id\": \"44444444-4444-4444-4444-444444444444\",\n            \"full_name\": \"Johann Sebastian Páez Campos\",\n            \"email\": \"sebastian.paezcampos@gmail.com\",\n            \"phone\": \"123456789\",\n            \"doi\": \"4444444444-4\",\n            \"role\": \"commercial\",\n            \"created_at\": \"2025-10-29T22:17:34.277496Z\",\n            \"zone\": {\n                \"id\": \"cf36086f-30ee-4b69-aa4f-8495c9855d78\",\n                \"description\": \"Buenos Aires\",\n                \"created_at\": \"2025-10-29T22:17:31.608995Z\"\n            }\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -979,22 +995,39 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
-									"key": "date",
-									"value": "Wed, 22 Oct 2025 04:25:53 GMT"
-								},
-								{
-									"key": "server",
-									"value": "uvicorn"
-								},
-								{
-									"key": "content-length",
-									"value": "157"
+									"key": "Content-Length",
+									"value": "942"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
+									"name": "Content-Type",
 									"description": "",
 									"type": "text"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 31 Oct 2025 00:10:19 GMT"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=9MlJ5UxFp1DhhbnLZOJwywD3hGK20b9LUm5MV9xDCpE%3D\\u0026sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d\\u0026ts=1761869419\"}],\"max_age\":3600}"
+								},
+								{
+									"key": "Reporting-Endpoints",
+									"value": "heroku-nel=\"https://nel.heroku.com/reports?s=9MlJ5UxFp1DhhbnLZOJwywD3hGK20b9LUm5MV9xDCpE%3D&sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d&ts=1761869419\""
+								},
+								{
+									"key": "Server",
+									"value": "Heroku"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 heroku-router"
 								}
 							],
 							"cookie": [
@@ -1004,7 +1037,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"total_count\": 1,\n    \"selling_plans\": [\n        {\n            \"id\": \"2200aade-e056-43bb-8540-ec082af95209\",\n            \"period\": \"Diciembre\",\n            \"goal\": 1500,\n            \"created_at\": \"2025-10-22T04:25:13.545897Z\"\n        }\n    ]\n}"
+							"body": "{\n    \"total_count\": 1,\n    \"selling_plans\": [\n        {\n            \"id\": \"8fb80ef9-9ccf-4861-9048-32d11d2ad1ad\",\n            \"period\": \"Diciembre\",\n            \"goal\": 200,\n            \"created_at\": \"2025-10-31T00:10:15.523507Z\",\n            \"product\": {\n                \"id\": \"8213d57e-f1ef-4b77-8b7b-4a1a2e73ab40\",\n                \"name\": \"Amoxicilina 500mg\",\n                \"details\": \"Antibiótico de amplio espectro para infecciones bacterianas leves y moderadas.\",\n                \"store\": \"CEDI Medellín\",\n                \"batch\": \"AMX-MED-2025\",\n                \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/f1/Amoxicillin_500_mg_capsules.jpg\",\n                \"due_date\": \"2027-04-12\",\n                \"stock\": 798,\n                \"price_per_unit\": 18,\n                \"created_at\": \"2025-10-29T22:17:42.278323Z\"\n            },\n            \"zone\": {\n                \"id\": \"0ac05b27-f9fd-472c-b52a-cc8fd51fb27f\",\n                \"description\": \"Bogotá\",\n                \"created_at\": \"2025-10-29T22:17:31.608995Z\"\n            },\n            \"seller\": {\n                \"id\": \"44444444-4444-4444-4444-444444444444\",\n                \"full_name\": \"Johann Sebastian Páez Campos\",\n                \"email\": \"sebastian.paezcampos@gmail.com\",\n                \"phone\": \"123456789\",\n                \"doi\": \"4444444444-4\",\n                \"role\": \"commercial\",\n                \"created_at\": \"2025-10-29T22:17:34.277496Z\"\n            }\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -1931,7 +1964,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-27\",\r\n    \"distribution_center_id\": \"3839dd05-e0eb-4215-abf1-c6fe02bf48b4\",\r\n    \"client_id\": \"903d75ac-f1a5-4113-97a3-560322dc2dfa\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"2a8a7c19-04c5-47a6-ac49-5affe268f375\",\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"product_id\": \"be6a1c71-b8e3-40c7-b65f-5e08d2579ed5\",\r\n            \"quantity\": 5\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-27\",\r\n    \"distribution_center_id\": \"8206bc3d-f79f-4b4c-8c74-078413fd64b3\",\r\n    \"client_id\": \"cd968a87-af40-44f9-9934-b8a80eab1e75\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"95932601-216a-43a9-8106-08743fbf7c84\",\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"product_id\": \"34828941-42ab-4a60-9e72-eb63fe607bd4\",\r\n            \"quantity\": 5\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2394,7 +2427,6 @@
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -2472,7 +2504,6 @@
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								},
@@ -2568,7 +2599,6 @@
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								},
@@ -2726,7 +2756,6 @@
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								},
@@ -2763,6 +2792,122 @@
 								}
 							],
 							"body": "{\n    \"id\": \"12cb8f44-4470-406e-94f4-7b43ac33edae\",\n    \"expected_date\": \"2025-11-03\",\n    \"visit_date\": \"2025-11-29T02:10:15Z\",\n    \"observations\": \"Se realizó la revisión\",\n    \"visual_evidence_url\": \"https://storage.googleapis.com/medi-supply-bucket-stg/visits/44444444-4444-4444-4444-444444444444/12cb8f44-4470-406e-94f4-7b43ac33edae.mp4?Expires=1761778292&GoogleAccessId=id-medi-supply-stg-cred%40turnkey-aleph-438403-h1.iam.gserviceaccount.com&Signature=vMRF9kvjLgKDihT5PtwEssEGpXBDjVBswE50kywF4XZkryofjDYZwifqTRpzQHjyPyD0QGuJadPiw38xh9s485FfHcT3KWG1EZn1Qdzu9AhBFZx%2BM7EBm7EthRTTb6oArUvap%2Fdxqfrfgq3tOVSmSmbkH0s1vKCZHafNVEdkmrUF5YilR%2BdPIP1nvx9FYNcuS3I4fwyyu8KQ80FSC9%2F43UxuvmFaCRv9X6%2BlUZf9gp997dDlTXwuldUaB4arB9xfVZT6N7MWYmDbLxuUAg6rormMvSnjIt7lyi9Wlkf66wabyYa3wbwO0EGvA65N3rMDU%2BJYontx9GSAl6dN8fmNhw%3D%3D\",\n    \"status\": \"completed\",\n    \"created_at\": \"2025-10-29T22:42:53.455789Z\",\n    \"expected_geolocation\": {\n        \"id\": \"b7cedd85-8fe2-44a5-9a90-db80d08a2e20\",\n        \"address\": \"Tv. 78k #41-35, Bogotá, Colombia\",\n        \"latitude\": 4.619743199999999,\n        \"longitude\": -74.1582071,\n        \"created_at\": \"2025-10-29T22:42:53.446629Z\"\n    },\n    \"report_geolocation\": {\n        \"id\": \"4e1860e5-9f34-40aa-8af3-54218faa58ae\",\n        \"latitude\": 4.619802,\n        \"longitude\": -74.156965,\n        \"created_at\": \"2025-10-29T22:46:32.444746Z\"\n    },\n    \"client\": {\n        \"id\": \"b94c7b27-6836-4124-ad03-cc163faddcef\",\n        \"full_name\": \"Heather Sanchez\",\n        \"email\": \"mestrada@example.com\",\n        \"phone\": \"7503925481\",\n        \"doi\": \"8642580921\",\n        \"address\": \"3550 Mccarthy Spring\\nNorth Wanda, MD 62779\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-29T22:17:40.726090Z\"\n    },\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-29T22:17:34.277496Z\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Get Orders Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "seller_id",
+									"value": "55555555-5555-5555-5555-555555555555",
+									"disabled": true
+								},
+								{
+									"key": "order_status",
+									"value": "preparing",
+									"disabled": true
+								},
+								{
+									"key": "start_date",
+									"value": "2025-10-01 00:00:00",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2025-10-20 23:59:59",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Orders Report",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/reports/orders?seller_id=55555555-5555-5555-5555-555555555555",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"reports",
+										"orders"
+									],
+									"query": [
+										{
+											"key": "seller_id",
+											"value": "55555555-5555-5555-5555-555555555555"
+										},
+										{
+											"key": "order_status",
+											"value": "preparing",
+											"disabled": true
+										},
+										{
+											"key": "start_date",
+											"value": "2025-10-01 00:00:00",
+											"disabled": true
+										},
+										{
+											"key": "end_date",
+											"value": "2025-10-20 23:59:59",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 30 Oct 2025 23:57:23 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "590"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 1,\n    \"orders\": [\n        {\n            \"id\": \"d73bb426-fde1-45df-aada-6f8b21c26962\",\n            \"comments\": \"Por favor utilizar el timbre rojo\",\n            \"delivery_date\": \"2025-10-27\",\n            \"status\": \"preparing\",\n            \"created_at\": \"2025-10-20T21:44:36.795000Z\",\n            \"seller\": {\n                \"id\": \"55555555-5555-5555-5555-555555555555\",\n                \"full_name\": \"Miguel Fernando Padilla Espino\",\n                \"email\": \"miguelpadillaespino@gmail.com\",\n                \"phone\": \"123456789\",\n                \"doi\": \"5555555555-5\",\n                \"role\": \"commercial\",\n                \"created_at\": \"2025-10-29T07:22:26.736882Z\",\n                \"zone\": {\n                    \"id\": \"164ef870-5c16-4a73-b4e4-dc9a9fdfd1c5\",\n                    \"description\": \"Miami\",\n                    \"created_at\": \"2025-10-29T07:22:24.571552Z\"\n                }\n            },\n            \"products\": []\n        }\n    ]\n}"
 						}
 					]
 				}

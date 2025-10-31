@@ -12,7 +12,7 @@ from src.schemas.order_schema import (
     OrderProductDetail,
     OrderResponse,
 )
-from src.services.order_service import create_order, get_all_orders, get_order_by_id
+from src.services.order_service import create_order, get_order_by_id, get_orders
 
 order_router = APIRouter(tags=["Orders"], prefix="/orders")
 
@@ -89,14 +89,14 @@ Retrieve a list of all orders created by the current user.
     - **created_at**: Timestamp when the order was created.
 """,
 )
-async def get_orders(
+async def get_all_orders(
     *,
     db: Session = Depends(get_db),
     current_user: User = Depends(
         require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
     ),
 ) -> GetOrdersResponse:
-    orders = get_all_orders(db=db, current_user=current_user)
+    orders = get_orders(db=db, current_user=current_user)
 
     return GetOrdersResponse(total_count=len(orders), orders=orders)
 

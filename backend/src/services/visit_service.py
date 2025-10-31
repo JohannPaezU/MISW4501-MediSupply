@@ -45,7 +45,7 @@ def create_visit(
     return visit
 
 
-def get_all_visits(
+def get_visits(
     *,
     db: Session,
     current_user: User,
