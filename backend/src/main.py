@@ -13,6 +13,7 @@ from src.routers.health_check_router import health_check_router
 from src.routers.order_router import order_router
 from src.routers.product_router import product_router
 from src.routers.provider_router import provider_router
+from src.routers.report_router import report_router
 from src.routers.seller_router import seller_router
 from src.routers.selling_plan_router import selling_plan_router
 from src.routers.visit_router import visit_router
@@ -43,6 +44,7 @@ app.include_router(distribution_center_router, prefix=prefix)
 app.include_router(order_router, prefix=prefix)
 app.include_router(client_router, prefix=prefix)
 app.include_router(visit_router, prefix=prefix)
+app.include_router(report_router, prefix=prefix)
 setup_exception_handlers(app)
 
 

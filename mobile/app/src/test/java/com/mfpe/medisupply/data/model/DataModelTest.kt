@@ -178,7 +178,7 @@ class DataModelTest {
         val now = java.util.Date()
         val orderProduct = OrderProduct(productId = "p1", productName = "Producto 1", quantity = 2)
         val order = Order(
-            id = 1,
+            id = "1",
             createdAt = now,
             deliveryDate = now,
             distributionCenterId = "dc1",
@@ -189,7 +189,7 @@ class DataModelTest {
             status = "pending",
             products = listOf(orderProduct)
         )
-        assertEquals(1, order.id)
+        assertEquals("1", order.id)
         assertEquals(now, order.createdAt)
         assertEquals(now, order.deliveryDate)
         assertEquals("dc1", order.distributionCenterId)
@@ -233,7 +233,7 @@ class DataModelTest {
         val now = java.util.Date()
         val orderProduct = OrderProduct(productId = "p1", productName = "Producto 1", quantity = 2)
         val order = Order(
-            id = 1,
+            id = "1",
             createdAt = now,
             deliveryDate = now,
             distributionCenterId = "dc1",
@@ -261,11 +261,11 @@ class DataModelTest {
 
     @Test
     fun `SellerHomeResponse should have correct properties`() {
-        val response = SellerHomeResponse(id = 1, numberClients = 5, numberOrders = 10, vendorZone = "Zona 1")
-        assertEquals(1, response.id)
-        assertEquals(5, response.numberClients)
-        assertEquals(10, response.numberOrders)
-        assertEquals("Zona 1", response.vendorZone)
+        val response = SellerHomeResponse(id = "1", clientsCount = 5, ordersCount = 10, zone = "Zona 1")
+        assertEquals("1", response.id)
+        assertEquals(5, response.clientsCount)
+        assertEquals(10, response.ordersCount)
+        assertEquals("Zona 1", response.zone)
     }
 
     @Test

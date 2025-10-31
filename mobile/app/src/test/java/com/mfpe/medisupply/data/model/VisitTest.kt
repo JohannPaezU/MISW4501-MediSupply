@@ -13,12 +13,12 @@ class VisitTest {
         val visitDate = "2025-10-29"
         val observations = "Test observations"
         val visualEvidence = "https://example.com/image.jpg"
-        val visitGeolocation = "4.6097,-74.0817"
         val status = "completed"
+        val expectedGeolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
+        val reportGeolocation = VisitGeolocation("geo-2", "123 Main St", 4.6097, -74.0817)
         val client = VisitClient(
             id = "client-123",
-            name = "Test Client",
-            geolocation = "4.6097,-74.0817"
+            fullName = "Test Client"
         )
 
         // When
@@ -27,9 +27,10 @@ class VisitTest {
             expectedDate = expectedDate,
             visitDate = visitDate,
             observations = observations,
-            visualEvidence = visualEvidence,
-            visitGeolocation = visitGeolocation,
+            visualEvidenceUrl = visualEvidence,
             status = status,
+            expectedGeolocation = expectedGeolocation,
+            reportGeolocation = reportGeolocation,
             client = client
         )
 
@@ -38,8 +39,9 @@ class VisitTest {
         assertEquals("Expected date should match", expectedDate, visit.expectedDate)
         assertEquals("Visit date should match", visitDate, visit.visitDate)
         assertEquals("Observations should match", observations, visit.observations)
-        assertEquals("Visual evidence should match", visualEvidence, visit.visualEvidence)
-        assertEquals("Visit geolocation should match", visitGeolocation, visit.visitGeolocation)
+        assertEquals("Visual evidence should match", visualEvidence, visit.visualEvidenceUrl)
+        assertEquals("Expected geolocation should match", expectedGeolocation, visit.expectedGeolocation)
+        assertEquals("Report geolocation should match", reportGeolocation, visit.reportGeolocation)
         assertEquals("Status should match", status, visit.status)
         assertEquals("Client should match", client, visit.client)
     }
@@ -47,15 +49,17 @@ class VisitTest {
     @Test
     fun `Visit should be Serializable`() {
         // Given
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
         val visit = Visit(
             id = "visit-123",
             expectedDate = "2025-10-28",
             visitDate = "2025-10-29",
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            visitGeolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
             status = "completed",
-            client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+            expectedGeolocation = geolocation,
+            reportGeolocation = geolocation,
+            client = VisitClient("client-123", "Test Client")
         )
 
         // When & Then
@@ -65,15 +69,17 @@ class VisitTest {
     @Test
     fun `Visit should handle null visitDate`() {
         // Given & When
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
         val visit = Visit(
             id = "visit-123",
             expectedDate = "2025-10-28",
             visitDate = null,
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            visitGeolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
             status = "pending",
-            client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+            expectedGeolocation = geolocation,
+            reportGeolocation = geolocation,
+            client = VisitClient("client-123", "Test Client")
         )
 
         // Then
@@ -84,15 +90,17 @@ class VisitTest {
     @Test
     fun `Visit should handle empty strings`() {
         // Given & When
+        val geolocation = VisitGeolocation("", "", 0.0, 0.0)
         val visit = Visit(
             id = "",
             expectedDate = "",
             visitDate = "",
             observations = "",
-            visualEvidence = "",
-            visitGeolocation = "",
+            visualEvidenceUrl = "",
             status = "",
-            client = VisitClient("", "", "")
+            expectedGeolocation = geolocation,
+            reportGeolocation = geolocation,
+            client = VisitClient("", "")
         )
 
         // Then
@@ -100,24 +108,28 @@ class VisitTest {
         assertTrue("Expected date should be empty", visit.expectedDate.isEmpty())
         assertTrue("Visit date should be empty", visit.visitDate?.isEmpty() == true)
         assertTrue("Observations should be empty", visit.observations.isEmpty())
+        assertTrue("Visual evidence should be empty", visit.visualEvidenceUrl.isEmpty())
+        assertTrue("Status should be empty", visit.status.isEmpty())
     }
 
     @Test
-    fun `Visit should handle different statuses`() {
+    fun `Visit should handle different status values`() {
         // Given
         val statuses = listOf("completed", "pending", "cancelled", "in_progress")
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
+        val client = VisitClient("client-123", "Test Client")
 
         // When & Then
         statuses.forEach { status ->
             val visit = Visit(
                 id = "visit-123",
                 expectedDate = "2025-10-28",
-                visitDate = "2025-10-29",
+                visitDate = "2025-10-28",
                 observations = "Test",
-                visualEvidence = "https://example.com/image.jpg",
-                visitGeolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image.jpg",
                 status = status,
+                expectedGeolocation = geolocation,
+                reportGeolocation = geolocation,
                 client = client
             )
             assertEquals("Status should match", status, visit.status)
@@ -127,16 +139,17 @@ class VisitTest {
     @Test
     fun `Visit should support copy with different values`() {
         // Given
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
         val original = Visit(
             id = "visit-123",
             expectedDate = "2025-10-28",
             visitDate = null,
             observations = "Original",
-            visualEvidence = "https://example.com/image.jpg",
-            visitGeolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/original.jpg",
             status = "pending",
-            client = client
+            expectedGeolocation = geolocation,
+            reportGeolocation = geolocation,
+            client = VisitClient("client-123", "Test Client")
         )
 
         // When
@@ -151,21 +164,24 @@ class VisitTest {
         assertEquals("Modified visit date", "2025-10-29", copied.visitDate)
         assertEquals("Modified observations", "Modified", copied.observations)
         assertEquals("Modified status", "completed", copied.status)
+        assertNotEquals("Observations should differ", original.observations, copied.observations)
     }
 
     @Test
     fun `Visit equals should work correctly`() {
         // Given
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
+        val client = VisitClient("client-123", "Test Client")
 
         val visit1 = Visit(
             id = "visit-123",
             expectedDate = "2025-10-28",
             visitDate = "2025-10-29",
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            visitGeolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
             status = "completed",
+            expectedGeolocation = geolocation,
+            reportGeolocation = geolocation,
             client = client
         )
 
@@ -174,9 +190,10 @@ class VisitTest {
             expectedDate = "2025-10-28",
             visitDate = "2025-10-29",
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            visitGeolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
             status = "completed",
+            expectedGeolocation = geolocation,
+            reportGeolocation = geolocation,
             client = client
         )
 
@@ -187,16 +204,17 @@ class VisitTest {
     @Test
     fun `Visit hashCode should be consistent`() {
         // Given
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
         val visit = Visit(
             id = "visit-123",
             expectedDate = "2025-10-28",
             visitDate = "2025-10-29",
             observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            visitGeolocation = "4.6097,-74.0817",
+            visualEvidenceUrl = "https://example.com/image.jpg",
             status = "completed",
-            client = client
+            expectedGeolocation = geolocation,
+            reportGeolocation = geolocation,
+            client = VisitClient("client-123", "Test Client")
         )
 
         // When
@@ -208,30 +226,26 @@ class VisitTest {
     }
 
     @Test
-    fun `Visit should handle client information correctly`() {
+    fun `Visit should handle long observation text`() {
         // Given
-        val client = VisitClient(
-            id = "client-456",
-            name = "Important Client",
-            geolocation = "4.6098,-74.0818"
-        )
+        val longText = "A".repeat(2000)
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
 
         // When
         val visit = Visit(
             id = "visit-123",
             expectedDate = "2025-10-28",
             visitDate = "2025-10-29",
-            observations = "Test",
-            visualEvidence = "https://example.com/image.jpg",
-            visitGeolocation = "4.6097,-74.0817",
+            observations = longText,
+            visualEvidenceUrl = "https://example.com/image.jpg",
             status = "completed",
-            client = client
+            expectedGeolocation = geolocation,
+            reportGeolocation = geolocation,
+            client = VisitClient("client-123", "Test Client")
         )
 
         // Then
-        assertEquals("Client ID should match", "client-456", visit.client.id)
-        assertEquals("Client name should match", "Important Client", visit.client.name)
-        assertEquals("Client geolocation should match", "4.6098,-74.0818", visit.client.geolocation)
+        assertEquals("Should handle long text", 2000, visit.observations.length)
     }
 }
 
