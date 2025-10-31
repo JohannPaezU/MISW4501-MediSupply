@@ -8,18 +8,19 @@ class SellerVisitResponseTest {
     @Test
     fun `SellerVisitResponse should have correct properties`() {
         // Given
-        val sellerId = 1
-        val date = "2025-10-28"
         val totalVisits = 5
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val client = VisitClient("client-123", "Test Client")
+        val geolocation1 = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
+        val geolocation2 = VisitGeolocation("geo-2", "456 Oak St", 4.6098, -74.0818)
         val visits = listOf(
             Visit(
                 id = "visit-1",
                 expectedDate = "2025-10-28",
                 visitDate = "2025-10-28",
                 observations = "Visit 1",
-                visualEvidence = "https://example.com/image1.jpg",
-                visitGeolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image1.jpg",
+                expectedGeolocation = geolocation1,
+                reportGeolocation = geolocation1,
                 status = "completed",
                 client = client
             ),
@@ -28,8 +29,9 @@ class SellerVisitResponseTest {
                 expectedDate = "2025-10-28",
                 visitDate = null,
                 observations = "Visit 2",
-                visualEvidence = "https://example.com/image2.jpg",
-                visitGeolocation = "4.6098,-74.0818",
+                visualEvidenceUrl = "https://example.com/image2.jpg",
+                expectedGeolocation = geolocation2,
+                reportGeolocation = geolocation2,
                 status = "pending",
                 client = client
             )
@@ -37,16 +39,12 @@ class SellerVisitResponseTest {
 
         // When
         val response = SellerVisitResponse(
-            sellerId = sellerId,
-            date = date,
-            totalVisits = totalVisits,
+            totalCount = totalVisits,
             visits = visits
         )
 
         // Then
-        assertEquals("Seller ID should match", sellerId, response.sellerId)
-        assertEquals("Date should match", date, response.date)
-        assertEquals("Total visits should match", totalVisits, response.totalVisits)
+        assertEquals("Total visits should match", totalVisits, response.totalCount)
         assertEquals("Visits list should match", visits, response.visits)
         assertEquals("Visits count should match", 2, response.visits.size)
     }
@@ -55,9 +53,7 @@ class SellerVisitResponseTest {
     fun `SellerVisitResponse should be Serializable`() {
         // Given
         val response = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 0,
+            totalCount = 0,
             visits = emptyList()
         )
 
@@ -69,29 +65,29 @@ class SellerVisitResponseTest {
     fun `SellerVisitResponse should handle empty visits list`() {
         // Given & When
         val response = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 0,
+            totalCount = 0,
             visits = emptyList()
         )
 
         // Then
         assertTrue("Visits list should be empty", response.visits.isEmpty())
-        assertEquals("Total visits should be 0", 0, response.totalVisits)
+        assertEquals("Total visits should be 0", 0, response.totalCount)
     }
 
     @Test
     fun `SellerVisitResponse should handle large visits list`() {
         // Given
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val client = VisitClient("client-123", "Test Client")
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
         val visits = (1..100).map { index ->
             Visit(
                 id = "visit-$index",
                 expectedDate = "2025-10-28",
                 visitDate = "2025-10-28",
                 observations = "Visit $index",
-                visualEvidence = "https://example.com/image$index.jpg",
-                visitGeolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image$index.jpg",
+                expectedGeolocation = geolocation,
+                reportGeolocation = geolocation,
                 status = "completed",
                 client = client
             )
@@ -99,102 +95,57 @@ class SellerVisitResponseTest {
 
         // When
         val response = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 100,
+            totalCount = 100,
             visits = visits
         )
 
         // Then
         assertEquals("Should handle 100 visits", 100, response.visits.size)
-        assertEquals("Total visits should be 100", 100, response.totalVisits)
-    }
-
-    @Test
-    fun `SellerVisitResponse should handle different seller IDs`() {
-        // Given
-        val sellerIds = listOf(1, 100, 9999, -1, 0)
-
-        // When & Then
-        sellerIds.forEach { id ->
-            val response = SellerVisitResponse(
-                sellerId = id,
-                date = "2025-10-28",
-                totalVisits = 0,
-                visits = emptyList()
-            )
-            assertEquals("Seller ID should match", id, response.sellerId)
-        }
-    }
-
-    @Test
-    fun `SellerVisitResponse should handle different date formats`() {
-        // Given
-        val dates = listOf("2025-10-28", "28-10-2025", "10/28/2025", "2025/10/28")
-
-        // When & Then
-        dates.forEach { date ->
-            val response = SellerVisitResponse(
-                sellerId = 1,
-                date = date,
-                totalVisits = 0,
-                visits = emptyList()
-            )
-            assertEquals("Date should match", date, response.date)
-        }
+        assertEquals("Total visits should be 100", 100, response.totalCount)
     }
 
     @Test
     fun `SellerVisitResponse should support copy with different values`() {
         // Given
         val original = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 5,
+            totalCount = 5,
             visits = emptyList()
         )
 
         // When
-        val copied = original.copy(
-            totalVisits = 10,
-            date = "2025-10-29"
-        )
+        val copied = original.copy(totalCount = 10)
 
         // Then
-        assertEquals("Seller ID should remain the same", original.sellerId, copied.sellerId)
-        assertEquals("Modified total visits", 10, copied.totalVisits)
-        assertEquals("Modified date", "2025-10-29", copied.date)
-        assertNotEquals("Total visits should differ", original.totalVisits, copied.totalVisits)
+        assertEquals("Modified total visits", 10, copied.totalCount)
+        assertNotEquals("Total visits should differ", original.totalCount, copied.totalCount)
     }
 
     @Test
     fun `SellerVisitResponse equals should work correctly`() {
         // Given
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val client = VisitClient("client-123", "Test Client")
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
         val visits = listOf(
             Visit(
                 id = "visit-1",
                 expectedDate = "2025-10-28",
                 visitDate = "2025-10-28",
                 observations = "Test",
-                visualEvidence = "https://example.com/image.jpg",
-                visitGeolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image.jpg",
+                expectedGeolocation = geolocation,
+                reportGeolocation = geolocation,
                 status = "completed",
                 client = client
             )
         )
 
         val response1 = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 1,
+            totalCount = 1,
             visits = visits
         )
 
         val response2 = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 1,
+            totalCount = 1,
             visits = visits
         )
 
@@ -206,9 +157,7 @@ class SellerVisitResponseTest {
     fun `SellerVisitResponse hashCode should be consistent`() {
         // Given
         val response = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 5,
+            totalCount = 5,
             visits = emptyList()
         )
 
@@ -221,17 +170,19 @@ class SellerVisitResponseTest {
     }
 
     @Test
-    fun `SellerVisitResponse should handle mismatch between totalVisits and visits size`() {
+    fun `SellerVisitResponse should handle mismatch between totalCount and visits size`() {
         // Given
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val client = VisitClient("client-123", "Test Client")
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
         val visits = listOf(
             Visit(
                 id = "visit-1",
                 expectedDate = "2025-10-28",
                 visitDate = "2025-10-28",
                 observations = "Test",
-                visualEvidence = "https://example.com/image.jpg",
-                visitGeolocation = "4.6097,-74.0817",
+                visualEvidenceUrl = "https://example.com/image.jpg",
+                expectedGeolocation = geolocation,
+                reportGeolocation = geolocation,
                 status = "completed",
                 client = client
             )
@@ -239,32 +190,29 @@ class SellerVisitResponseTest {
 
         // When
         val response = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 10,
+            totalCount = 10,
             visits = visits
         )
 
         // Then
-        assertEquals("Total visits should be 10", 10, response.totalVisits)
+        assertEquals("Total visits should be 10", 10, response.totalCount)
         assertEquals("Actual visits size should be 1", 1, response.visits.size)
-        assertNotEquals("Should handle mismatch", response.totalVisits, response.visits.size)
+        assertNotEquals("Should handle mismatch", response.totalCount, response.visits.size)
     }
 
     @Test
     fun `SellerVisitResponse should filter visits by status`() {
         // Given
-        val client = VisitClient("client-123", "Test Client", "4.6097,-74.0817")
+        val client = VisitClient("client-123", "Test Client")
+        val geolocation = VisitGeolocation("geo-1", "123 Main St", 4.6097, -74.0817)
         val visits = listOf(
-            Visit("v1", "2025-10-28", "2025-10-28", "Test1", "url1", "geo1", "completed", client),
-            Visit("v2", "2025-10-28", null, "Test2", "url2", "geo2", "pending", client),
-            Visit("v3", "2025-10-28", "2025-10-28", "Test3", "url3", "geo3", "completed", client)
+            Visit("v1", "2025-10-28", "2025-10-28", "Test1", "url1", "completed", geolocation, geolocation, client),
+            Visit("v2", "2025-10-28", null, "Test2", "url2", "pending", geolocation, geolocation, client),
+            Visit("v3", "2025-10-28", "2025-10-28", "Test3", "url3", "completed", geolocation, geolocation, client)
         )
 
         val response = SellerVisitResponse(
-            sellerId = 1,
-            date = "2025-10-28",
-            totalVisits = 3,
+            totalCount = 3,
             visits = visits
         )
 
@@ -275,20 +223,6 @@ class SellerVisitResponseTest {
         // Then
         assertEquals("Should have 2 completed visits", 2, completedVisits.size)
         assertEquals("Should have 1 pending visit", 1, pendingVisits.size)
-    }
-
-    @Test
-    fun `SellerVisitResponse should handle empty date string`() {
-        // Given & When
-        val response = SellerVisitResponse(
-            sellerId = 1,
-            date = "",
-            totalVisits = 0,
-            visits = emptyList()
-        )
-
-        // Then
-        assertTrue("Date should be empty", response.date.isEmpty())
     }
 }
 

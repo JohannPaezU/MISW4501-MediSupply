@@ -7,9 +7,10 @@ data class Visit(
     val expectedDate: String,
     val visitDate: String?,
     val observations: String,
-    val visualEvidence: String,
-    val visitGeolocation: String,
+    val visualEvidenceUrl: String,
     val status: String,
+    val expectedGeolocation: VisitGeolocation,
+    val reportGeolocation: VisitGeolocation,
     val client: VisitClient
 ) : Serializable
 

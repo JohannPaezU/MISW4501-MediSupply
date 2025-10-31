@@ -4,7 +4,7 @@ import java.io.Serializable
 import java.util.Date
 
 data class Order(
-    val id: Int,
+    val id: String,
     val createdAt: Date,
     val deliveryDate: Date,
     val distributionCenterId: String,

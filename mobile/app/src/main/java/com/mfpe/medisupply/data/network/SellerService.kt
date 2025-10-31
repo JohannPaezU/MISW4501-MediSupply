@@ -9,15 +9,15 @@ import retrofit2.http.Query
 
 interface SellerService {
 
-    @GET("seller/home")
+    @GET("sellers/me")
     fun getHome(
         @Header("Authorization") authToken: String,
     ): Call<SellerHomeResponse>
 
-    @GET("sellers/me/visits")
+    @GET("visits")
     fun getVisits(
         @Header("Authorization") authToken: String,
-        @Query("date") date: String
+        @Query("expected_date") date: String
     ): Call<SellerVisitResponse>
 
 }
