@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from unittest.mock import patch
 
 import pytest
@@ -10,12 +10,12 @@ from tests.base_test import BaseTest
 
 class TestVisitRouter(BaseTest):
     create_visit_payload = {
-        "expected_date": date.today().replace(day=date.today().day + 1).isoformat(),
+        "expected_date": (date.today() + timedelta(days=1)).isoformat(),
         "address": "123 Main St, Anytown, USA",
     }
 
     report_visit_data = {
-        "visit_date": datetime.today().replace(day=date.today().day + 1).isoformat(),
+        "visit_date": (datetime.today() + timedelta(days=1)).isoformat(),
         "observations": "Client was very satisfied with the service.",
         "latitude": 40.7128,
         "longitude": -74.0060,
@@ -104,7 +104,7 @@ class TestVisitRouter(BaseTest):
         "authorized_client", ["commercial_token", "institutional_token"], indirect=True
     )
     def test_get_all_visits_with_expected_date_filter(self, authorized_client):
-        expected_date = date.today().replace(day=date.today().day + 1).isoformat()
+        expected_date = (date.today() + timedelta(days=1)).isoformat()
         response = authorized_client.get(
             f"{self.prefix}/visits?expected_date={expected_date}"
         )
