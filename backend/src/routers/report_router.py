@@ -3,7 +3,6 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
-
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.models.db_models import Order
@@ -31,7 +30,8 @@ Generate a report of orders with optional filters such as seller ID, order statu
 
 ### Query Parameters:
 - **seller_id**: (Optional) Filter orders by the seller's unique identifier.
-- **order_status**: (Optional) Filter orders by their status. Possible values are: `received`, `preparing`, `in_transit`, `delivered`, `returned`.
+- **order_status**: (Optional) Filter orders by their status. Possible values are: `received`, `preparing`,
+`in_transit`, `delivered`, `returned`.
 - **start_date**: (Optional) Filter orders created on or after this date.
 - **end_date**: (Optional) Filter orders created on or before this date.
 
