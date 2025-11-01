@@ -7,6 +7,7 @@ import { Vendedor } from '../../../interfaces/vendedor.interface';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
 import { CsvExportService } from '../../../services/utilities/csv.service';
 import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
+import { ItemDialogComponent } from '../../../components/item-dialog/item-dialog';
 
 @Component({
   selector: 'app-lista-vendedor',
@@ -14,7 +15,8 @@ import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loa
   imports: [
     CommonModule,
     MatIconModule,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    ItemDialogComponent
   ],
   templateUrl: './lista-vendedor.component.html',
   styleUrls: ['./lista-vendedor.component.css']
@@ -25,6 +27,8 @@ export class ListaVendedorComponent implements OnInit {
   isLoading = false;
   error: string | null = null;
   copiedId: string | null = null;
+  dialogVisible = false;
+  selectedItem: any = null;
 
   pageSize = 10;
   currentPage = 1;
@@ -65,6 +69,13 @@ export class ListaVendedorComponent implements OnInit {
           this.cdr.detectChanges();
         }
       });
+  }
+
+
+  mostrarDetalle(item: any) {
+    this.selectedItem = item;
+    this.dialogVisible = true;
+    this.cdr.detectChanges();
   }
 
   copyToClipboard(id: string): void {

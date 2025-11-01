@@ -1,3 +1,261 @@
-:host {
+/* ==========================================================================
+   ITEM DIALOG - Estilos del Modal de Detalles
+   ========================================================================== */
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dialog-content {
+  background: var(--background-light);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Header --- */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-color-light);
+  background-color: var(--background-alt);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dialog-header h2::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 1.5rem;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  cursor: pointer;
+  color: var(--text-color-medium);
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  background-color: var(--background-hover);
+  color: var(--text-color-dark);
+  transform: rotate(90deg);
+}
+
+.close-btn:active {
+  transform: rotate(90deg) scale(0.95);
+}
+
+/* --- Body --- */
+.dialog-body {
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--background-alt);
+}
+
+.info-table thead th {
+  padding: 1rem 2rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--text-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border-color-light);
+}
+
+.info-table tbody tr {
+  border-bottom: 1px solid var(--border-color-light);
+  transition: background-color 0.15s ease;
+}
+
+.info-table tbody tr:hover {
+  background-color: var(--background-hover);
+}
+
+.info-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.info-table td {
+  padding: 1rem 2rem;
+  vertical-align: top;
+}
+
+.field-label {
+  font-weight: 600;
+  color: var(--text-color-dark);
+  width: 35%;
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.field-label::after {
+  content: ":";
+  margin-left: 0.25rem;
+  color: var(--text-color-light);
+}
+
+.field-value {
+  color: var(--text-color-medium);
+  font-size: 0.875rem;
+  word-break: break-word;
+  line-height: 1.6;
+}
+
+.field-value:empty::before {
+  content: "—";
+  color: var(--text-color-light);
+  font-style: italic;
+}
+
+/* --- Empty State --- */
+.empty {
+  text-align: center;
+  color: var(--text-color-light);
+  padding: 4rem 2rem;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.empty::before {
+  content: "📋";
   display: block;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* --- Scrollbar personalizado --- */
+.dialog-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dialog-body::-webkit-scrollbar-track {
+  background: var(--background-alt);
+}
+
+.dialog-body::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.dialog-body::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color-hover);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .dialog-content {
+    width: 95%;
+    max-height: 90vh;
+    border-radius: 8px;
+  }
+
+  .dialog-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .dialog-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .info-table thead th,
+  .info-table td {
+    padding: 0.75rem 1.25rem;
+  }
+
+  .field-label {
+    font-size: 0.8rem;
+  }
+
+  .field-value {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dialog-content {
+    max-height: 95vh;
+  }
+
+  .info-table thead th,
+  .info-table td {
+    padding: 0.65rem 1rem;
+  }
+
+  .field-label {
+    width: 40%;
+  }
 }
