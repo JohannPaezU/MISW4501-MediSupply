@@ -26,6 +26,7 @@ export class VendedorService {
       map(response => response.zones)
     );
   }
+
   createVendedor(vendedorData: CreateVendedorRequest): Observable<CreateVendedorResponse> {
     return this.http.post<CreateVendedorResponse>(`${this.apiUrl}/sellers`, vendedorData);
   }
