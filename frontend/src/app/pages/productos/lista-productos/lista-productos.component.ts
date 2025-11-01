@@ -8,11 +8,12 @@ import { ProductService } from '../../../services/productos/product.service';
 import { ProductCreateResponse } from '../../../interfaces/producto.interface';
 import { CsvExportService } from '../../../services/utilities/csv.service';
 import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
+import { ItemDialogComponent } from '../../../components/item-dialog/item-dialog';
 
 @Component({
   selector: 'app-lista-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, LoadingSpinnerComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, LoadingSpinnerComponent, ItemDialogComponent],
   templateUrl: './lista-productos.component.html',
   styleUrls: ['./lista-productos.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +23,9 @@ export class ListaProductosComponent {
   isLoading = false;
   hasError = false;
   copiedCell: string | null = null;
+  dialogVisible = false;
+  selectedItem: any = null;
+
 
   pageSize = 10;
   currentPage = 1;
@@ -65,6 +69,12 @@ export class ListaProductosComponent {
         this.totalItems = data.total_count;
         this.cdr.detectChanges();
       });
+  }
+
+  mostrarDetalle(item: any) {
+    this.selectedItem = item;
+    this.dialogVisible = true;
+    this.cdr.detectChanges();
   }
 
   copyToClipboard(id: string, type: 'product' | 'provider', productId: string): void {

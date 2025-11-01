@@ -1,1 +1,33 @@
-<p>item-dialog works!</p>,
+<div class="dialog-overlay" *ngIf="visible" (click)="onClose()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="dialog-header">
+      <h2>{{ title }}</h2>
+      <button class="close-btn" (click)="onClose()" title="Cerrar">×</button>
+    </div>
+
+    <!-- Body -->
+    <div class="dialog-body">
+      <table class="info-table" *ngIf="displayData.length > 0">
+        <thead>
+          <tr>
+            <th>Campo</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of displayData">
+            <td class="field-label">{{ item.label }}</td>
+            <td class="field-value">{{ item.value }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p *ngIf="displayData.length === 0" class="empty">
+        No hay información disponible
+      </p>
+    </div>
+
+  </div>
+</div>

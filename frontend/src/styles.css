@@ -380,7 +380,9 @@ button {
   color: var(--error-color-text);
   border-color: #ef9a9a;
 }
-
+.list-item{
+  cursor: pointer;
+}
 /* --- Paginación --- */
 .pagination-controls {
   display: flex;
