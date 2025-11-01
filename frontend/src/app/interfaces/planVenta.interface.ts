@@ -1,5 +1,5 @@
 import { ProductCreateResponse } from './producto.interface';
-import { Vendedor, Zone } from './vendedor.interface';
+import { Vendedor, ZonaGeografica } from './vendedor.interface';
 
 export interface PlanVenta {
   id?: string;
@@ -7,7 +7,7 @@ export interface PlanVenta {
   goal: number;
   created_at?: string;
   product?: ProductCreateResponse;
-  zone?: Zone;
+  zone?: ZonaGeografica;
   seller?: Vendedor;
 }
 

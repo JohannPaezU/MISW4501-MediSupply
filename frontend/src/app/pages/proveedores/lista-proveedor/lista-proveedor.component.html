@@ -33,7 +33,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let proveedor of paginatedProveedores">
+        <tr class="list-item" *ngFor="let proveedor of paginatedProveedores" (click)="mostrarDetalle(proveedor)">
           <td class="id-cell" (click)="copyToClipboard(proveedor.id)" title="Copiar ID">
             <mat-icon>content_copy</mat-icon>
             <span *ngIf="copiedId !== proveedor.id" class="id-text">{{ proveedor.id | slice:0:8 }}...</span>
@@ -52,6 +52,10 @@
       </tbody>
     </table>
   </div>
+
+  <app-item-dialog [visible]="dialogVisible" [title]="selectedItem?.name || 'Detalle del producto'"
+    [data]="selectedItem" (close)="dialogVisible = false">
+  </app-item-dialog>
 
   <footer *ngIf="!isLoading && !errorMessage && proveedores.length > 0" class="pagination-controls">
     <div class="page-size-selector">

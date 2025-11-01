@@ -7,7 +7,6 @@ export class CsvExportService {
 
   constructor() { }
 
-
   exportarACsv(data: any[], filename: string, headers?: { [key: string]: string }): void {
     if (!data || data.length === 0) {
       console.error('No hay datos para exportar.');

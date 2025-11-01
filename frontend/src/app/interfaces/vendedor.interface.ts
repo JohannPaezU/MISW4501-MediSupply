@@ -5,7 +5,7 @@ export interface Vendedor {
   email: string;
   phone: string;
   created_at?: string;
-  zone?: Zone;
+  zone?: ZonaGeografica;
 }
 
 export interface VendedorResponse {
@@ -25,12 +25,15 @@ export interface CreateVendedorRequest {
 
 export interface CreateVendedorResponse extends Vendedor { }
 
-export interface Zone {
+export interface ZonaGeografica {
   id: string;
   description: string;
 }
 
 export interface ZonesResponse {
   total_count: number;
-  zones: Zone[];
+  zones: ZonaGeografica[];
 }
+
+// Mantener Zone como alias para compatibilidad
+export type Zone = ZonaGeografica;
