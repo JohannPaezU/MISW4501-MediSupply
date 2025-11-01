@@ -1,18 +1,19 @@
 import { PlanVenta } from './planVenta.interface';
 
 export interface ReporteData {
+  id?: string;
   vendedor: string;
   vendedor_id: string;
   producto: string;
   producto_id: string;
   zona: string;
   zona_id: string;
-  meta: number;
   ventas: number;
+  meta: number;
   porcentajeMeta: number;
   periodo: string;
+  status?: string;
 }
-
 export interface FiltrosReporte {
   vendedores: string[];
   zonas: string[];
@@ -24,6 +25,5 @@ export interface FiltrosReporte {
 
 export interface EstadisticasReporte {
   totalVentas: number;
-  pedidosPendientes: number;
   cumplimientoPromedio: number;
 }

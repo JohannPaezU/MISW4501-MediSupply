@@ -10,6 +10,9 @@ import { PlanVentaService } from '../../../services/planes-de-venta/planesDeVent
 import { ProductService } from '../../../services/productos/product.service';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
 import { Vendedor, Zone } from '../../../interfaces/vendedor.interface';
+import { ReporteService } from '../../../services/reportes/reportes.service';
+import { PdfExportService } from '../../../services/utilities/pdf.service';
+import { ExcelExportService } from '../../../services/utilities/excel.service';
 
 @Component({
   selector: 'app-reportes',
@@ -19,7 +22,6 @@ import { Vendedor, Zone } from '../../../interfaces/vendedor.interface';
   styleUrl: './reportes.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class ReportesComponent implements OnInit {
   reportes: ReporteData[] = [];
   reportesFiltrados: ReporteData[] = [];
@@ -47,7 +49,6 @@ export class ReportesComponent implements OnInit {
 
   estadisticas: EstadisticasReporte = {
     totalVentas: 0,
-    pedidosPendientes: 23, // Mock - no hay endpoint
     cumplimientoPromedio: 0
   };
 
@@ -58,7 +59,10 @@ export class ReportesComponent implements OnInit {
     private planVentaService: PlanVentaService,
     private productService: ProductService,
     private vendedorService: VendedorService,
-    private cdr: ChangeDetectorRef
+    private reporteService: ReporteService,
+    private cdr: ChangeDetectorRef,
+    private excelExport: ExcelExportService,
+    private pdfExport: PdfExportService,
   ) { }
 
   ngOnInit(): void {
@@ -74,7 +78,8 @@ export class ReportesComponent implements OnInit {
       planes: this.planVentaService.getPlanesVenta(),
       productos: this.productService.getAllProducts(),
       vendedores: this.vendedorService.getVendedores(),
-      zonas: this.vendedorService.getZonas()
+      zonas: this.vendedorService.getZonas(),
+      reportes: this.reporteService.getReportes()
     })
       .pipe(
         finalize(() => {
@@ -84,12 +89,23 @@ export class ReportesComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          this.productos = data.productos.products;
-          this.vendedores = data.vendedores.sellers;
-          this.zonas = data.zonas;
+          const planes: PlanVenta[] = data.planes.selling_plans || [];
+          const reportes: ReporteData[] = data.reportes || [];
 
-          // Transformar planes de venta en reportes
-          this.reportes = this.transformarPlanesAReportes(data.planes.selling_plans);
+          // 🔹 1. Filtrar vendedores con selling plan
+          const vendedorIdsConPlan = new Set(planes.map(p => p.seller?.id).filter(Boolean) as string[]);
+          this.vendedores = (data.vendedores.sellers || []).filter(v => vendedorIdsConPlan.has(v.id!));
+
+          // 🔹 2. Filtrar productos con selling plan
+          const productoIdsConPlan = new Set(planes.map(p => p.product?.id).filter(Boolean) as string[]);
+          this.productos = (data.productos.products || []).filter(p => productoIdsConPlan.has(p.id!));
+
+          // 🔹 3. Filtrar zonas con selling plan
+          const zonaIdsConPlan = new Set(planes.map(p => p.zone?.id).filter(Boolean) as string[]);
+          this.zonas = (data.zonas || []).filter(z => zonaIdsConPlan.has(z.id!));
+
+          // 🔹 4. Combinar planes con datos reales de ventas
+          this.reportes = this.transformarPlanesAReportes(planes, reportes);
           this.reportesFiltrados = [...this.reportes];
 
           this.calcularEstadisticas();
@@ -103,55 +119,52 @@ export class ReportesComponent implements OnInit {
       });
   }
 
-  transformarPlanesAReportes(planes: PlanVenta[]): ReporteData[] {
+  transformarPlanesAReportes(planes: PlanVenta[], reportes: ReporteData[]): ReporteData[] {
     return planes.map(plan => {
-      // Mock de ventas - calcular aleatoriamente basado en la meta
-      const ventas = Math.floor(plan.goal * (Math.random() * 0.9 + 0.1));
-      const porcentajeMeta = (ventas / plan.goal) * 100;
+      const meta = plan.goal || 0;
+      const reporteRelacionado = reportes.find(r =>
+        r.vendedor_id === plan.seller?.id &&
+        r.producto_id === plan.product?.id
+      );
+
+      const ventas = reporteRelacionado?.ventas || 0;
+      const porcentajeMeta = meta > 0 ? Math.round((ventas / meta) * 100) : 0;
 
       return {
         vendedor: plan.seller?.full_name || 'Sin vendedor',
         vendedor_id: plan.seller?.id || '',
         producto: plan.product?.name || 'Sin producto',
         producto_id: plan.product?.id || '',
-        zona: plan.zone?.description || 'Sin zona',
+        zona: (plan.zone as any)?.description || plan.zone?.description || 'Sin zona',
         zona_id: plan.zone?.id || '',
-        meta: plan.goal,
-        ventas: ventas,
-        porcentajeMeta: Math.round(porcentajeMeta),
+        meta,
+        ventas,
+        porcentajeMeta,
         periodo: plan.period
-      };
+      } as ReporteData;
     });
   }
 
   aplicarFiltros(): void {
     this.reportesFiltrados = this.reportes.filter(reporte => {
-      // Filtro por vendedores
       if (this.filtros.vendedores.length > 0 &&
         !this.filtros.vendedores.includes(reporte.vendedor_id)) {
         return false;
       }
-
-      // Filtro por zonas
       if (this.filtros.zonas.length > 0 &&
         !this.filtros.zonas.includes(reporte.zona_id)) {
         return false;
       }
-
-      // Filtro por productos
       if (this.filtros.productos.length > 0 &&
         !this.filtros.productos.includes(reporte.producto_id)) {
         return false;
       }
-
-      // Filtro por búsqueda
       if (this.filtros.searchTerm) {
         const term = this.filtros.searchTerm.toLowerCase();
         return reporte.vendedor.toLowerCase().includes(term) ||
           reporte.producto.toLowerCase().includes(term) ||
           reporte.zona.toLowerCase().includes(term);
       }
-
       return true;
     });
 
@@ -161,41 +174,29 @@ export class ReportesComponent implements OnInit {
   }
 
   calcularEstadisticas(): void {
-    const reportesActivos = this.reportesFiltrados;
-
-    this.estadisticas.totalVentas = reportesActivos.reduce((sum, r) => sum + r.ventas, 0);
-    this.estadisticas.cumplimientoPromedio = reportesActivos.length > 0
-      ? Math.round(reportesActivos.reduce((sum, r) => sum + r.porcentajeMeta, 0) / reportesActivos.length)
+    const visibles = this.reportesFiltrados;
+    this.estadisticas.totalVentas = visibles.reduce((sum, r) => sum + (r.ventas || 0), 0);
+    this.estadisticas.cumplimientoPromedio = visibles.length > 0
+      ? Math.round(visibles.reduce((sum, r) => sum + (r.porcentajeMeta || 0), 0) / visibles.length)
       : 0;
+    this.cdr.detectChanges();
   }
 
   toggleFiltroVendedor(vendedorId: string): void {
     const index = this.filtros.vendedores.indexOf(vendedorId);
-    if (index > -1) {
-      this.filtros.vendedores.splice(index, 1);
-    } else {
-      this.filtros.vendedores.push(vendedorId);
-    }
+    index > -1 ? this.filtros.vendedores.splice(index, 1) : this.filtros.vendedores.push(vendedorId);
     this.aplicarFiltros();
   }
 
   toggleFiltroZona(zonaId: string): void {
     const index = this.filtros.zonas.indexOf(zonaId);
-    if (index > -1) {
-      this.filtros.zonas.splice(index, 1);
-    } else {
-      this.filtros.zonas.push(zonaId);
-    }
+    index > -1 ? this.filtros.zonas.splice(index, 1) : this.filtros.zonas.push(zonaId);
     this.aplicarFiltros();
   }
 
   toggleFiltroProducto(productoId: string): void {
     const index = this.filtros.productos.indexOf(productoId);
-    if (index > -1) {
-      this.filtros.productos.splice(index, 1);
-    } else {
-      this.filtros.productos.push(productoId);
-    }
+    index > -1 ? this.filtros.productos.splice(index, 1) : this.filtros.productos.push(productoId);
     this.aplicarFiltros();
   }
 
@@ -205,39 +206,26 @@ export class ReportesComponent implements OnInit {
   }
 
   limpiarFiltros(): void {
-    this.filtros = {
-      vendedores: [],
-      zonas: [],
-      productos: [],
-      searchTerm: ''
-    };
+    this.filtros = { vendedores: [], zonas: [], productos: [], searchTerm: '' };
     this.aplicarFiltros();
   }
 
   exportarExcel(): void {
-    const headers = ['Vendedor', 'Producto', 'Zona', 'Meta', 'Ventas', '% Meta', 'Periodo'];
-    const rows = this.reportesFiltrados.map(r => [
-      r.vendedor,
-      r.producto,
-      r.zona,
-      r.meta,
-      r.ventas,
-      `${r.porcentajeMeta}%`,
-      r.periodo
-    ]);
-
-    const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'reportes.csv';
-    link.click();
-
-    this.showToast('Excel exportado exitosamente', 'success');
+    if (this.reportesFiltrados.length === 0) {
+      this.showToast('No hay datos para exportar', 'error');
+      return;
+    }
+    this.excelExport.exportarReportes(this.reportesFiltrados);
+    this.showToast('Archivo Excel exportado exitosamente', 'success');
   }
 
   exportarPDF(): void {
-    this.showToast('Exportación a PDF próximamente disponible', 'error');
+    if (this.reportesFiltrados.length === 0) {
+      this.showToast('No hay datos para exportar', 'error');
+      return;
+    }
+    this.pdfExport.exportarReportes(this.reportesFiltrados);
+    this.showToast('Archivo PDF generado exitosamente', 'success');
   }
 
   getProgressColor(porcentaje: number): string {
@@ -247,8 +235,7 @@ export class ReportesComponent implements OnInit {
   }
 
   onPageSizeChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.pageSize = Number(target.value);
+    this.pageSize = Number((event.target as HTMLSelectElement).value);
     this.currentPage = 1;
     this.cdr.detectChanges();
   }
@@ -290,7 +277,6 @@ export class ReportesComponent implements OnInit {
     this.toastMessage = message;
     this.toastType = type;
     this.cdr.detectChanges();
-
     setTimeout(() => {
       this.toastMessage = null;
       this.cdr.detectChanges();
