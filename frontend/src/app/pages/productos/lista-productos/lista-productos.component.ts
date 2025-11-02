@@ -8,7 +8,7 @@ import { ProductService } from '../../../services/productos/product.service';
 import { ProductCreateResponse } from '../../../interfaces/producto.interface';
 import { CsvExportService } from '../../../services/utilities/csv.service';
 import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
-import { ItemDialogComponent } from '../../../components/item-dialog/item-dialog';
+import { ItemDialogComponent } from '../../../components/item-dialog/item-dialog.component';
 
 @Component({
   selector: 'app-lista-productos',
