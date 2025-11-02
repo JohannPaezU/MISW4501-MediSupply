@@ -208,51 +208,42 @@ export class CrearProductoMasivoComponent {
       const rowNum = index + 2;
       const rowErrors: string[] = [];
 
-      // Validar name (3-100 caracteres)
       if (!producto.name || producto.name.trim().length < 3 || producto.name.trim().length > 100) {
         rowErrors.push('Nombre debe tener entre 3 y 100 caracteres');
       }
 
-      // Validar details (10-500 caracteres)
       if (!producto.details || producto.details.trim().length < 10 || producto.details.trim().length > 500) {
         rowErrors.push('Detalles deben tener entre 10 y 500 caracteres');
       }
 
-      // Validar store (3-100 caracteres)
       if (!producto.store || producto.store.trim().length < 3 || producto.store.trim().length > 100) {
         rowErrors.push('Bodega debe tener entre 3 y 100 caracteres');
       }
 
-      // Validar batch (5-50 caracteres)
       if (!producto.batch || producto.batch.trim().length < 5 || producto.batch.trim().length > 50) {
         rowErrors.push('Lote debe tener entre 5 y 50 caracteres');
       }
 
-      // Validar image_url (opcional, 10-300 caracteres)
       if (producto.image_url && producto.image_url.trim().length > 0) {
         if (producto.image_url.trim().length < 10 || producto.image_url.trim().length > 300) {
           rowErrors.push('URL de imagen debe tener entre 10 y 300 caracteres');
         }
       }
 
-      // Validar due_date (formato YYYY-MM-DD)
       if (!producto.due_date || !this.isValidDate(producto.due_date)) {
         rowErrors.push('Fecha de vencimiento debe estar en formato YYYY-MM-DD');
       }
 
-      // Validar stock (mayor a 0)
       const stock = Number(producto.stock);
       if (isNaN(stock) || stock <= 0) {
         rowErrors.push('Stock debe ser un número mayor a 0');
       }
 
-      // Validar price_per_unite (mayor a 0)
       const price = Number(producto.price_per_unit);
       if (isNaN(price) || price <= 0) {
         rowErrors.push('Precio por unidad debe ser un número mayor a 0');
       }
 
-      // Validar provider_id (36 caracteres)
       if (!producto.provider_id || producto.provider_id.trim().length !== 36) {
         rowErrors.push('ID de proveedor debe tener exactamente 36 caracteres');
       }

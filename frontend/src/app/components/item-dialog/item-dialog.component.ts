@@ -5,8 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-item-dialog',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './item-dialog.html',
-  styleUrls: ['./item-dialog.css']
+  templateUrl: './item-dialog.component.html',
+  styleUrls: ['./item-dialog.component.css']
 })
 export class ItemDialogComponent implements OnChanges {
   @Input() data: any;

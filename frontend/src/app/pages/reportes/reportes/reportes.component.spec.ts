@@ -28,7 +28,6 @@ describe('ReportesComponent - full coverage', () => {
   let cdrSpy: jasmine.SpyObj<ChangeDetectorRef>;
 
   beforeEach(async () => {
-    // single spy for ChangeDetectorRef
     cdrSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
 
     planVentaServiceSpy = jasmine.createSpyObj('PlanVentaService', ['getPlanesVenta']);
@@ -42,7 +41,6 @@ describe('ReportesComponent - full coverage', () => {
       imports: [ReportesComponent],
       providers: [
         { provide: ChangeDetectorRef, useValue: cdrSpy },
-
         { provide: PlanVentaService, useValue: planVentaServiceSpy },
         { provide: ProductService, useValue: productServiceSpy },
         { provide: VendedorService, useValue: vendedorServiceSpy },
@@ -119,23 +117,124 @@ describe('ReportesComponent - full coverage', () => {
     reporteServiceSpy.getReportes.and.returnValue(of(reportes as any));
 
     component.cargarDatos();
-    // ensure all microtasks and finalize() run
     tick();
-    // also trigger Angular template change detection in test environment
     fixture.detectChanges();
 
     expect(component.vendedores.length).toBe(2);
     expect(component.productos.length).toBe(2);
     expect(component.zonas.length).toBe(2);
-
     expect(component.reportes.length).toBe(2);
+
     const r0 = component.reportes.find(r => r.vendedor_id === 'seller-1' && r.producto_id === 'prod-1')!;
     expect(r0).toBeDefined();
     expect(r0.ventas).toBe(80);
     expect(r0.porcentajeMeta).toBe(80);
-
-    // assert detectChanges was called at least once
   }));
+
+  it('transformarPlanesAReportes -> sin reporte relacionado', () => {
+    const planes = [{ id: 'p1', goal: 100, seller: { id: 's1', full_name: 'Juan' }, product: { id: 'prod1', name: 'A' } } as any];
+    const out = component.transformarPlanesAReportes(planes, []);
+    expect(out[0].ventas).toBe(0);
+    expect(out[0].porcentajeMeta).toBe(0);
+  });
+
+  it('transformarPlanesAReportes -> handles missing seller, product, zone', () => {
+    const planes = [
+      { id: 'p1', goal: 50, seller: null, product: null, zone: null, period: '2025-01' } as any
+    ];
+    const out = component.transformarPlanesAReportes(planes, []);
+
+    expect(out[0].vendedor).toBe('Sin vendedor');
+    expect(out[0].vendedor_id).toBe('');
+    expect(out[0].producto).toBe('Sin producto');
+    expect(out[0].producto_id).toBe('');
+    expect(out[0].zona).toBe('Sin zona');
+    expect(out[0].zona_id).toBe('');
+  });
+
+  it('transformarPlanesAReportes -> uses zone.description correctly', () => {
+    const planes = [
+      {
+        id: 'p1',
+        goal: 100,
+        seller: { id: 's1', full_name: 'Juan' },
+        product: { id: 'prod1', name: 'A' },
+        zone: { id: 'z1', description: 'Norte' },
+        period: '2025-01'
+      } as any
+    ];
+    const out = component.transformarPlanesAReportes(planes, []);
+
+    expect(out[0].zona).toBe('Norte');
+    expect(out[0].zona_id).toBe('z1');
+  });
+
+  it('cargarDatos -> arrays vacíos no rompen el flujo', fakeAsync(() => {
+    planVentaServiceSpy.getPlanesVenta.and.returnValue(of({ selling_plans: [] } as any));
+    productServiceSpy.getAllProducts.and.returnValue(of({ products: [] } as any));
+    vendedorServiceSpy.getVendedores.and.returnValue(of({ sellers: [] } as any));
+    vendedorServiceSpy.getZonas.and.returnValue(of([]));
+    reporteServiceSpy.getReportes.and.returnValue(of([]));
+
+    component.cargarDatos();
+    tick();
+
+    expect(component.vendedores.length).toBe(0);
+    expect(component.productos.length).toBe(0);
+    expect(component.zonas.length).toBe(0);
+    expect(component.reportes.length).toBe(0);
+  }));
+
+  it('modal toggles', () => {
+    component.showVendedoresModal = false;
+    component.showZonasModal = false;
+    component.showProductosModal = false;
+
+    component.showVendedoresModal = true;
+    expect(component.showVendedoresModal).toBeTrue();
+    component.showVendedoresModal = false;
+    expect(component.showVendedoresModal).toBeFalse();
+
+    component.showZonasModal = true;
+    expect(component.showZonasModal).toBeTrue();
+    component.showZonasModal = false;
+    expect(component.showZonasModal).toBeFalse();
+
+    component.showProductosModal = true;
+    expect(component.showProductosModal).toBeTrue();
+    component.showProductosModal = false;
+    expect(component.showProductosModal).toBeFalse();
+  });
+
+  it('previousPage -> decrements when currentPage > 1', () => {
+    component.reportesFiltrados = Array.from({ length: 20 }, (_, i) => ({ ventas: i } as any));
+    component.pageSize = 10;
+    component.currentPage = 2;
+
+    component.previousPage();
+    expect(component.currentPage).toBe(1);
+  });
+
+  it('pagination disables buttons on edges', () => {
+    component.reportesFiltrados = Array.from({ length: 5 }, (_, i) => ({ ventas: i } as any));
+    component.pageSize = 10;
+    component.currentPage = 1;
+
+    component.previousPage();
+    expect(component.currentPage).toBe(1);
+
+    component.nextPage();
+    expect(component.currentPage).toBe(1);
+  });
+
+  it('nextPage -> increments when can advance', () => {
+    component.reportesFiltrados = Array.from({ length: 20 }, (_, i) => ({ ventas: i } as any));
+    component.pageSize = 10;
+    component.currentPage = 1;
+
+    component.nextPage();
+    expect(component.currentPage).toBe(2);
+  });
 
   it('cargarDatos -> handles error path gracefully', fakeAsync(() => {
     planVentaServiceSpy.getPlanesVenta.and.returnValue(throwError(() => new Error('fail')));
@@ -144,12 +243,15 @@ describe('ReportesComponent - full coverage', () => {
     vendedorServiceSpy.getZonas.and.returnValue(of([] as any));
     reporteServiceSpy.getReportes.and.returnValue(of([] as any));
 
+    spyOn(console, 'error');
+
     component.cargarDatos();
     tick();
     fixture.detectChanges();
 
     expect(component.isLoading).toBeFalse();
     expect(component.errorMessage).toBe('Error al cargar los datos. Intente nuevamente.');
+    expect(console.error).toHaveBeenCalledWith('Error al cargar datos:', jasmine.any(Error));
   }));
 
   it('transformarPlanesAReportes -> meta > 0 and meta == 0 branches', () => {
@@ -194,6 +296,27 @@ describe('ReportesComponent - full coverage', () => {
     expect(component.reportesFiltrados[0].vendedor).toBe('Ana');
   });
 
+  it('aplicarFiltros -> searchTerm does not match returns empty', () => {
+    component.reportes = [
+      { vendedor_id: 'v1', zona_id: 'z1', producto_id: 'p1', vendedor: 'Juan', producto: 'ProdA', zona: 'Centro', ventas: 5, porcentajeMeta: 10 } as any
+    ];
+
+    component.filtros = { vendedores: [], zonas: [], productos: [], searchTerm: 'xyz' };
+    component.aplicarFiltros();
+    expect(component.reportesFiltrados.length).toBe(0);
+  });
+
+  it('aplicarFiltros -> no filters returns all', () => {
+    component.reportes = [
+      { vendedor_id: 'v1', zona_id: 'z1', producto_id: 'p1', vendedor: 'Juan', producto: 'ProdA', zona: 'Centro', ventas: 5, porcentajeMeta: 10 } as any,
+      { vendedor_id: 'v2', zona_id: 'z2', producto_id: 'p2', vendedor: 'Ana', producto: 'ProdB', zona: 'Norte', ventas: 7, porcentajeMeta: 20 } as any
+    ];
+
+    component.filtros = { vendedores: [], zonas: [], productos: [], searchTerm: '' };
+    component.aplicarFiltros();
+    expect(component.reportesFiltrados.length).toBe(2);
+  });
+
   it('calcularEstadisticas -> computes totalVentas and cumplimientoPromedio for visibles', () => {
     component.reportesFiltrados = [
       { ventas: 10, porcentajeMeta: 50 } as any,
@@ -202,6 +325,13 @@ describe('ReportesComponent - full coverage', () => {
     component.calcularEstadisticas();
     expect(component.estadisticas.totalVentas).toBe(30);
     expect(component.estadisticas.cumplimientoPromedio).toBe(75);
+  });
+
+  it('calcularEstadisticas -> with empty array returns 0', () => {
+    component.reportesFiltrados = [];
+    component.calcularEstadisticas();
+    expect(component.estadisticas.totalVentas).toBe(0);
+    expect(component.estadisticas.cumplimientoPromedio).toBe(0);
   });
 
   it('toggleFiltro* should add and remove ids and call aplicarFiltros', () => {
@@ -241,34 +371,49 @@ describe('ReportesComponent - full coverage', () => {
     expect(component.aplicarFiltros).toHaveBeenCalled();
   });
 
-  it('exportarExcel -> when no data shows toast error; when has data calls service and shows success', () => {
+  it('exportarExcel -> when no data shows toast error; when has data calls service and shows success', fakeAsync(() => {
     component.reportesFiltrados = [];
     component.exportarExcel();
     expect(component.toastMessage).toContain('No hay datos');
+    expect(component.toastType).toBe('error');
+
+    tick(4000);
 
     component.reportesFiltrados = [{ vendedor: 'A' } as any];
     excelSpy.exportarReportes.calls.reset();
     component.exportarExcel();
     expect(excelSpy.exportarReportes).toHaveBeenCalledWith(component.reportesFiltrados);
     expect(component.toastMessage).toContain('Archivo Excel exportado exitosamente');
-  });
+    expect(component.toastType).toBe('success');
 
-  it('exportarPDF -> when no data shows toast error; when has data calls pdf service and shows success', () => {
+    tick(4000);
+  }));
+
+  it('exportarPDF -> when no data shows toast error; when has data calls pdf service and shows success', fakeAsync(() => {
     component.reportesFiltrados = [];
     component.exportarPDF();
     expect(component.toastMessage).toContain('No hay datos');
+    expect(component.toastType).toBe('error');
+
+    tick(4000);
 
     component.reportesFiltrados = [{ vendedor: 'B' } as any];
     pdfSpy.exportarReportes.calls.reset();
     component.exportarPDF();
     expect(pdfSpy.exportarReportes).toHaveBeenCalledWith(component.reportesFiltrados);
     expect(component.toastMessage).toContain('Archivo PDF generado exitosamente');
-  });
+    expect(component.toastType).toBe('success');
+
+    tick(4000);
+  }));
 
   it('getProgressColor returns correct class names for thresholds (edge cases)', () => {
-    expect(component.getProgressColor(80)).toBe('success'); // >=70
-    expect(component.getProgressColor(50)).toBe('');        // >=30 && <70
-    expect(component.getProgressColor(10)).toBe('danger');  // <30
+    expect(component.getProgressColor(80)).toBe('success');
+    expect(component.getProgressColor(70)).toBe('success');
+    expect(component.getProgressColor(50)).toBe('');
+    expect(component.getProgressColor(30)).toBe('');
+    expect(component.getProgressColor(10)).toBe('danger');
+    expect(component.getProgressColor(29)).toBe('danger');
   });
 
   it('pagination: onPageSizeChange, next, prev and getters', () => {
@@ -296,9 +441,39 @@ describe('ReportesComponent - full coverage', () => {
     expect(component.totalItems).toBe(12);
   });
 
+  it('startItem -> returns 0 when no items', () => {
+    component.reportesFiltrados = [];
+    expect(component.startItem).toBe(0);
+  });
+
+  it('startItem -> returns correct value when has items', () => {
+    component.reportesFiltrados = Array.from({ length: 20 }, () => ({} as any));
+    component.pageSize = 10;
+    component.currentPage = 2;
+    expect(component.startItem).toBe(11);
+  });
+
+  it('endItem -> returns correct value', () => {
+    component.reportesFiltrados = Array.from({ length: 25 }, () => ({} as any));
+    component.pageSize = 10;
+    component.currentPage = 2;
+    expect(component.endItem).toBe(20);
+  });
+
   it('showToast sets message and clears after timeout', fakeAsync(() => {
     component.showToast('Hola', 'success');
     expect(component.toastMessage).toBe('Hola');
+    expect(component.toastType).toBe('success');
+
+    tick(4000);
+    expect(component.toastMessage).toBeNull();
+  }));
+
+  it('showToast -> with error type', fakeAsync(() => {
+    component.showToast('Error message', 'error');
+    expect(component.toastMessage).toBe('Error message');
+    expect(component.toastType).toBe('error');
+
     tick(4000);
     expect(component.toastMessage).toBeNull();
   }));
@@ -308,5 +483,11 @@ describe('ReportesComponent - full coverage', () => {
     expect(component.vendedoresSeleccionadosCount).toBe(2);
     expect(component.zonasSeleccionadasCount).toBe(1);
     expect(component.productosSeleccionadosCount).toBe(3);
+  });
+
+  it('ngOnInit -> calls cargarDatos', () => {
+    spyOn(component, 'cargarDatos');
+    component.ngOnInit();
+    expect(component.cargarDatos).toHaveBeenCalled();
   });
 });
