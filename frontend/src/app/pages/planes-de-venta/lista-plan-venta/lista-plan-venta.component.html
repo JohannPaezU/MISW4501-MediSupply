@@ -33,9 +33,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let plan of planesPaginados">
+        <tr class="list-item" *ngFor="let plan of planesPaginados" (click)="mostrarDetalle(plan)">
           <td>
-            <div class="id-cell" (click)="copyToClipboard(plan.id!)" title="Copiar ID">
+            <div class="id-cell" (click)="copyToClipboard(plan.id!); $event.stopPropagation()" title="Copiar ID">
               <mat-icon>content_copy</mat-icon>
               <span *ngIf="copiedId !== plan.id" class="id-text">{{ plan.id | slice:0:8 }}...</span>
               <span *ngIf="copiedId === plan.id" class="copy-success-text">¡Copiado!</span>
@@ -56,6 +56,10 @@
       </tbody>
     </table>
   </div>
+
+  <app-item-dialog [visible]="dialogVisible" [title]="selectedItem?.name || 'Detalle del producto'"
+    [data]="selectedItem" (close)="dialogVisible = false">
+  </app-item-dialog>
 
   <footer *ngIf="!isLoading && !error && planesVenta.length > 0" class="pagination-controls">
     <div class="page-size-selector">
