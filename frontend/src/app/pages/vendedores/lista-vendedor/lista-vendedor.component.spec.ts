@@ -9,7 +9,7 @@ import { VendedorService } from '../../../services/vendedores/vendedor.service';
 import { CsvExportService } from '../../../services/utilities/csv.service';
 import { Vendedor, VendedorResponse, Zone } from '../../../interfaces/vendedor.interface';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-
+import { ItemDialogComponent } from '../../../components/item-dialog/item-dialog.component';
 
 @Component({
   selector: 'app-loading-spinner',
@@ -51,7 +51,6 @@ let routerSpy: jasmine.SpyObj<Router>;
 let vendedorServiceSpy: jasmine.SpyObj<VendedorService>;
 let csvServiceSpy: jasmine.SpyObj<CsvExportService>;
 
-
 describe('ListaVendedorComponent', () => {
   let component: ListaVendedorComponent;
   let fixture: ComponentFixture<ListaVendedorComponent>;
@@ -65,20 +64,17 @@ describe('ListaVendedorComponent', () => {
       imports: [
         ListaVendedorComponent,
         MatIconModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        CommonModule,
+        StubLoadingSpinnerComponent,
+        ItemDialogComponent
       ],
       providers: [
         { provide: Router, useValue: routerSpy },
         { provide: VendedorService, useValue: vendedorServiceSpy },
-        { provide: CsvExportService, useValue: csvServiceSpy },
+        { provide: CsvExportService, useValue: csvServiceSpy }
       ]
-    })
-      .overrideComponent(ListaVendedorComponent, {
-        set: {
-          imports: [CommonModule, MatIconModule, StubLoadingSpinnerComponent]
-        }
-      })
-      .compileComponents();
+    }).compileComponents();
 
     vendedorServiceSpy.getVendedores.and.returnValue(of(mockVendedorResponse));
 
@@ -91,7 +87,6 @@ describe('ListaVendedorComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 
   describe('Initialization and Data Loading', () => {
     it('should call cargarVendedores on init', () => {
@@ -122,8 +117,21 @@ describe('ListaVendedorComponent', () => {
       expect(component.vendedores.length).toBe(0);
       expect(console.error).toHaveBeenCalled();
     });
-  });
 
+    it('should retry loading after error', () => {
+      vendedorServiceSpy.getVendedores.and.returnValue(throwError(() => new Error('Test Error')));
+      fixture.detectChanges();
+
+      expect(component.error).toBeTruthy();
+
+      vendedorServiceSpy.getVendedores.and.returnValue(of(mockVendedorResponse));
+      component.cargarVendedores();
+      fixture.detectChanges();
+
+      expect(component.error).toBeNull();
+      expect(component.vendedores.length).toBe(11);
+    });
+  });
 
   describe('Pagination', () => {
     beforeEach(() => {
@@ -188,11 +196,26 @@ describe('ListaVendedorComponent', () => {
       expect(component.currentPage).toBe(1);
       expect(component.vendedoresPaginados.length).toBe(5);
     });
+
+    it('should return correct paginated items for page 2', () => {
+      component.pageSize = 5;
+      component.currentPage = 2;
+
+      const paginated = component.vendedoresPaginados;
+
+      expect(paginated.length).toBe(5);
+      expect(paginated[0].id).toBe('v6');
+      expect(paginated[4].id).toBe('v10');
+    });
+
+    it('should calculate endItem correctly on last page', () => {
+      component.currentPage = 2;
+
+      expect(component.endItem).toBe(11);
+    });
   });
 
-
   describe('CSV Export', () => {
-
     it('should export data correctly', fakeAsync(() => {
       fixture.detectChanges();
       component.exportarCSV();
@@ -216,7 +239,7 @@ describe('ListaVendedorComponent', () => {
 
       expect(component.toastMessage).toBe('CSV exportado exitosamente.');
 
-      flush();
+      tick(4000);
     }));
 
     it('should show error toast if no data to export', fakeAsync(() => {
@@ -229,11 +252,35 @@ describe('ListaVendedorComponent', () => {
 
       expect(csvServiceSpy.exportarACsv).not.toHaveBeenCalled();
       expect(component.toastMessage).toBe('No hay vendedores para exportar.');
+      expect(component.toastType).toBe('error');
 
-      flush();
+      tick(4000);
+    }));
+
+    it('should map vendedor with null id to empty string', fakeAsync(() => {
+      fixture.detectChanges();
+
+      const vendedorSinId: Vendedor = {
+        id: null as any,
+        full_name: 'Test',
+        doi: '123',
+        email: 'test@test.com',
+        phone: '555',
+        created_at: null as any,
+        zone: undefined
+      };
+
+      component.vendedores = [vendedorSinId];
+      component.exportarCSV();
+
+      const [data] = csvServiceSpy.exportarACsv.calls.first().args;
+      expect(data[0].id).toBe('');
+      expect(data[0].zone_description).toBe('');
+      expect(data[0].created_at).toBe('');
+
+      tick(4000);
     }));
   });
-
 
   describe('Navigation and UI Helpers', () => {
     it('should navigate to create page', () => {
@@ -263,10 +310,37 @@ describe('ListaVendedorComponent', () => {
 
       expect(component.toastMessage).toBeNull();
     }));
+
+    it('should show and hide success toast message', fakeAsync(() => {
+      component.showToast('Success message', 'success');
+
+      expect(component.toastMessage).toBe('Success message');
+      expect(component.toastType).toBe('success');
+
+      tick(4000);
+
+      expect(component.toastMessage).toBeNull();
+    }));
+
+    it('should show item detail dialog', () => {
+      const item = { id: 'v1', full_name: 'Test' };
+      component.mostrarDetalle(item);
+
+      expect(component.selectedItem).toEqual(item);
+      expect(component.dialogVisible).toBeTrue();
+    });
+
+    it('should close dialog', () => {
+      component.dialogVisible = true;
+      component.selectedItem = { id: 'test' };
+
+      component.dialogVisible = false;
+
+      expect(component.dialogVisible).toBeFalse();
+    });
   });
 
   describe('Branches no cubiertos', () => {
-
     it('nextPage should not increment if already on last page', () => {
       fixture.detectChanges();
       component.currentPage = 2;
@@ -282,11 +356,47 @@ describe('ListaVendedorComponent', () => {
     it('copyToClipboard should handle error', fakeAsync(() => {
       (navigator.clipboard.writeText as jasmine.Spy).and.returnValue(Promise.reject('Error'));
       spyOn(console, 'error');
+
       component.copyToClipboard('fail-id');
       tick();
+
       expect(console.error).toHaveBeenCalledWith('Error al copiar ID: ', 'Error');
       expect(component.copiedId).toBeNull();
     }));
 
+    it('previousPage should not decrement if on first page', () => {
+      fixture.detectChanges();
+      component.currentPage = 1;
+      component.previousPage();
+      expect(component.currentPage).toBe(1);
+    });
+
+    it('hasNextPage should return false on last page', () => {
+      fixture.detectChanges();
+      component.currentPage = 2;
+      expect(component.hasNextPage).toBeFalse();
+    });
+
+    it('hasPreviousPage should return true when not on first page', () => {
+      fixture.detectChanges();
+      component.currentPage = 2;
+      expect(component.hasPreviousPage).toBeTrue();
+    });
+  });
+
+  it('should display copied message when copiedId matches vendedor.id', fakeAsync(() => {
+    fixture.detectChanges();
+    component.copiedId = 'v1';
+    fixture.detectChanges();
+    const copiedText = fixture.nativeElement.querySelector('.copy-success-text');
+    expect(copiedText).toBeTruthy();
+    expect(copiedText.textContent).toContain('¡Copiado!');
+  }));
+
+  it('should disable next button on last page', () => {
+    component.currentPage = 2;
+    fixture.detectChanges();
+    const nextBtn = fixture.nativeElement.querySelector('.page-navigation button:last-child');
+    expect(nextBtn.disabled).toBeTrue();
   });
 });
