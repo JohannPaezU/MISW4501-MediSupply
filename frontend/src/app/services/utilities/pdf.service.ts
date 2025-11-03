@@ -10,14 +10,15 @@ export class PdfExportService {
     doc.setFontSize(14);
     doc.text('Reporte de Ventas', 14, 15);
 
+    // 🔹 Asegurar que todos los valores sean string o number (nunca undefined)
     const body = reportes.map(r => [
-      r.vendedor,
-      r.producto,
-      r.zona,
-      r.meta,
-      r.ventas,
-      `${r.porcentajeMeta}%`,
-      r.periodo
+      r.vendedor || 'N/A',
+      r.producto || 'N/A',
+      r.zona || 'N/A',
+      r.meta ?? 0,
+      r.ventas ?? 0,
+      `${r.porcentajeMeta ?? 0}%`,
+      r.periodo || 'N/A'
     ]);
 
     autoTable(doc, {

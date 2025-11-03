@@ -1,5 +1,3 @@
-import { PlanVenta } from './planVenta.interface';
-
 export interface ReporteData {
   id?: string;
   vendedor: string;
@@ -11,16 +9,20 @@ export interface ReporteData {
   ventas: number;
   meta: number;
   porcentajeMeta: number;
-  periodo: string;
-  status?: string;
+  periodo?: string;
+
+  // Campos adicionales opcionales
+  cantidad?: number;
+  precio_unitario?: number;
+  estado_orden?: string;
+  comentarios?: string;
 }
+
 export interface FiltrosReporte {
   vendedores: string[];
   zonas: string[];
   productos: string[];
-  fechaInicio?: string;
-  fechaFin?: string;
-  searchTerm?: string;
+  searchTerm: string;
 }
 
 export interface EstadisticasReporte {

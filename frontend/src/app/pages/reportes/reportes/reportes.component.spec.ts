@@ -25,11 +25,8 @@ describe('ReportesComponent - full coverage', () => {
   let reporteServiceSpy: jasmine.SpyObj<ReporteService>;
   let excelSpy: jasmine.SpyObj<ExcelExportService>;
   let pdfSpy: jasmine.SpyObj<PdfExportService>;
-  let cdrSpy: jasmine.SpyObj<ChangeDetectorRef>;
 
   beforeEach(async () => {
-    cdrSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
-
     planVentaServiceSpy = jasmine.createSpyObj('PlanVentaService', ['getPlanesVenta']);
     productServiceSpy = jasmine.createSpyObj('ProductService', ['getAllProducts']);
     vendedorServiceSpy = jasmine.createSpyObj('VendedorService', ['getVendedores', 'getZonas']);
@@ -40,7 +37,6 @@ describe('ReportesComponent - full coverage', () => {
     await TestBed.configureTestingModule({
       imports: [ReportesComponent],
       providers: [
-        { provide: ChangeDetectorRef, useValue: cdrSpy },
         { provide: PlanVentaService, useValue: planVentaServiceSpy },
         { provide: ProductService, useValue: productServiceSpy },
         { provide: VendedorService, useValue: vendedorServiceSpy },
@@ -317,14 +313,15 @@ describe('ReportesComponent - full coverage', () => {
     expect(component.reportesFiltrados.length).toBe(2);
   });
 
-  it('calcularEstadisticas -> computes totalVentas and cumplimientoPromedio for visibles', () => {
+  // ✅ NUEVO: Test para calcularEstadisticas cuando totalMetas > 0
+  it('calcularEstadisticas -> with data and totalMetas > 0', () => {
     component.reportesFiltrados = [
-      { ventas: 10, porcentajeMeta: 50 } as any,
-      { ventas: 20, porcentajeMeta: 100 } as any
+      { ventas: 80, meta: 100, porcentajeMeta: 80 } as any,
+      { ventas: 60, meta: 100, porcentajeMeta: 60 } as any
     ];
     component.calcularEstadisticas();
-    expect(component.estadisticas.totalVentas).toBe(30);
-    expect(component.estadisticas.cumplimientoPromedio).toBe(75);
+    expect(component.estadisticas.totalVentas).toBe(140);
+    expect(component.estadisticas.cumplimientoPromedio).toBe(70); // (140/200) * 100
   });
 
   it('calcularEstadisticas -> with empty array returns 0', () => {
@@ -332,6 +329,17 @@ describe('ReportesComponent - full coverage', () => {
     component.calcularEstadisticas();
     expect(component.estadisticas.totalVentas).toBe(0);
     expect(component.estadisticas.cumplimientoPromedio).toBe(0);
+  });
+
+  // ✅ NUEVO: Test para calcularEstadisticas cuando totalMetas == 0
+  it('calcularEstadisticas -> when totalMetas is 0 returns 0 for cumplimiento', () => {
+    component.reportesFiltrados = [
+      { ventas: 50, meta: 0, porcentajeMeta: 0 } as any,
+      { ventas: 30, meta: 0, porcentajeMeta: 0 } as any
+    ];
+    component.calcularEstadisticas();
+    expect(component.estadisticas.totalVentas).toBe(80);
+    expect(component.estadisticas.cumplimientoPromedio).toBe(0); // totalMetas = 0
   });
 
   it('toggleFiltro* should add and remove ids and call aplicarFiltros', () => {
