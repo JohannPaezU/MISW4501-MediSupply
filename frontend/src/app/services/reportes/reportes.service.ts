@@ -15,19 +15,34 @@ export class ReporteService {
   getReportes(): Observable<ReporteData[]> {
     return this.http.get<any>(this.apiUrl).pipe(
       map(response => {
-        return response.orders.map((order: any) => ({
-          id: order.id,
-          vendedor: order.seller?.full_name || 'Sin vendedor',
-          vendedor_id: order.seller?.id || '',
-          producto: order.product?.name || 'Sin producto',
-          producto_id: order.product?.id || '',
-          zona: order.seller?.zone?.description || 'Sin zona',
-          zona_id: order.seller?.zone?.id || '',
-          ventas: order.total || 0,
-          meta: order.meta || 0,
-          porcentajeMeta: order.meta ? Math.round((order.total / order.meta) * 100) : 0,
-          periodo: order.delivery_date ? new Date(order.delivery_date).toISOString().slice(0, 10) : '',
-        }));
+        const reportes: ReporteData[] = [];
+
+        // Iterar sobre cada orden
+        response.orders.forEach((order: any) => {
+          // Iterar sobre cada producto dentro de la orden
+          order.products.forEach((product: any) => {
+            reportes.push({
+              id: `${order.id}_${product.id}`, // ID único combinando orden + producto
+              vendedor: order.seller?.full_name || 'Sin vendedor',
+              vendedor_id: order.seller?.id || '',
+              producto: product.name || 'Sin producto',
+              producto_id: product.id || '',
+              zona: order.seller?.zone?.description || 'Sin zona',
+              zona_id: order.seller?.zone?.id || '',
+              ventas: (product.price_per_unit || 0) * (product.quantity || 0), // Calcular ventas por producto
+              meta: 0, // Se establecerá desde el plan de ventas
+              porcentajeMeta: 0, // Se calculará después
+              periodo: order.delivery_date ? new Date(order.delivery_date).toISOString().slice(0, 10) : '',
+              // Datos adicionales que podrían ser útiles
+              cantidad: product.quantity || 0,
+              precio_unitario: product.price_per_unit || 0,
+              estado_orden: order.status || '',
+              comentarios: order.comments || ''
+            });
+          });
+        });
+
+        return reportes;
       })
     );
   }

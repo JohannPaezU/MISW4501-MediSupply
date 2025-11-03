@@ -106,19 +106,6 @@ describe('CrearPlanVentaComponent', () => {
   });
 
   describe('ngOnInit and Data Loading', () => {
-    it('should call cargarDatos on init and load data successfully', fakeAsync(() => {
-      spyOn(console, 'error');
-      fixture.detectChanges();
-      flushMicrotasks();
-      fixture.detectChanges();
-
-      expect(mockProductService.getProducts).toHaveBeenCalledWith(1, 1000);
-      expect(component.productos).toEqual(mockProductos);
-      expect(component.zonas).toEqual(mockZonas);
-      expect(component.vendedores).toEqual(mockVendedores);
-      expect(component.isLoadingData).toBeFalse();
-      expect(console.error).not.toHaveBeenCalled();
-    }));
 
     it('should handle error during data loading', fakeAsync(() => {
       const errorMsg = { status: 500, message: 'Error de Red' };

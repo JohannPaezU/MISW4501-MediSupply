@@ -76,6 +76,7 @@ describe('CrearProveedorComponent', () => {
     discardPeriodicTasks();
     flush();
   }));
+
   it('debería manejar error 409 (conflicto) correctamente', fakeAsync(() => {
     fillForm();
     const error = { status: 409 };
@@ -111,6 +112,50 @@ describe('CrearProveedorComponent', () => {
     expect(component.toastType).toBe('error');
   }));
 
+  // ✅ NUEVO: Test para cubrir el branch cuando loc es undefined/null
+  it('debería manejar error 422 sin campo loc definido', fakeAsync(() => {
+    fillForm();
+    const error = {
+      status: 422,
+      error: {
+        detail: [
+          { msg: 'error sin campo específico' }
+        ]
+      }
+    };
+    proveedorServiceSpy.createProvider.and.returnValue(throwError(() => error));
+
+    component.crearProveedor();
+    tick();
+    tick(5000);
+    flush();
+
+    expect(component.errorMessage).toBe(`Error en el campo 'desconocido': error sin campo específico`);
+    expect(component.toastType).toBe('error');
+  }));
+
+  // ✅ NUEVO: Test para cubrir el branch cuando msg es undefined/null
+  it('debería manejar error 422 sin mensaje definido', fakeAsync(() => {
+    fillForm();
+    const error = {
+      status: 422,
+      error: {
+        detail: [
+          { loc: ['body', 'phone'] }
+        ]
+      }
+    };
+    proveedorServiceSpy.createProvider.and.returnValue(throwError(() => error));
+
+    component.crearProveedor();
+    tick();
+    tick(5000);
+    flush();
+
+    expect(component.errorMessage).toBe(`Error en el campo 'phone': Error desconocido.`);
+    expect(component.toastType).toBe('error');
+  }));
+
   it('debería manejar error genérico correctamente', fakeAsync(() => {
     fillForm();
     const error = { status: 500 };
@@ -124,6 +169,7 @@ describe('CrearProveedorComponent', () => {
     expect(component.errorMessage).toBe('Ocurrió un error inesperado al crear el proveedor.');
     expect(component.toastType).toBe('error');
   }));
+
   it('debería limpiar el toast después de 5 segundos', fakeAsync(() => {
     component.showToast('Test mensaje', 'success');
     expect(component.toastMessage).toBe('Test mensaje');

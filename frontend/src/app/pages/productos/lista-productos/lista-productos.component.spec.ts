@@ -17,7 +17,6 @@ describe('ListaProductosComponent', () => {
   beforeEach(() => {
     productServiceSpy = jasmine.createSpyObj('ProductService', ['getProducts']);
     routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    cdrSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
     csvExportSpy = jasmine.createSpyObj('CsvExportService', ['exportarACsv']);
 
     TestBed.configureTestingModule({
@@ -25,13 +24,13 @@ describe('ListaProductosComponent', () => {
       providers: [
         { provide: ProductService, useValue: productServiceSpy },
         { provide: Router, useValue: routerSpy },
-        { provide: ChangeDetectorRef, useValue: cdrSpy },
         { provide: CsvExportService, useValue: csvExportSpy }
       ]
     });
 
     fixture = TestBed.createComponent(ListaProductosComponent);
     component = fixture.componentInstance;
+    cdrSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
   });
 
   it('should create', () => {
@@ -165,7 +164,6 @@ describe('ListaProductosComponent', () => {
     expect(component.toastType).toEqual('error');
   });
 
-
   it('should show and clear toast', fakeAsync(() => {
     component.showToast('Mensaje prueba', 'success');
     expect(component.toastMessage).toEqual('Mensaje prueba');
@@ -174,4 +172,82 @@ describe('ListaProductosComponent', () => {
     tick(4000);
     expect(component.toastMessage).toBeNull();
   }));
+
+  // ✅ NUEVO: Test para cubrir el branch del catch en copyToClipboard
+  it('should handle clipboard copy error', fakeAsync(() => {
+    spyOn(navigator.clipboard, 'writeText').and.returnValue(
+      Promise.reject(new Error('Clipboard failed'))
+    );
+    spyOn(console, 'error');
+
+    component.copyToClipboard('123', 'product', '123');
+    tick();
+
+    expect(console.error).toHaveBeenCalledWith('Error al copiar ID: ', jasmine.any(Error));
+    expect(component.copiedCell).toBeNull();
+  }));
+
+  // ✅ NUEVO: Test para cubrir el branch exitoso de copyToClipboard
+  it('should copy to clipboard successfully', fakeAsync(() => {
+    spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.resolve());
+
+    component.copyToClipboard('123', 'product', 'prod-123');
+    tick();
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('123');
+    expect(component.copiedCell).toEqual('product-prod-123');
+
+    tick(1500);
+    expect(component.copiedCell).toBeNull();
+  }));
+
+  // ✅ NUEVO: Test para mostrarDetalle
+  it('should show detail dialog', () => {
+    const mockProduct = { id: '1', name: 'Test Product' } as any;
+
+    component.mostrarDetalle(mockProduct);
+
+    expect(component.selectedItem).toEqual(mockProduct);
+    expect(component.dialogVisible).toBeTrue();
+  });
+
+  // ✅ NUEVO: Test para retry
+  it('should retry loading products', () => {
+    spyOn(component, 'cargarProductos');
+
+    component.retry();
+
+    expect(component.cargarProductos).toHaveBeenCalled();
+  });
+
+  // ✅ NUEVO: Test para getters startItem y endItem
+  it('should calculate startItem correctly when products exist', () => {
+    component.productos = [{ id: '1' } as any, { id: '2' } as any];
+    component.currentPage = 2;
+    component.pageSize = 10;
+
+    expect(component.startItem).toEqual(11);
+  });
+
+  it('should return 0 for startItem when no products', () => {
+    component.productos = [];
+
+    expect(component.startItem).toEqual(0);
+  });
+
+  it('should calculate endItem correctly', () => {
+    component.currentPage = 1;
+    component.pageSize = 10;
+    component.totalItems = 25;
+
+    expect(component.endItem).toEqual(10);
+  });
+
+  it('should calculate endItem as totalItems on last page', () => {
+    component.currentPage = 3;
+    component.pageSize = 10;
+    component.totalItems = 25;
+
+    expect(component.endItem).toEqual(25);
+  });
 });

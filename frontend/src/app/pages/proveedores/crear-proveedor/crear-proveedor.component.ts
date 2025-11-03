@@ -9,6 +9,7 @@ import { finalize, timer } from 'rxjs';
 
 import { ProveedorService } from '../../../services/proveedores/proveedor.service';
 import { ProviderCreateRequest } from '../../../interfaces/proveedor.intrface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-crear-proveedor',
@@ -36,7 +37,7 @@ export class CrearProveedorComponent {
 
   get f() { return this.proveedorForm.controls; }
 
-  constructor(private fb: FormBuilder, private proveedorService: ProveedorService, private cdr: ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private proveedorService: ProveedorService, private cdr: ChangeDetectorRef, private router: Router) {
 
     this.proveedorForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
@@ -93,6 +94,7 @@ export class CrearProveedorComponent {
         this.showToast(message, 'error');
       }
     });
+
   }
 
 

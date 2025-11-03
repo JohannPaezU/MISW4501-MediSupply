@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 import { Zone, CreateVendedorRequest } from '../../../interfaces/vendedor.interface';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
 import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-crear-vendedor',
@@ -29,7 +30,8 @@ export class CrearVendedorComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private vendedorService: VendedorService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     this.vendedorForm = this.fb.group({
       nombreCompleto: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
@@ -115,6 +117,7 @@ export class CrearVendedorComponent implements OnInit {
         next: (response) => this.onCreateSuccess(response),
         error: (err) => this.onCreateError(err)
       });
+
   }
 
   private onCreateSuccess(response: any): void {

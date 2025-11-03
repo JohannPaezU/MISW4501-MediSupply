@@ -71,6 +71,9 @@ export class CrearProductoComponent {
       next: (response) => this.onProductoCreado(response),
       error: (err) => this.onError(err)
     });
+    setTimeout(() => {
+      this.router.navigate(['/productos']);
+    }, 2000);
   }
 
   private formInvalido(): boolean {

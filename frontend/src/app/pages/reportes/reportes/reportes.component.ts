@@ -25,7 +25,6 @@ import { ExcelExportService } from '../../../services/utilities/excel.service';
 export class ReportesComponent implements OnInit {
   reportes: ReporteData[] = [];
   reportesFiltrados: ReporteData[] = [];
-
   vendedores: Vendedor[] = [];
   zonas: Zone[] = [];
   productos: ProductCreateResponse[] = [];
@@ -119,32 +118,39 @@ export class ReportesComponent implements OnInit {
       });
   }
 
-  transformarPlanesAReportes(planes: PlanVenta[], reportes: ReporteData[]): ReporteData[] {
-    return planes.map(plan => {
-      const meta = plan.goal || 0;
-      const reporteRelacionado = reportes.find(r =>
-        r.vendedor_id === plan.seller?.id &&
-        r.producto_id === plan.product?.id
-      );
+transformarPlanesAReportes(planes: PlanVenta[], reportes: ReporteData[]): ReporteData[] {
+  // Agrupar las ventas reales por vendedor y producto
+  const ventasMap = new Map<string, number>();
 
-      const ventas = reporteRelacionado?.ventas || 0;
-      const porcentajeMeta = meta > 0 ? Math.round((ventas / meta) * 100) : 0;
+  reportes.forEach(r => {
+    const key = `${r.vendedor_id}-${r.producto_id}`;
+    const ventasAcumuladas = ventasMap.get(key) || 0;
+    ventasMap.set(key, ventasAcumuladas + (r.ventas || 0));
+  });
 
-      return {
-        vendedor: plan.seller?.full_name || 'Sin vendedor',
-        vendedor_id: plan.seller?.id || '',
-        producto: plan.product?.name || 'Sin producto',
-        producto_id: plan.product?.id || '',
-        zona: (plan.zone as any)?.description || plan.zone?.description || 'Sin zona',
-        zona_id: plan.zone?.id || '',
-        meta,
-        ventas,
-        porcentajeMeta,
-        periodo: plan.period
-      } as ReporteData;
-    });
-  }
+  return planes.map(plan => {
+    const meta = plan.goal || 0;
+    const vendedorId = plan.seller?.id || '';
+    const productoId = plan.product?.id || '';
+    const key = `${vendedorId}-${productoId}`;
+    const ventasTotales = ventasMap.get(key) || 0;
 
+    const porcentajeMeta = meta > 0 ? Math.round((ventasTotales / meta) * 100) : 0;
+
+    return {
+      vendedor: plan.seller?.full_name || 'Sin vendedor',
+      vendedor_id: vendedorId,
+      producto: plan.product?.name || 'Sin producto',
+      producto_id: productoId,
+      zona: plan.zone?.description || 'Sin zona',
+      zona_id: plan.zone?.id || '',
+      meta,
+      ventas: ventasTotales,
+      porcentajeMeta,
+      periodo: plan.period
+    } as ReporteData;
+  });
+}
   aplicarFiltros(): void {
     this.reportesFiltrados = this.reportes.filter(reporte => {
       if (this.filtros.vendedores.length > 0 &&
@@ -173,14 +179,19 @@ export class ReportesComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  calcularEstadisticas(): void {
-    const visibles = this.reportesFiltrados;
-    this.estadisticas.totalVentas = visibles.reduce((sum, r) => sum + (r.ventas || 0), 0);
-    this.estadisticas.cumplimientoPromedio = visibles.length > 0
-      ? Math.round(visibles.reduce((sum, r) => sum + (r.porcentajeMeta || 0), 0) / visibles.length)
-      : 0;
-    this.cdr.detectChanges();
-  }
+calcularEstadisticas(): void {
+  const visibles = this.reportesFiltrados;
+
+  const totalVentas = visibles.reduce((sum, r) => sum + (r.ventas || 0), 0);
+  const totalMetas = visibles.reduce((sum, r) => sum + (r.meta || 0), 0);
+
+  this.estadisticas.totalVentas = totalVentas;
+
+  this.estadisticas.cumplimientoPromedio =
+    totalMetas > 0 ? Math.round((totalVentas / totalMetas) * 100) : 0;
+
+  this.cdr.detectChanges();
+}
 
   toggleFiltroVendedor(vendedorId: string): void {
     const index = this.filtros.vendedores.indexOf(vendedorId);
