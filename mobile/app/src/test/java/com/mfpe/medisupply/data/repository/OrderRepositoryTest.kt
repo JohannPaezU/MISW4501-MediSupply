@@ -2,12 +2,15 @@ package com.mfpe.medisupply.data.repository
 
 import com.mfpe.medisupply.data.model.OrderListResponse
 import com.mfpe.medisupply.data.network.OrderService
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 import retrofit2.Call
 
@@ -36,7 +39,7 @@ class OrderRepositoryTest {
         val sellerId = "1"
 
         // When
-        val result = orderRepository.getOrders(clientId, sellerId)
+        val result = orderRepository.getOrders("",clientId, sellerId)
 
         // Then
         assertNotNull("Result should not be null", result)
@@ -50,7 +53,7 @@ class OrderRepositoryTest {
         val sellerId = "1"
 
         // When
-        val result = orderRepository.getOrders(clientId, sellerId)
+        val result = orderRepository.getOrders("",clientId, sellerId)
 
         // Then
         assertNotNull("Result should not be null", result)
@@ -71,7 +74,7 @@ class OrderRepositoryTest {
 
         // When & Then
         testCases.forEach { (clientId, sellerId) ->
-            val result = orderRepository.getOrders(clientId, sellerId)
+            val result = orderRepository.getOrders("",clientId, sellerId)
             assertNotNull("Result should not be null for clientId=$clientId, sellerId=$sellerId", result)
             assertTrue("Result should be Call type", result is Call<*>)
         }
@@ -84,8 +87,8 @@ class OrderRepositoryTest {
         val sellerId = "1"
 
         // When
-        val result1 = orderRepository.getOrders(clientId, sellerId)
-        val result2 = orderRepository.getOrders(clientId, sellerId)
+        val result1 = orderRepository.getOrders("", clientId, sellerId)
+        val result2 = orderRepository.getOrders("",clientId, sellerId)
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -100,9 +103,9 @@ class OrderRepositoryTest {
         val sellerId = "1"
 
         // When
-        val result1 = orderRepository.getOrders(clientId, sellerId)
-        val result2 = orderRepository.getOrders(clientId, sellerId)
-        val result3 = orderRepository.getOrders(clientId, sellerId)
+        val result1 = orderRepository.getOrders("",clientId, sellerId)
+        val result2 = orderRepository.getOrders("",clientId, sellerId)
+        val result3 = orderRepository.getOrders("",clientId, sellerId)
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -119,10 +122,10 @@ class OrderRepositoryTest {
         // When & Then
         try {
             val thread1 = Thread {
-                orderRepository.getOrders(clientId, sellerId)
+                orderRepository.getOrders("",clientId, sellerId)
             }
             val thread2 = Thread {
-                orderRepository.getOrders(clientId, sellerId)
+                orderRepository.getOrders("",clientId, sellerId)
             }
 
             thread1.start()
@@ -147,17 +150,17 @@ class OrderRepositoryTest {
         
         val thread1 = Thread {
             synchronized(lock) {
-                results.add(orderRepository.getOrders(clientId, sellerId))
+                results.add(orderRepository.getOrders("",clientId, sellerId))
             }
         }
         val thread2 = Thread {
             synchronized(lock) {
-                results.add(orderRepository.getOrders(clientId, sellerId))
+                results.add(orderRepository.getOrders("",clientId, sellerId))
             }
         }
         val thread3 = Thread {
             synchronized(lock) {
-                results.add(orderRepository.getOrders(clientId, sellerId))
+                results.add(orderRepository.getOrders("",clientId, sellerId))
             }
         }
 
@@ -186,8 +189,8 @@ class OrderRepositoryTest {
         val sellerId = "1"
 
         // When
-        val result1 = repository1.getOrders(clientId, sellerId)
-        val result2 = repository2.getOrders(clientId, sellerId)
+        val result1 = repository1.getOrders("",clientId, sellerId)
+        val result2 = repository2.getOrders("",clientId, sellerId)
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -208,7 +211,7 @@ class OrderRepositoryTest {
         // When & Then
         edgeCases.forEach { (clientId, sellerId) ->
             try {
-                val result = orderRepository.getOrders(clientId, sellerId)
+                val result = orderRepository.getOrders("",clientId, sellerId)
                 assertNotNull("Result should not be null for edge case", result)
                 assertTrue("Result should be Call type", result is Call<*>)
             } catch (e: Exception) {
@@ -226,8 +229,8 @@ class OrderRepositoryTest {
         val sellerId2 = "1"
 
         // When
-        val result1 = orderRepository.getOrders(clientId1, sellerId1)
-        val result2 = orderRepository.getOrders(clientId2, sellerId2)
+        val result1 = orderRepository.getOrders("", clientId1, sellerId1)
+        val result2 = orderRepository.getOrders("", clientId2, sellerId2)
 
         // Then
         assertNotNull("First result should not be null", result1)

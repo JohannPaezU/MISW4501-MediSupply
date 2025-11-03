@@ -8,6 +8,7 @@ import { ProveedorService } from '../../../services/proveedores/proveedor.servic
 import { ProviderBase } from '../../../interfaces/proveedor.intrface';
 import { CsvExportService } from '../../../services/utilities/csv.service';
 import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
+import { ItemDialogComponent } from '../../../components/item-dialog/item-dialog.component';
 
 @Component({
   selector: 'app-lista-proveedor',
@@ -16,7 +17,8 @@ import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loa
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    ItemDialogComponent
   ],
   templateUrl: './lista-proveedor.component.html',
   styleUrls: ['./lista-proveedor.component.css']
@@ -26,6 +28,8 @@ export class ListaProveedorComponent implements OnInit {
   isLoading = true;
   errorMessage: string | null = null;
   copiedId: string | null = null;
+  dialogVisible = false;
+  selectedItem: any = null;
 
   pageSize = 10;
   currentPage = 1;
@@ -61,6 +65,12 @@ export class ListaProveedorComponent implements OnInit {
         this.errorMessage = 'No se pudieron cargar los proveedores. Intente de nuevo más tarde.';
       }
     });
+  }
+
+  mostrarDetalle(item: any) {
+    this.selectedItem = item;
+    this.dialogVisible = true;
+    this.cdr.detectChanges();
   }
 
   exportarCSV(): void {

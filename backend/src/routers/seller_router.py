@@ -4,26 +4,57 @@ from sqlalchemy.orm import Session
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import NotFoundException
+from src.models.db_models import User
 from src.models.enums.user_role import UserRole
 from src.schemas.seller_schema import (
-    GetSellerResponse,
     GetSellersResponse,
     SellerCreateRequest,
-    SellerCreateResponse,
+    SellerResponse,
+    SellerSummaryResponse,
 )
 from src.services.seller_service import create_seller, get_seller_by_id, get_sellers
 
 seller_router = APIRouter(
     tags=["Sellers"],
     prefix="/sellers",
-    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
 )
+
+
+@seller_router.get(
+    "/me",
+    response_model=SellerSummaryResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get seller summary",
+    description="""
+Retrieve a summary of the authenticated seller's account.
+
+### Response
+- **id**: Unique identifier of the seller
+- **clients_count**: Total number of clients associated with the seller
+- **orders_count**: Total number of orders managed by the seller
+- **zone**: Zone associated with the seller
+""",
+)
+async def get_seller_summary(
+    *,
+    current_user: User = Depends(require_roles(allowed_roles=[UserRole.COMMERCIAL])),
+) -> SellerSummaryResponse:
+    clients_count = len(current_user.clients)
+    orders_count = len(current_user.managed_orders)
+
+    return SellerSummaryResponse(
+        id=current_user.id,
+        clients_count=clients_count,
+        orders_count=orders_count,
+        zone=current_user.zone.description,
+    )
 
 
 @seller_router.post(
     "",
-    response_model=SellerCreateResponse,
+    response_model=SellerResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
     summary="Register a new seller",
     description="""
 Create a new seller account.
@@ -35,15 +66,25 @@ Create a new seller account.
 - **zone_id**: Zone ID (36 characters)
 
 ### Response
-Returns the created seller's details including `id`, `full_name`, `doi`, `email`, `phone`, `created_at`
-and associated `zone` information.
+- **id**: Unique identifier of the seller
+- **full_name**: Seller's full name
+- **email**: Seller's email address
+- **phone**: Seller's phone number
+- **doi**: Seller's unique identification number
+- **address**: Seller's address (if provided)
+- **role**: User role (should be 'commercial')
+- **created_at**: Timestamp of when the seller was created
+- **zone**: Associated zone information
+- **clients**: List of clients associated with the seller
+- **selling_plans**: List of selling plans associated with the seller
+- **managed_orders**: List of orders managed by the seller
 """,
 )
 async def register_seller(
     *,
     seller_create_request: SellerCreateRequest,
     db: Session = Depends(get_db),
-) -> SellerCreateResponse:
+) -> SellerResponse:
     return create_seller(db=db, seller_create_request=seller_create_request)
 
 
@@ -51,13 +92,21 @@ async def register_seller(
     "",
     response_model=GetSellersResponse,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
     summary="Get all sellers",
     description="""
 Retrieve a list of all registered sellers.
 
 ### Response
-Returns a list of sellers with their details including `id`, `full_name`, `doi`, `email`, `phone`, `created_at`
-and associated `zone` information.
+Returns a list of sellers with the following details for each seller:
+- **id**: Unique identifier of the seller
+- **full_name**: Seller's full name
+- **email**: Seller's email address
+- **phone**: Seller's phone number
+- **doi**: Seller's unique identification number
+- **address**: Seller's address (if provided)
+- **role**: User role (should be 'commercial')
+- **created_at**: Timestamp of when the seller was created
 """,
 )
 async def get_all_sellers(
@@ -71,8 +120,9 @@ async def get_all_sellers(
 
 @seller_router.get(
     "/{seller_id}",
-    response_model=GetSellerResponse,
+    response_model=SellerResponse,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
     summary="Get seller by ID",
     description="""
 Retrieve a seller's details by their unique ID.
@@ -81,15 +131,25 @@ Retrieve a seller's details by their unique ID.
 - **seller_id**: The unique identifier of the seller (36 characters)
 
 ### Response
-Returns the seller's details including `id`, `full_name`, `doi`, `email`, `phone`, `created_at`
-and associated `zone` information.
+- **id**: Unique identifier of the seller
+- **full_name**: Seller's full name
+- **email**: Seller's email address
+- **phone**: Seller's phone number
+- **doi**: Seller's unique identification number
+- **address**: Seller's address (if provided)
+- **role**: User role (should be 'commercial')
+- **created_at**: Timestamp of when the seller was created
+- **zone**: Associated zone information
+- **clients**: List of clients associated with the seller
+- **selling_plans**: List of selling plans associated with the seller
+- **managed_orders**: List of orders managed by the seller
 """,
 )
 async def get_seller(
     *,
     seller_id: str,
     db: Session = Depends(get_db),
-) -> GetSellerResponse:
+) -> SellerResponse:
     seller = get_seller_by_id(db=db, seller_id=seller_id)
     if not seller:
         raise NotFoundException("Seller not found")

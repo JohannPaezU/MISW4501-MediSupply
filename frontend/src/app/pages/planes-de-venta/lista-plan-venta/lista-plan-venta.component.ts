@@ -7,11 +7,12 @@ import { PlanVenta } from '../../../interfaces/planVenta.interface';
 import { PlanVentaService } from '../../../services/planes-de-venta/planesDeVenta.service';
 import { CsvExportService } from '../../../services/utilities/csv.service';
 import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
+import { ItemDialogComponent } from '../../../components/item-dialog/item-dialog.component';
 
 @Component({
   selector: 'app-lista-plan-venta',
   standalone: true,
-  imports: [CommonModule, MatIconModule,LoadingSpinnerComponent],
+  imports: [CommonModule, MatIconModule,LoadingSpinnerComponent, ItemDialogComponent],
   templateUrl: './lista-plan-venta.component.html',
   styleUrls: ['./lista-plan-venta.component.css']
 })
@@ -20,6 +21,10 @@ export class ListaPlanVentaComponent implements OnInit {
   isLoading = false;
   error: string | null = null;
   copiedId: string | null = null;
+
+  dialogVisible = false;
+  selectedItem: any = null;
+
 
   pageSize = 10;
   currentPage = 1;
@@ -37,6 +42,12 @@ export class ListaPlanVentaComponent implements OnInit {
   ngOnInit(): void {
     this.cargarPlanesVenta();
   }
+
+mostrarDetalle(item: any) {
+  this.selectedItem = item;
+  this.dialogVisible = true;
+  this.cdr.detectChanges();
+}
 
   cargarPlanesVenta(): void {
     this.isLoading = true;

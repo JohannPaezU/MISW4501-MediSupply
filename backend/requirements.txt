@@ -35,3 +35,10 @@ pystache
 black
 isort
 flake8
+
+# File handling
+python-multipart
+
+# Google Cloud services
+googlemaps
+google-cloud-storage

@@ -13,12 +13,6 @@ class TestSellerRouter(BaseTest):
         "phone": "1234567890",
     }
 
-    @pytest.fixture
-    def authorized_client(self):
-        client = self.client.__class__(self.client.app)
-        client.headers.update({"Authorization": f"Bearer {self.admin_token}"})
-        return client
-
     def test_register_seller_with_invalid_parameters(self, authorized_client):
         payload = self.create_seller_payload.copy()
         payload["full_name"] = ""
@@ -31,9 +25,9 @@ class TestSellerRouter(BaseTest):
         json_response = response.json()
         assert response.status_code == 422
         assert json_response["detail"][0]["loc"] == ["body", "full_name"]
-        assert json_response["detail"][1]["loc"] == ["body", "doi"]
-        assert json_response["detail"][2]["loc"] == ["body", "email"]
-        assert json_response["detail"][3]["loc"] == ["body", "phone"]
+        assert json_response["detail"][1]["loc"] == ["body", "email"]
+        assert json_response["detail"][2]["loc"] == ["body", "phone"]
+        assert json_response["detail"][3]["loc"] == ["body", "doi"]
         assert json_response["detail"][4]["loc"] == ["body", "zone_id"]
 
     def test_register_seller_with_invalid_phone(self, authorized_client):
@@ -138,3 +132,13 @@ class TestSellerRouter(BaseTest):
         assert response.status_code == 200
         assert json_response["id"] == seller_id
         mock_send_email.assert_called_once()
+
+    @pytest.mark.parametrize("authorized_client", ["commercial_token"], indirect=True)
+    def test_get_seller_summary_success(self, authorized_client):
+        response = authorized_client.get(f"{self.prefix}/sellers/me")
+        json_response = response.json()
+        assert response.status_code == 200
+        assert "id" in json_response
+        assert "clients_count" in json_response
+        assert "orders_count" in json_response
+        assert "zone" in json_response

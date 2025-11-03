@@ -7,11 +7,16 @@ from src.core.logging_config import logger
 from src.db.database import init_database
 from src.errors.exception_handlers import setup_exception_handlers
 from src.routers.auth_router import auth_router
+from src.routers.client_router import client_router
+from src.routers.distribution_center_router import distribution_center_router
 from src.routers.health_check_router import health_check_router
+from src.routers.order_router import order_router
 from src.routers.product_router import product_router
 from src.routers.provider_router import provider_router
+from src.routers.report_router import report_router
 from src.routers.seller_router import seller_router
 from src.routers.selling_plan_router import selling_plan_router
+from src.routers.visit_router import visit_router
 from src.routers.zone_router import zone_router
 
 version = "1.0"
@@ -35,6 +40,11 @@ app.include_router(seller_router, prefix=prefix)
 app.include_router(provider_router, prefix=prefix)
 app.include_router(product_router, prefix=prefix)
 app.include_router(selling_plan_router, prefix=prefix)
+app.include_router(distribution_center_router, prefix=prefix)
+app.include_router(order_router, prefix=prefix)
+app.include_router(client_router, prefix=prefix)
+app.include_router(visit_router, prefix=prefix)
+app.include_router(report_router, prefix=prefix)
 setup_exception_handlers(app)
 
 

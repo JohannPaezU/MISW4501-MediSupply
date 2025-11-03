@@ -16,7 +16,6 @@ export class ProveedorService {
     return this.http.post<ProviderCreateResponse>(this.apiUrl, provider);
   }
 
-
   getProviders(): Observable<GetProvidersResponse> {
     return this.http.get<GetProvidersResponse>(this.apiUrl);
   }

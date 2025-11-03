@@ -1,15 +1,22 @@
-from datetime import datetime
 from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import EmailStr, Field, field_validator
 
 from src.errors.errors import BadRequestException
-from src.schemas.zone_schema import ZoneBase
+from src.schemas.base_schema import (
+    BaseSchema,
+    OrderBase,
+    SellerBase,
+    SellingPlanBase,
+    UserBase,
+    ZoneBase,
+)
 
 
-class SellerBase(BaseModel):
-    id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
+class SellerCreateRequest(BaseSchema):
     full_name: Annotated[str, Field(min_length=1, max_length=100)]
+    email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
+    phone: Annotated[str, Field(min_length=9, max_length=15)]
     doi: Annotated[
         str,
         Field(
@@ -18,10 +25,8 @@ class SellerBase(BaseModel):
             description="Unique user identification number (NIT, RUC, ID, etc.)",
         ),
     ]
-    email: Annotated[EmailStr, Field(min_length=5, max_length=120)]
-    phone: Annotated[str, Field(min_length=9, max_length=15)]
-    created_at: Annotated[datetime | None, Field()] = None
-    zone: Annotated[ZoneBase | None, Field()] = None
+    address: Annotated[str | None, Field(min_length=1, max_length=255)] = None
+    zone_id: Annotated[str, Field(min_length=36, max_length=36)]
 
     @field_validator("phone")
     def validate_phone(cls, value: str) -> str:
@@ -29,21 +34,25 @@ class SellerBase(BaseModel):
             raise BadRequestException("Phone must be between 9 and 15 digits")
         return value
 
-    model_config = {"str_strip_whitespace": True, "from_attributes": True}
+
+class SellerResponse(SellerBase):
+    zone: ZoneBase
+    clients: list[UserBase]
+    selling_plans: list[SellingPlanBase]
+    managed_orders: list[OrderBase]
 
 
-class SellerCreateRequest(SellerBase):
-    zone_id: Annotated[str, Field(min_length=36, max_length=36)]
+class SellerMinimalResponse(SellerBase):
+    zone: ZoneBase
 
 
-class SellerCreateResponse(SellerBase):
-    pass
-
-
-class GetSellerResponse(SellerBase):
-    pass
-
-
-class GetSellersResponse(BaseModel):
+class GetSellersResponse(BaseSchema):
     total_count: int
-    sellers: list[SellerBase]
+    sellers: list[SellerMinimalResponse]
+
+
+class SellerSummaryResponse(BaseSchema):
+    id: str
+    clients_count: int
+    orders_count: int
+    zone: str

@@ -5,6 +5,7 @@ import com.mfpe.medisupply.utils.TestUtils
 import org.junit.Assert.*
 import org.junit.Test
 import retrofit2.Call
+import java.util.Collections
 
 /**
  * Tests unitarios para OrderService
@@ -42,7 +43,7 @@ class OrderServiceTest {
         val sellerId = "2"
 
         // When
-        val getOrdersCall = orderService.getOrders(clientId, sellerId)
+        val getOrdersCall = orderService.getOrders("", clientId, sellerId)
 
         // Then
         assertNotNull("Get orders call should not be null", getOrdersCall)
@@ -96,7 +97,7 @@ class OrderServiceTest {
         val sellerId = "2"
 
         // When
-        val call = orderService.getOrders(clientId, sellerId)
+        val call = orderService.getOrders("",clientId, sellerId)
 
         // Then
         assertNotNull("Call should not be null", call)
@@ -118,7 +119,7 @@ class OrderServiceTest {
 
         // When & Then
         testCases.forEach { (clientId, sellerId) ->
-            val call = orderService.getOrders(clientId, sellerId)
+            val call = orderService.getOrders("", clientId, sellerId)
             assertNotNull("Call should not be null for clientId=$clientId, sellerId=$sellerId", call)
             assertTrue("Call should be Call type", call is Call<*>)
         }
@@ -132,9 +133,9 @@ class OrderServiceTest {
         val sellerId = "2"
 
         // When
-        val call1 = orderService.getOrders(clientId, sellerId)
-        val call2 = orderService.getOrders(clientId, sellerId)
-        val call3 = orderService.getOrders(clientId, sellerId)
+        val call1 = orderService.getOrders("",clientId, sellerId)
+        val call2 = orderService.getOrders("",clientId, sellerId)
+        val call3 = orderService.getOrders("",clientId, sellerId)
 
         // Then
         assertNotNull("First call should not be null", call1)
@@ -153,7 +154,7 @@ class OrderServiceTest {
 
         // Then
         assertNotNull("getOrders method should exist", getOrdersMethod)
-        assertEquals("getOrders should have 2 parameters", 2, getOrdersMethod?.parameterCount)
+        assertEquals("getOrders should have 2 parameters", 3, getOrdersMethod?.parameterCount)
     }
 
     @Test
@@ -162,17 +163,17 @@ class OrderServiceTest {
         val orderService = RetrofitApiClient.createRetrofitService(OrderService::class.java)
 
         // When
-        val calls = mutableListOf<Call<OrderListResponse>>()
+        val calls = Collections.synchronizedList(mutableListOf<Call<OrderListResponse>>())
         
         // Execute multiple calls concurrently
         val thread1 = Thread {
-            calls.add(orderService.getOrders("1", "1"))
+            calls.add(orderService.getOrders("","1", "1"))
         }
         val thread2 = Thread {
-            calls.add(orderService.getOrders("2", "2"))
+            calls.add(orderService.getOrders("","2", "2"))
         }
         val thread3 = Thread {
-            calls.add(orderService.getOrders("3", "3"))
+            calls.add(orderService.getOrders("","3", "3"))
         }
 
         thread1.start()
@@ -199,10 +200,10 @@ class OrderServiceTest {
         // When & Then
         try {
             val thread1 = Thread {
-                orderService.getOrders("1", "1")
+                orderService.getOrders("","1", "1")
             }
             val thread2 = Thread {
-                orderService.getOrders("2", "2")
+                orderService.getOrders("","2", "2")
             }
 
             thread1.start()
@@ -222,9 +223,9 @@ class OrderServiceTest {
 
         // When & Then
         try {
-            val call1 = orderService.getOrders("0", "0")
-            val call2 = orderService.getOrders("-1", "-1")
-            val call3 = orderService.getOrders(Int.MAX_VALUE.toString(), Int.MIN_VALUE.toString())
+            val call1 = orderService.getOrders("","0", "0")
+            val call2 = orderService.getOrders("","-1", "-1")
+            val call3 = orderService.getOrders("",Int.MAX_VALUE.toString(), Int.MIN_VALUE.toString())
 
             assertNotNull("Call with zeros should not be null", call1)
             assertNotNull("Call with negatives should not be null", call2)
@@ -240,8 +241,8 @@ class OrderServiceTest {
         val orderService = RetrofitApiClient.createRetrofitService(OrderService::class.java)
 
         // When
-        val call1 = orderService.getOrders("1", "2")
-        val call2 = orderService.getOrders("2", "1")
+        val call1 = orderService.getOrders("","1", "2")
+        val call2 = orderService.getOrders("","2", "1")
 
         // Then
         assertNotNull("First call should not be null", call1)

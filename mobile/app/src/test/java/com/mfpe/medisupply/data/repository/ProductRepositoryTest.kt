@@ -32,7 +32,7 @@ class ProductRepositoryTest {
     @Test
     fun `getProducts should return Call with correct type`() {
         // When
-        val result = productRepository.getProducts()
+        val result = productRepository.getProducts("")
 
         // Then
         assertNotNull("Result should not be null", result)
@@ -42,7 +42,7 @@ class ProductRepositoryTest {
     @Test
     fun `getProducts should return Call with correct generic type`() {
         // When
-        val result = productRepository.getProducts()
+        val result = productRepository.getProducts("")
 
         // Then
         assertNotNull("Result should not be null", result)
@@ -52,8 +52,8 @@ class ProductRepositoryTest {
     @Test
     fun `getProducts should return different Call instances`() {
         // When
-        val result1 = productRepository.getProducts()
-        val result2 = productRepository.getProducts()
+        val result1 = productRepository.getProducts("")
+        val result2 = productRepository.getProducts("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -64,9 +64,9 @@ class ProductRepositoryTest {
     @Test
     fun `getProducts should be callable multiple times`() {
         // When
-        val result1 = productRepository.getProducts()
-        val result2 = productRepository.getProducts()
-        val result3 = productRepository.getProducts()
+        val result1 = productRepository.getProducts("")
+        val result2 = productRepository.getProducts("")
+        val result3 = productRepository.getProducts("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -79,10 +79,10 @@ class ProductRepositoryTest {
         // When & Then
         try {
             val thread1 = Thread {
-                productRepository.getProducts()
+                productRepository.getProducts("")
             }
             val thread2 = Thread {
-                productRepository.getProducts()
+                productRepository.getProducts("")
             }
 
             thread1.start()
@@ -103,17 +103,17 @@ class ProductRepositoryTest {
         
         val thread1 = Thread {
             synchronized(lock) {
-                results.add(productRepository.getProducts())
+                results.add(productRepository.getProducts(""))
             }
         }
         val thread2 = Thread {
             synchronized(lock) {
-                results.add(productRepository.getProducts())
+                results.add(productRepository.getProducts(""))
             }
         }
         val thread3 = Thread {
             synchronized(lock) {
-                results.add(productRepository.getProducts())
+                results.add(productRepository.getProducts(""))
             }
         }
 
@@ -140,8 +140,8 @@ class ProductRepositoryTest {
         val repository2 = ProductRepository()
 
         // When
-        val result1 = repository1.getProducts()
-        val result2 = repository2.getProducts()
+        val result1 = repository1.getProducts("")
+        val result2 = repository2.getProducts("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -155,7 +155,7 @@ class ProductRepositoryTest {
         val results = mutableListOf<Call<ProductListResponse>>()
         
         for (i in 1..10) {
-            results.add(productRepository.getProducts())
+            results.add(productRepository.getProducts(""))
         }
 
         // Then
@@ -169,8 +169,8 @@ class ProductRepositoryTest {
     @Test
     fun `ProductRepository should maintain consistency`() {
         // When
-        val result1 = productRepository.getProducts()
-        val result2 = productRepository.getProducts()
+        val result1 = productRepository.getProducts("")
+        val result2 = productRepository.getProducts("")
 
         // Then
         assertNotNull("First result should not be null", result1)
@@ -182,7 +182,7 @@ class ProductRepositoryTest {
     fun `getProducts should handle edge cases`() {
         // When & Then
         try {
-            val result = productRepository.getProducts()
+            val result = productRepository.getProducts("")
             assertNotNull("Result should not be null", result)
             assertTrue("Result should be Call type", result is Call<*>)
         } catch (e: Exception) {
@@ -199,7 +199,7 @@ class ProductRepositoryTest {
         assertEquals("Should create 5 repositories", 5, repositories.size)
         repositories.forEach { repository ->
             assertNotNull("Each repository should not be null", repository)
-            val result = repository.getProducts()
+            val result = repository.getProducts("")
             assertNotNull("Each repository should return valid result", result)
             assertTrue("Each result should be Call type", result is Call<*>)
         }

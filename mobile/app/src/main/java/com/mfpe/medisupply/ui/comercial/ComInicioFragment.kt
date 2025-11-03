@@ -38,11 +38,11 @@ class ComInicioFragment : Fragment() {
     }
 
     private fun loadHomeData() {
-        sellerViewModel.getHome { success, message, data ->
+        sellerViewModel.getHome(PrefsManager.getInstance(requireContext()).getAuthToken!!) { success, message, data ->
             if (success && data != null) {
-                binding.textNumClientes.text = data.numberClients.toString()
-                binding.textNumOrdenes.text = data.numberOrders.toString()
-                binding.textZona.text = data.vendorZone
+                binding.textNumClientes.text = data.clientsCount.toString()
+                binding.textNumOrdenes.text = data.ordersCount.toString()
+                binding.textZona.text = data.zone
             } else {
                 Toast.makeText(requireContext(), "Error al cargar datos: $message", Toast.LENGTH_SHORT).show()
             }

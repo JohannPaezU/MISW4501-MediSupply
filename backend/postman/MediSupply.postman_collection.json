@@ -37,7 +37,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"full_name\": \"Johann Páez\",\r\n    \"doi\": \"4\",\r\n    \"address\": \"Calle 103 # 16A - 16\",\r\n    \"phone\": \"1234567890\",\r\n    \"role\": \"commercial\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"raw": "{\r\n    \"full_name\": \"Johann Páez\",\r\n    \"email\": \"{{email}}\",\r\n    \"phone\": \"1234567890\",\r\n    \"doi\": \"3\",\r\n    \"address\": \"Carrera 69F #3A - 22\",\r\n    \"password\": \"{{password}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -63,7 +63,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"full_name\": \"Johann Páez\",\r\n    \"doi\": \"4\",\r\n    \"address\": \"Calle 103 # 16A - 16\",\r\n    \"phone\": \"1234567890\",\r\n    \"role\": \"commercial\",\r\n    \"password\": \"{{password}}\"\r\n}",
+									"raw": "{\r\n    \"full_name\": \"Johann Páez\",\r\n    \"email\": \"{{email}}\",\r\n    \"phone\": \"1234567890\",\r\n    \"doi\": \"42\",\r\n    \"address\": \"Calle 103 # 16A - 16\",\r\n    \"password\": \"{{password}}\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -87,7 +87,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 22:15:31 GMT"
+									"value": "Wed, 22 Oct 2025 04:08:24 GMT"
 								},
 								{
 									"key": "server",
@@ -95,12 +95,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "88"
+									"value": "492"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -112,7 +111,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"id\": \"3e95dd98-ffa2-4f78-8698-2e5dda0d1d59\",\n    \"created_at\": \"2025-10-18T22:15:33.294179Z\"\n}"
+							"body": "{\n    \"id\": \"6d20969e-c2d6-443f-ab31-4ec95338a053\",\n    \"full_name\": \"Johann Páez\",\n    \"email\": \"example@uniandes.edu.co\",\n    \"phone\": \"1234567890\",\n    \"doi\": \"42\",\n    \"address\": \"Calle 103 # 16A - 16\",\n    \"role\": \"institutional\",\n    \"created_at\": \"2025-10-22T04:08:26.420988Z\",\n    \"seller\": {\n        \"id\": \"8392c3b9-3556-485d-a4b4-6fd1541606cd\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos2@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"1234567289\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-22T04:07:21.628435Z\"\n    },\n    \"orders\": []\n}"
 						}
 					]
 				},
@@ -207,7 +206,6 @@
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -246,7 +244,6 @@
 									"    pm.expect(jsonData.user).to.have.property('email');\r",
 									"    pm.expect(jsonData.user).to.have.property('full_name');\r",
 									"    pm.expect(jsonData.user).to.have.property('doi');\r",
-									"    pm.expect(jsonData.user).to.have.property('address');\r",
 									"    pm.expect(jsonData.user).to.have.property('phone');\r",
 									"    pm.expect(jsonData.user).to.have.property('role');\r",
 									"});\r",
@@ -265,7 +262,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"492567\"\r\n}",
+							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"419187\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -291,7 +288,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"023474\"\r\n}",
+									"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"967817\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -315,7 +312,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 22:17:32 GMT"
+									"value": "Wed, 22 Oct 2025 04:11:02 GMT"
 								},
 								{
 									"key": "server",
@@ -323,12 +320,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "468"
+									"value": "496"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -340,7 +336,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"message\": \"OTP verified successfully\",\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NWY4MjBhYy1kYTVkLTQ4ZjctYTU4Mi0yMDU5NWQzZWM0YmYiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjA4MzMwNTN9.zLvUOPKzYF9eANDpOBW7yxOaUMDQ4-KuMWnXlklct1k\",\n    \"token_type\": \"bearer\",\n    \"user\": {\n        \"id\": \"75f820ac-da5d-48f7-a582-20595d3ec4bf\",\n        \"email\": \"js.paezc1@uniandes.edu.co\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"doi\": \"0000000000-0\",\n        \"address\": null,\n        \"phone\": \"123456789\",\n        \"role\": \"admin\"\n    }\n}"
+							"body": "{\n    \"message\": \"OTP verified successfully\",\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjExMTcwNjJ9.HRO97KJRzL9EbnPJuPjRRwVDMbvGSVOaZX8lRwXhMmI\",\n    \"token_type\": \"bearer\",\n    \"user\": {\n        \"id\": \"00000000-0000-0000-0000-000000000000\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"js.paezc1@uniandes.edu.co\",\n        \"phone\": \"123456789\",\n        \"doi\": \"0000000000-0\",\n        \"role\": \"admin\",\n        \"created_at\": \"2025-10-22T03:58:25.522591Z\"\n    }\n}"
 						}
 					]
 				},
@@ -367,6 +363,73 @@
 		{
 			"name": "Sellers",
 			"item": [
+				{
+					"name": "Get Seller Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sellers/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sellers",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Seller Summary",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/sellers/me",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sellers",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 29 Oct 2025 03:02:40 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "99"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"44444444-4444-4444-4444-444444444444\",\n    \"clients_count\": 7,\n    \"orders_count\": 1,\n    \"zone\": \"San José\"\n}"
+						}
+					]
+				},
 				{
 					"name": "Get Sellers",
 					"request": {
@@ -403,16 +466,8 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
-									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:29:01 GMT"
-								},
-								{
-									"key": "server",
-									"value": "uvicorn"
-								},
-								{
-									"key": "content-length",
-									"value": "318"
+									"key": "Content-Length",
+									"value": "726"
 								},
 								{
 									"key": "Content-Type",
@@ -420,6 +475,30 @@
 									"name": "Content-Type",
 									"description": "",
 									"type": "text"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 31 Oct 2025 00:08:41 GMT"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=%2Bm1cwN4Wj4FE9JtPcHYEP4S1vW1jHVH0VP7icqBNes8%3D\\u0026sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d\\u0026ts=1761869321\"}],\"max_age\":3600}"
+								},
+								{
+									"key": "Reporting-Endpoints",
+									"value": "heroku-nel=\"https://nel.heroku.com/reports?s=%2Bm1cwN4Wj4FE9JtPcHYEP4S1vW1jHVH0VP7icqBNes8%3D&sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d&ts=1761869321\""
+								},
+								{
+									"key": "Server",
+									"value": "Heroku"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 heroku-router"
 								}
 							],
 							"cookie": [
@@ -429,7 +508,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"total_count\": 1,\n    \"sellers\": [\n        {\n            \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n            \"full_name\": \"Johann Sebastian Páez Campos\",\n            \"doi\": \"123456789\",\n            \"email\": \"sebastian.paezcampos@gmail.com\",\n            \"phone\": \"123456789\",\n            \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n            \"zone\": {\n                \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n                \"description\": \"Bogotá\"\n            }\n        }\n    ]\n}"
+							"body": "{\n    \"total_count\": 2,\n    \"sellers\": [\n        {\n            \"id\": \"20a48247-c6e3-48ff-af6a-89b6ba452bfb\",\n            \"full_name\": \"Miguel Padilla\",\n            \"email\": \"miguelpadillaespino@gmail.com\",\n            \"phone\": \"947891236\",\n            \"doi\": \"70267411\",\n            \"role\": \"commercial\",\n            \"created_at\": \"2025-10-30T19:02:22.515114Z\",\n            \"zone\": {\n                \"id\": \"9015936e-36b2-43c6-a363-70616a795732\",\n                \"description\": \"San José\",\n                \"created_at\": \"2025-10-29T22:17:31.608995Z\"\n            }\n        },\n        {\n            \"id\": \"44444444-4444-4444-4444-444444444444\",\n            \"full_name\": \"Johann Sebastian Páez Campos\",\n            \"email\": \"sebastian.paezcampos@gmail.com\",\n            \"phone\": \"123456789\",\n            \"doi\": \"4444444444-4\",\n            \"role\": \"commercial\",\n            \"created_at\": \"2025-10-29T22:17:34.277496Z\",\n            \"zone\": {\n                \"id\": \"cf36086f-30ee-4b69-aa4f-8495c9855d78\",\n                \"description\": \"Buenos Aires\",\n                \"created_at\": \"2025-10-29T22:17:31.608995Z\"\n            }\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -450,7 +529,7 @@
 							"variable": [
 								{
 									"key": "sellerId",
-									"value": "caea537d-1d85-416a-86ad-4d9aa9a6920e"
+									"value": "44444444-4444-4444-4444-444444444444"
 								}
 							]
 						}
@@ -473,7 +552,7 @@
 									"variable": [
 										{
 											"key": "sellerId",
-											"value": "acecb4b2-4b10-45eb-8845-82bc04d0b3fd"
+											"value": "44444444-4444-4444-4444-444444444444"
 										}
 									]
 								}
@@ -484,7 +563,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:25:28 GMT"
+									"value": "Thu, 23 Oct 2025 02:11:24 GMT"
 								},
 								{
 									"key": "server",
@@ -492,12 +571,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "288"
+									"value": "2851"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -509,7 +587,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n    \"full_name\": \"Johann Sebastian Páez Campos\",\n    \"doi\": \"123456789\",\n    \"email\": \"sebastian.paezcampos@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n    \"zone\": {\n        \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n        \"description\": \"Bogotá\"\n    }\n}"
+							"body": "{\n    \"id\": \"44444444-4444-4444-4444-444444444444\",\n    \"full_name\": \"Johann Sebastian Páez Campos\",\n    \"email\": \"sebastian.paezcampos@gmail.com\",\n    \"phone\": \"123456789\",\n    \"doi\": \"4444444444-4\",\n    \"role\": \"commercial\",\n    \"created_at\": \"2025-10-23T01:57:23.938432Z\",\n    \"zone\": {\n        \"id\": \"68892f9b-237c-4780-a9c2-709fac99cade\",\n        \"description\": \"Buenos Aires\",\n        \"created_at\": \"2025-10-23T01:57:21.805234Z\"\n    },\n    \"clients\": [\n        {\n            \"id\": \"b73a5c9e-4507-422e-8071-222b0c24427a\",\n            \"full_name\": \"Brittany Smith\",\n            \"email\": \"jeffreyjones@example.com\",\n            \"phone\": \"0358108888\",\n            \"doi\": \"1805612791\",\n            \"address\": \"134 Shane Brooks Suite 075\\nWhitefort, MO 05225\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n            \"full_name\": \"Kristie Jackson\",\n            \"email\": \"mkelley@example.com\",\n            \"phone\": \"4685138662\",\n            \"doi\": \"0300989191\",\n            \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"690672f8-ac51-4314-a2b3-39e4a1d5d86b\",\n            \"full_name\": \"Isabella Beck\",\n            \"email\": \"khouse@example.com\",\n            \"phone\": \"3078343428\",\n            \"doi\": \"7334833412\",\n            \"address\": \"92351 Anderson Shore Apt. 117\\nWest Troy, OR 48245\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"34a89100-230b-4b95-8332-28eb0833ea91\",\n            \"full_name\": \"Andrea Benton\",\n            \"email\": \"kendra69@example.org\",\n            \"phone\": \"7113691851\",\n            \"doi\": \"9646234920\",\n            \"address\": \"PSC 6782, Box 8936\\nAPO AP 41568\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"8b51b544-c4f5-45e6-8806-6af7cf368d62\",\n            \"full_name\": \"Krista Hodge\",\n            \"email\": \"rmoore@example.net\",\n            \"phone\": \"7829399909\",\n            \"doi\": \"4480740157\",\n            \"address\": \"USS Collins\\nFPO AP 45207\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"a516289a-3374-4401-8c59-0d57416da8e1\",\n            \"full_name\": \"Anthony Cunningham\",\n            \"email\": \"ocampos@example.org\",\n            \"phone\": \"1222528085\",\n            \"doi\": \"5180269988\",\n            \"address\": \"PSC 5786, Box 9519\\nAPO AA 35826\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"bb2eb0f4-5b14-4434-9caa-46fc51c1e4a8\",\n            \"full_name\": \"Amy Sutton\",\n            \"email\": \"cfields@example.net\",\n            \"phone\": \"1843127907\",\n            \"doi\": \"3260310425\",\n            \"address\": \"1063 Taylor Hills Suite 593\\nJennaville, SC 41513\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"2c422de2-f68f-4479-adc7-71d6e7472fd1\",\n            \"full_name\": \"Christine Foster\",\n            \"email\": \"katelynandersen@example.net\",\n            \"phone\": \"1664009367\",\n            \"doi\": \"9591067002\",\n            \"address\": \"1222 Paul Camp Apt. 291\\nGoodmanchester, NY 91902\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        }\n    ],\n    \"selling_plans\": [\n        {\n            \"id\": \"537c06ae-1920-49b1-a41d-fb3d56dabe36\",\n            \"period\": \"Diciembre\",\n            \"goal\": 1500,\n            \"created_at\": \"2025-10-23T02:03:59.482980Z\"\n        }\n    ],\n    \"managed_orders\": [\n        {\n            \"id\": \"5ee0785a-14c1-4349-8370-a934c08a3a89\",\n            \"comments\": \"Por favor utilizar el timbre rojo\",\n            \"delivery_date\": \"2025-10-22\",\n            \"status\": \"received\",\n            \"created_at\": \"2025-10-23T02:08:04.157779Z\"\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -520,7 +598,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"full_name\": \"Johann Sebastian Páez Campos\",\r\n    \"doi\": \"1234567289\",\r\n    \"email\": \"sebastianpaez.campos@gmail.com\",\r\n    \"phone\": \"123456789\",\r\n    \"zone_id\": \"a2755811-b900-465a-a198-9712a313004a\"\r\n}",
+							"raw": "{\r\n    \"full_name\": \"Johann Sebastian Páez Campos\",\r\n    \"email\": \"sebastian.paezcampos2@gmail.com\",\r\n    \"phone\": \"123456789\",\r\n    \"doi\": \"1234567289\",        \r\n    \"zone_id\": \"098a0bb8-e31d-492d-8a8f-77cc288561c2\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -545,7 +623,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"full_name\": \"Johann Sebastian Páez Campos\",\r\n    \"doi\": \"1234567289\",\r\n    \"email\": \"sebastianpaezcampos@gmail.com\",\r\n    \"phone\": \"123456789\",\r\n    \"zone_id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\"\r\n}",
+									"raw": "{\r\n    \"full_name\": \"Johann Sebastian Páez Campos\",\r\n    \"email\": \"sebastian.paezcampos2@gmail.com\",\r\n    \"phone\": \"123456789\",\r\n    \"doi\": \"1234567289\",        \r\n    \"zone_id\": \"f819fcd1-9759-4534-bfa5-2236ffc7e7de\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -568,7 +646,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 22:07:56 GMT"
+									"value": "Wed, 22 Oct 2025 04:07:21 GMT"
 								},
 								{
 									"key": "server",
@@ -576,12 +654,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "288"
+									"value": "405"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -593,7 +670,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"id\": \"4afcf984-5bac-4cf7-9e81-393613fa96ab\",\n    \"full_name\": \"Johann Sebastian Páez Campos\",\n    \"doi\": \"1234567289\",\n    \"email\": \"sebastianpaezcampos@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-18T22:07:58.014552Z\",\n    \"zone\": {\n        \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n        \"description\": \"Bogotá\"\n    }\n}"
+							"body": "{\n    \"id\": \"8392c3b9-3556-485d-a4b4-6fd1541606cd\",\n    \"full_name\": \"Johann Sebastian Páez Campos\",\n    \"email\": \"sebastian.paezcampos2@gmail.com\",\n    \"phone\": \"123456789\",\n    \"doi\": \"1234567289\",\n    \"role\": \"commercial\",\n    \"created_at\": \"2025-10-22T04:07:21.628435Z\",\n    \"zone\": {\n        \"id\": \"f819fcd1-9759-4534-bfa5-2236ffc7e7de\",\n        \"description\": \"Bogotá\",\n        \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n    },\n    \"clients\": [],\n    \"selling_plans\": [],\n    \"managed_orders\": []\n}"
 						}
 					]
 				}
@@ -663,7 +740,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:32:52 GMT"
+									"value": "Thu, 23 Oct 2025 02:02:26 GMT"
 								},
 								{
 									"key": "server",
@@ -671,12 +748,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "276"
+									"value": "1635"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -688,7 +764,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"total_count\": 1,\n    \"providers\": [\n        {\n            \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n            \"name\": \"Proveedor 1\",\n            \"rit\": \"1010101\",\n            \"city\": \"Bogotá\",\n            \"country\": \"Colombia\",\n            \"image_url\": \"https://image.png\",\n            \"email\": \"fernando@gmail.com\",\n            \"phone\": \"123456789\",\n            \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n        }\n    ]\n}"
+							"body": "{\n    \"total_count\": 5,\n    \"providers\": [\n        {\n            \"id\": \"612ad03b-2095-425c-aa32-f726c2cc3ad6\",\n            \"name\": \"Laboratorios Genéricos S.A.\",\n            \"rit\": \"LABGEN-001\",\n            \"city\": \"Bogotá\",\n            \"country\": \"Colombia\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/7/7e/Lab_icon.svg\",\n            \"email\": \"contacto@labgenericos.com\",\n            \"phone\": \"3201234567\",\n            \"created_at\": \"2025-10-23T01:57:29.574348Z\"\n        },\n        {\n            \"id\": \"d88c6e1c-ae77-4a3a-b66f-f422836eb1d8\",\n            \"name\": \"Farmacéutica Andina Ltda.\",\n            \"rit\": \"FARAND-002\",\n            \"city\": \"Lima\",\n            \"country\": \"Perú\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/4/4e/Pill_icon.svg\",\n            \"email\": \"ventas@farmaceuticaandina.pe\",\n            \"phone\": \"3198765432\",\n            \"created_at\": \"2025-10-23T01:57:29.574348Z\"\n        },\n        {\n            \"id\": \"8a48c2ff-cf02-4c14-94f1-73f6088ab78d\",\n            \"name\": \"Medicamentos del Sur S.A.\",\n            \"rit\": \"MEDSUR-003\",\n            \"city\": \"Santiago\",\n            \"country\": \"Chile\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/a/a2/Medicine_icon.svg\",\n            \"email\": \"contacto@medsur.cl\",\n            \"phone\": \"3159988776\",\n            \"created_at\": \"2025-10-23T01:57:29.574348Z\"\n        },\n        {\n            \"id\": \"b3862db1-5ae8-4823-bdc3-7876742ddad6\",\n            \"name\": \"Distribuidora Salud Total\",\n            \"rit\": \"SALTOT-004\",\n            \"city\": \"Buenos Aires\",\n            \"country\": \"Argentina\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/5/59/Health_icon.svg\",\n            \"email\": \"info@saludtotal.com.ar\",\n            \"phone\": \"3125544332\",\n            \"created_at\": \"2025-10-23T01:57:29.574348Z\"\n        },\n        {\n            \"id\": \"6af336a2-2d91-4892-9979-2d8264f99e0b\",\n            \"name\": \"Laboratorios del Caribe S.A.S.\",\n            \"rit\": \"LABCAR-005\",\n            \"city\": \"Ciudad de Panamá\",\n            \"country\": \"Panamá\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/6/6a/Pharmacy_icon.svg\",\n            \"email\": \"contacto@labcaribe.pa\",\n            \"phone\": \"3102223344\",\n            \"created_at\": \"2025-10-23T01:57:29.574348Z\"\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -709,7 +785,7 @@
 							"variable": [
 								{
 									"key": "providerId",
-									"value": "3d948bb3-b5ba-4b10-a232-1e81eff3cb03"
+									"value": "612ad03b-2095-425c-aa32-f726c2cc3ad6"
 								}
 							]
 						}
@@ -732,7 +808,7 @@
 									"variable": [
 										{
 											"key": "providerId",
-											"value": "e5a29c31-8852-4ffa-850a-fbafb55217fe"
+											"value": "612ad03b-2095-425c-aa32-f726c2cc3ad6"
 										}
 									]
 								}
@@ -743,7 +819,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:32:39 GMT"
+									"value": "Thu, 23 Oct 2025 02:11:54 GMT"
 								},
 								{
 									"key": "server",
@@ -751,12 +827,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "244"
+									"value": "1555"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -768,7 +843,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n    \"name\": \"Proveedor 1\",\n    \"rit\": \"1010101\",\n    \"city\": \"Bogotá\",\n    \"country\": \"Colombia\",\n    \"image_url\": \"https://image.png\",\n    \"email\": \"fernando@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n}"
+							"body": "{\n    \"id\": \"612ad03b-2095-425c-aa32-f726c2cc3ad6\",\n    \"name\": \"Laboratorios Genéricos S.A.\",\n    \"rit\": \"LABGEN-001\",\n    \"city\": \"Bogotá\",\n    \"country\": \"Colombia\",\n    \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/7/7e/Lab_icon.svg\",\n    \"email\": \"contacto@labgenericos.com\",\n    \"phone\": \"3201234567\",\n    \"created_at\": \"2025-10-23T01:57:29.574348Z\",\n    \"products\": [\n        {\n            \"id\": \"7f5a44fd-22da-4ee3-a580-cec9043f0d8d\",\n            \"name\": \"Paracetamol 500mg\",\n            \"details\": \"Medicamento para aliviar el dolor y reducir la fiebre, seguro en dosis recomendadas.\",\n            \"store\": \"CEDI Cali\",\n            \"batch\": \"PAR-CAL-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/f1/Paracetamol_500_mg_tablets.jpg\",\n            \"due_date\": \"2027-07-27\",\n            \"stock\": 2000,\n            \"price_per_unit\": 9.8,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"8154a5fc-4262-45d8-9f67-cabfe11c7165\",\n            \"name\": \"Omeprazol 20mg\",\n            \"details\": \"Medicamento para reducir la acidez estomacal y tratar el reflujo gástrico.\",\n            \"store\": \"CEDI Barranquilla\",\n            \"batch\": \"OMP-BAQ-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/4/4a/Omeprazole_capsules.jpg\",\n            \"due_date\": \"2026-10-02\",\n            \"stock\": 950,\n            \"price_per_unit\": 14.3,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"details\": \"Antibiótico de amplio espectro para infecciones bacterianas leves y moderadas.\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/f1/Amoxicillin_500_mg_capsules.jpg\",\n            \"due_date\": \"2027-08-28\",\n            \"stock\": 750,\n            \"price_per_unit\": 18,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -804,7 +879,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Proveedor 1\",\r\n    \"rit\": \"10120101\",\r\n    \"city\": \"Bogotá\",\r\n    \"country\": \"Colombia\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"email\": \"fernand2o@gmail.com\",\r\n    \"phone\": \"123456789\"\r\n}",
+									"raw": "{\r\n    \"name\": \"Proveedor 1\",\r\n    \"rit\": \"1010101\",\r\n    \"city\": \"Bogotá\",\r\n    \"country\": \"Colombia\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"email\": \"fernando@gmail.com\",\r\n    \"phone\": \"123456789\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -827,7 +902,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 22:18:27 GMT"
+									"value": "Wed, 22 Oct 2025 04:20:26 GMT"
 								},
 								{
 									"key": "server",
@@ -835,12 +910,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "246"
+									"value": "258"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -852,7 +926,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"id\": \"7ce155bb-6395-46b5-b5cf-98b16f626209\",\n    \"name\": \"Proveedor 1\",\n    \"rit\": \"10120101\",\n    \"city\": \"Bogotá\",\n    \"country\": \"Colombia\",\n    \"image_url\": \"https://image.png\",\n    \"email\": \"fernand2o@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-18T22:18:28.239967Z\"\n}"
+							"body": "{\n    \"id\": \"efbecd59-57f9-4655-b249-a8db00c39eba\",\n    \"name\": \"Proveedor 1\",\n    \"rit\": \"1010101\",\n    \"city\": \"Bogotá\",\n    \"country\": \"Colombia\",\n    \"image_url\": \"https://image.png\",\n    \"email\": \"fernando@gmail.com\",\n    \"phone\": \"123456789\",\n    \"created_at\": \"2025-10-22T04:20:27.190689Z\",\n    \"products\": []\n}"
 						}
 					]
 				}
@@ -921,16 +995,8 @@
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
-									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:46:04 GMT"
-								},
-								{
-									"key": "server",
-									"value": "uvicorn"
-								},
-								{
-									"key": "content-length",
-									"value": "1063"
+									"key": "Content-Length",
+									"value": "942"
 								},
 								{
 									"key": "Content-Type",
@@ -938,6 +1004,30 @@
 									"name": "Content-Type",
 									"description": "",
 									"type": "text"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 31 Oct 2025 00:10:19 GMT"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=9MlJ5UxFp1DhhbnLZOJwywD3hGK20b9LUm5MV9xDCpE%3D\\u0026sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d\\u0026ts=1761869419\"}],\"max_age\":3600}"
+								},
+								{
+									"key": "Reporting-Endpoints",
+									"value": "heroku-nel=\"https://nel.heroku.com/reports?s=9MlJ5UxFp1DhhbnLZOJwywD3hGK20b9LUm5MV9xDCpE%3D&sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d&ts=1761869419\""
+								},
+								{
+									"key": "Server",
+									"value": "Heroku"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 heroku-router"
 								}
 							],
 							"cookie": [
@@ -947,7 +1037,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"total_count\": 1,\n    \"selling_plans\": [\n        {\n            \"id\": \"a2406d9d-72da-403b-9a8a-41079491d53f\",\n            \"period\": \"082025\",\n            \"goal\": 1500,\n            \"created_at\": \"2025-10-18T21:45:03.522283Z\",\n            \"product\": {\n                \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n                \"name\": \"Pastilla\",\n                \"details\": \"ficha tecnica\",\n                \"store\": \"Central store\",\n                \"batch\": \"10101010\",\n                \"image_url\": \"https://image.png\",\n                \"due_date\": \"2027-09-20\",\n                \"stock\": 3000,\n                \"price_per_unite\": 15.5,\n                \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n                \"provider\": {\n                    \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n                    \"name\": \"Proveedor 1\",\n                    \"rit\": \"1010101\",\n                    \"city\": \"Bogotá\",\n                    \"country\": \"Colombia\",\n                    \"image_url\": \"https://image.png\",\n                    \"email\": \"fernando@gmail.com\",\n                    \"phone\": \"123456789\",\n                    \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n                }\n            },\n            \"zone\": {\n                \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n                \"description\": \"Bogotá\"\n            },\n            \"seller\": {\n                \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n                \"full_name\": \"Johann Sebastian Páez Campos\",\n                \"doi\": \"123456789\",\n                \"email\": \"sebastian.paezcampos@gmail.com\",\n                \"phone\": \"123456789\",\n                \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n                \"zone\": {\n                    \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n                    \"description\": \"Bogotá\"\n                }\n            }\n        }\n    ]\n}"
+							"body": "{\n    \"total_count\": 1,\n    \"selling_plans\": [\n        {\n            \"id\": \"8fb80ef9-9ccf-4861-9048-32d11d2ad1ad\",\n            \"period\": \"Diciembre\",\n            \"goal\": 200,\n            \"created_at\": \"2025-10-31T00:10:15.523507Z\",\n            \"product\": {\n                \"id\": \"8213d57e-f1ef-4b77-8b7b-4a1a2e73ab40\",\n                \"name\": \"Amoxicilina 500mg\",\n                \"details\": \"Antibiótico de amplio espectro para infecciones bacterianas leves y moderadas.\",\n                \"store\": \"CEDI Medellín\",\n                \"batch\": \"AMX-MED-2025\",\n                \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/f1/Amoxicillin_500_mg_capsules.jpg\",\n                \"due_date\": \"2027-04-12\",\n                \"stock\": 798,\n                \"price_per_unit\": 18,\n                \"created_at\": \"2025-10-29T22:17:42.278323Z\"\n            },\n            \"zone\": {\n                \"id\": \"0ac05b27-f9fd-472c-b52a-cc8fd51fb27f\",\n                \"description\": \"Bogotá\",\n                \"created_at\": \"2025-10-29T22:17:31.608995Z\"\n            },\n            \"seller\": {\n                \"id\": \"44444444-4444-4444-4444-444444444444\",\n                \"full_name\": \"Johann Sebastian Páez Campos\",\n                \"email\": \"sebastian.paezcampos@gmail.com\",\n                \"phone\": \"123456789\",\n                \"doi\": \"4444444444-4\",\n                \"role\": \"commercial\",\n                \"created_at\": \"2025-10-29T22:17:34.277496Z\"\n            }\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -968,7 +1058,7 @@
 							"variable": [
 								{
 									"key": "sellingPlanId",
-									"value": "af919e2e-805c-487a-87fa-6f1687a02f32"
+									"value": "537c06ae-1920-49b1-a41d-fb3d56dabe36"
 								}
 							]
 						}
@@ -991,7 +1081,7 @@
 									"variable": [
 										{
 											"key": "sellingPlanId",
-											"value": "a2406d9d-72da-403b-9a8a-41079491d53f"
+											"value": "537c06ae-1920-49b1-a41d-fb3d56dabe36"
 										}
 									]
 								}
@@ -1002,7 +1092,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:46:53 GMT"
+									"value": "Thu, 23 Oct 2025 02:04:29 GMT"
 								},
 								{
 									"key": "server",
@@ -1010,18 +1100,23 @@
 								},
 								{
 									"key": "content-length",
-									"value": "1027"
+									"value": "883"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
 							],
-							"cookie": [],
-							"body": "{\n    \"id\": \"a2406d9d-72da-403b-9a8a-41079491d53f\",\n    \"period\": \"082025\",\n    \"goal\": 1500,\n    \"created_at\": \"2025-10-18T21:45:03.522283Z\",\n    \"product\": {\n        \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n        \"name\": \"Pastilla\",\n        \"details\": \"ficha tecnica\",\n        \"store\": \"Central store\",\n        \"batch\": \"10101010\",\n        \"image_url\": \"https://image.png\",\n        \"due_date\": \"2027-09-20\",\n        \"stock\": 3000,\n        \"price_per_unite\": 15.5,\n        \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n        \"provider\": {\n            \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n            \"name\": \"Proveedor 1\",\n            \"rit\": \"1010101\",\n            \"city\": \"Bogotá\",\n            \"country\": \"Colombia\",\n            \"image_url\": \"https://image.png\",\n            \"email\": \"fernando@gmail.com\",\n            \"phone\": \"123456789\",\n            \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n        }\n    },\n    \"zone\": {\n        \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n        \"description\": \"Bogotá\"\n    },\n    \"seller\": {\n        \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"doi\": \"123456789\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n        \"zone\": {\n            \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n            \"description\": \"Bogotá\"\n        }\n    }\n}"
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"537c06ae-1920-49b1-a41d-fb3d56dabe36\",\n    \"period\": \"Diciembre\",\n    \"goal\": 1500,\n    \"created_at\": \"2025-10-23T02:03:59.482980Z\",\n    \"product\": {\n        \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n        \"name\": \"Ibuprofeno 400mg\",\n        \"details\": \"Antiinflamatorio y analgésico de uso común para el dolor y la fiebre.\",\n        \"store\": \"CEDI Bogotá\",\n        \"batch\": \"IBU-BOG-2025\",\n        \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/d/d8/Advil_tablets.jpg\",\n        \"due_date\": \"2027-08-05\",\n        \"stock\": 1200,\n        \"price_per_unit\": 12.5,\n        \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n    },\n    \"zone\": {\n        \"id\": \"098a0bb8-e31d-492d-8a8f-77cc288561c2\",\n        \"description\": \"Bogotá\",\n        \"created_at\": \"2025-10-23T01:57:21.805234Z\"\n    },\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-23T01:57:23.938432Z\"\n    }\n}"
 						}
 					]
 				},
@@ -1032,7 +1127,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"period\": \"082025\",\r\n    \"product_id\": \"ea9ef572-a362-4b6e-a156-b98d1b308234\",\r\n    \"zone_id\": \"74f32f04-3fe9-4b69-983b-f2f6af34b94f\",\r\n    \"seller_id\": \"caea537d-1d85-416a-86ad-4d9aa9a6920e\",\r\n    \"goal\": 1500\r\n}",
+							"raw": "{\r\n    \"period\": \"Diciembre\",\r\n    \"goal\": 1500,\r\n    \"product_id\": \"2a8a7c19-04c5-47a6-ac49-5affe268f375\",\r\n    \"zone_id\": \"04e4f0ab-261b-42f2-bd79-f4d2d4fd97c0\",\r\n    \"seller_id\": \"44444444-4444-4444-4444-444444444444\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1057,7 +1152,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"period\": \"082025\",\r\n    \"product_id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\r\n    \"zone_id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\r\n    \"seller_id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\r\n    \"goal\": 1500\r\n}",
+									"raw": "{\r\n    \"period\": \"Diciembre\",\r\n    \"goal\": 1500,\r\n    \"product_id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\r\n    \"zone_id\": \"098a0bb8-e31d-492d-8a8f-77cc288561c2\",\r\n    \"seller_id\": \"44444444-4444-4444-4444-444444444444\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1080,7 +1175,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:45:02 GMT"
+									"value": "Thu, 23 Oct 2025 02:03:59 GMT"
 								},
 								{
 									"key": "server",
@@ -1088,12 +1183,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "1027"
+									"value": "883"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -1105,7 +1199,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"id\": \"a2406d9d-72da-403b-9a8a-41079491d53f\",\n    \"period\": \"082025\",\n    \"goal\": 1500,\n    \"created_at\": \"2025-10-18T21:45:03.522283Z\",\n    \"product\": {\n        \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n        \"name\": \"Pastilla\",\n        \"details\": \"ficha tecnica\",\n        \"store\": \"Central store\",\n        \"batch\": \"10101010\",\n        \"image_url\": \"https://image.png\",\n        \"due_date\": \"2027-09-20\",\n        \"stock\": 3000,\n        \"price_per_unite\": 15.5,\n        \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n        \"provider\": {\n            \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n            \"name\": \"Proveedor 1\",\n            \"rit\": \"1010101\",\n            \"city\": \"Bogotá\",\n            \"country\": \"Colombia\",\n            \"image_url\": \"https://image.png\",\n            \"email\": \"fernando@gmail.com\",\n            \"phone\": \"123456789\",\n            \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n        }\n    },\n    \"zone\": {\n        \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n        \"description\": \"Bogotá\"\n    },\n    \"seller\": {\n        \"id\": \"acecb4b2-4b10-45eb-8845-82bc04d0b3fd\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"doi\": \"123456789\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-18T21:23:15.357984Z\",\n        \"zone\": {\n            \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n            \"description\": \"Bogotá\"\n        }\n    }\n}"
+							"body": "{\n    \"id\": \"537c06ae-1920-49b1-a41d-fb3d56dabe36\",\n    \"period\": \"Diciembre\",\n    \"goal\": 1500,\n    \"created_at\": \"2025-10-23T02:03:59.482980Z\",\n    \"product\": {\n        \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n        \"name\": \"Ibuprofeno 400mg\",\n        \"details\": \"Antiinflamatorio y analgésico de uso común para el dolor y la fiebre.\",\n        \"store\": \"CEDI Bogotá\",\n        \"batch\": \"IBU-BOG-2025\",\n        \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/d/d8/Advil_tablets.jpg\",\n        \"due_date\": \"2027-08-05\",\n        \"stock\": 1200,\n        \"price_per_unit\": 12.5,\n        \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n    },\n    \"zone\": {\n        \"id\": \"098a0bb8-e31d-492d-8a8f-77cc288561c2\",\n        \"description\": \"Bogotá\",\n        \"created_at\": \"2025-10-23T01:57:21.805234Z\"\n    },\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-23T01:57:23.938432Z\"\n    }\n}"
 						}
 					]
 				}
@@ -1175,7 +1269,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:35:58 GMT"
+									"value": "Thu, 23 Oct 2025 02:05:06 GMT"
 								},
 								{
 									"key": "server",
@@ -1183,12 +1277,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "554"
+									"value": "2058"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -1200,7 +1293,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"total_count\": 1,\n    \"products\": [\n        {\n            \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n            \"name\": \"Pastilla\",\n            \"details\": \"ficha tecnica\",\n            \"store\": \"Central store\",\n            \"batch\": \"10101010\",\n            \"image_url\": \"https://image.png\",\n            \"due_date\": \"2027-09-20\",\n            \"stock\": 3000,\n            \"price_per_unite\": 15.5,\n            \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n            \"provider\": {\n                \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n                \"name\": \"Proveedor 1\",\n                \"rit\": \"1010101\",\n                \"city\": \"Bogotá\",\n                \"country\": \"Colombia\",\n                \"image_url\": \"https://image.png\",\n                \"email\": \"fernando@gmail.com\",\n                \"phone\": \"123456789\",\n                \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n            }\n        }\n    ]\n}"
+							"body": "{\n    \"total_count\": 5,\n    \"products\": [\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"details\": \"Antibiótico de amplio espectro para infecciones bacterianas leves y moderadas.\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/f1/Amoxicillin_500_mg_capsules.jpg\",\n            \"due_date\": \"2027-08-28\",\n            \"stock\": 800,\n            \"price_per_unit\": 18,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"details\": \"Antiinflamatorio y analgésico de uso común para el dolor y la fiebre.\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/d/d8/Advil_tablets.jpg\",\n            \"due_date\": \"2027-08-05\",\n            \"stock\": 1200,\n            \"price_per_unit\": 12.5,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"617181bb-03e6-497a-b285-a1a6e6df456c\",\n            \"name\": \"Loratadina 10mg\",\n            \"details\": \"Antihistamínico utilizado para aliviar síntomas de alergias estacionales y cutáneas.\",\n            \"store\": \"CEDI Bucaramanga\",\n            \"batch\": \"LRT-BCM-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/6/6e/Loratadine_10mg_tablets.jpg\",\n            \"due_date\": \"2025-12-22\",\n            \"stock\": 1100,\n            \"price_per_unit\": 11.2,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"8154a5fc-4262-45d8-9f67-cabfe11c7165\",\n            \"name\": \"Omeprazol 20mg\",\n            \"details\": \"Medicamento para reducir la acidez estomacal y tratar el reflujo gástrico.\",\n            \"store\": \"CEDI Barranquilla\",\n            \"batch\": \"OMP-BAQ-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/4/4a/Omeprazole_capsules.jpg\",\n            \"due_date\": \"2026-10-02\",\n            \"stock\": 950,\n            \"price_per_unit\": 14.3,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"7f5a44fd-22da-4ee3-a580-cec9043f0d8d\",\n            \"name\": \"Paracetamol 500mg\",\n            \"details\": \"Medicamento para aliviar el dolor y reducir la fiebre, seguro en dosis recomendadas.\",\n            \"store\": \"CEDI Cali\",\n            \"batch\": \"PAR-CAL-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/f1/Paracetamol_500_mg_tablets.jpg\",\n            \"due_date\": \"2027-07-27\",\n            \"stock\": 2000,\n            \"price_per_unit\": 9.8,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -1221,7 +1314,7 @@
 							"variable": [
 								{
 									"key": "productId",
-									"value": "880115a3-3b18-4dcc-8852-4b99fe0668c2"
+									"value": "f9361d19-974b-4d7a-b556-dfd232b73fa1"
 								}
 							]
 						}
@@ -1244,7 +1337,7 @@
 									"variable": [
 										{
 											"key": "productId",
-											"value": "1175f142-fd5c-4cda-9349-87ca7c4a580c"
+											"value": "f9361d19-974b-4d7a-b556-dfd232b73fa1"
 										}
 									]
 								}
@@ -1255,7 +1348,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:39:04 GMT"
+									"value": "Thu, 23 Oct 2025 02:12:45 GMT"
 								},
 								{
 									"key": "server",
@@ -1263,12 +1356,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "523"
+									"value": "1033"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -1280,7 +1372,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n    \"name\": \"Pastilla\",\n    \"details\": \"ficha tecnica\",\n    \"store\": \"Central store\",\n    \"batch\": \"10101010\",\n    \"image_url\": \"https://image.png\",\n    \"due_date\": \"2027-09-20\",\n    \"stock\": 3000,\n    \"price_per_unite\": 15.5,\n    \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n    \"provider\": {\n        \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n        \"name\": \"Proveedor 1\",\n        \"rit\": \"1010101\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"image_url\": \"https://image.png\",\n        \"email\": \"fernando@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n    }\n}"
+							"body": "{\n    \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n    \"name\": \"Ibuprofeno 400mg\",\n    \"details\": \"Antiinflamatorio y analgésico de uso común para el dolor y la fiebre.\",\n    \"store\": \"CEDI Bogotá\",\n    \"batch\": \"IBU-BOG-2025\",\n    \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/d/d8/Advil_tablets.jpg\",\n    \"due_date\": \"2027-08-05\",\n    \"stock\": 1180,\n    \"price_per_unit\": 12.5,\n    \"created_at\": \"2025-10-23T01:57:29.775289Z\",\n    \"provider\": {\n        \"id\": \"6af336a2-2d91-4892-9979-2d8264f99e0b\",\n        \"name\": \"Laboratorios del Caribe S.A.S.\",\n        \"rit\": \"LABCAR-005\",\n        \"city\": \"Ciudad de Panamá\",\n        \"country\": \"Panamá\",\n        \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/6/6a/Pharmacy_icon.svg\",\n        \"email\": \"contacto@labcaribe.pa\",\n        \"phone\": \"3102223344\",\n        \"created_at\": \"2025-10-23T01:57:29.574348Z\"\n    },\n    \"selling_plans\": [\n        {\n            \"id\": \"537c06ae-1920-49b1-a41d-fb3d56dabe36\",\n            \"period\": \"Diciembre\",\n            \"goal\": 1500,\n            \"created_at\": \"2025-10-23T02:03:59.482980Z\"\n        }\n    ],\n    \"orders\": [\n        {\n            \"id\": \"5ee0785a-14c1-4349-8370-a934c08a3a89\",\n            \"delivery_date\": \"2025-10-22\",\n            \"status\": \"received\",\n            \"quantity\": 20,\n            \"created_at\": \"2025-10-23T02:08:04.157779Z\"\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -1291,7 +1383,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Pastilla\",\r\n    \"details\": \"ficha tecnica\",\r\n    \"store\": \"Central store\",\r\n    \"batch\": \"10101010\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"due_date\": \"2027-09-20\",\r\n    \"stock\": 3000,\r\n    \"price_per_unite\": 15.5,\r\n    \"provider_id\": \"3d948bb3-b5ba-4b10-a232-1e81eff3cb03\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Pastilla\",\r\n    \"details\": \"ficha tecnica\",\r\n    \"store\": \"Central store\",\r\n    \"batch\": \"10101010\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"due_date\": \"2027-09-20\",\r\n    \"stock\": 3000,\r\n    \"price_per_unit\": 15.5,\r\n    \"provider_id\": \"dc8f6254-e12f-4199-bba5-44a662267557\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1316,7 +1408,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Pastilla\",\r\n    \"details\": \"ficha tecnica\",\r\n    \"store\": \"Central store\",\r\n    \"batch\": \"10101010\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"due_date\": \"2027-09-20\",\r\n    \"stock\": 3000,\r\n    \"price_per_unite\": 15.5,\r\n    \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n}",
+									"raw": "{\r\n    \"name\": \"Pastilla\",\r\n    \"details\": \"ficha tecnica\",\r\n    \"store\": \"Central store\",\r\n    \"batch\": \"10101010\",\r\n    \"image_url\": \"https://image.png\",\r\n    \"due_date\": \"2027-09-20\",\r\n    \"stock\": 3000,\r\n    \"price_per_unite\": 15.5,\r\n    \"provider_id\": \"efbecd59-57f9-4655-b249-a8db00c39eba\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1339,7 +1431,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:34:03 GMT"
+									"value": "Wed, 22 Oct 2025 04:22:20 GMT"
 								},
 								{
 									"key": "server",
@@ -1347,12 +1439,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "523"
+									"value": "562"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -1364,7 +1455,7 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"id\": \"1175f142-fd5c-4cda-9349-87ca7c4a580c\",\n    \"name\": \"Pastilla\",\n    \"details\": \"ficha tecnica\",\n    \"store\": \"Central store\",\n    \"batch\": \"10101010\",\n    \"image_url\": \"https://image.png\",\n    \"due_date\": \"2027-09-20\",\n    \"stock\": 3000,\n    \"price_per_unite\": 15.5,\n    \"created_at\": \"2025-10-18T21:34:04.491078Z\",\n    \"provider\": {\n        \"id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\",\n        \"name\": \"Proveedor 1\",\n        \"rit\": \"1010101\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"image_url\": \"https://image.png\",\n        \"email\": \"fernando@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-18T21:32:08.374900Z\"\n    }\n}"
+							"body": "{\n    \"id\": \"a2741b9e-1919-4491-881c-33bc3ede8d26\",\n    \"name\": \"Pastilla\",\n    \"details\": \"ficha tecnica\",\n    \"store\": \"Central store\",\n    \"batch\": \"10101010\",\n    \"image_url\": \"https://image.png\",\n    \"due_date\": \"2027-09-20\",\n    \"stock\": 3000,\n    \"price_per_unite\": 15.5,\n    \"created_at\": \"2025-10-22T04:22:20.697927Z\",\n    \"provider\": {\n        \"id\": \"efbecd59-57f9-4655-b249-a8db00c39eba\",\n        \"name\": \"Proveedor 1\",\n        \"rit\": \"1010101\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"image_url\": \"https://image.png\",\n        \"email\": \"fernando@gmail.com\",\n        \"phone\": \"123456789\",\n        \"created_at\": \"2025-10-22T04:20:27.190689Z\"\n    },\n    \"selling_plans\": [],\n    \"order_products\": []\n}"
 						}
 					]
 				},
@@ -1375,7 +1466,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"name\": \"Betona\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        },\r\n        {\r\n            \"name\": \"Zar\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        },\r\n        {\r\n            \"name\": \"Analgesico\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unite\": 15.5,\r\n            \"provider_id\": \"e5a29c31-8852-4ffa-850a-fbafb55217fe\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"name\": \"Betona\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unit\": 15.5,\r\n            \"provider_id\": \"dc8f6254-e12f-4199-bba5-44a662267557\"\r\n        },\r\n        {\r\n            \"name\": \"Zar\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unit\": 15.5,\r\n            \"provider_id\": \"dc8f6254-e12f-4199-bba5-44a662267557\"\r\n        },\r\n        {\r\n            \"name\": \"Analgesico\",\r\n            \"details\": \"ficha tecnica\",\r\n            \"store\": \"Central store\",\r\n            \"batch\": \"10101010\",\r\n            \"image_url\": \"https://image.png\",\r\n            \"due_date\": \"2027-09-20\",\r\n            \"stock\": 3000,\r\n            \"price_per_unit\": 15.5,\r\n            \"provider_id\": \"dc8f6254-e12f-4199-bba5-44a662267557\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1557,7 +1648,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Sat, 18 Oct 2025 21:24:33 GMT"
+									"value": "Wed, 22 Oct 2025 04:14:48 GMT"
 								},
 								{
 									"key": "server",
@@ -1565,12 +1656,11 @@
 								},
 								{
 									"key": "content-length",
-									"value": "738"
+									"value": "1168"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -1582,30 +1672,62 @@
 									"path": ""
 								}
 							],
-							"body": "{\n    \"total_count\": 10,\n    \"zones\": [\n        {\n            \"id\": \"147062a6-25e9-4d40-9ec1-42edbde73b1a\",\n            \"description\": \"Bogotá\"\n        },\n        {\n            \"id\": \"1fdec997-44d0-41f0-bd3e-a58183a5e751\",\n            \"description\": \"Lima\"\n        },\n        {\n            \"id\": \"b32fab5c-d467-44cc-8572-a0ae3d3164e8\",\n            \"description\": \"Santiago\"\n        },\n        {\n            \"id\": \"eb67862e-c3c3-4273-bbcb-6bdd3ddbeef8\",\n            \"description\": \"Buenos Aires\"\n        },\n        {\n            \"id\": \"507ae888-ad2f-4aab-aa63-2f753c63d028\",\n            \"description\": \"Ciudad de México\"\n        },\n        {\n            \"id\": \"c1ebc7a1-0fe7-402f-8c70-203e05a2a3eb\",\n            \"description\": \"Madrid\"\n        },\n        {\n            \"id\": \"e1708edf-7490-45da-914c-cbca7265132d\",\n            \"description\": \"Miami\"\n        },\n        {\n            \"id\": \"ab85f78c-9313-4e18-9c50-a769fe861028\",\n            \"description\": \"Panamá\"\n        },\n        {\n            \"id\": \"31d15a5e-c482-4c6c-aee7-c79a68f2fd7f\",\n            \"description\": \"San José\"\n        },\n        {\n            \"id\": \"3f2a5a12-f52a-4582-9562-5bfab8e95b72\",\n            \"description\": \"Quito\"\n        }\n    ]\n}"
-						},
+							"body": "{\n    \"total_count\": 10,\n    \"zones\": [\n        {\n            \"id\": \"f819fcd1-9759-4534-bfa5-2236ffc7e7de\",\n            \"description\": \"Bogotá\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"fe3aaed3-d590-48bb-bfdc-b0e56e41bd6c\",\n            \"description\": \"Lima\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"fb246e5c-df6d-4778-a433-32963ef006b4\",\n            \"description\": \"Santiago\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"c5dc2a2d-ec3c-4e4d-bf50-f30f484d1d39\",\n            \"description\": \"Buenos Aires\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"d9e7872a-42ac-461a-a893-0806cd58db99\",\n            \"description\": \"Ciudad de México\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"f4afd7a3-6900-406b-a04f-b09695a569e6\",\n            \"description\": \"Madrid\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"027a1a4c-de5b-4f60-bde7-b4ac792a9dc4\",\n            \"description\": \"Miami\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"3111caf8-fb70-4e2c-8b9a-01c023cdc403\",\n            \"description\": \"Panamá\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"bae07364-d113-4126-abe2-a8a0dc3494fe\",\n            \"description\": \"San José\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        },\n        {\n            \"id\": \"950d90e8-4819-4de2-ae1e-89b194d7dd32\",\n            \"description\": \"Quito\",\n            \"created_at\": \"2025-10-22T03:58:24.278877Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Zone By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/zones/:zoneId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"zones",
+								":zoneId"
+							],
+							"variable": [
+								{
+									"key": "zoneId",
+									"value": "098a0bb8-e31d-492d-8a8f-77cc288561c2"
+								}
+							]
+						}
+					},
+					"response": [
 						{
-							"name": "Get Zones Access Denied",
+							"name": "Get Zone By Id",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/zones",
+									"raw": "{{base_url}}/zones/:zoneId",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
-										"zones"
+										"zones",
+										":zoneId"
+									],
+									"variable": [
+										{
+											"key": "zoneId",
+											"value": "098a0bb8-e31d-492d-8a8f-77cc288561c2"
+										}
 									]
 								}
 							},
-							"status": "Forbidden",
-							"code": 403,
+							"status": "OK",
+							"code": 200,
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
 									"key": "date",
-									"value": "Sun, 19 Oct 2025 01:54:39 GMT"
+									"value": "Thu, 23 Oct 2025 02:13:24 GMT"
 								},
 								{
 									"key": "server",
@@ -1613,18 +1735,23 @@
 								},
 								{
 									"key": "content-length",
-									"value": "71"
+									"value": "498"
 								},
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
 							],
-							"cookie": [],
-							"body": "{\n    \"message\": \"Access denied: requires one of the following roles: admin\"\n}"
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"098a0bb8-e31d-492d-8a8f-77cc288561c2\",\n    \"description\": \"Bogotá\",\n    \"created_at\": \"2025-10-23T01:57:21.805234Z\",\n    \"sellers\": [\n        {\n            \"id\": \"df6031c2-0138-45b0-89d6-2022e1b72efc\",\n            \"full_name\": \"Johann Sebastian Páez Campos\",\n            \"email\": \"sebastian.paezcampos2@gmail.com\",\n            \"phone\": \"123456789\",\n            \"doi\": \"1234567289\",\n            \"role\": \"commercial\",\n            \"created_at\": \"2025-10-23T02:01:58.118278Z\"\n        }\n    ],\n    \"selling_plans\": [\n        {\n            \"id\": \"537c06ae-1920-49b1-a41d-fb3d56dabe36\",\n            \"period\": \"Diciembre\",\n            \"goal\": 1500,\n            \"created_at\": \"2025-10-23T02:03:59.482980Z\"\n        }\n    ]\n}"
 						}
 					]
 				}
@@ -1651,6 +1778,1138 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "Distribution Centers",
+			"item": [
+				{
+					"name": "Get Distribution Centers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distribution-centers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distribution-centers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Distribution Centers",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/distribution-centers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"distribution-centers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 22 Oct 2025 00:00:36 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "2218"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 10,\n    \"distribution_centers\": [\n        {\n            \"id\": \"4054e406-4ee6-4d80-9417-bfdc3c4d3126\",\n            \"name\": \"Centro de Distribución Bogotá\",\n            \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n            \"city\": \"Bogotá\",\n            \"country\": \"Colombia\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"74b5e289-bbec-48b7-96c9-661adc35f9a2\",\n            \"name\": \"Centro de Distribución Lima\",\n            \"address\": \"Av. Principal 456, Lima, Perú\",\n            \"city\": \"Lima\",\n            \"country\": \"Perú\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"6011f628-37a0-4e5c-8325-97f7987dfd66\",\n            \"name\": \"Centro de Distribución Santiago\",\n            \"address\": \"Calle Falsa 789, Santiago, Chile\",\n            \"city\": \"Santiago\",\n            \"country\": \"Chile\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"cefcaa9c-29a5-4895-b1ac-d17dc60a7679\",\n            \"name\": \"Centro de Distribución Buenos Aires\",\n            \"address\": \"Av. Siempre Viva 101, Buenos Aires, Argentina\",\n            \"city\": \"Buenos Aires\",\n            \"country\": \"Argentina\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"0a5cf407-5eab-4558-bcb7-63585c79acb7\",\n            \"name\": \"Centro de Distribución Ciudad de México\",\n            \"address\": \"Calle 202 #303, Ciudad de México, México\",\n            \"city\": \"Ciudad de México\",\n            \"country\": \"México\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"76ad4b14-b3a8-4529-b67c-d7e7ae3f05a8\",\n            \"name\": \"Centro de Distribución Madrid\",\n            \"address\": \"Calle Gran Vía 404, Madrid, España\",\n            \"city\": \"Madrid\",\n            \"country\": \"España\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"10c89610-4dfb-4b68-bc2c-ed1073459e1f\",\n            \"name\": \"Centro de Distribución Miami\",\n            \"address\": \"1234 Ocean Drive, Miami, USA\",\n            \"city\": \"Miami\",\n            \"country\": \"USA\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"8742bf05-84f4-4131-b21b-c4751c126a9f\",\n            \"name\": \"Centro de Distribución Panamá\",\n            \"address\": \"Avenida Central 505, Panamá, Panamá\",\n            \"city\": \"Panamá\",\n            \"country\": \"Panamá\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"52614109-d93a-4661-b833-b66940e4cc40\",\n            \"name\": \"Centro de Distribución San José\",\n            \"address\": \"Calle Central 606, San José, Costa Rica\",\n            \"city\": \"San José\",\n            \"country\": \"Costa Rica\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        },\n        {\n            \"id\": \"dd2c0887-12cf-4019-8111-06ac5d5a2b0a\",\n            \"name\": \"Centro de Distribución Quito\",\n            \"address\": \"Av. Amazonas 707, Quito, Ecuador\",\n            \"city\": \"Quito\",\n            \"country\": \"Ecuador\",\n            \"created_at\": \"2025-10-21T22:55:47.517439Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Distribution By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/distribution-centers/:distributionCenterId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"distribution-centers",
+								":distributionCenterId"
+							],
+							"variable": [
+								{
+									"key": "distributionCenterId",
+									"value": "177bc254-b365-40eb-809e-d497eaa9ffe1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Distribution By Id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/distribution-centers/:distributionCenterId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"distribution-centers",
+										":distributionCenterId"
+									],
+									"variable": [
+										{
+											"key": "distributionCenterId",
+											"value": "177bc254-b365-40eb-809e-d497eaa9ffe1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 23 Oct 2025 02:13:47 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "411"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n    \"name\": \"Centro de Distribución Bogotá\",\n    \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n    \"city\": \"Bogotá\",\n    \"country\": \"Colombia\",\n    \"created_at\": \"2025-10-23T01:57:29.566347Z\",\n    \"orders\": [\n        {\n            \"id\": \"5ee0785a-14c1-4349-8370-a934c08a3a89\",\n            \"comments\": \"Por favor utilizar el timbre rojo\",\n            \"delivery_date\": \"2025-10-22\",\n            \"status\": \"received\",\n            \"created_at\": \"2025-10-23T02:08:04.157779Z\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-27\",\r\n    \"distribution_center_id\": \"8206bc3d-f79f-4b4c-8c74-078413fd64b3\",\r\n    \"client_id\": \"cd968a87-af40-44f9-9934-b8a80eab1e75\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"95932601-216a-43a9-8106-08743fbf7c84\",\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"product_id\": \"34828941-42ab-4a60-9e72-eb63fe607bd4\",\r\n            \"quantity\": 5\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Order (By Commercial)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-22\",\r\n    \"distribution_center_id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\r\n    \"client_id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\r\n            \"quantity\": 20\r\n        },\r\n        {\r\n            \"product_id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\r\n            \"quantity\": 50\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 23 Oct 2025 02:08:03 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1321"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"5ee0785a-14c1-4349-8370-a934c08a3a89\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-22\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-10-23T02:08:04.157779Z\",\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-23T01:57:23.938432Z\"\n    },\n    \"client\": {\n        \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n        \"full_name\": \"Kristie Jackson\",\n        \"email\": \"mkelley@example.com\",\n        \"phone\": \"4685138662\",\n        \"doi\": \"0300989191\",\n        \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-10-23T01:57:29.566347Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-08-05\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 20\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-08-28\",\n            \"price_per_unit\": 18,\n            \"quantity\": 50\n        }\n    ]\n}"
+						},
+						{
+							"name": "Create Order (By Client)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-22\",\r\n    \"distribution_center_id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\r\n    \"client_id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\r\n            \"quantity\": 20\r\n        },\r\n        {\r\n            \"product_id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\r\n            \"quantity\": 50\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 23 Oct 2025 02:16:14 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1077"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"d25b1ebd-5287-489d-bbcf-6392da73809e\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-22\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-10-23T02:16:14.943648Z\",\n    \"client\": {\n        \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n        \"full_name\": \"Kristie Jackson\",\n        \"email\": \"mkelley@example.com\",\n        \"phone\": \"4685138662\",\n        \"doi\": \"0300989191\",\n        \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-10-23T01:57:29.566347Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-08-05\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 20\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-08-28\",\n            \"price_per_unit\": 18,\n            \"quantity\": 50\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Orders",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 23 Oct 2025 02:08:44 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "213"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 1,\n    \"orders\": [\n        {\n            \"id\": \"5ee0785a-14c1-4349-8370-a934c08a3a89\",\n            \"comments\": \"Por favor utilizar el timbre rojo\",\n            \"delivery_date\": \"2025-10-22\",\n            \"status\": \"received\",\n            \"created_at\": \"2025-10-23T02:08:04.157779Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Order By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/:orderId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "d25b1ebd-5287-489d-bbcf-6392da73809e"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Order By Id (By Seller)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/orders/:orderId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "orderId",
+											"value": "5ee0785a-14c1-4349-8370-a934c08a3a89"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 23 Oct 2025 02:10:32 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1321"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"5ee0785a-14c1-4349-8370-a934c08a3a89\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-22\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-10-23T02:08:04.157779Z\",\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-23T01:57:23.938432Z\"\n    },\n    \"client\": {\n        \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n        \"full_name\": \"Kristie Jackson\",\n        \"email\": \"mkelley@example.com\",\n        \"phone\": \"4685138662\",\n        \"doi\": \"0300989191\",\n        \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-10-23T01:57:29.566347Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-08-05\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 20\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-08-28\",\n            \"price_per_unit\": 18,\n            \"quantity\": 50\n        }\n    ]\n}"
+						},
+						{
+							"name": "Get Order By Id (By Client)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/orders/:orderId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders",
+										":orderId"
+									],
+									"variable": [
+										{
+											"key": "orderId",
+											"value": "d25b1ebd-5287-489d-bbcf-6392da73809e"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 23 Oct 2025 02:16:40 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1077"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"d25b1ebd-5287-489d-bbcf-6392da73809e\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-22\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-10-23T02:16:14.943648Z\",\n    \"client\": {\n        \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n        \"full_name\": \"Kristie Jackson\",\n        \"email\": \"mkelley@example.com\",\n        \"phone\": \"4685138662\",\n        \"doi\": \"0300989191\",\n        \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-10-23T01:57:29.566347Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-08-05\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 20\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-08-28\",\n            \"price_per_unit\": 18,\n            \"quantity\": 50\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Clients",
+			"item": [
+				{
+					"name": "Get Clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Seller’s Clients",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/sellers/me/clients",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"sellers",
+										"me",
+										"clients"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 23 Oct 2025 02:00:25 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "2165"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 8,\n    \"clients\": [\n        {\n            \"id\": \"b73a5c9e-4507-422e-8071-222b0c24427a\",\n            \"full_name\": \"Brittany Smith\",\n            \"email\": \"jeffreyjones@example.com\",\n            \"phone\": \"0358108888\",\n            \"doi\": \"1805612791\",\n            \"address\": \"134 Shane Brooks Suite 075\\nWhitefort, MO 05225\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n            \"full_name\": \"Kristie Jackson\",\n            \"email\": \"mkelley@example.com\",\n            \"phone\": \"4685138662\",\n            \"doi\": \"0300989191\",\n            \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"690672f8-ac51-4314-a2b3-39e4a1d5d86b\",\n            \"full_name\": \"Isabella Beck\",\n            \"email\": \"khouse@example.com\",\n            \"phone\": \"3078343428\",\n            \"doi\": \"7334833412\",\n            \"address\": \"92351 Anderson Shore Apt. 117\\nWest Troy, OR 48245\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"34a89100-230b-4b95-8332-28eb0833ea91\",\n            \"full_name\": \"Andrea Benton\",\n            \"email\": \"kendra69@example.org\",\n            \"phone\": \"7113691851\",\n            \"doi\": \"9646234920\",\n            \"address\": \"PSC 6782, Box 8936\\nAPO AP 41568\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"8b51b544-c4f5-45e6-8806-6af7cf368d62\",\n            \"full_name\": \"Krista Hodge\",\n            \"email\": \"rmoore@example.net\",\n            \"phone\": \"7829399909\",\n            \"doi\": \"4480740157\",\n            \"address\": \"USS Collins\\nFPO AP 45207\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"a516289a-3374-4401-8c59-0d57416da8e1\",\n            \"full_name\": \"Anthony Cunningham\",\n            \"email\": \"ocampos@example.org\",\n            \"phone\": \"1222528085\",\n            \"doi\": \"5180269988\",\n            \"address\": \"PSC 5786, Box 9519\\nAPO AA 35826\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"bb2eb0f4-5b14-4434-9caa-46fc51c1e4a8\",\n            \"full_name\": \"Amy Sutton\",\n            \"email\": \"cfields@example.net\",\n            \"phone\": \"1843127907\",\n            \"doi\": \"3260310425\",\n            \"address\": \"1063 Taylor Hills Suite 593\\nJennaville, SC 41513\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        },\n        {\n            \"id\": \"2c422de2-f68f-4479-adc7-71d6e7472fd1\",\n            \"full_name\": \"Christine Foster\",\n            \"email\": \"katelynandersen@example.net\",\n            \"phone\": \"1664009367\",\n            \"doi\": \"9591067002\",\n            \"address\": \"1222 Paul Camp Apt. 291\\nGoodmanchester, NY 91902\",\n            \"role\": \"institutional\",\n            \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Visits",
+			"item": [
+				{
+					"name": "Create Visit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"expected_date\": \"2025-11-03\",\r\n    \"address\": \"Tv 78K #41 - 35 Sur, Bogota, Colombia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/visits",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"visits"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Visit",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"expected_date\": \"2025-11-29\",\r\n    \"address\": \"Tv 78K #41 - 35 Sur, Bogota, Colombia\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/visits",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"visits"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 29 Oct 2025 19:58:20 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "862"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"fcf074a9-a9dc-415b-b378-f6418b466078\",\n    \"expected_date\": \"2025-11-29\",\n    \"status\": \"pending\",\n    \"created_at\": \"2025-10-29T19:58:21.912215Z\",\n    \"expected_geolocation\": {\n        \"id\": \"fad96367-f9bb-4c57-9119-da8911fc66d3\",\n        \"address\": \"Tv. 78k #41-35, Bogotá, Colombia\",\n        \"latitude\": 4.619743199999999,\n        \"longitude\": -74.1582071,\n        \"created_at\": \"2025-10-29T19:58:21.888734Z\"\n    },\n    \"client\": {\n        \"id\": \"cd968a87-af40-44f9-9934-b8a80eab1e75\",\n        \"full_name\": \"Michael Vargas\",\n        \"email\": \"nancy64@example.com\",\n        \"phone\": \"0634289283\",\n        \"doi\": \"8006781330\",\n        \"address\": \"49572 Ricky Falls\\nChadshire, PA 05926\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-29T07:22:32.312598Z\"\n    },\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-29T07:22:26.736882Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Visits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/visits?expected_date=2025-11-03&visit_status=pending",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"visits"
+							],
+							"query": [
+								{
+									"key": "expected_date",
+									"value": "2025-11-03"
+								},
+								{
+									"key": "visit_status",
+									"value": "pending"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Visits",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/visits?expected_date=2025-11-03&visit_status=pending",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"visits"
+									],
+									"query": [
+										{
+											"key": "expected_date",
+											"value": "2025-11-03"
+										},
+										{
+											"key": "visit_status",
+											"value": "pending"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "620"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 22:43:01 GMT"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=Bh43%2FZVKQGI0z0uczNupAfoaLs3E8QZN%2FVSIRm%2BBuOI%3D\\u0026sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d\\u0026ts=1761777782\"}],\"max_age\":3600}"
+								},
+								{
+									"key": "Reporting-Endpoints",
+									"value": "heroku-nel=\"https://nel.heroku.com/reports?s=Bh43%2FZVKQGI0z0uczNupAfoaLs3E8QZN%2FVSIRm%2BBuOI%3D&sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d&ts=1761777782\""
+								},
+								{
+									"key": "Server",
+									"value": "Heroku"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 heroku-router"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 1,\n    \"visits\": [\n        {\n            \"id\": \"12cb8f44-4470-406e-94f4-7b43ac33edae\",\n            \"expected_date\": \"2025-11-03\",\n            \"status\": \"pending\",\n            \"created_at\": \"2025-10-29T22:42:53.455789Z\",\n            \"expected_geolocation\": {\n                \"id\": \"b7cedd85-8fe2-44a5-9a90-db80d08a2e20\",\n                \"address\": \"Tv. 78k #41-35, Bogotá, Colombia\",\n                \"latitude\": 4.619743199999999,\n                \"longitude\": -74.1582071,\n                \"created_at\": \"2025-10-29T22:42:53.446629Z\"\n            },\n            \"seller\": {\n                \"id\": \"44444444-4444-4444-4444-444444444444\",\n                \"full_name\": \"Johann Sebastian Páez Campos\",\n                \"email\": \"sebastian.paezcampos@gmail.com\",\n                \"phone\": \"123456789\",\n                \"doi\": \"4444444444-4\",\n                \"role\": \"commercial\",\n                \"created_at\": \"2025-10-29T22:17:34.277496Z\"\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Visit By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/visits/:visitId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"visits",
+								":visitId"
+							],
+							"variable": [
+								{
+									"key": "visitId",
+									"value": "12cb8f44-4470-406e-94f4-7b43ac33edae"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Visit By Id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/visits/:visitId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"visits",
+										":visitId"
+									],
+									"variable": [
+										{
+											"key": "visitId",
+											"value": "12cb8f44-4470-406e-94f4-7b43ac33edae"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "1758"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 30 Oct 2025 01:20:19 GMT"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=XStC0wcp2vbBYICRmJx2d4S3bnM4WhIRn2eMREndjM8%3D\\u0026sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d\\u0026ts=1761787219\"}],\"max_age\":3600}"
+								},
+								{
+									"key": "Reporting-Endpoints",
+									"value": "heroku-nel=\"https://nel.heroku.com/reports?s=XStC0wcp2vbBYICRmJx2d4S3bnM4WhIRn2eMREndjM8%3D&sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d&ts=1761787219\""
+								},
+								{
+									"key": "Server",
+									"value": "Heroku"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 heroku-router"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"12cb8f44-4470-406e-94f4-7b43ac33edae\",\n    \"expected_date\": \"2025-11-03\",\n    \"visit_date\": \"2025-11-29T02:10:15Z\",\n    \"observations\": \"Se realizó la revisión\",\n    \"visual_evidence_url\": \"https://storage.googleapis.com/medi-supply-bucket-stg/visits/44444444-4444-4444-4444-444444444444/12cb8f44-4470-406e-94f4-7b43ac33edae.mp4?Expires=1761787519&GoogleAccessId=id-medi-supply-stg-cred%40turnkey-aleph-438403-h1.iam.gserviceaccount.com&Signature=Mzz%2FbHUQEcvOkYQnwQFJGCrHF87xjF%2Bb0EuDq0roxEoNO%2BGZatDCiPuEeK3d3B%2Fr45eh8RZ%2FkfIfkrHahNjb%2FOFbKCQcsx9xvVegEyAnU0V1q2nQPRbR1KfjLy8%2B5LukuKRTYLsgGAgx%2FCcFDDkMDYg9iPYC5PyNj6v41bCaH55oA54xuQBp1ZPpZdYyw2gOsRAAuQHfT7MeX8BNze2ephzs1%2BqCLj35KHcfsqUKxDcYsMoi4BzSjDQhhg3D0BrsS6Hc8ENemIko60RsS%2FLqcnjw6Pqriq9fL0MCJy%2BRwOgg4%2BLPyPMHbWszp3ktCQclSwKqY5e6%2BMsNAhdYLYeUVw%3D%3D\",\n    \"status\": \"completed\",\n    \"created_at\": \"2025-10-29T22:42:53.455789Z\",\n    \"expected_geolocation\": {\n        \"id\": \"b7cedd85-8fe2-44a5-9a90-db80d08a2e20\",\n        \"address\": \"Tv. 78k #41-35, Bogotá, Colombia\",\n        \"latitude\": 4.619743199999999,\n        \"longitude\": -74.1582071,\n        \"created_at\": \"2025-10-29T22:42:53.446629Z\"\n    },\n    \"report_geolocation\": {\n        \"id\": \"4e1860e5-9f34-40aa-8af3-54218faa58ae\",\n        \"latitude\": 4.619802,\n        \"longitude\": -74.156965,\n        \"created_at\": \"2025-10-29T22:46:32.444746Z\"\n    },\n    \"client\": {\n        \"id\": \"b94c7b27-6836-4124-ad03-cc163faddcef\",\n        \"full_name\": \"Heather Sanchez\",\n        \"email\": \"mestrada@example.com\",\n        \"phone\": \"7503925481\",\n        \"doi\": \"8642580921\",\n        \"address\": \"3550 Mccarthy Spring\\nNorth Wanda, MD 62779\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-29T22:17:40.726090Z\"\n    },\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-29T22:17:34.277496Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Report Visit By Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "visit_date",
+									"value": "2025-11-29 02:10:15",
+									"type": "text"
+								},
+								{
+									"key": "observations",
+									"value": "Se realizó la revisión",
+									"type": "text"
+								},
+								{
+									"key": "latitude",
+									"value": "4.619802",
+									"type": "text"
+								},
+								{
+									"key": "longitude",
+									"value": "-74.156965",
+									"type": "text"
+								},
+								{
+									"key": "visual_evidence",
+									"type": "file",
+									"src": "/C:/Users/najoh/Videos/ValidVideo1.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/visits/:visitId/report",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"visits",
+								":visitId",
+								"report"
+							],
+							"variable": [
+								{
+									"key": "visitId",
+									"value": "12cb8f44-4470-406e-94f4-7b43ac33edae"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Report Visit By Id",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "visit_date",
+											"value": "2025-11-29 02:10:15",
+											"type": "text"
+										},
+										{
+											"key": "observations",
+											"value": "Se realizó la revisión",
+											"type": "text"
+										},
+										{
+											"key": "latitude",
+											"value": "4.619802",
+											"type": "text"
+										},
+										{
+											"key": "longitude",
+											"value": "-74.156965",
+											"type": "text"
+										},
+										{
+											"key": "visual_evidence",
+											"type": "file",
+											"src": "/C:/Users/najoh/Videos/ValidVideo1.mp4"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/visits/:visitId/report",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"visits",
+										":visitId",
+										"report"
+									],
+									"variable": [
+										{
+											"key": "visitId",
+											"value": "12cb8f44-4470-406e-94f4-7b43ac33edae"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "1744"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 29 Oct 2025 22:46:30 GMT"
+								},
+								{
+									"key": "Nel",
+									"value": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}"
+								},
+								{
+									"key": "Report-To",
+									"value": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=k6aE7vXOyRg2d6V1u2AfH7%2Bbp8ElYnZIOjrPWCzqiLQ%3D\\u0026sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d\\u0026ts=1761777991\"}],\"max_age\":3600}"
+								},
+								{
+									"key": "Reporting-Endpoints",
+									"value": "heroku-nel=\"https://nel.heroku.com/reports?s=k6aE7vXOyRg2d6V1u2AfH7%2Bbp8ElYnZIOjrPWCzqiLQ%3D&sid=e11707d5-02a7-43ef-b45e-2cf4d2036f7d&ts=1761777991\""
+								},
+								{
+									"key": "Server",
+									"value": "Heroku"
+								},
+								{
+									"key": "Via",
+									"value": "1.1 heroku-router"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"12cb8f44-4470-406e-94f4-7b43ac33edae\",\n    \"expected_date\": \"2025-11-03\",\n    \"visit_date\": \"2025-11-29T02:10:15Z\",\n    \"observations\": \"Se realizó la revisión\",\n    \"visual_evidence_url\": \"https://storage.googleapis.com/medi-supply-bucket-stg/visits/44444444-4444-4444-4444-444444444444/12cb8f44-4470-406e-94f4-7b43ac33edae.mp4?Expires=1761778292&GoogleAccessId=id-medi-supply-stg-cred%40turnkey-aleph-438403-h1.iam.gserviceaccount.com&Signature=vMRF9kvjLgKDihT5PtwEssEGpXBDjVBswE50kywF4XZkryofjDYZwifqTRpzQHjyPyD0QGuJadPiw38xh9s485FfHcT3KWG1EZn1Qdzu9AhBFZx%2BM7EBm7EthRTTb6oArUvap%2Fdxqfrfgq3tOVSmSmbkH0s1vKCZHafNVEdkmrUF5YilR%2BdPIP1nvx9FYNcuS3I4fwyyu8KQ80FSC9%2F43UxuvmFaCRv9X6%2BlUZf9gp997dDlTXwuldUaB4arB9xfVZT6N7MWYmDbLxuUAg6rormMvSnjIt7lyi9Wlkf66wabyYa3wbwO0EGvA65N3rMDU%2BJYontx9GSAl6dN8fmNhw%3D%3D\",\n    \"status\": \"completed\",\n    \"created_at\": \"2025-10-29T22:42:53.455789Z\",\n    \"expected_geolocation\": {\n        \"id\": \"b7cedd85-8fe2-44a5-9a90-db80d08a2e20\",\n        \"address\": \"Tv. 78k #41-35, Bogotá, Colombia\",\n        \"latitude\": 4.619743199999999,\n        \"longitude\": -74.1582071,\n        \"created_at\": \"2025-10-29T22:42:53.446629Z\"\n    },\n    \"report_geolocation\": {\n        \"id\": \"4e1860e5-9f34-40aa-8af3-54218faa58ae\",\n        \"latitude\": 4.619802,\n        \"longitude\": -74.156965,\n        \"created_at\": \"2025-10-29T22:46:32.444746Z\"\n    },\n    \"client\": {\n        \"id\": \"b94c7b27-6836-4124-ad03-cc163faddcef\",\n        \"full_name\": \"Heather Sanchez\",\n        \"email\": \"mestrada@example.com\",\n        \"phone\": \"7503925481\",\n        \"doi\": \"8642580921\",\n        \"address\": \"3550 Mccarthy Spring\\nNorth Wanda, MD 62779\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-29T22:17:40.726090Z\"\n    },\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-29T22:17:34.277496Z\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Get Orders Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "seller_id",
+									"value": "55555555-5555-5555-5555-555555555555",
+									"disabled": true
+								},
+								{
+									"key": "order_status",
+									"value": "preparing",
+									"disabled": true
+								},
+								{
+									"key": "start_date",
+									"value": "2025-10-01 00:00:00",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2025-10-20 23:59:59",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Orders Report",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/reports/orders?seller_id=55555555-5555-5555-5555-555555555555",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"reports",
+										"orders"
+									],
+									"query": [
+										{
+											"key": "seller_id",
+											"value": "55555555-5555-5555-5555-555555555555"
+										},
+										{
+											"key": "order_status",
+											"value": "preparing",
+											"disabled": true
+										},
+										{
+											"key": "start_date",
+											"value": "2025-10-01 00:00:00",
+											"disabled": true
+										},
+										{
+											"key": "end_date",
+											"value": "2025-10-20 23:59:59",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 30 Oct 2025 23:57:23 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "590"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 1,\n    \"orders\": [\n        {\n            \"id\": \"d73bb426-fde1-45df-aada-6f8b21c26962\",\n            \"comments\": \"Por favor utilizar el timbre rojo\",\n            \"delivery_date\": \"2025-10-27\",\n            \"status\": \"preparing\",\n            \"created_at\": \"2025-10-20T21:44:36.795000Z\",\n            \"seller\": {\n                \"id\": \"55555555-5555-5555-5555-555555555555\",\n                \"full_name\": \"Miguel Fernando Padilla Espino\",\n                \"email\": \"miguelpadillaespino@gmail.com\",\n                \"phone\": \"123456789\",\n                \"doi\": \"5555555555-5\",\n                \"role\": \"commercial\",\n                \"created_at\": \"2025-10-29T07:22:26.736882Z\",\n                \"zone\": {\n                    \"id\": \"164ef870-5c16-4a73-b4e4-dc9a9fdfd1c5\",\n                    \"description\": \"Miami\",\n                    \"created_at\": \"2025-10-29T07:22:24.571552Z\"\n                }\n            },\n            \"products\": []\n        }\n    ]\n}"
+						}
+					]
 				}
 			]
 		},
@@ -1751,7 +3010,6 @@
 						{
 							"key": "Content-Type",
 							"value": "application/json",
-							"name": "Content-Type",
 							"description": "",
 							"type": "text"
 						}

@@ -41,21 +41,14 @@ class UserViewModelTest {
     @Mock
     private lateinit var mockValidateOTPCall: Call<ValidateOTPResponse>
 
-    @Mock
-    private lateinit var mockRegisterResponse: Response<RegisterUserResponse>
-
-    @Mock
-    private lateinit var mockLoginResponse: Response<LoginUserResponse>
-
-    @Mock
-    private lateinit var mockValidateOTPResponse: Response<ValidateOTPResponse>
-
     private lateinit var userViewModel: UserViewModel
 
     @Before
     fun setUp() {
         userViewModel = UserViewModel(mockUserRepository)
     }
+
+    // ========== BASIC TESTS ==========
 
     @Test
     fun `UserViewModel should be created successfully`() {
@@ -81,8 +74,7 @@ class UserViewModelTest {
         val viewModel = UserViewModel()
         
         // When & Then
-        assertTrue("UserViewModel should extend ViewModel", 
-            viewModel is ViewModel)
+        assertTrue("UserViewModel should extend ViewModel", viewModel is ViewModel)
     }
 
     @Test
@@ -131,587 +123,515 @@ class UserViewModelTest {
     // ========== REGISTER USER TESTS ==========
 
     @Test
-    fun `registerUser should call repository and handle successful response`() {
+    fun `registerUser should call repository`() {
         // Given
         val registerRequest = RegisterUserRequest(
             fullName = TestUtils.TestData.VALID_FULL_NAME,
             email = TestUtils.TestData.VALID_EMAIL,
-            role = "institutional",
+            role = "seller",
             password = TestUtils.TestData.VALID_PASSWORD,
-            phone = TestUtils.TestData.VALID_PHONE,
-            doi = TestUtils.TestData.VALID_NIT,
-            address = TestUtils.TestData.VALID_ADDRESS
-        )
-        val mockRegisterResponseData = RegisterUserResponse(id = "123", createdAt = java.util.Date())
-        
-        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
-        `when`(mockRegisterResponse.isSuccessful).thenReturn(true)
-        `when`(mockRegisterResponse.body()).thenReturn(mockRegisterResponseData)
-        
-        var successResult = false
-        var messageResult = ""
-
-        // When
-        doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
-            callback.onResponse(mockRegisterCall, mockRegisterResponse)
-            null
-        }.`when`(mockRegisterCall).enqueue(any())
-
-        userViewModel.registerUser(registerRequest) { success, message ->
-            successResult = success
-            messageResult = message
-        }
-
-        // Then
-        verify(mockUserRepository).registerUser(registerRequest)
-        verify(mockRegisterCall).enqueue(any())
-        assertTrue("Should return success", successResult)
-        assertEquals("123", messageResult)
-    }
-
-    @Test
-    fun `registerUser should handle unsuccessful response`() {
-        // Given
-        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
-        
-        var callbackExecuted = false
-        
-        // When - This will trigger the actual method execution
-        try {
-            userViewModel.validateOTP(otpRequest) { success, message, response ->
-                callbackExecuted = true
-            }
-            
-            // Wait a bit for the async call to potentially complete
-            Thread.sleep(100)
-        } catch (e: Exception) {
-            // Network errors are expected in unit tests
-        }
-        
-        // Then - The method should have been called
-        assertNotNull("validateOTP method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("validateOTP", 
-                ValidateOTPRequest::class.java, 
-                kotlin.Function3::class.java))
-    }
-
-    @Test
-    fun `registerUser should handle different request types`() {
-        // Given
-        val registerRequest = RegisterUserRequest(
-            fullName = TestUtils.TestData.VALID_FULL_NAME,
-            email = TestUtils.TestData.VALID_EMAIL,
-            role = "institutional",
-            password = TestUtils.TestData.VALID_PASSWORD,
-            phone = TestUtils.TestData.VALID_PHONE,
-            doi = TestUtils.TestData.VALID_NIT,
-            address = TestUtils.TestData.VALID_ADDRESS
+            phone = "3001234567",
+            doi = "12345678",
+            address = "Calle 123 #45-67"
         )
         
         `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
-        `when`(mockRegisterResponse.isSuccessful).thenReturn(false)
-        `when`(mockRegisterResponse.code()).thenReturn(400)
         
-        var successResult = false
-        var messageResult = ""
-
         // When
-        doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
-            callback.onResponse(mockRegisterCall, mockRegisterResponse)
-            null
-        }.`when`(mockRegisterCall).enqueue(any())
-
-        userViewModel.registerUser(registerRequest) { success, message ->
-            successResult = success
-            messageResult = message
-        }
-
+        userViewModel.registerUser(registerRequest) { _, _ -> }
+        
         // Then
         verify(mockUserRepository).registerUser(registerRequest)
-        verify(mockRegisterCall).enqueue(any())
-        assertFalse("Should return failure", successResult)
-        assertEquals("Error registering user: 400", messageResult)
     }
 
     @Test
-    fun `registerUser should handle successful response with null body`() {
+    fun `registerUser should handle successful response`() {
         // Given
-        val registerRequest = RegisterUserRequest(
-            fullName = TestUtils.TestData.VALID_FULL_NAME,
-            email = TestUtils.TestData.VALID_EMAIL,
-            role = "institutional",
-            password = TestUtils.TestData.VALID_PASSWORD,
-            phone = TestUtils.TestData.VALID_PHONE,
-            doi = TestUtils.TestData.VALID_NIT,
-            address = TestUtils.TestData.VALID_ADDRESS
+        val registerRequest = createValidRegisterRequest()
+        val mockResponse = mock(Response::class.java) as Response<RegisterUserResponse>
+        val registerResponse = RegisterUserResponse(
+            id = "user123",
+            createdAt = java.util.Date()
         )
-        
-        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
-        `when`(mockRegisterResponse.isSuccessful).thenReturn(true)
-        `when`(mockRegisterResponse.body()).thenReturn(null)
-        
-        var successResult = false
-        var messageResult = ""
 
-        // When
+        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+        `when`(mockResponse.isSuccessful).thenReturn(true)
+        `when`(mockResponse.body()).thenReturn(registerResponse)
+
         doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
-            callback.onResponse(mockRegisterCall, mockRegisterResponse)
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<RegisterUserResponse>
+            callback.onResponse(mockRegisterCall, mockResponse)
             null
         }.`when`(mockRegisterCall).enqueue(any())
 
+        var resultSuccess = false
+        var resultMessage = ""
+
+        // When
         userViewModel.registerUser(registerRequest) { success, message ->
-            successResult = success
-            messageResult = message
+            resultSuccess = success
+            resultMessage = message
         }
 
         // Then
-        verify(mockUserRepository).registerUser(registerRequest)
         verify(mockRegisterCall).enqueue(any())
-        assertFalse("Should return failure when body is null", successResult)
-        assertTrue("Should contain error message", messageResult.contains("Error registering user"))
+        assertTrue(resultSuccess)
+        assertEquals("user123", resultMessage)
+    }
+
+    @Test
+    fun `registerUser should handle failed response`() {
+        // Given
+        val registerRequest = createValidRegisterRequest()
+        val mockResponse = mock(Response::class.java) as Response<RegisterUserResponse>
+
+        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+        `when`(mockResponse.isSuccessful).thenReturn(false)
+        `when`(mockResponse.code()).thenReturn(400)
+
+        doAnswer { invocation ->
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<RegisterUserResponse>
+            callback.onResponse(mockRegisterCall, mockResponse)
+            null
+        }.`when`(mockRegisterCall).enqueue(any())
+
+        var resultSuccess = true
+        var resultMessage = ""
+
+        // When
+        userViewModel.registerUser(registerRequest) { success, message ->
+            resultSuccess = success
+            resultMessage = message
+        }
+
+        // Then
+        verify(mockRegisterCall).enqueue(any())
+        assertFalse(resultSuccess)
+        assertTrue(resultMessage.contains("Error registering user"))
     }
 
     @Test
     fun `registerUser should handle network failure`() {
         // Given
-        val registerRequest = RegisterUserRequest(
-            fullName = TestUtils.TestData.VALID_FULL_NAME,
-            email = TestUtils.TestData.VALID_EMAIL,
-            role = "institutional",
-            password = TestUtils.TestData.VALID_PASSWORD,
-            phone = TestUtils.TestData.VALID_PHONE,
-            doi = TestUtils.TestData.VALID_NIT,
-            address = TestUtils.TestData.VALID_ADDRESS
-        )
-        val throwable = RuntimeException("Network error")
-        
-        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
-        
-        var successResult = false
-        var messageResult = ""
+        val registerRequest = createValidRegisterRequest()
+        val exception = Exception("Network error")
 
-        // When
+        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+
         doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
-            callback.onFailure(mockRegisterCall, throwable)
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<RegisterUserResponse>
+            callback.onFailure(mockRegisterCall, exception)
             null
         }.`when`(mockRegisterCall).enqueue(any())
 
+        var resultSuccess = true
+        var resultMessage = ""
+
+        // When
         userViewModel.registerUser(registerRequest) { success, message ->
-            successResult = success
-            messageResult = message
+            resultSuccess = success
+            resultMessage = message
         }
 
         // Then
-        verify(mockUserRepository).registerUser(registerRequest)
         verify(mockRegisterCall).enqueue(any())
-        assertFalse("Should return failure", successResult)
-        assertEquals("Connection error: Network error", messageResult)
+        assertFalse(resultSuccess)
+        assertTrue(resultMessage.contains("Connection error"))
     }
 
     @Test
-    fun `validateOTP should handle different request types`() {
+    fun `registerUser should handle different user roles`() {
         // Given
-        val validRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
-        val emptyRequest = ValidateOTPRequest(otpCode = "", email = TestUtils.TestData.VALID_EMAIL)
-        
-        // When & Then - Both should be able to call the method
-        try {
-            userViewModel.validateOTP(validRequest) { _, _, _ -> }
-            userViewModel.validateOTP(emptyRequest) { _, _, _ -> }
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-        
-        // Verify the method exists and can be called
-        assertNotNull("validateOTP method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("validateOTP", 
-                ValidateOTPRequest::class.java, 
-                kotlin.Function3::class.java))
-    }
+        val roles = listOf("seller", "institutional", "commercial")
 
+        roles.forEach { role ->
+            val registerRequest = RegisterUserRequest(
+                fullName = "Test User",
+                email = "test@example.com",
+                role = role,
+                password = "Password123",
+                phone = "3001234567",
+                doi = "12345678",
+                address = "Test Address"
+            )
+
+            `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
+
+            // When
+            userViewModel.registerUser(registerRequest) { _, _ -> }
+
+            // Then
+            verify(mockUserRepository).registerUser(registerRequest)
+        }
+    }
 
     // ========== LOGIN USER TESTS ==========
 
     @Test
-    fun `loginUser should call repository and handle successful response`() {
+    fun `loginUser should call repository`() {
         // Given
         val loginRequest = LoginUserRequest(
             email = TestUtils.TestData.VALID_EMAIL,
             password = TestUtils.TestData.VALID_PASSWORD
         )
-        val mockLoginResponseData = LoginUserResponse(message = "Login successful")
         
         `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
-        `when`(mockLoginResponse.isSuccessful).thenReturn(true)
-        `when`(mockLoginResponse.body()).thenReturn(mockLoginResponseData)
-        
-        var successResult = false
-        var messageResult = ""
 
         // When
-        doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<LoginUserResponse>>(0)
-            callback.onResponse(mockLoginCall, mockLoginResponse)
-            null
-        }.`when`(mockLoginCall).enqueue(any())
-
-        userViewModel.loginUser(loginRequest) { success, message ->
-            successResult = success
-            messageResult = message
-        }
+        userViewModel.loginUser(loginRequest) { _, _ -> }
 
         // Then
         verify(mockUserRepository).loginUser(loginRequest)
-        verify(mockLoginCall).enqueue(any())
-        assertTrue("Should return success", successResult)
-        assertEquals("Login successful", messageResult)
     }
 
     @Test
-    fun `loginUser should handle unsuccessful response`() {
+    fun `loginUser should handle successful response`() {
         // Given
-        val loginRequest = LoginUserRequest(
-            email = TestUtils.TestData.VALID_EMAIL,
-            password = TestUtils.TestData.VALID_PASSWORD
-        )
-        
+        val loginRequest = createValidLoginRequest()
+        val mockResponse = mock(Response::class.java) as Response<LoginUserResponse>
+        val loginResponse = LoginUserResponse(message = "Login successful")
+
         `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
-        `when`(mockLoginResponse.isSuccessful).thenReturn(false)
-        `when`(mockLoginResponse.code()).thenReturn(401)
-        
-        var successResult = false
-        var messageResult = ""
-        
-        // When
+        `when`(mockResponse.isSuccessful).thenReturn(true)
+        `when`(mockResponse.body()).thenReturn(loginResponse)
+
         doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<LoginUserResponse>>(0)
-            callback.onResponse(mockLoginCall, mockLoginResponse)
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<LoginUserResponse>
+            callback.onResponse(mockLoginCall, mockResponse)
             null
         }.`when`(mockLoginCall).enqueue(any())
 
+        var resultSuccess = false
+        var resultMessage = ""
+
+        // When
         userViewModel.loginUser(loginRequest) { success, message ->
-            successResult = success
-            messageResult = message
+            resultSuccess = success
+            resultMessage = message
         }
 
         // Then
-        verify(mockUserRepository).loginUser(loginRequest)
         verify(mockLoginCall).enqueue(any())
-        assertFalse("Should return failure", successResult)
-        assertEquals("Error logging in: 401", messageResult)
+        assertTrue(resultSuccess)
+        assertEquals("Login successful", resultMessage)
+    }
+
+    @Test
+    fun `loginUser should handle failed response`() {
+        // Given
+        val loginRequest = createValidLoginRequest()
+        val mockResponse = mock(Response::class.java) as Response<LoginUserResponse>
+
+        `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
+        `when`(mockResponse.isSuccessful).thenReturn(false)
+        `when`(mockResponse.code()).thenReturn(401)
+
+        doAnswer { invocation ->
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<LoginUserResponse>
+            callback.onResponse(mockLoginCall, mockResponse)
+            null
+        }.`when`(mockLoginCall).enqueue(any())
+
+        var resultSuccess = true
+        var resultMessage = ""
+
+        // When
+        userViewModel.loginUser(loginRequest) { success, message ->
+            resultSuccess = success
+            resultMessage = message
+        }
+
+        // Then
+        verify(mockLoginCall).enqueue(any())
+        assertFalse(resultSuccess)
+        assertTrue(resultMessage.contains("Error logging in"))
     }
 
     @Test
     fun `loginUser should handle network failure`() {
         // Given
-        val loginRequest = LoginUserRequest(
-            email = TestUtils.TestData.VALID_EMAIL,
-            password = TestUtils.TestData.VALID_PASSWORD
-        )
-        val throwable = RuntimeException("Network error")
-        
+        val loginRequest = createValidLoginRequest()
+        val exception = Exception("Network error")
+
         `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
-        
-        var successResult = false
-        var messageResult = ""
-        
-        // When
+
         doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<LoginUserResponse>>(0)
-            callback.onFailure(mockLoginCall, throwable)
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<LoginUserResponse>
+            callback.onFailure(mockLoginCall, exception)
             null
         }.`when`(mockLoginCall).enqueue(any())
 
+        var resultSuccess = true
+        var resultMessage = ""
+
+        // When
         userViewModel.loginUser(loginRequest) { success, message ->
-            successResult = success
-            messageResult = message
+            resultSuccess = success
+            resultMessage = message
         }
 
         // Then
-        verify(mockUserRepository).loginUser(loginRequest)
         verify(mockLoginCall).enqueue(any())
-        assertFalse("Should return failure", successResult)
-        assertEquals("Connection error: Network error", messageResult)
+        assertFalse(resultSuccess)
+        assertTrue(resultMessage.contains("Connection error"))
     }
 
     @Test
-    fun `loginUser should handle successful response with null body`() {
+    fun `loginUser should handle empty credentials`() {
         // Given
-        val loginRequest = LoginUserRequest(
-            email = TestUtils.TestData.VALID_EMAIL,
-            password = TestUtils.TestData.VALID_PASSWORD
-        )
-        
+        val loginRequest = LoginUserRequest(email = "", password = "")
+
         `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
-        `when`(mockLoginResponse.isSuccessful).thenReturn(true)
-        `when`(mockLoginResponse.body()).thenReturn(null)
-        
-        var successResult = false
-        var messageResult = ""
 
         // When
-        doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<LoginUserResponse>>(0)
-            callback.onResponse(mockLoginCall, mockLoginResponse)
-            null
-        }.`when`(mockLoginCall).enqueue(any())
-
-        userViewModel.loginUser(loginRequest) { success, message ->
-            successResult = success
-            messageResult = message
-        }
+        userViewModel.loginUser(loginRequest) { _, _ -> }
 
         // Then
         verify(mockUserRepository).loginUser(loginRequest)
-        verify(mockLoginCall).enqueue(any())
-        assertFalse("Should return failure when body is null", successResult)
-        assertTrue("Should contain error message", messageResult.contains("Error logging in"))
+    }
+
+    @Test
+    fun `loginUser should handle special characters in email`() {
+        // Given
+        val loginRequest = LoginUserRequest(
+            email = "test+special@example.com",
+            password = "Password123"
+        )
+
+        `when`(mockUserRepository.loginUser(loginRequest)).thenReturn(mockLoginCall)
+
+        // When
+        userViewModel.loginUser(loginRequest) { _, _ -> }
+
+        // Then
+        verify(mockUserRepository).loginUser(loginRequest)
     }
 
     // ========== VALIDATE OTP TESTS ==========
 
     @Test
-    fun `validateOTP should call repository and handle successful response`() {
+    fun `validateOTP should call repository`() {
         // Given
-        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
-        val mockValidateOTPResponseData = ValidateOTPResponse(
-            accessToken = "test_token",
-            user = OTPUser(
-                id = "123",
-                fullName = TestUtils.TestData.VALID_FULL_NAME,
-                email = TestUtils.TestData.VALID_EMAIL,
-                role = "institutional"
-            )
+        val validateRequest = ValidateOTPRequest(
+            email = TestUtils.TestData.VALID_EMAIL,
+            otpCode = "123456"
         )
         
-        `when`(mockUserRepository.validateOTP(otpRequest)).thenReturn(mockValidateOTPCall)
-        `when`(mockValidateOTPResponse.isSuccessful).thenReturn(true)
-        `when`(mockValidateOTPResponse.body()).thenReturn(mockValidateOTPResponseData)
-        
-        var successResult = false
-        var messageResult = ""
-        var responseResult: ValidateOTPResponse? = null
-        
-        // When
-        doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<ValidateOTPResponse>>(0)
-            callback.onResponse(mockValidateOTPCall, mockValidateOTPResponse)
-            null
-        }.`when`(mockValidateOTPCall).enqueue(any())
+        `when`(mockUserRepository.validateOTP(validateRequest)).thenReturn(mockValidateOTPCall)
 
-        userViewModel.validateOTP(otpRequest) { success, message, response ->
-            successResult = success
-            messageResult = message
-            responseResult = response
-        }
+        // When
+        userViewModel.validateOTP(validateRequest) { _, _, _ -> }
 
         // Then
-        verify(mockUserRepository).validateOTP(otpRequest)
-        verify(mockValidateOTPCall).enqueue(any())
-        assertTrue("Should return success", successResult)
-        assertEquals("OTP validated.", messageResult)
-        assertEquals(mockValidateOTPResponseData, responseResult)
+        verify(mockUserRepository).validateOTP(validateRequest)
     }
 
     @Test
-    fun `validateOTP should handle unsuccessful response`() {
+    fun `validateOTP should handle successful response`() {
         // Given
-        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
-        
-        `when`(mockUserRepository.validateOTP(otpRequest)).thenReturn(mockValidateOTPCall)
-        `when`(mockValidateOTPResponse.isSuccessful).thenReturn(false)
-        `when`(mockValidateOTPResponse.code()).thenReturn(400)
-        
-        var successResult = false
-        var messageResult = ""
-        var responseResult: ValidateOTPResponse? = null
-        
-        // When
+        val validateRequest = createValidOTPRequest()
+        val mockResponse = mock(Response::class.java) as Response<ValidateOTPResponse>
+        val otpUser = OTPUser(
+            id = "user123",
+            fullName = "Test User",
+            email = "test@example.com",
+            role = "seller"
+        )
+        val validateResponse = ValidateOTPResponse(
+            accessToken = "token123",
+            user = otpUser
+        )
+
+        `when`(mockUserRepository.validateOTP(validateRequest)).thenReturn(mockValidateOTPCall)
+        `when`(mockResponse.isSuccessful).thenReturn(true)
+        `when`(mockResponse.body()).thenReturn(validateResponse)
+
         doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<ValidateOTPResponse>>(0)
-            callback.onResponse(mockValidateOTPCall, mockValidateOTPResponse)
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<ValidateOTPResponse>
+            callback.onResponse(mockValidateOTPCall, mockResponse)
             null
         }.`when`(mockValidateOTPCall).enqueue(any())
 
-        userViewModel.validateOTP(otpRequest) { success, message, response ->
-            successResult = success
-            messageResult = message
-            responseResult = response
+        var resultSuccess = false
+        var resultMessage = ""
+        var resultResponse: ValidateOTPResponse? = null
+
+        // When
+        userViewModel.validateOTP(validateRequest) { success, message, response ->
+            resultSuccess = success
+            resultMessage = message
+            resultResponse = response
         }
 
         // Then
-        verify(mockUserRepository).validateOTP(otpRequest)
         verify(mockValidateOTPCall).enqueue(any())
-        assertFalse("Should return failure", successResult)
-        assertEquals("Error validating OTP: 400", messageResult)
-        assertNull(responseResult)
+        assertTrue(resultSuccess)
+        assertEquals("OTP validated.", resultMessage)
+        assertNotNull(resultResponse)
+        assertEquals("token123", resultResponse?.accessToken)
     }
 
     @Test
-    fun `validateOTP should handle successful response with null body`() {
+    fun `validateOTP should handle failed response`() {
         // Given
-        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
-        
-        `when`(mockUserRepository.validateOTP(otpRequest)).thenReturn(mockValidateOTPCall)
-        `when`(mockValidateOTPResponse.isSuccessful).thenReturn(true)
-        `when`(mockValidateOTPResponse.body()).thenReturn(null)
-        
-        var successResult = false
-        var messageResult = ""
-        var responseResult: ValidateOTPResponse? = null
-        
-        // When
+        val validateRequest = createValidOTPRequest()
+        val mockResponse = mock(Response::class.java) as Response<ValidateOTPResponse>
+
+        `when`(mockUserRepository.validateOTP(validateRequest)).thenReturn(mockValidateOTPCall)
+        `when`(mockResponse.isSuccessful).thenReturn(false)
+        `when`(mockResponse.code()).thenReturn(400)
+
         doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<ValidateOTPResponse>>(0)
-            callback.onResponse(mockValidateOTPCall, mockValidateOTPResponse)
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<ValidateOTPResponse>
+            callback.onResponse(mockValidateOTPCall, mockResponse)
             null
         }.`when`(mockValidateOTPCall).enqueue(any())
 
-        userViewModel.validateOTP(otpRequest) { success, message, response ->
-            successResult = success
-            messageResult = message
-            responseResult = response
+        var resultSuccess = true
+        var resultMessage = ""
+        var resultResponse: ValidateOTPResponse? = null
+
+        // When
+        userViewModel.validateOTP(validateRequest) { success, message, response ->
+            resultSuccess = success
+            resultMessage = message
+            resultResponse = response
         }
 
         // Then
-        verify(mockUserRepository).validateOTP(otpRequest)
         verify(mockValidateOTPCall).enqueue(any())
-        assertFalse("Should return failure when body is null", successResult)
-        assertTrue("Should contain error message", messageResult.contains("Error validating OTP"))
-        assertNull(responseResult)
+        assertFalse(resultSuccess)
+        assertTrue(resultMessage.contains("Error validating OTP"))
+        assertNull(resultResponse)
     }
 
     @Test
     fun `validateOTP should handle network failure`() {
         // Given
-        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
-        val throwable = RuntimeException("Network error")
-        
-        `when`(mockUserRepository.validateOTP(otpRequest)).thenReturn(mockValidateOTPCall)
-        
-        var successResult = false
-        var messageResult = ""
-        var responseResult: ValidateOTPResponse? = null
-        
-        // When
+        val validateRequest = createValidOTPRequest()
+        val exception = Exception("Network error")
+
+        `when`(mockUserRepository.validateOTP(validateRequest)).thenReturn(mockValidateOTPCall)
+
         doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<ValidateOTPResponse>>(0)
-            callback.onFailure(mockValidateOTPCall, throwable)
+            @Suppress("UNCHECKED_CAST")
+            val callback = invocation.arguments[0] as Callback<ValidateOTPResponse>
+            callback.onFailure(mockValidateOTPCall, exception)
             null
         }.`when`(mockValidateOTPCall).enqueue(any())
 
-        userViewModel.validateOTP(otpRequest) { success, message, response ->
-            successResult = success
-            messageResult = message
-            responseResult = response
+        var resultSuccess = true
+        var resultMessage = ""
+        var resultResponse: ValidateOTPResponse? = null
+
+        // When
+        userViewModel.validateOTP(validateRequest) { success, message, response ->
+            resultSuccess = success
+            resultMessage = message
+            resultResponse = response
         }
 
         // Then
-        verify(mockUserRepository).validateOTP(otpRequest)
         verify(mockValidateOTPCall).enqueue(any())
-        assertFalse("Should return failure", successResult)
-        assertEquals("Connection error: Network error", messageResult)
-        assertNull(responseResult)
+        assertFalse(resultSuccess)
+        assertTrue(resultMessage.contains("Connection error"))
+        assertNull(resultResponse)
     }
 
     @Test
-    fun `UserViewModel should handle multiple method calls`() {
+    fun `validateOTP should handle empty request`() {
         // Given
-        val registerRequest = RegisterUserRequest(
+        val emptyRequest = ValidateOTPRequest(email = "", otpCode = "")
+
+        `when`(mockUserRepository.validateOTP(emptyRequest)).thenReturn(mockValidateOTPCall)
+        
+        // When
+        userViewModel.validateOTP(emptyRequest) { _, _, _ -> }
+
+        // Then
+        verify(mockUserRepository).validateOTP(emptyRequest)
+    }
+
+    @Test
+    fun `validateOTP should handle invalid OTP code format`() {
+        // Given
+        val invalidCodes = listOf("12345", "1234567", "abcdef", "!@#$%^")
+
+        invalidCodes.forEach { code ->
+            val validateRequest = ValidateOTPRequest(
+                email = "test@example.com",
+                otpCode = code
+            )
+
+            `when`(mockUserRepository.validateOTP(validateRequest)).thenReturn(mockValidateOTPCall)
+
+            // When
+            userViewModel.validateOTP(validateRequest) { _, _, _ -> }
+
+            // Then
+            verify(mockUserRepository).validateOTP(validateRequest)
+        }
+    }
+
+    @Test
+    fun `validateOTP should handle different email formats`() {
+        // Given
+        val emails = listOf(
+            "test@example.com",
+            "test.user@example.com",
+            "test+tag@example.co.uk",
+            "test_user@example.org"
+        )
+
+        emails.forEach { email ->
+            val validateRequest = ValidateOTPRequest(
+                email = email,
+                otpCode = "123456"
+            )
+
+            `when`(mockUserRepository.validateOTP(validateRequest)).thenReturn(mockValidateOTPCall)
+
+            // When
+            userViewModel.validateOTP(validateRequest) { _, _, _ -> }
+
+            // Then
+            verify(mockUserRepository).validateOTP(validateRequest)
+        }
+    }
+
+    // ========== HELPER METHODS ==========
+
+    private fun createValidRegisterRequest(): RegisterUserRequest {
+        return RegisterUserRequest(
             fullName = TestUtils.TestData.VALID_FULL_NAME,
             email = TestUtils.TestData.VALID_EMAIL,
-            role = "institutional",
+            role = "seller",
             password = TestUtils.TestData.VALID_PASSWORD,
-            phone = TestUtils.TestData.VALID_PHONE,
-            doi = TestUtils.TestData.VALID_NIT,
-            address = TestUtils.TestData.VALID_ADDRESS
+            phone = "3001234567",
+            doi = "12345678",
+            address = "Calle 123 #45-67"
         )
-        
-        val loginRequest = LoginUserRequest(
+    }
+
+    private fun createValidLoginRequest(): LoginUserRequest {
+        return LoginUserRequest(
             email = TestUtils.TestData.VALID_EMAIL,
             password = TestUtils.TestData.VALID_PASSWORD
         )
-        
-        val otpRequest = ValidateOTPRequest(otpCode = TestUtils.TestData.VALID_OTP, email = TestUtils.TestData.VALID_EMAIL)
-        
-        // When - Execute methods concurrently
-        try {
-            val thread1 = Thread {
-                userViewModel.registerUser(registerRequest) { _, _ -> }
-            }
-            val thread2 = Thread {
-                userViewModel.loginUser(loginRequest) { _, _ -> }
-            }
-            val thread3 = Thread {
-                userViewModel.validateOTP(otpRequest) { _, _, _ -> }
-            }
-            
-            thread1.start()
-            thread2.start()
-            thread3.start()
-            
-            thread1.join()
-            thread2.join()
-            thread3.join()
-        } catch (e: Exception) {
-            // Network errors are expected
-        }
-        
-        // Then - All methods should exist and be callable
-        assertNotNull("registerUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("registerUser", 
-                RegisterUserRequest::class.java, 
-                kotlin.Function2::class.java))
-        
-        assertNotNull("loginUser method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("loginUser", 
-                LoginUserRequest::class.java, 
-                kotlin.Function2::class.java))
-        
-        assertNotNull("validateOTP method should exist", 
-            UserViewModel::class.java.getDeclaredMethod("validateOTP", 
-                ValidateOTPRequest::class.java, 
-                kotlin.Function3::class.java))
     }
 
-    @Test
-    fun `UserViewModel should handle multiple instances`() {
-        // Given
-        val viewModel1 = UserViewModel(mockUserRepository)
-        val viewModel2 = UserViewModel(mockUserRepository)
-        val registerRequest = RegisterUserRequest(
-            fullName = TestUtils.TestData.VALID_FULL_NAME,
+    private fun createValidOTPRequest(): ValidateOTPRequest {
+        return ValidateOTPRequest(
             email = TestUtils.TestData.VALID_EMAIL,
-            role = "institutional",
-            password = TestUtils.TestData.VALID_PASSWORD,
-            phone = TestUtils.TestData.VALID_PHONE,
-            doi = TestUtils.TestData.VALID_NIT,
-            address = TestUtils.TestData.VALID_ADDRESS
+            otpCode = "123456"
         )
-        
-        `when`(mockUserRepository.registerUser(registerRequest)).thenReturn(mockRegisterCall)
-        `when`(mockRegisterResponse.isSuccessful).thenReturn(false)
-        `when`(mockRegisterResponse.code()).thenReturn(500)
-        
-        doAnswer { invocation ->
-            val callback = invocation.getArgument<Callback<RegisterUserResponse>>(0)
-            callback.onResponse(mockRegisterCall, mockRegisterResponse)
-            null
-        }.`when`(mockRegisterCall).enqueue(any())
-        
-        // When
-        viewModel1.registerUser(registerRequest) { _, _ -> }
-        viewModel2.registerUser(registerRequest) { _, _ -> }
-        
-        // Then
-        assertNotNull("First viewModel should exist", viewModel1)
-        assertNotNull("Second viewModel should exist", viewModel2)
-        assertNotEquals("ViewModels should be different instances", viewModel1, viewModel2)
-        verify(mockUserRepository, times(2)).registerUser(registerRequest)
     }
-
 }

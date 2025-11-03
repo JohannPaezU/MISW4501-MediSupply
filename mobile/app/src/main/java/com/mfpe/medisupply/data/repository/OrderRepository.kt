@@ -1,5 +1,8 @@
 package com.mfpe.medisupply.data.repository
 
+import android.util.Log
+import com.mfpe.medisupply.data.model.CreateOrderRequest
+import com.mfpe.medisupply.data.model.CreateOrderResponse
 import com.mfpe.medisupply.data.model.OrderListResponse
 import com.mfpe.medisupply.data.network.OrderService
 import com.mfpe.medisupply.data.network.RetrofitApiClient
@@ -10,8 +13,13 @@ class OrderRepository {
         RetrofitApiClient.createRetrofitService(OrderService::class.java)
     }
 
-    fun getOrders(clientId : String, sellerId : String): Call<OrderListResponse> {
-        return orderService.getOrders(clientId, sellerId)
+    fun getOrders(authToken: String, clientId : String, sellerId : String): Call<OrderListResponse> {
+        return orderService.getOrders(authToken, clientId, sellerId)
+    }
+
+    fun createOrder(authToken: String, orderRequest: CreateOrderRequest): Call<CreateOrderResponse> {
+
+        return orderService.createOrder(authToken, orderRequest)
     }
 
 }
