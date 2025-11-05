@@ -46,7 +46,19 @@
         app:icon="@drawable/ic_image"
         app:iconTint="@android:color/darker_gray"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvSelectedFileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#4CAF50"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegisterVisit"
