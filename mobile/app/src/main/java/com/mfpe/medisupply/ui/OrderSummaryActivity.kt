@@ -73,7 +73,7 @@ class OrderSummaryActivity : AppCompatActivity() {
     private fun setupObservers() {
         orderSummaryViewModel.clients.observe(this, Observer { clients ->
             clientsList = clients
-            val clientNames = clients.map { it.fullName }
+            val clientNames = clients.map { it.full_name }
             val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, clientNames)
             binding.inputClient.setAdapter(adapter)
         })

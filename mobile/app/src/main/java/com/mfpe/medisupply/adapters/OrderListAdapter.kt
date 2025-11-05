@@ -14,9 +14,11 @@ class OrderListAdapter(
 ) : RecyclerView.Adapter<OrderListAdapter.OrderViewHolder>() {
 
     class OrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val iconDelivery: TextView? = itemView.findViewById(R.id.iconDelivery)
         val textOrderName: TextView = itemView.findViewById(R.id.textOrderName)
         val textOrderStatus: TextView = itemView.findViewById(R.id.textOrderStatus)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -26,8 +28,12 @@ class OrderListAdapter(
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orders[position]
-        holder.textOrderName.text = "Orden #${order.id}"
-        holder.textOrderStatus.text = order.status
+        holder.textOrderName.text = order.id
+        holder.textOrderStatus.text = "Estado: ${order.status}"
+        
+        // Mostrar número consecutivo basado en la posición (1, 2, 3, 4, 5, 6...)
+        val deliveryNumber = position + 1
+        holder.iconDelivery?.text = deliveryNumber.toString()
 
         holder.itemView.setOnClickListener {
             onOrderClick(order)

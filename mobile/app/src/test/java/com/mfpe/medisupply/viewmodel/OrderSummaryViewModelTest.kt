@@ -663,11 +663,13 @@ class OrderSummaryViewModelTest {
     private fun createTestClient(): Client {
         return Client(
             id = "client1",
-            fullName = "John Doe",
+            full_name = "John Doe",
             doi = "12345678",
             email = "john@example.com",
             phone = "1234567890",
-            address = "123 Main St"
+            address = "123 Main St",
+            role = "institutional",
+            created_at = "2024-01-01T00:00:00Z"
         )
     }
 
@@ -678,7 +680,7 @@ class OrderSummaryViewModelTest {
             address = "123 Center St",
             city = "City",
             country = "Country",
-            createdAt = "2024-01-01"
+            created_at = "2024-01-01"
         )
     }
 
