@@ -7,14 +7,20 @@ import com.mfpe.medisupply.data.repository.VisitRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class VisitsViewModel(
     private val visitRepository: VisitRepository = VisitRepository()
 ) : ViewModel() {
 
-    fun registerCompletedVisit(authToken:String, id: String, request: RegisterVisitRequest,
-                               onResult: (Boolean, String, RegisterVisitResponse?) -> Unit) {
-        visitRepository.registerCompletedVisit(authToken, id, request).enqueue(object :
+    fun registerCompletedVisit(
+        authToken: String,
+        id: String,
+        request: RegisterVisitRequest,
+        visualEvidenceFile: File? = null,
+        onResult: (Boolean, String, RegisterVisitResponse?) -> Unit
+    ) {
+        visitRepository.registerCompletedVisit(authToken, id, request, visualEvidenceFile).enqueue(object :
             Callback<RegisterVisitResponse> {
             override fun onResponse(call: Call<RegisterVisitResponse>, res: Response<RegisterVisitResponse>) {
                 if (res.isSuccessful && res.body() != null) {

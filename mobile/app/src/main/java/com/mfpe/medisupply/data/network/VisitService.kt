@@ -1,6 +1,7 @@
 package com.mfpe.medisupply.data.network
 
 import com.mfpe.medisupply.data.model.RegisterVisitResponse
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Header
@@ -19,7 +20,8 @@ interface VisitService {
         @Part("visit_date") visitDate: RequestBody,
         @Part("observations") observations: RequestBody,
         @Part("latitude") latitude: RequestBody,
-        @Part("longitude") longitude: RequestBody
+        @Part("longitude") longitude: RequestBody,
+        @Part visualEvidence: MultipartBody.Part? = null
     ): Call<RegisterVisitResponse>
 
 }
