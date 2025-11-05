@@ -2,12 +2,14 @@ package com.mfpe.medisupply.data.network
 
 import com.mfpe.medisupply.data.model.CreateOrderRequest
 import com.mfpe.medisupply.data.model.CreateOrderResponse
+import com.mfpe.medisupply.data.model.OrderDetailResponse
 import com.mfpe.medisupply.data.model.OrderListResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface OrderService {
@@ -18,6 +20,12 @@ interface OrderService {
         @Query("client_id") clientId: String,
         @Query("seller_id") sellerId: String
     ): Call<OrderListResponse>
+
+    @GET("orders/{orderId}")
+    fun getOrderDetail(
+        @Header("Authorization") authToken: String,
+        @Path("orderId") orderId: String
+    ): Call<OrderDetailResponse>
 
     @POST("orders")
     fun createOrder(
