@@ -38,11 +38,11 @@ class ClientListAdapter(
         val client = clients[position]
 
         // Configurar avatar con la primera letra del nombre
-        val firstLetter = client.fullName.takeIf { it.isNotEmpty() }?.first()?.uppercaseChar() ?: "A"
+        val firstLetter = client.full_name.takeIf { it.isNotEmpty() }?.first()?.uppercaseChar() ?: "A"
         holder.binding.textAvatar.text = firstLetter.toString()
 
         // Configurar información básica
-        holder.binding.textClientName.text = client.fullName
+        holder.binding.textClientName.text = client.full_name
         holder.binding.textClientNIT.text = "NIT: ${client.doi}"
 
         // Configurar información de contacto

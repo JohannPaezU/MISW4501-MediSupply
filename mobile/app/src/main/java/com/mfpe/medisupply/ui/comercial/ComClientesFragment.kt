@@ -72,7 +72,7 @@ class ComClientesFragment : Fragment(), ClientListAdapter.OnClientActionListener
 
     override fun onVisitClick(client: Client) {
         // TODO: Implementar navegación a detalles de visita
-        Toast.makeText(requireContext(), "Visitar ${client.fullName}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Visitar ${client.full_name}", Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

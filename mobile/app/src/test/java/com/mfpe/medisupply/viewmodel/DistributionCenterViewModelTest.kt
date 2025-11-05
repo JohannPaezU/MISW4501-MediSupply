@@ -58,7 +58,7 @@ class DistributionCenterViewModelTest {
                         address = "Test Address",
                         city = "Bogotá",
                         country = "Colombia",
-                        createdAt = "2025-10-28"
+                        created_at = "2025-10-28"
                     )
                 )
             ))
@@ -95,7 +95,7 @@ class DistributionCenterViewModelTest {
                 address = "Address 1",
                 city = "Bogotá",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             ),
             DistributionCenter(
                 id = "center-2",
@@ -103,7 +103,7 @@ class DistributionCenterViewModelTest {
                 address = "Address 2",
                 city = "Medellín",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         )
 
@@ -331,7 +331,7 @@ class DistributionCenterViewModelTest {
                         address = "Test Address",
                         city = "Bogotá",
                         country = "Colombia",
-                        createdAt = "2025-10-28"
+                        created_at = "2025-10-28"
                     )
                 )
             ))
