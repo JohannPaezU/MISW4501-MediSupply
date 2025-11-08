@@ -53,8 +53,7 @@ class User(Base):
     geolocation_id: Mapped[Optional[str]] = mapped_column(
         String(36),
         ForeignKey("geolocations.id", ondelete="RESTRICT"),
-        nullable=True,
-        unique=True,
+        nullable=True
     )
     zone: Mapped[Optional["Zone"]] = relationship(
         "Zone", back_populates="sellers", passive_deletes=True
