@@ -125,3 +125,6 @@ def _validate_order_request(
 
     if not distribution_center or not client:
         raise NotFoundException("Distribution center or client not found")
+
+    if order_create_request.delivery_date < date.today():
+        raise BadRequestException("Delivery date cannot be in the past")
