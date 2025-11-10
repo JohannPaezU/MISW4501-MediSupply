@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.orm import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
-from src.errors.errors import NotFoundException
-from src.models.db_models import Product
+from src.errors.errors import NotFoundException, BadRequestException
+from src.models.db_models import Product, User
 from src.models.enums.user_role import UserRole
 from src.schemas.product_schema import (
     GetProductsResponse,
@@ -18,7 +18,7 @@ from src.services.product_service import (
     create_product,
     create_products_bulk,
     get_product_by_id,
-    get_products,
+    get_products, get_recommended_products,
 )
 
 product_router = APIRouter(
@@ -117,19 +117,11 @@ async def register_products_bulk(
     response_model=GetProductsResponse,
     status_code=status.HTTP_200_OK,
     summary="Get all products",
-    dependencies=[
-        Depends(
-            require_roles(
-                allowed_roles=[
-                    UserRole.COMMERCIAL,
-                    UserRole.INSTITUTIONAL,
-                    UserRole.ADMIN,
-                ]
-            )
-        )
-    ],
     description="""
 Retrieve a list of all products in the system.
+
+### Query Parameters
+- **limit**: (Optional) The maximum number of products to retrieve.
 
 ### Response
 Returns a list of products with the following details for each product:
@@ -147,9 +139,53 @@ Returns a list of products with the following details for each product:
 )
 async def get_all_products(
     *,
+    limit: int | None = Query(None, gt=0),
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
 ) -> GetProductsResponse:
-    products = get_products(db=db)
+    products = get_products(db=db, current_user=current_user, limit=limit)
+
+    return GetProductsResponse(total_count=len(products), products=products)
+
+
+@product_router.get(
+    "/recommended",
+    response_model=GetProductsResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get recommended products",
+    description="""
+Retrieve a list of recommended products for a specific client.
+
+### Query Parameters
+- **client_id**: (Optional) The unique identifier of the client (36 characters). Required if the current user is not an institutional user.
+- **limit**: (Optional) The maximum number of recommended products to retrieve. Default is 20.
+
+### Response
+Returns a list of recommended products with the following details for each product:
+- **id**: Unique identifier of the product.
+- **name**: Name of the product.
+- **details**: Details about the product.
+- **store**: Store where the product is available.
+- **batch**: Batch identifier of the product.
+- **image_url**: URL of the product's image.
+- **due_date**: Due date of the product.
+- **stock**: Stock quantity of the product.
+- **price_per_unit**: Price per unit of the product.
+- **created_at**: Timestamp when the product was created.
+""",
+)
+async def get_all_recommended_products(
+    *,
+    client_id: str | None = Query(None),
+    limit: int = Query(20, gt=0),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]))
+) -> GetProductsResponse:
+    is_institutional = current_user.role == UserRole.INSTITUTIONAL
+    if not is_institutional and not client_id:
+        raise BadRequestException("Client ID must be provided for non-institutional users")
+    client_id = current_user.id if is_institutional else client_id
+    products = get_recommended_products(db=db, current_user=current_user, client_id=client_id, limit=limit)
 
     return GetProductsResponse(total_count=len(products), products=products)
 
