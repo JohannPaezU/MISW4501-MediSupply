@@ -57,19 +57,17 @@ async def register_order(
         require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
     ),
 ) -> OrderResponse:
-    if current_user.role == UserRole.COMMERCIAL:
-        if not order_create_request.client_id:
-            raise BadRequestException("Client ID must be provided for commercial users")
-        order = create_order(
-            db=db,
-            order_create_request=order_create_request,
-            client_id=order_create_request.client_id,
-            seller_id=current_user.id,
-        )
-    else:
-        order = create_order(
-            db=db, order_create_request=order_create_request, client_id=current_user.id
-        )
+    is_commercial = current_user.role == UserRole.COMMERCIAL
+    client_id = order_create_request.client_id if is_commercial else current_user.id
+    if is_commercial and not client_id:
+        raise BadRequestException("Client ID must be provided for commercial users")
+    seller_id = current_user.id if is_commercial else None
+    order = create_order(
+        db=db,
+        order_create_request=order_create_request,
+        client_id=client_id,
+        seller_id=seller_id,
+    )
 
     return _build_order_response(order=order)
 
