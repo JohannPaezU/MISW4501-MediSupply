@@ -4,10 +4,12 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -36,6 +38,8 @@ import java.net.URL
 import org.json.JSONObject
 import org.osmdroid.views.CustomZoomButtonsController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
+import java.io.FileOutputStream
 
 class ComRutasFragment : Fragment() {
 
@@ -49,6 +53,14 @@ class ComRutasFragment : Fragment() {
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val routingScope = CoroutineScope(Dispatchers.IO + Job())
+
+    // Variables para manejo de archivos
+    private var selectedFileUri: Uri? = null
+    private var selectedFileName: String? = null
+    private var currentDialogBinding: DialogVisitDetailsBinding? = null
+    private val allowedImageFormats = setOf("jpg", "jpeg", "png", "bmp")
+    private val allowedVideoFormats = setOf("mp4", "avi", "mov", "mkv")
+    private val maxFileSizeBytes = 30 * 1024 * 1024L // 30 MB
 
     // Tile source personalizado con estilo más limpio (CartoDB Voyager)
     private val cartoDbVoyager = object : OnlineTileSourceBase(
@@ -82,6 +94,14 @@ class ComRutasFragment : Fragment() {
                 "Permiso de ubicación denegado",
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    private val filePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            handleSelectedFile(it)
         }
     }
 
@@ -338,17 +358,110 @@ class ComRutasFragment : Fragment() {
         }
     }
 
+    private fun handleSelectedFile(uri: Uri) {
+        try {
+            val contentResolver = requireContext().contentResolver
+
+            // Obtener el tamaño del archivo
+            val fileDescriptor = contentResolver.openAssetFileDescriptor(uri, "r")
+            val fileSize = fileDescriptor?.length ?: 0
+            fileDescriptor?.close()
+
+            if (fileSize > maxFileSizeBytes) {
+                Toast.makeText(
+                    requireContext(),
+                    "El archivo es demasiado grande. Máximo: 30 MB",
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+
+            // Obtener la extensión del archivo
+            val mimeType = contentResolver.getType(uri)
+            val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)?.lowercase()
+
+            if (extension == null ||
+                (!allowedImageFormats.contains(extension) && !allowedVideoFormats.contains(extension))) {
+                Toast.makeText(
+                    requireContext(),
+                    "Formato no válido. Imágenes: jpg, jpeg, png, bmp. Videos: mp4, avi, mov, mkv",
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+
+            // Archivo válido, guardarlo
+            selectedFileUri = uri
+
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    val nameIndex = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex >= 0) {
+                        selectedFileName = it.getString(nameIndex)
+                    }
+                }
+            }
+
+            if (selectedFileName == null) {
+                selectedFileName = "archivo.$extension"
+            }
+
+            currentDialogBinding?.tvSelectedFileName?.apply {
+                text = "✓ $selectedFileName"
+                visibility = View.VISIBLE
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(
+                requireContext(),
+                "Error al procesar el archivo: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun createFileFromUri(uri: Uri): File? {
+        try {
+            val contentResolver = requireContext().contentResolver
+
+            val mimeType = contentResolver.getType(uri)
+            val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)?.lowercase() ?: "tmp"
+            val tempFile = File.createTempFile("upload_", ".$extension", requireContext().cacheDir)
+
+            contentResolver.openInputStream(uri)?.use { input ->
+                FileOutputStream(tempFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            return tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
     private fun showVisitDialog(visit: Visit) {
+        selectedFileUri = null
+        selectedFileName = null
+
         val dialogBinding = DialogVisitDetailsBinding.inflate(LayoutInflater.from(requireContext()))
+        currentDialogBinding = dialogBinding
+
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(dialogBinding.root)
             .setCancelable(true)
             .create()
 
+        dialogBinding.tvSelectedFileName.visibility = View.GONE
+        dialogBinding.tvSelectedFileName.text = ""
+
         dialogBinding.tvClientName.text = visit.client.fullName
 
         dialogBinding.btnSelectFile.setOnClickListener {
-            // TODO: Implementar selección de archivo/imagen
+            filePickerLauncher.launch("*/*")
         }
 
         dialogBinding.btnRegisterVisit.setOnClickListener {
@@ -372,8 +485,20 @@ class ComRutasFragment : Fragment() {
                 longitude = visit.expectedGeolocation.longitude
             )
 
+            // Convertir el URI a File si se seleccionó un archivo
+            val fileToUpload = selectedFileUri?.let { uri ->
+                createFileFromUri(uri)
+            }
+
             val authToken = PrefsManager.getInstance(requireContext()).getAuthToken
-            visitsViewModel.registerCompletedVisit( authToken!!, visit.id, registerRequest) { success, message, _ ->
+            visitsViewModel.registerCompletedVisit(
+                authToken!!,
+                visit.id,
+                registerRequest,
+                fileToUpload
+            ) { success, message, _ ->
+                fileToUpload?.delete()
+
                 if (success) {
                     Toast.makeText(
                         requireContext(),
@@ -381,6 +506,7 @@ class ComRutasFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                     dialog.dismiss()
+                    currentDialogBinding = null
 
                     val currentDate = binding.inputVisitDate.text.toString()
                     if (currentDate.isNotEmpty()) {
@@ -394,6 +520,10 @@ class ComRutasFragment : Fragment() {
                     ).show()
                 }
             }
+        }
+
+        dialog.setOnDismissListener {
+            currentDialogBinding = null
         }
 
         dialog.show()

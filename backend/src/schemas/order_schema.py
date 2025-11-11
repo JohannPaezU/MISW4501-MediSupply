@@ -34,6 +34,7 @@ class OrderProductDetail(BaseSchema):
     due_date: date
     price_per_unit: float
     quantity: int
+    image_url: str
 
     @classmethod
     def from_order_product(cls, order_product: OrderProduct) -> "OrderProductDetail":
@@ -45,6 +46,7 @@ class OrderProductDetail(BaseSchema):
             due_date=order_product.product.due_date,
             price_per_unit=order_product.product.price_per_unit,
             quantity=order_product.quantity,
+            image_url=order_product.product.image_url,
         )
 
 

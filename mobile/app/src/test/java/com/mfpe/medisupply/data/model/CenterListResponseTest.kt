@@ -16,7 +16,7 @@ class CenterListResponseTest {
                 address = "Address 1",
                 city = "Bogotá",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             ),
             DistributionCenter(
                 id = "center-2",
@@ -24,7 +24,7 @@ class CenterListResponseTest {
                 address = "Address 2",
                 city = "Medellín",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             ),
             DistributionCenter(
                 id = "center-3",
@@ -32,7 +32,7 @@ class CenterListResponseTest {
                 address = "Address 3",
                 city = "Cali",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         )
 
@@ -83,7 +83,7 @@ class CenterListResponseTest {
                 address = "Address $index",
                 city = "City $index",
                 country = "Country $index",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         }
 
@@ -108,7 +108,7 @@ class CenterListResponseTest {
                 address = "Address 1",
                 city = "Bogotá",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         )
 
@@ -134,7 +134,7 @@ class CenterListResponseTest {
                 address = "Address 1",
                 city = "Bogotá",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         )
 
@@ -150,7 +150,7 @@ class CenterListResponseTest {
                 address = "Address 2",
                 city = "Medellín",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         )
 
@@ -176,7 +176,7 @@ class CenterListResponseTest {
                 address = "Address 1",
                 city = "Bogotá",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         )
 
@@ -204,7 +204,7 @@ class CenterListResponseTest {
                 address = "Address 1",
                 city = "Bogotá",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         )
 
@@ -243,7 +243,7 @@ class CenterListResponseTest {
                 address = "Address 1",
                 city = "Bogotá",
                 country = "Colombia",
-                createdAt = "2025-10-28"
+                created_at = "2025-10-28"
             )
         )
 

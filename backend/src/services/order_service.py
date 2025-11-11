@@ -1,3 +1,5 @@
+from datetime import date
+
 from sqlalchemy.orm import Session
 
 from src.core.logging_config import logger
@@ -8,6 +10,7 @@ from src.errors.errors import (
     NotFoundException,
 )
 from src.models.db_models import Order, OrderProduct, User
+from src.models.enums.order_status import OrderStatus
 from src.models.enums.user_role import UserRole
 from src.schemas.order_schema import OrderCreateRequest
 from src.services.distribution_center_service import get_distribution_center_by_id
@@ -70,12 +73,22 @@ def create_order(
     return order
 
 
-def get_orders(*, db: Session, current_user: User) -> list[Order]:
+def get_orders(
+    *,
+    db: Session,
+    current_user: User,
+    delivery_date: date | None = None,
+    order_status: OrderStatus | None = None,
+) -> list[Order]:
     query = db.query(Order)
     if current_user.role == UserRole.COMMERCIAL:
         query = query.filter_by(seller_id=current_user.id)
-    else:
+    elif current_user.role == UserRole.INSTITUTIONAL:
         query = query.filter_by(client_id=current_user.id)
+    if delivery_date:
+        query = query.filter_by(delivery_date=delivery_date)
+    if order_status:
+        query = query.filter_by(status=order_status)
 
     return query.all()  # type: ignore
 
@@ -84,7 +97,7 @@ def get_order_by_id(*, db: Session, current_user: User, order_id: str) -> Order 
     query = db.query(Order).filter_by(id=order_id)
     if current_user.role == UserRole.COMMERCIAL:
         query = query.filter_by(seller_id=current_user.id)
-    else:
+    elif current_user.role == UserRole.INSTITUTIONAL:
         query = query.filter_by(client_id=current_user.id)
 
     return query.first()
@@ -117,3 +130,6 @@ def _validate_order_request(
 
     if not distribution_center or not client:
         raise NotFoundException("Distribution center or client not found")
+
+    if order_create_request.delivery_date < date.today():
+        raise BadRequestException("Delivery date cannot be in the past")
