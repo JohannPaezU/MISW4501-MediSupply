@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, status
+from datetime import date
+
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
 from src.errors.errors import BadRequestException, NotFoundException
 from src.models.db_models import Order, User
+from src.models.enums.order_status import OrderStatus
 from src.models.enums.user_role import UserRole
 from src.schemas.order_schema import (
     GetOrdersResponse,
@@ -54,19 +57,17 @@ async def register_order(
         require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
     ),
 ) -> OrderResponse:
-    if current_user.role == UserRole.COMMERCIAL:
-        if not order_create_request.client_id:
-            raise BadRequestException("Client ID must be provided for commercial users")
-        order = create_order(
-            db=db,
-            order_create_request=order_create_request,
-            client_id=order_create_request.client_id,
-            seller_id=current_user.id,
-        )
-    else:
-        order = create_order(
-            db=db, order_create_request=order_create_request, client_id=current_user.id
-        )
+    is_commercial = current_user.role == UserRole.COMMERCIAL
+    client_id = order_create_request.client_id if is_commercial else current_user.id
+    if is_commercial and not client_id:
+        raise BadRequestException("Client ID must be provided for commercial users")
+    seller_id = current_user.id if is_commercial else None
+    order = create_order(
+        db=db,
+        order_create_request=order_create_request,
+        client_id=client_id,
+        seller_id=seller_id,
+    )
 
     return _build_order_response(order=order)
 
@@ -78,6 +79,15 @@ async def register_order(
     summary="Get all orders created by the current user",
     description="""
 Retrieve a list of all orders created by the current user.
+
+### Query Parameters
+- **delivery_date**: (Optional) Filter orders by delivery date (YYYY-MM-DD).
+- **order_status**: (Optional) Filter orders by their status. Possible values:
+    - received
+    - preparing
+    - in_transit
+    - delivered
+    - returned
 
 ### Response
 - **total_count**: Total number of orders created by the user.
@@ -91,12 +101,21 @@ Retrieve a list of all orders created by the current user.
 )
 async def get_all_orders(
     *,
+    delivery_date: date | None = Query(None),
+    order_status: OrderStatus | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(
-        require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+        require_roles(
+            allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]
+        )
     ),
 ) -> GetOrdersResponse:
-    orders = get_orders(db=db, current_user=current_user)
+    orders = get_orders(
+        db=db,
+        current_user=current_user,
+        delivery_date=delivery_date,
+        order_status=order_status,
+    )
 
     return GetOrdersResponse(total_count=len(orders), orders=orders)
 
@@ -129,7 +148,9 @@ async def get_order(
     order_id: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(
-        require_roles(allowed_roles=[UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+        require_roles(
+            allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]
+        )
     ),
 ) -> OrderResponse:
     order = get_order_by_id(db=db, current_user=current_user, order_id=order_id)
