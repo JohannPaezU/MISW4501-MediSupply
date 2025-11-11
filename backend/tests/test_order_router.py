@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from unittest.mock import patch
 
 import pytest
@@ -13,7 +14,7 @@ class TestOrderRouter(BaseTest):
         )
         return {
             "comments": "Please deliver between 9 AM and 5 PM",
-            "delivery_date": "2025-10-22",
+            "delivery_date": (date.today() + timedelta(days=1)).isoformat(),
             "distribution_center_id": next(iter(self.distribution_centers)).id,
             "client_id": str(client.id),
             "products": [{"product_id": next(iter(self.products)).id, "quantity": 20}],
@@ -22,7 +23,7 @@ class TestOrderRouter(BaseTest):
     def create_order_by_client_payload(self) -> dict:
         return {
             "comments": "Leave at the front desk if not available",
-            "delivery_date": "2025-11-15",
+            "delivery_date": (date.today() + timedelta(days=1)).isoformat(),
             "distribution_center_id": next(iter(self.distribution_centers)).id,
             "products": [{"product_id": next(iter(self.products)).id, "quantity": 10}],
         }
@@ -120,6 +121,26 @@ class TestOrderRouter(BaseTest):
 
         assert response.status_code == 404
         assert json_response["message"] == "Distribution center or client not found"
+
+    @pytest.mark.parametrize(
+        "authorized_client,payload_fn",
+        [
+            ("commercial_token", "create_order_by_seller_payload"),
+            ("institutional_token", "create_order_by_client_payload"),
+        ],
+        indirect=["authorized_client"],
+    )
+    def test_register_order_with_past_delivery_date(
+        self, authorized_client, payload_fn
+    ):
+        payload = getattr(self, payload_fn)()
+        payload["delivery_date"] = (date.today() - timedelta(days=1)).isoformat()
+
+        response = authorized_client.post(f"{self.prefix}/orders", json=payload)
+        json_response = response.json()
+
+        assert response.status_code == 400
+        assert json_response["message"] == "Delivery date cannot be in the past"
 
     @pytest.mark.parametrize(
         "authorized_client,payload_fn",
