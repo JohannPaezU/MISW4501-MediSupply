@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
-from src.errors.errors import NotFoundException, BadRequestException
+from src.errors.errors import BadRequestException, NotFoundException
 from src.models.db_models import Product, User
 from src.models.enums.user_role import UserRole
 from src.schemas.product_schema import (
@@ -18,7 +18,8 @@ from src.services.product_service import (
     create_product,
     create_products_bulk,
     get_product_by_id,
-    get_products, get_recommended_products,
+    get_products,
+    get_recommended_products,
 )
 
 product_router = APIRouter(
@@ -141,7 +142,11 @@ async def get_all_products(
     *,
     limit: int | None = Query(None, gt=0),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])),
+    current_user: User = Depends(
+        require_roles(
+            allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]
+        )
+    ),
 ) -> GetProductsResponse:
     products = get_products(db=db, current_user=current_user, limit=limit)
 
@@ -157,7 +162,8 @@ async def get_all_products(
 Retrieve a list of recommended products for a specific client.
 
 ### Query Parameters
-- **client_id**: (Optional) The unique identifier of the client (36 characters). Required if the current user is not an institutional user.
+- **client_id**: (Optional) The unique identifier of the client (36 characters). Required if the current user
+is not an institutional user.
 - **limit**: (Optional) The maximum number of recommended products to retrieve. Default is 20.
 
 ### Response
@@ -179,13 +185,21 @@ async def get_all_recommended_products(
     client_id: str | None = Query(None),
     limit: int = Query(20, gt=0),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]))
+    current_user: User = Depends(
+        require_roles(
+            allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]
+        )
+    ),
 ) -> GetProductsResponse:
     is_institutional = current_user.role == UserRole.INSTITUTIONAL
     if not is_institutional and not client_id:
-        raise BadRequestException("Client ID must be provided for non-institutional users")
+        raise BadRequestException(
+            "Client ID must be provided for non-institutional users"
+        )
     client_id = current_user.id if is_institutional else client_id
-    products = get_recommended_products(db=db, current_user=current_user, client_id=client_id, limit=limit)
+    products = get_recommended_products(
+        db=db, current_user=current_user, client_id=client_id, limit=limit
+    )
 
     return GetProductsResponse(total_count=len(products), products=products)
 

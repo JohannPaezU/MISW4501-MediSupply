@@ -175,12 +175,16 @@ class TestProductRouter(BaseTest):
         assert isinstance(json_response["products"], list)
 
     @pytest.mark.parametrize(
-        "authorized_client", ["admin_token", "commercial_token", "institutional_token"], indirect=True
+        "authorized_client",
+        ["admin_token", "commercial_token", "institutional_token"],
+        indirect=True,
     )
     def test_get_all_products_with_filter(self, authorized_client):
-        product = next(iter(self.products))
+        next(iter(self.products))
         filter_params = {"limit": 2}
-        response = authorized_client.get(f"{self.prefix}/products", params=filter_params)
+        response = authorized_client.get(
+            f"{self.prefix}/products", params=filter_params
+        )
         json_response = response.json()
         assert response.status_code == 200
         assert "total_count" in json_response
@@ -194,7 +198,10 @@ class TestProductRouter(BaseTest):
         response = authorized_client.get(f"{self.prefix}/products/recommended")
         json_response = response.json()
         assert response.status_code == 400
-        assert json_response["message"] == "Client ID must be provided for non-institutional users"
+        assert (
+            json_response["message"]
+            == "Client ID must be provided for non-institutional users"
+        )
 
     @pytest.mark.parametrize(
         "authorized_client", ["admin_token", "commercial_token"], indirect=True
@@ -209,10 +216,14 @@ class TestProductRouter(BaseTest):
         assert json_response["message"] == "Client not found"
 
     @pytest.mark.parametrize(
-        "authorized_client", ["admin_token", "commercial_token", "institutional_token"], indirect=True
+        "authorized_client",
+        ["admin_token", "commercial_token", "institutional_token"],
+        indirect=True,
     )
     def test_get_all_recommended_products(self, authorized_client):
-        client = next(user for user in self.users if user.role == UserRole.INSTITUTIONAL)
+        client = next(
+            user for user in self.users if user.role == UserRole.INSTITUTIONAL
+        )
         response = authorized_client.get(
             f"{self.prefix}/products/recommended", params={"client_id": client.id}
         )
@@ -223,11 +234,17 @@ class TestProductRouter(BaseTest):
         assert isinstance(json_response["products"], list)
 
     @pytest.mark.parametrize(
-        "authorized_client", ["admin_token", "commercial_token", "institutional_token"], indirect=True
+        "authorized_client",
+        ["admin_token", "commercial_token", "institutional_token"],
+        indirect=True,
     )
     @patch("src.services.product_service._get_ranked_products", return_value=[])
-    def test_get_all_recommended_products_without_orders(self, mock_get_ranked_products, authorized_client):
-        client = next(user for user in self.users if user.role == UserRole.INSTITUTIONAL)
+    def test_get_all_recommended_products_without_orders(
+        self, mock_get_ranked_products, authorized_client
+    ):
+        client = next(
+            user for user in self.users if user.role == UserRole.INSTITUTIONAL
+        )
         response = authorized_client.get(
             f"{self.prefix}/products/recommended", params={"client_id": client.id}
         )

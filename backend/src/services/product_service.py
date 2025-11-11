@@ -1,9 +1,9 @@
-from sqlalchemy import func, desc
+from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 
 from src.core.logging_config import logger
-from src.errors.errors import UnprocessableEntityException, NotFoundException
-from src.models.db_models import Product, User, Order, OrderProduct
+from src.errors.errors import NotFoundException, UnprocessableEntityException
+from src.models.db_models import Order, OrderProduct, Product, User
 from src.models.enums.user_role import UserRole
 from src.schemas.product_schema import (
     ProductCreateBulkRequest,
@@ -75,7 +75,9 @@ def create_products_bulk(
     )
 
 
-def get_products(*, db: Session, current_user: User, limit: int | None = None) -> list[Product]:
+def get_products(
+    *, db: Session, current_user: User, limit: int | None = None
+) -> list[Product]:
     query = db.query(Product)
     if current_user.role != UserRole.ADMIN:
         query = query.filter(Product.stock > 0)
@@ -90,7 +92,9 @@ def get_product_by_id(*, db: Session, product_id: str) -> Product | None:
     return db.query(Product).filter_by(id=product_id).first()
 
 
-def _get_ranked_products(*, db: Session, limit: int, client_id: str | None = None) -> list[Product]:
+def _get_ranked_products(
+    *, db: Session, limit: int, client_id: str | None = None
+) -> list[Product]:
     query = (
         db.query(
             Product,
@@ -110,7 +114,9 @@ def _get_ranked_products(*, db: Session, limit: int, client_id: str | None = Non
     return [row[0] for row in ranked_products]
 
 
-def get_recommended_products(*, db: Session, current_user: User, client_id: str, limit: int) -> list[Product]:
+def get_recommended_products(
+    *, db: Session, current_user: User, client_id: str, limit: int
+) -> list[Product]:
     client = (
         get_institutional_client_for_seller(
             db=db, seller_id=current_user.id, client_id=client_id

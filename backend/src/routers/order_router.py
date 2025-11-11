@@ -1,6 +1,6 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from src.core.security import require_roles
@@ -105,10 +105,17 @@ async def get_all_orders(
     order_status: OrderStatus | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(
-        require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+        require_roles(
+            allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]
+        )
     ),
 ) -> GetOrdersResponse:
-    orders = get_orders(db=db, current_user=current_user, delivery_date=delivery_date, order_status=order_status)
+    orders = get_orders(
+        db=db,
+        current_user=current_user,
+        delivery_date=delivery_date,
+        order_status=order_status,
+    )
 
     return GetOrdersResponse(total_count=len(orders), orders=orders)
 
@@ -141,7 +148,9 @@ async def get_order(
     order_id: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(
-        require_roles(allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL])
+        require_roles(
+            allowed_roles=[UserRole.ADMIN, UserRole.COMMERCIAL, UserRole.INSTITUTIONAL]
+        )
     ),
 ) -> OrderResponse:
     order = get_order_by_id(db=db, current_user=current_user, order_id=order_id)
