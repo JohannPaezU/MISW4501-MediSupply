@@ -241,6 +241,18 @@ class TestOrderRouter(BaseTest):
     @pytest.mark.parametrize(
         "authorized_client", ["commercial_token", "institutional_token"], indirect=True
     )
+    def test_get_all_orders_with_filters(self, authorized_client):
+        params = {"order_status": "received", "delivery_date": date.today().isoformat()}
+        response = authorized_client.get(f"{self.prefix}/orders", params=params)
+        json_response = response.json()
+
+        assert response.status_code == 200
+        assert "total_count" in json_response
+        assert "orders" in json_response
+
+    @pytest.mark.parametrize(
+        "authorized_client", ["commercial_token", "institutional_token"], indirect=True
+    )
     def test_get_order_by_id_not_found(self, authorized_client):
         response = authorized_client.get(
             f"{self.prefix}/orders/123e4567-e89b-12d3-a456-426614174000"
