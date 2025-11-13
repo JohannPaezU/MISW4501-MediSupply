@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import Field
 
@@ -8,8 +8,9 @@ from src.schemas.base_schema import (
     BaseSchema,
     DistributionCenterBase,
     OrderBase,
+    RouteBase,
     SellerBase,
-    UserBase, RouteBase,
+    UserBase,
 )
 
 

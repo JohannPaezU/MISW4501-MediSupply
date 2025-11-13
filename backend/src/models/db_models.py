@@ -266,7 +266,9 @@ class DistributionCenter(Base):
         "Order", back_populates="distribution_center", cascade="all, delete-orphan"
     )
     routes: Mapped[list["Route"]] = relationship(
-        "Route", back_populates="distribution_center", cascade="all, delete-orphan",
+        "Route",
+        back_populates="distribution_center",
+        cascade="all, delete-orphan",
     )
 
 

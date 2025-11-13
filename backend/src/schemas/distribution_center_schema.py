@@ -1,4 +1,9 @@
-from src.schemas.base_schema import BaseSchema, DistributionCenterBase, OrderBase, RouteBase
+from src.schemas.base_schema import (
+    BaseSchema,
+    DistributionCenterBase,
+    OrderBase,
+    RouteBase,
+)
 
 
 class DistributionCenterResponse(DistributionCenterBase):

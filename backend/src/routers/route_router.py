@@ -1,21 +1,24 @@
-from datetime import date
-
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from src.core.security import require_roles
 from src.db.database import get_db
-from src.errors.errors import BadRequestException, NotFoundException
-from src.models.db_models import Route, User
+from src.errors.errors import NotFoundException
 from src.models.enums.user_role import UserRole
 from src.schemas.route_schema import (
     GetRoutesResponse,
     RouteCreateRequest,
-    RouteResponse, RouteMapResponse, RouteMapDetail,
+    RouteMapDetail,
+    RouteMapResponse,
+    RouteResponse,
 )
 from src.services.route_service import create_route, get_route_by_id, get_routes
 
-route_router = APIRouter(tags=["Routes"], prefix="/routes", dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))])
+route_router = APIRouter(
+    tags=["Routes"],
+    prefix="/routes",
+    dependencies=[Depends(require_roles(allowed_roles=[UserRole.ADMIN]))],
+)
 
 
 @route_router.post(
@@ -166,7 +169,7 @@ async def get_route_map(
                 client_address=order.client.address,
                 client_phone=order.client.phone,
                 latitude=order.client.geolocation.latitude,  # type: ignore
-                longitude=order.client.geolocation.longitude, # type: ignore
+                longitude=order.client.geolocation.longitude,  # type: ignore
             )
         )
 

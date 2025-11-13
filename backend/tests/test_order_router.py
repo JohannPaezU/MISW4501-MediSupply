@@ -242,7 +242,11 @@ class TestOrderRouter(BaseTest):
         "authorized_client", ["commercial_token", "institutional_token"], indirect=True
     )
     def test_get_all_orders_with_filters(self, authorized_client):
-        params = {"order_status": "received", "delivery_date": date.today().isoformat(), "distribution_center_id": str(next(iter(self.distribution_centers)).id)}
+        params = {
+            "order_status": "received",
+            "delivery_date": date.today().isoformat(),
+            "distribution_center_id": str(next(iter(self.distribution_centers)).id),
+        }
         response = authorized_client.get(f"{self.prefix}/orders", params=params)
         json_response = response.json()
 

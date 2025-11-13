@@ -7,8 +7,8 @@ from src.models.enums.order_status import OrderStatus
 from src.schemas.base_schema import (
     BaseSchema,
     DistributionCenterBase,
-    RouteBase,
     OrderBase,
+    RouteBase,
 )
 
 

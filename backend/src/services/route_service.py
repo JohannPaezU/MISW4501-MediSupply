@@ -1,11 +1,8 @@
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from src.errors.errors import (
-    BadRequestException,
-    NotFoundException,
-)
-from src.models.db_models import Route, Order
+from src.errors.errors import BadRequestException, NotFoundException
+from src.models.db_models import Order, Route
 from src.schemas.route_schema import RouteCreateRequest
 from src.services.distribution_center_service import get_distribution_center_by_id
 
@@ -15,10 +12,7 @@ def create_route(
     db: Session,
     route_create_request: RouteCreateRequest,
 ) -> Route | None:
-    _validate_route_request(
-        db=db,
-        route_create_request=route_create_request
-    )
+    _validate_route_request(db=db, route_create_request=route_create_request)
     min_delivery_date = (
         db.query(func.min(Order.delivery_date))
         .filter(Order.id.in_(route_create_request.order_ids))
@@ -31,7 +25,7 @@ def create_route(
         restrictions=route_create_request.restrictions,
         delivery_deadline=min_delivery_date,
         distribution_center_id=route_create_request.distribution_center_id,
-        orders=orders # type: ignore
+        orders=orders,  # type: ignore
     )
     db.add(route)
     db.commit()
@@ -49,11 +43,13 @@ def get_route_by_id(*, db: Session, route_id: str) -> Route | None:
 
 
 def _validate_route_request(
-    *,
-    db: Session,
-    route_create_request: RouteCreateRequest
+    *, db: Session, route_create_request: RouteCreateRequest
 ) -> None:
-    duplicated_ids = set(x for x in route_create_request.order_ids if route_create_request.order_ids.count(x) > 1)
+    duplicated_ids = set(
+        x
+        for x in route_create_request.order_ids
+        if route_create_request.order_ids.count(x) > 1
+    )
     if duplicated_ids:
         raise BadRequestException(
             f"Duplicated order IDs in route: {', '.join(duplicated_ids)}"
