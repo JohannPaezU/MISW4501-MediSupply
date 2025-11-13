@@ -79,6 +79,8 @@ def get_orders(
     current_user: User,
     delivery_date: date | None = None,
     order_status: OrderStatus | None = None,
+    distribution_center_id: str | None = None,
+    route_id: str | None = None,
 ) -> list[Order]:
     query = db.query(Order)
     if current_user.role == UserRole.COMMERCIAL:
@@ -89,6 +91,13 @@ def get_orders(
         query = query.filter_by(delivery_date=delivery_date)
     if order_status:
         query = query.filter_by(status=order_status)
+    if distribution_center_id:
+        query = query.filter_by(distribution_center_id=distribution_center_id)
+    if route_id:
+        if route_id.lower() == "null":
+            query = query.filter(Order.route_id.is_(None))
+        else:
+            query = query.filter_by(route_id=route_id)
 
     return query.all()  # type: ignore
 

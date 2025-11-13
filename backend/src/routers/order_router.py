@@ -46,6 +46,7 @@ Create a new order in the system.
 - **seller**: Information about the seller who created the order (if applicable).
 - **client**: Information about the client for whom the order was created.
 - **distribution_center**: Information about the distribution center.
+- **route**: Information about the route associated with the order (if applicable).
 - **products**: List of products included in the order with their details.
 """,
 )
@@ -88,6 +89,8 @@ Retrieve a list of all orders created by the current user.
     - in_transit
     - delivered
     - returned
+- **distribution_center_id**: (Optional) Filter orders by distribution center ID (36 characters).
+- **route_id**: (Optional) Filter orders by route ID (36 characters).
 
 ### Response
 - **total_count**: Total number of orders created by the user.
@@ -103,6 +106,8 @@ async def get_all_orders(
     *,
     delivery_date: date | None = Query(None),
     order_status: OrderStatus | None = Query(None),
+    distribution_center_id: str | None = Query(None),
+    route_id: str | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(
         require_roles(
@@ -115,6 +120,8 @@ async def get_all_orders(
         current_user=current_user,
         delivery_date=delivery_date,
         order_status=order_status,
+        distribution_center_id=distribution_center_id,
+        route_id=route_id,
     )
 
     return GetOrdersResponse(total_count=len(orders), orders=orders)
@@ -140,6 +147,7 @@ Retrieve detailed information about a specific order by its ID for the current u
 - **seller**: Information about the seller who created the order (if applicable).
 - **client**: Information about the client for whom the order was created.
 - **distribution_center**: Information about the distribution center.
+- **route**: Information about the route associated with the order (if applicable).
 - **products**: List of products included in the order with their details.
 """,
 )
@@ -166,6 +174,7 @@ def _build_order_response(order: Order) -> OrderResponse:
         seller=order.seller,
         client=order.client,
         distribution_center=order.distribution_center,
+        route=order.route,
         products=[
             OrderProductDetail.from_order_product(order_product=order_product)
             for order_product in order.order_products
