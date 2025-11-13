@@ -265,6 +265,9 @@ class DistributionCenter(Base):
     orders: Mapped[list["Order"]] = relationship(
         "Order", back_populates="distribution_center", cascade="all, delete-orphan"
     )
+    routes: Mapped[list["Route"]] = relationship(
+        "Route", back_populates="distribution_center", cascade="all, delete-orphan",
+    )
 
 
 class Order(Base):
@@ -298,6 +301,11 @@ class Order(Base):
         ForeignKey("distribution_centers.id", ondelete="RESTRICT"),
         nullable=False,
     )
+    route_id: Mapped[Optional[str]] = mapped_column(
+        String(36),
+        ForeignKey("routes.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     seller: Mapped[Optional["User"]] = relationship(
         "User", foreign_keys=[seller_id], back_populates="managed_orders"
     )
@@ -309,6 +317,10 @@ class Order(Base):
     )
     order_products: Mapped[list["OrderProduct"]] = relationship(
         "OrderProduct", back_populates="order", cascade="all, delete-orphan"
+    )
+    route: Mapped[Optional["Route"]] = relationship(
+        "Route",
+        back_populates="orders",
     )
 
 
@@ -410,4 +422,35 @@ class Visit(Base):
     )
     seller: Mapped["User"] = relationship(
         "User", foreign_keys=[seller_id], back_populates="assigned_visits"
+    )
+
+
+class Route(Base):
+    __tablename__ = "routes"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, index=True, default=lambda: str(uuid.uuid4())
+    )
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    vehicle_plate: Mapped[str] = mapped_column(String(20), nullable=False)
+    restrictions: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    delivery_deadline: Mapped[date] = mapped_column(Date, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+    distribution_center_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("distribution_centers.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
+    distribution_center: Mapped["DistributionCenter"] = relationship(
+        "DistributionCenter",
+        back_populates="routes",
+    )
+    orders: Mapped[list["Order"]] = relationship(
+        "Order",
+        back_populates="route",
+        cascade="save-update",
     )
