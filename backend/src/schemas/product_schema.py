@@ -50,7 +50,7 @@ class ProductResponse(ProductBase):
 
 
 class ProductCreateBulkRequest(BaseSchema):  # noqa
-    products: Annotated[list[ProductCreateRequest], Field(min_items=1)]
+    products: Annotated[list[ProductCreateRequest], Field(min_length=1)]
 
 
 class ProductCreateBulkResponse(BaseSchema):
