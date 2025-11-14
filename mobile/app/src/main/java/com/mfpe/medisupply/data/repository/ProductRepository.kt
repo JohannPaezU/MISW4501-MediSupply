@@ -4,6 +4,7 @@ import com.mfpe.medisupply.data.model.ProductListResponse
 import com.mfpe.medisupply.data.network.ProductService
 import com.mfpe.medisupply.data.network.RetrofitApiClient
 import retrofit2.Call
+import android.util.Log
 
 class ProductRepository {
     private val productService: ProductService by lazy {
@@ -12,6 +13,11 @@ class ProductRepository {
 
     fun getProducts(authToken: String): Call<ProductListResponse> {
         return productService.getProducts(authToken)
+    }
+
+    fun getRecommendedProducts(authToken: String, clientId: String): Call<ProductListResponse> {
+        Log.d("ProductRepository", "Getting recommended products for client: $clientId")
+        return productService.getRecommendedProducts(authToken, clientId)
     }
 
 }
