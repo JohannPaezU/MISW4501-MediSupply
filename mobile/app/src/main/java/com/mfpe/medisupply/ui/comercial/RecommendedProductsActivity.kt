@@ -52,10 +52,18 @@ class RecommendedProductsActivity : AppCompatActivity() {
     }
 
     private fun loadRecommendedProducts() {
+        val clientId = intent.getStringExtra(EXTRA_CLIENT_ID)
+        
+        if (clientId.isNullOrEmpty()) {
+            Toast.makeText(this, "Error: ID de cliente no proporcionado", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
         binding.progressBar.visibility = ProgressBar.VISIBLE
 
         val authToken = PrefsManager.getInstance(this).getAuthToken ?: ""
-        viewModel.getRecommendedProducts(authToken) { success, message, products ->
+        viewModel.getRecommendedProducts(authToken, clientId) { success, message, products ->
             binding.progressBar.visibility = ProgressBar.GONE
 
             if (success && products != null) {
@@ -75,8 +83,11 @@ class RecommendedProductsActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun start(context: Context) {
+        private const val EXTRA_CLIENT_ID = "extra_client_id"
+        
+        fun start(context: Context, clientId: String) {
             val intent = Intent(context, RecommendedProductsActivity::class.java)
+            intent.putExtra(EXTRA_CLIENT_ID, clientId)
             context.startActivity(intent)
         }
     }

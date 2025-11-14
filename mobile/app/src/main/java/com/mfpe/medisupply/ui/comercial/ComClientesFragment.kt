@@ -67,7 +67,7 @@ class ComClientesFragment : Fragment(), ClientListAdapter.OnClientActionListener
     }
 
     override fun onRecommendationsClick(client: Client) {
-        RecommendedProductsActivity.start(requireActivity())
+        RecommendedProductsActivity.start(requireActivity(), client.id)
     }
 
     override fun onVisitClick(client: Client) {
