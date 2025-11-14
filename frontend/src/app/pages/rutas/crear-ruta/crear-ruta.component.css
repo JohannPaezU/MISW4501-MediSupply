@@ -1,3 +1,130 @@
-:host {
-  display: block;
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  color: var(--text-color-medium);
+}
+
+.distribution-center-section {
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.center-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: var(--background-alt);
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+.center-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color-dark);
+  margin: 0;
+}
+
+.order-count {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--text-color-medium);
+  margin-left: 0.5rem;
+}
+
+.selected-row {
+  background-color: rgba(233, 30, 99, 0.05);
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-color-medium);
+  font-style: italic;
+}
+
+.route-form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.route-form-content {
+  background-color: var(--background-light);
+  border-radius: 8px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color-dark);
+  margin: 0;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.selected-orders-summary {
+  padding: 1rem;
+  background-color: var(--info-color-bg);
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.selected-orders-summary h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--info-color-text);
+  margin: 0 0 0.5rem 0;
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 80px;
+  font-family: var(--font-family-base);
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .route-form-modal {
+    padding: 1rem;
+  }
+
+  .center-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }

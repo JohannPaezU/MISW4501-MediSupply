@@ -1,3 +1,113 @@
-:host {
-  display: block;
+.map-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  min-height: 500px;
+}
+
+.map-container {
+  flex: 1;
+  width: 100%;
+  min-height: 500px;
+  background-color: #e5e3df;
+}
+
+.map-info {
+  padding: 1rem;
+  background-color: var(--background-light);
+  border-top: 1px solid var(--border-color-light);
+  text-align: center;
+}
+
+.map-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-color-medium);
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--background-light);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+.map-legend {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--background-light);
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
+}
+
+.map-legend h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color-dark);
+  margin: 0 0 1rem 0;
+}
+
+.legend-items {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.legend-icon.origin {
+  background-color: #4CAF50;
+}
+
+.legend-icon.destiny {
+  background-color: #F44336;
+}
+
+.legend-line {
+  width: 40px;
+  height: 3px;
+  background-color: #2196F3;
+  opacity: 0.8;
+}
+
+.no-routes {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-color-medium);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .map-wrapper {
+    min-height: 400px;
+  }
+
+  .map-container {
+    min-height: 400px;
+  }
+
+  .legend-items {
+    flex-direction: column;
+    gap: 1rem;
+  }
 }

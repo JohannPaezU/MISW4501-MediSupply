@@ -1,1 +1,164 @@
-<p>crear-ruta works!</p>,
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Crear Ruta</h1>
+    <div class="page-actions">
+      <button
+        class="btn btn-primary"
+        [disabled]="!canCreateRoute() || loading()"
+        (click)="openCreateRouteForm()"
+      >
+        Crear Ruta
+      </button>
+      <button class="btn btn-secondary" (click)="loadOrders()" [disabled]="loading()">
+        Recargar
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensajes -->
+  <div *ngIf="errorMessage()" class="alert alert-error">
+    <span class="alert-icon">⚠️</span>
+    <span>{{ errorMessage() }}</span>
+  </div>
+
+  <div *ngIf="successMessage()" class="toast success">
+    {{ successMessage() }}
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading()" class="loading-spinner">Cargando órdenes...</div>
+
+  <!-- Tabla de órdenes -->
+  <div *ngIf="!loading() && getDistributionCenterKeys().length > 0">
+    <div *ngFor="let centerId of getDistributionCenterKeys()" class="center-section">
+      <div class="center-header" (click)="selectDistributionCenter(centerId)">
+        <h2>{{ groupedOrders()[centerId].centerName }}</h2>
+        <span class="center-toggle"
+          >{{ selectedDistributionCenter() === centerId ? '▲' : '▼' }}</span
+        >
+      </div>
+
+      <div
+        class="table-container"
+        *ngIf="selectedDistributionCenter() === centerId || isSomeSelected(centerId)"
+      >
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>
+                <input
+                title="Seleccion"
+                  type="checkbox"
+                  [checked]="isAllSelected(centerId)"
+                  [indeterminate]="isSomeSelected(centerId)"
+                  (change)="toggleSelectAll(centerId)"
+                />
+              </th>
+              <th>ID</th>
+              <th>Fecha Creación</th>
+              <th>Fecha Entrega</th>
+              <th>Comentarios</th>
+              <th>Productos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of groupedOrders()[centerId].orders">
+              <td>
+                <input
+                title="Seleccion"
+                  type="checkbox"
+                  [(ngModel)]="order.selected"
+                  (change)="toggleOrderSelection(centerId, order.id)"
+                />
+              </td>
+              <td class="id-cell">{{ order.id }}</td>
+              <td>{{ formatDate(order.created_at) }}</td>
+              <td>{{ formatDate(order.delivery_date) }}</td>
+              <td>{{ order.comments || 'Sin comentarios' }}</td>
+              <td>{{ getTotalProducts(order) }}</td>
+            </tr>
+            <tr *ngIf="groupedOrders()[centerId].orders.length === 0">
+              <td colspan="6" class="no-data-cell">No hay órdenes recibidas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario de creación de ruta -->
+  <div *ngIf="showCreateRouteForm()" class="route-form-container">
+    <h2>Información de la Ruta</h2>
+    <div class="form-content">
+      <div class="form-field">
+        <label class="form-label">Origen</label>
+        <input
+          type="text"
+          class="form-input"
+          [(ngModel)]="routeForm().origin"
+          (input)="updateFormField('origin', $event)"
+          placeholder="Ej: Centro de Distribución Norte"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Destino</label>
+        <input
+          type="text"
+          class="form-input"
+          [(ngModel)]="routeForm().destiny"
+          (input)="updateFormField('destiny', $event)"
+          placeholder="Ej: Calle 45 #10-23"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Fecha Límite</label>
+        <input
+        title="fecha"
+          type="date"
+          class="form-input"
+          [(ngModel)]="routeForm().date_limit"
+          (input)="updateFormField('date_limit', $event)"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Vehículo</label>
+        <input
+          type="text"
+          class="form-input"
+          [(ngModel)]="routeForm().vehicle"
+          (input)="updateFormField('vehicle', $event)"
+          placeholder="Ej: Camión 123ABC"
+        />
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Restricciones</label>
+        <textarea
+          class="form-input"
+          [(ngModel)]="routeForm().restrictions"
+          (input)="updateFormField('restrictions', $event)"
+          placeholder="Ej: No pasar por túneles, carga frágil..."
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-secondary" (click)="cancelCreateRoute()">Cancelar</button>
+      <button
+        class="btn btn-primary"
+        [disabled]="loading()"
+        (click)="createRoute()"
+      >
+        Crear Ruta
+      </button>
+    </div>
+  </div>
+
+  <!-- No hay órdenes -->
+  <div *ngIf="!loading() && getDistributionCenterKeys().length === 0" class="no-data-cell">
+    No hay órdenes con estado "received".
+  </div>
+</div>

@@ -1,1 +1,55 @@
-<p>rutas-mapa works!</p>,
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Mapa de rutas</h1>
+    <div class="page-actions">
+      <button class="btn btn-secondary" (click)="navigateBack()">
+        Volver al Listado
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage()" class="alert alert-error">
+    <span>{{ errorMessage() }}</span>
+    <button class="btn btn-link btn-retry" (click)="retryLoad()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading()" class="loading-overlay">
+    <p>Cargando mapa...</p>
+  </div>
+
+  <!-- Contenedor del mapa -->
+  <div class="map-wrapper">
+    <div id="map" class="map-container"></div>
+    <div class="map-info">
+      <p>{{ lastUpdate() }}</p>
+    </div>
+  </div>
+
+  <!-- Leyenda del mapa -->
+  <div *ngIf="!loading() && routes().length > 0" class="map-legend">
+    <h3>Leyenda</h3>
+    <div class="legend-items">
+      <div class="legend-item">
+        <div class="legend-icon origin"></div>
+        <span>Origen (O)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon destiny"></div>
+        <span>Destino (D)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line"></div>
+        <span>Ruta</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado sin rutas -->
+  <div *ngIf="!loading() && routes().length === 0 && !errorMessage()" class="no-routes">
+    <p>No hay rutas disponibles para mostrar en el mapa.</p>
+  </div>
+</div>

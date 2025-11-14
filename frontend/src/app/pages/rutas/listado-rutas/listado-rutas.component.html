@@ -1,1 +1,86 @@
-<p>listado-rutas works!</p>,
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Detalles rutas</h1>
+    <div class="page-actions">
+      <button class="btn btn-secondary" (click)="navigateToMap()">
+        Ver Mapa
+      </button>
+      <button class="btn btn-primary" (click)="navigateToCreate()">
+        Crear Ruta
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage()" class="alert alert-error">
+    <span>{{ errorMessage() }}</span>
+    <button class="btn btn-link btn-retry" (click)="retryLoad()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading()" class="loading-container">
+    <p>Cargando rutas...</p>
+  </div>
+
+  <!-- Tabla de rutas -->
+  <div *ngIf="!loading() && !errorMessage()" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Origen</th>
+          <th>Restricciones</th>
+          <th>Vehículo</th>
+          <th>Destino</th>
+          <th>Fecha Max Entrega</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let route of getPaginatedRoutes()">
+          <td>{{ route.id }}</td>
+          <td>{{ route.origin }}</td>
+          <td>{{ route.restrictions || 'Ninguna' }}</td>
+          <td>{{ route.vehicle }}</td>
+          <td>{{ route.destiny }}</td>
+          <td>{{ formatDate(route.date_limit) }}</td>
+        </tr>
+        <tr *ngIf="routes().length === 0">
+          <td colspan="6" class="no-data-cell">
+            No hay rutas disponibles
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div *ngIf="!loading() && routes().length > 0" class="pagination-controls">
+    <div class="page-size-selector">
+      <span>Filas por página:</span>
+      <select title="Pagina" [value]="pageSize()" (change)="changePageSize(+$any($event.target).value)">
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+      </select>
+    </div>
+
+    <div class="page-info">
+      {{ getStartIndex() }} - {{ getEndIndex() }} de {{ totalRoutes() }}
+    </div>
+
+    <div class="page-navigation">
+      <button
+        (click)="goToPage(currentPage() - 1)"
+        [disabled]="currentPage() === 1">
+        ‹
+      </button>
+      <button
+        (click)="goToPage(currentPage() + 1)"
+        [disabled]="currentPage() === getTotalPages()">
+        ›
+      </button>
+    </div>
+  </div>
+</div>
