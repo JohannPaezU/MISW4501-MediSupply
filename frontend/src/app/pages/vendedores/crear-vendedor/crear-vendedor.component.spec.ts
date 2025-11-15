@@ -3,6 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { CrearVendedorComponent } from './crear-vendedor.component';
@@ -31,6 +32,7 @@ const mockVendedorCreado: CreateVendedorResponse = {
 };
 
 let mockVendedorService: jasmine.SpyObj<VendedorService>;
+let mockRouter: jasmine.SpyObj<Router>;
 
 describe('CrearVendedorComponent', () => {
   let component: CrearVendedorComponent;
@@ -38,6 +40,7 @@ describe('CrearVendedorComponent', () => {
 
   beforeEach(async () => {
     mockVendedorService = jasmine.createSpyObj('VendedorService', ['getZonas', 'createVendedor']);
+    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -48,6 +51,7 @@ describe('CrearVendedorComponent', () => {
       ],
       providers: [
         { provide: VendedorService, useValue: mockVendedorService },
+        { provide: Router, useValue: mockRouter }
       ]
     })
       .overrideComponent(CrearVendedorComponent, {
@@ -92,7 +96,7 @@ describe('CrearVendedorComponent', () => {
       expect(console.error).toHaveBeenCalledWith('Error al cargar las zonas:', jasmine.any(Error));
       expect(component.toastMessage).toBe('Error al cargar las zonas. Intente de nuevo.');
 
-      tick(5000); // Limpiar timer del toast
+      tick(5000);
     }));
   });
 
@@ -116,7 +120,6 @@ describe('CrearVendedorComponent', () => {
       expect(control?.valid).toBeTrue();
     });
 
-    // ✅ NUEVO: Test para minlength de nombreCompleto
     it('should validate nombreCompleto minlength', () => {
       const control = component.nombreCompleto;
       control?.setValue('');
@@ -126,7 +129,6 @@ describe('CrearVendedorComponent', () => {
       expect(control?.valid).toBeTrue();
     });
 
-    // ✅ NUEVO: Test para documento minlength y maxlength
     it('should validate documento (required, min, max)', () => {
       const control = component.documento;
       expect(control?.hasError('required')).toBeTrue();
@@ -151,8 +153,6 @@ describe('CrearVendedorComponent', () => {
       control?.setValue('valid@email.com');
       expect(control?.valid).toBeTrue();
     });
-
-
 
     it('should validate telefono (required, pattern)', () => {
       const control = component.telefono;
@@ -236,13 +236,19 @@ describe('CrearVendedorComponent', () => {
       expect(component.vendedorForm.reset).toHaveBeenCalled();
       expect(component.zonaAsignada?.value).toBeNull();
 
-      tick(5000);
+
+      tick(3000);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores/lista-vendedores']);
+
+      tick(2000);
     }));
 
     it('should handle 409 Conflict error', fakeAsync(() => {
       component.vendedorForm.setValue({
-        nombreCompleto: 'Ana García', documento: '12345678',
-        correoElectronico: 'ana.garcia@test.com', telefono: '987654321',
+        nombreCompleto: 'Ana García',
+        documento: '12345678',
+        correoElectronico: 'ana.garcia@test.com',
+        telefono: '987654321',
         zonaAsignada: 'z1'
       });
       const error = { status: 409, error: { detail: 'Duplicate entry' } };
@@ -254,13 +260,16 @@ describe('CrearVendedorComponent', () => {
       expect(component.isLoading).toBeFalse();
       expect(component.toastMessage).toBe('Ya existe un vendedor con este correo o documento.');
 
-      tick(5000);
+      tick(3000);
+      tick(2000);
     }));
 
     it('should handle 422 Unprocessable Entity error', fakeAsync(() => {
       component.vendedorForm.setValue({
-        nombreCompleto: 'Ana García', documento: '12345678',
-        correoElectronico: 'ana.garcia@test.com', telefono: '987654321',
+        nombreCompleto: 'Ana García',
+        documento: '12345678',
+        correoElectronico: 'ana.garcia@test.com',
+        telefono: '987654321',
         zonaAsignada: 'z_invalid'
       });
       const error = { status: 422 };
@@ -271,13 +280,16 @@ describe('CrearVendedorComponent', () => {
 
       expect(component.toastMessage).toBe('La zona seleccionada no existe.');
 
-      tick(5000);
+      tick(3000);
+      tick(2000);
     }));
 
     it('should handle generic error with string detail', fakeAsync(() => {
       component.vendedorForm.setValue({
-        nombreCompleto: 'Ana García', documento: '12345678',
-        correoElectronico: 'ana.garcia@test.com', telefono: '987654321',
+        nombreCompleto: 'Ana García',
+        documento: '12345678',
+        correoElectronico: 'ana.garcia@test.com',
+        telefono: '987654321',
         zonaAsignada: 'z1'
       });
       const error = { status: 500, error: { detail: 'Error de base de datos.' } };
@@ -288,13 +300,16 @@ describe('CrearVendedorComponent', () => {
 
       expect(component.toastMessage).toBe('Error de base de datos.');
 
-      tick(5000);
+      tick(3000);
+      tick(2000);
     }));
 
     it('should log error to console when createVendedor fails', fakeAsync(() => {
       component.vendedorForm.setValue({
-        nombreCompleto: 'Ana García', documento: '12345678',
-        correoElectronico: 'ana.garcia@test.com', telefono: '987654321',
+        nombreCompleto: 'Ana García',
+        documento: '12345678',
+        correoElectronico: 'ana.garcia@test.com',
+        telefono: '987654321',
         zonaAsignada: 'z1'
       });
       const error = { status: 500 };
@@ -306,7 +321,8 @@ describe('CrearVendedorComponent', () => {
 
       expect(console.error).toHaveBeenCalledWith('Error al crear el vendedor:', error);
 
-      tick(5000);
+      tick(3000);
+      tick(2000);
     }));
   });
 
@@ -463,7 +479,10 @@ describe('CrearVendedorComponent', () => {
 
       expect(component.vendedorForm.patchValue).toHaveBeenCalledWith({ zonaAsignada: null });
 
-      tick(5000);
+      tick(3000);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores/lista-vendedores']);
+
+      tick(2000);
     }));
   });
 });

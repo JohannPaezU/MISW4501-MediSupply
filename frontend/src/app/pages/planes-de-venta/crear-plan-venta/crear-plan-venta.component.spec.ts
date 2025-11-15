@@ -3,6 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { CrearPlanVentaComponent } from './crear-plan-venta.component';
 import { PlanVentaService } from '../../../services/planes-de-venta/planesDeVenta.service';
@@ -45,20 +46,23 @@ const mockVendedores: Vendedor[] = [
     full_name: 'Ana Gomez',
     doi: '123456',
     email: 'ana@test.com',
-    phone: '555-1111'
+    phone: '555-1111',
+    zone: { id: 'z1', description: 'Zona Norte' }
   },
   {
     id: 'v2',
     full_name: 'Juan Perez',
     doi: '456789',
     email: 'juan@test.com',
-    phone: '555-2222'
+    phone: '555-2222',
+    zone: { id: 'z1', description: 'Zona Norte' }
   }
 ];
 
 let mockPlanVentaService: jasmine.SpyObj<PlanVentaService>;
 let mockProductService: jasmine.SpyObj<ProductService>;
 let mockVendedorService: jasmine.SpyObj<VendedorService>;
+let mockRouter: jasmine.SpyObj<Router>;
 
 describe('CrearPlanVentaComponent', () => {
   let component: CrearPlanVentaComponent;
@@ -68,6 +72,7 @@ describe('CrearPlanVentaComponent', () => {
     mockPlanVentaService = jasmine.createSpyObj('PlanVentaService', ['createPlanVenta']);
     mockProductService = jasmine.createSpyObj('ProductService', ['getProducts']);
     mockVendedorService = jasmine.createSpyObj('VendedorService', ['getZonas', 'getVendedores']);
+    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -80,6 +85,7 @@ describe('CrearPlanVentaComponent', () => {
         { provide: PlanVentaService, useValue: mockPlanVentaService },
         { provide: ProductService, useValue: mockProductService },
         { provide: VendedorService, useValue: mockVendedorService },
+        { provide: Router, useValue: mockRouter }
       ]
     })
       .overrideComponent(CrearPlanVentaComponent, {
@@ -166,11 +172,10 @@ describe('CrearPlanVentaComponent', () => {
     }));
 
     it('should submit if form is valid and handle success', fakeAsync(() => {
-      component.planVentaForm.setValue({
+      component.planVentaForm.patchValue({
         periodo: 'Marzo',
         producto: 'p1',
         metaUnidades: 200,
-        zona: 'z1',
         vendedorAsociado: 'v1',
         searchVendedor: ''
       });
@@ -198,11 +203,21 @@ describe('CrearPlanVentaComponent', () => {
       expect(component.isLoading).toBeFalse();
       expect(component.toastMessage).toBe('¡Plan de venta creado con éxito!');
       expect(component.planVentaForm.reset).toHaveBeenCalled();
+
+      tick(2000);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/planes-de-venta']);
+
       flush();
     }));
 
     it('should handle 409 Conflict error', fakeAsync(() => {
-      component.planVentaForm.setValue({ periodo: 'M', producto: 'p', metaUnidades: 1, zona: 'z', vendedorAsociado: 'v', searchVendedor: '' });
+      component.planVentaForm.patchValue({
+        periodo: 'M',
+        producto: 'p',
+        metaUnidades: 1,
+        vendedorAsociado: 'v1',
+        searchVendedor: ''
+      });
       const errorResponse = { status: 409, error: { detail: 'Conflict' } };
       mockPlanVentaService.createPlanVenta.and.returnValue(throwError(() => errorResponse));
 
@@ -212,50 +227,84 @@ describe('CrearPlanVentaComponent', () => {
 
       expect(component.isLoading).toBeFalse();
       expect(component.toastMessage).toBe('Ya existe un plan de venta con estos mismos datos.');
+
+      tick(2000);
       flush();
     }));
 
     it('should handle 422 Validation error', fakeAsync(() => {
-      component.planVentaForm.setValue({ periodo: 'M', producto: 'p', metaUnidades: 1, zona: 'z', vendedorAsociado: 'v', searchVendedor: '' });
+      component.planVentaForm.patchValue({
+        periodo: 'M',
+        producto: 'p',
+        metaUnidades: 1,
+        vendedorAsociado: 'v1',
+        searchVendedor: ''
+      });
       const errorResponse = { status: 422, error: { detail: 'Invalid data' } };
       mockPlanVentaService.createPlanVenta.and.returnValue(throwError(() => errorResponse));
 
       component.crearPlanDeVenta();
       tick();
       expect(component.toastMessage).toBe('Uno de los datos seleccionados no es válido.');
+
+      tick(2000);
       flush();
     }));
 
     it('should handle error with detail as string', fakeAsync(() => {
-      component.planVentaForm.setValue({ periodo: 'M', producto: 'p', metaUnidades: 1, zona: 'z', vendedorAsociado: 'v', searchVendedor: '' });
+      component.planVentaForm.patchValue({
+        periodo: 'M',
+        producto: 'p',
+        metaUnidades: 1,
+        vendedorAsociado: 'v1',
+        searchVendedor: ''
+      });
       const errorResponse = { status: 500, error: { detail: 'Error específico del servidor.' } };
       mockPlanVentaService.createPlanVenta.and.returnValue(throwError(() => errorResponse));
 
       component.crearPlanDeVenta();
       tick();
       expect(component.toastMessage).toBe('Error específico del servidor.');
+
+      tick(2000);
       flush();
     }));
 
     it('should handle error with detail as array', fakeAsync(() => {
-      component.planVentaForm.setValue({ periodo: 'M', producto: 'p', metaUnidades: 1, zona: 'z', vendedorAsociado: 'v', searchVendedor: '' });
+      component.planVentaForm.patchValue({
+        periodo: 'M',
+        producto: 'p',
+        metaUnidades: 1,
+        vendedorAsociado: 'v1',
+        searchVendedor: ''
+      });
       const errorResponse = { status: 500, error: { detail: [{ msg: 'Mensaje de error' }] } };
       mockPlanVentaService.createPlanVenta.and.returnValue(throwError(() => errorResponse));
 
       component.crearPlanDeVenta();
       tick();
       expect(component.toastMessage).toBe('Mensaje de error');
+
+      tick(2000);
       flush();
     }));
 
     it('should handle error with no detail', fakeAsync(() => {
-      component.planVentaForm.setValue({ periodo: 'M', producto: 'p', metaUnidades: 1, zona: 'z', vendedorAsociado: 'v', searchVendedor: '' });
+      component.planVentaForm.patchValue({
+        periodo: 'M',
+        producto: 'p',
+        metaUnidades: 1,
+        vendedorAsociado: 'v1',
+        searchVendedor: ''
+      });
       const errorResponse = { status: 500, error: {} };
       mockPlanVentaService.createPlanVenta.and.returnValue(throwError(() => errorResponse));
 
       component.crearPlanDeVenta();
       tick();
       expect(component.toastMessage).toBe('Hubo un error al crear el plan de venta.');
+
+      tick(2000);
       flush();
     }));
   });
@@ -273,8 +322,8 @@ describe('CrearPlanVentaComponent', () => {
       expect(component.toastMessage).toBeNull();
     }));
   });
-  describe('obtenerMensajeDeError utility', () => {
 
+  describe('obtenerMensajeDeError utility', () => {
 
     it('should return specific messages for known status codes', () => {
       const err409 = { status: 409, error: {} };
@@ -313,17 +362,20 @@ describe('CrearPlanVentaComponent', () => {
         'Hubo un error al crear el plan de venta.'
       );
     });
-
   });
 
   describe('Full branch coverage', () => {
 
-    it('should build request correctly using construirRequest', () => {
+    it('should build request correctly using construirRequest', fakeAsync(() => {
+      fixture.detectChanges();
+      flushMicrotasks();
+
+      component.vendedores = mockVendedores;
+
       const formValue = {
         periodo: 'Abril',
         producto: 'p1',
         metaUnidades: 50,
-        zona: 'z1',
         vendedorAsociado: 'v1'
       };
       const result = (component as any).construirRequest(formValue);
@@ -334,7 +386,7 @@ describe('CrearPlanVentaComponent', () => {
         zone_id: 'z1',
         seller_id: 'v1'
       });
-    });
+    }));
 
     it('should execute procesarExito directly', () => {
       component.vendedores = mockVendedores;
@@ -385,7 +437,6 @@ describe('CrearPlanVentaComponent', () => {
       expect(component.vendedoresFiltrados).toEqual(mockVendedores);
     }));
 
-
     it('should handle showToast multiple calls correctly', fakeAsync(() => {
       component.showToast('Mensaje 1', 'success');
       component.showToast('Mensaje 2', 'error');
@@ -422,8 +473,5 @@ describe('CrearPlanVentaComponent', () => {
         'Hubo un error al crear el plan de venta.'
       );
     });
-
   });
-
-
 });

@@ -1,32 +1,32 @@
 import { ComponentFixture, TestBed, fakeAsync, flush, tick, discardPeriodicTasks } from '@angular/core/testing';
 import { CrearProveedorComponent } from './crear-proveedor.component';
 import { ProveedorService } from '../../../services/proveedores/proveedor.service';
+import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
-import { ChangeDetectorRef } from '@angular/core';
 
 describe('CrearProveedorComponent', () => {
   let component: CrearProveedorComponent;
   let fixture: ComponentFixture<CrearProveedorComponent>;
   let proveedorServiceSpy: jasmine.SpyObj<ProveedorService>;
-  let cdrSpy: jasmine.SpyObj<ChangeDetectorRef>;
+  let routerSpy: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
     const proveedorServiceMock = jasmine.createSpyObj('ProveedorService', ['createProvider']);
-    const cdrMock = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
+    const routerMock = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, CrearProveedorComponent],
       providers: [
         { provide: ProveedorService, useValue: proveedorServiceMock },
-        { provide: ChangeDetectorRef, useValue: cdrMock }
+        { provide: Router, useValue: routerMock }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CrearProveedorComponent);
     component = fixture.componentInstance;
     proveedorServiceSpy = TestBed.inject(ProveedorService) as jasmine.SpyObj<ProveedorService>;
-    cdrSpy = TestBed.inject(ChangeDetectorRef) as jasmine.SpyObj<ChangeDetectorRef>;
+    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     fixture.detectChanges();
   });
 
@@ -57,7 +57,7 @@ describe('CrearProveedorComponent', () => {
     const mockResponse = { name: 'Proveedor X' } as any;
     proveedorServiceSpy.createProvider.and.returnValue(of(mockResponse));
 
-    const spyDetect = spyOn(component['cdr'], 'detectChanges').and.callThrough();
+    const cdrSpy = spyOn(component['cdr'], 'detectChanges');
 
     component.crearProveedor();
     tick();
@@ -70,9 +70,12 @@ describe('CrearProveedorComponent', () => {
     expect(component.successMessage).toContain('Proveedor "Proveedor X" creado con éxito');
     expect(component.toastMessage).toBe('Proveedor creado exitosamente');
     expect(component.toastType).toBe('success');
-    expect(spyDetect).toHaveBeenCalled();
+    expect(cdrSpy).toHaveBeenCalled();
 
-    tick(5000);
+    tick(3000);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/proveedores/lista-proveedores']);
+
+    tick(2000);
     discardPeriodicTasks();
     flush();
   }));
@@ -84,11 +87,15 @@ describe('CrearProveedorComponent', () => {
 
     component.crearProveedor();
     tick();
-    tick(5000);
-    flush();
 
     expect(component.errorMessage).toBe('Ya existe un proveedor con este correo electrónico o RIT.');
     expect(component.toastType).toBe('error');
+
+    tick(3000);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/proveedores/lista-proveedores']);
+
+    tick(2000);
+    flush();
   }));
 
   it('debería manejar error 422 (validación) correctamente', fakeAsync(() => {
@@ -105,14 +112,15 @@ describe('CrearProveedorComponent', () => {
 
     component.crearProveedor();
     tick();
-    tick(5000);
-    flush();
 
     expect(component.errorMessage).toBe(`Error en el campo 'email': email inválido`);
     expect(component.toastType).toBe('error');
+
+    tick(3000);
+    tick(2000);
+    flush();
   }));
 
-  // ✅ NUEVO: Test para cubrir el branch cuando loc es undefined/null
   it('debería manejar error 422 sin campo loc definido', fakeAsync(() => {
     fillForm();
     const error = {
@@ -127,14 +135,15 @@ describe('CrearProveedorComponent', () => {
 
     component.crearProveedor();
     tick();
-    tick(5000);
-    flush();
 
     expect(component.errorMessage).toBe(`Error en el campo 'desconocido': error sin campo específico`);
     expect(component.toastType).toBe('error');
+
+    tick(3000);
+    tick(2000);
+    flush();
   }));
 
-  // ✅ NUEVO: Test para cubrir el branch cuando msg es undefined/null
   it('debería manejar error 422 sin mensaje definido', fakeAsync(() => {
     fillForm();
     const error = {
@@ -149,11 +158,13 @@ describe('CrearProveedorComponent', () => {
 
     component.crearProveedor();
     tick();
-    tick(5000);
-    flush();
 
     expect(component.errorMessage).toBe(`Error en el campo 'phone': Error desconocido.`);
     expect(component.toastType).toBe('error');
+
+    tick(3000);
+    tick(2000);
+    flush();
   }));
 
   it('debería manejar error genérico correctamente', fakeAsync(() => {
@@ -163,11 +174,13 @@ describe('CrearProveedorComponent', () => {
 
     component.crearProveedor();
     tick();
-    tick(5000);
-    flush();
 
     expect(component.errorMessage).toBe('Ocurrió un error inesperado al crear el proveedor.');
     expect(component.toastType).toBe('error');
+
+    tick(3000);
+    tick(2000);
+    flush();
   }));
 
   it('debería limpiar el toast después de 5 segundos', fakeAsync(() => {

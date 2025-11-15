@@ -12,7 +12,7 @@ import { ItemDialogComponent } from '../../../components/item-dialog/item-dialog
 @Component({
   selector: 'app-lista-plan-venta',
   standalone: true,
-  imports: [CommonModule, MatIconModule,LoadingSpinnerComponent, ItemDialogComponent],
+  imports: [CommonModule, MatIconModule, LoadingSpinnerComponent, ItemDialogComponent],
   templateUrl: './lista-plan-venta.component.html',
   styleUrls: ['./lista-plan-venta.component.css']
 })
@@ -24,7 +24,6 @@ export class ListaPlanVentaComponent implements OnInit {
 
   dialogVisible = false;
   selectedItem: any = null;
-
 
   pageSize = 10;
   currentPage = 1;
@@ -43,11 +42,11 @@ export class ListaPlanVentaComponent implements OnInit {
     this.cargarPlanesVenta();
   }
 
-mostrarDetalle(item: any) {
-  this.selectedItem = item;
-  this.dialogVisible = true;
-  this.cdr.detectChanges();
-}
+  mostrarDetalle(item: any) {
+    this.selectedItem = item;
+    this.dialogVisible = true;
+    this.cdr.detectChanges();
+  }
 
   cargarPlanesVenta(): void {
     this.isLoading = true;

@@ -53,23 +53,6 @@
       </div>
 
       <div class="form-field">
-        <label class="field-label">Zona *</label>
-        <select
-          title="Zona"
-          class="form-select"
-          formControlName="zona"
-          [class.error]="zona?.invalid && (zona?.dirty || zona?.touched)">
-          <option [ngValue]="null" disabled>Seleccione una zona</option>
-          <option *ngFor="let z of zonas" [value]="z.id">{{ z.description }}</option>
-        </select>
-        <div *ngIf="zona?.invalid && (zona?.dirty || zona?.touched)" class="error-message">
-          <div *ngIf="zona?.errors?.['required']">La zona es requerida.</div>
-        </div>
-      </div>
-
-
-
-      <div class="form-field">
         <label class="field-label">Vendedor asociado *</label>
         <select
           title="Vendedor"

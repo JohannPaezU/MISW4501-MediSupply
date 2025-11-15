@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { ProductCreateResponse } from '../../../interfaces/producto.interface';
-import { Zone, Vendedor } from '../../../interfaces/vendedor.interface';
+import { Vendedor } from '../../../interfaces/vendedor.interface';
 import { ProductService } from '../../../services/productos/product.service';
 import { VendedorService } from '../../../services/vendedores/vendedor.service';
 import { CreatePlanVentaRequest } from '../../../interfaces/planVenta.interface';
 import { PlanVentaService } from '../../../services/planes-de-venta/planesDeVenta.service';
 import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loading-spinner.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-crear-plan-venta',
@@ -24,9 +25,11 @@ import { LoadingSpinnerComponent } from '../../../components/loading-spinner/loa
 export class CrearPlanVentaComponent implements OnInit {
   planVentaForm: FormGroup;
 
-  periodos: string[] = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  periodos: string[] = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
   productos: ProductCreateResponse[] = [];
-  zonas: Zone[] = [];
   vendedores: Vendedor[] = [];
   vendedoresFiltrados: Vendedor[] = [];
 
@@ -40,13 +43,13 @@ export class CrearPlanVentaComponent implements OnInit {
     private planVentaService: PlanVentaService,
     private productService: ProductService,
     private vendedorService: VendedorService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router,
   ) {
     this.planVentaForm = this.fb.group({
       periodo: [null, Validators.required],
       producto: [null, Validators.required],
       metaUnidades: [null, [Validators.required, Validators.min(1)]],
-      zona: [null, Validators.required],
       vendedorAsociado: [null, Validators.required],
       searchVendedor: ['']
     });
@@ -55,7 +58,6 @@ export class CrearPlanVentaComponent implements OnInit {
   get periodo() { return this.planVentaForm.get('periodo'); }
   get producto() { return this.planVentaForm.get('producto'); }
   get metaUnidades() { return this.planVentaForm.get('metaUnidades'); }
-  get zona() { return this.planVentaForm.get('zona'); }
   get vendedorAsociado() { return this.planVentaForm.get('vendedorAsociado'); }
   get searchVendedor() { return this.planVentaForm.get('searchVendedor'); }
 
@@ -72,21 +74,21 @@ export class CrearPlanVentaComponent implements OnInit {
 
     Promise.all([
       this.productService.getProducts(1, 1000).toPromise(),
-      this.vendedorService.getZonas().toPromise(),
       this.vendedorService.getVendedores().toPromise()
-    ]).then(([productosRes, zonasRes, vendedoresRes]) => {
-      this.productos = productosRes?.products || [];
-      this.zonas = zonasRes || [];
-      this.vendedores = vendedoresRes?.sellers || [];
-      this.vendedoresFiltrados = this.vendedores;
-      this.isLoadingData = false;
-      this.cdr.detectChanges();
-    }).catch(err => {
-      console.error('Error al cargar datos:', err);
-      this.showToast('Error al cargar los datos necesarios', 'error');
-      this.isLoadingData = false;
-      this.cdr.detectChanges();
-    });
+    ])
+      .then(([productosRes, vendedoresRes]) => {
+        this.productos = productosRes?.products || [];
+        this.vendedores = vendedoresRes?.sellers || [];
+        this.vendedoresFiltrados = this.vendedores;
+        this.isLoadingData = false;
+        this.cdr.detectChanges();
+      })
+      .catch(err => {
+        console.error('Error al cargar datos:', err);
+        this.showToast('Error al cargar los datos necesarios', 'error');
+        this.isLoadingData = false;
+        this.cdr.detectChanges();
+      });
   }
 
   filtrarVendedores(searchTerm: string): void {
@@ -110,24 +112,46 @@ export class CrearPlanVentaComponent implements OnInit {
       return;
     }
 
+    const vendedorSeleccionado = this.vendedores.find(
+      v => v.id === this.planVentaForm.value.vendedorAsociado
+    );
+
+    if (!vendedorSeleccionado || !vendedorSeleccionado.zone) {
+      this.showToast('El vendedor no tiene una zona asignada.', 'error');
+      return;
+    }
+
     this.isLoading = true;
     const nuevoPlan = this.construirRequest(this.planVentaForm.value);
-
     this.planVentaService.createPlanVenta(nuevoPlan)
       .pipe(finalize(() => this.finalizarCarga()))
       .subscribe({
         next: () => this.procesarExito(),
         error: (err) => this.procesarError(err)
       });
+
+    setTimeout(() => {
+      this.router.navigate(['/planes-de-venta']);
+    }, 2000);
   }
 
   private construirRequest(formValue: any): CreatePlanVentaRequest {
+    const vendedor: Vendedor | undefined = this.vendedores.find(v => v.id === formValue.vendedorAsociado);
+
+    if (!vendedor) {
+      throw new Error('Vendedor no encontrado');
+    }
+
+    if (!vendedor.zone || !vendedor.zone.id) {
+      throw new Error('El vendedor no tiene una zona asignada');
+    }
+
     return {
       period: formValue.periodo,
       goal: Number(formValue.metaUnidades),
       product_id: formValue.producto,
-      zone_id: formValue.zona,
-      seller_id: formValue.vendedorAsociado
+      zone_id: vendedor.zone.id, // ✅ Zona del vendedor
+      seller_id: vendedor.id!    // ✅ aseguramos que nunca es undefined
     };
   }
 
