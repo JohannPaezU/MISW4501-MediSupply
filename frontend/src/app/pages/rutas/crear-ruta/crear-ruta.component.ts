@@ -2,16 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Order } from '../../../interfaces/route.interface';
 import { RouteService } from '../../../services/rutas/route.service';
+import { OrderInList } from '../../../interfaces/order.interface';
+import { GroupedOrders } from '../../../interfaces/route.interface';
 
-
-interface GroupedOrders {
-  [distributionCenterId: number]: {
-    centerName: string;
-    orders: (Order & { selected: boolean })[];
-  };
-}
 
 @Component({
   selector: 'app-crear-ruta',
@@ -23,22 +17,17 @@ interface GroupedOrders {
 })
 export class CrearRutaComponent implements OnInit {
   groupedOrders = signal<GroupedOrders>({});
-  selectedDistributionCenter = signal<number | null>(null);
+  selectedDistributionCenter = signal<string | null>(null);
   errorMessage = signal<string>('');
   successMessage = signal<string>('');
   loading = signal<boolean>(false);
   showCreateRouteForm = signal<boolean>(false);
+  showSuccessAnimation = signal<boolean>(false);
 
   routeForm = signal({
-    origin: '',
-    origin_lat: 0,
-    origin_long: 0,
-    destiny: '',
-    destiny_lat: 0,
-    destiny_long: 0,
-    date_limit: '',
-    restrictions: '',
-    vehicle: ''
+    name: '',
+    vehicle_plate: '',
+    restrictions: ''
   });
 
   constructor(
@@ -50,65 +39,48 @@ export class CrearRutaComponent implements OnInit {
     this.loadOrders();
   }
 
-loadOrders(): void {
-  this.loading.set(true);
-  this.errorMessage.set('');
-  this.groupedOrders.set({}); // ✅ limpiar antes de cargar
+  loadOrders(): void {
+    this.loading.set(true);
+    this.errorMessage.set('');
+    this.groupedOrders.set({});
 
-  this.routeService.getOrders().subscribe({
-    next: async (response: any) => {
-      try {
-        const receivedOrders = (response.orders || []).filter(
-          (order: any) => order.status === 'received'
+    this.routeService.getAllOrders().subscribe({
+      next: (response) => {
+        const availableOrders = response.orders.filter(
+          order => order.status === 'received' && !order.route
         );
 
-        if (receivedOrders.length === 0) {
-          this.errorMessage.set('No hay órdenes con estado "received".');
+        if (availableOrders.length === 0) {
+          this.errorMessage.set('No hay órdenes disponibles para asignar a rutas.');
           this.loading.set(false);
           return;
         }
 
-        const detailedOrders = await Promise.all(
-          receivedOrders.map((order: any) =>
-            this.routeService.getOrderById(order.id).toPromise().catch(err => {
-              console.warn('Error fetching order details', err);
-              return null;
-            })
-          )
-        );
-
-        const validOrders = detailedOrders.filter(o => o !== null);
-        if (validOrders.length === 0) {
-          this.errorMessage.set('No se pudieron obtener detalles de las órdenes.');
-          this.loading.set(false);
-          return;
-        }
-
-        this.groupOrdersByDistributionCenter(validOrders as Order[]);
+        this.groupOrdersByDistributionCenter(availableOrders);
         this.loading.set(false);
-      } catch (error) {
-        console.error('Error fetching detailed orders:', error);
-        this.errorMessage.set('Error al obtener detalles de las órdenes.');
+      },
+      error: (error) => {
+        console.error('Error loading orders:', error);
+        this.errorMessage.set('Error al cargar las órdenes. Por favor, intente nuevamente.');
         this.loading.set(false);
       }
-    },
-    error: (error) => {
-      console.error('Error loading orders:', error);
-      this.errorMessage.set('Error al cargar las órdenes.');
-      this.loading.set(false);
-    }
-  });
-}
+    });
+  }
 
-  groupOrdersByDistributionCenter(orders: Order[]): void {
+  navigateBack(): void {
+    this.router.navigate(['/rutas']);
+  }
+
+  groupOrdersByDistributionCenter(orders: OrderInList[]): void {
     const grouped: GroupedOrders = {};
 
-    orders.forEach((order: any) => {
+    orders.forEach(order => {
       const centerId = order.distribution_center.id;
 
       if (!grouped[centerId]) {
         grouped[centerId] = {
           centerName: order.distribution_center.name,
+          centerInfo: `${order.distribution_center.city}, ${order.distribution_center.country}`,
           orders: []
         };
       }
@@ -122,97 +94,121 @@ loadOrders(): void {
     this.groupedOrders.set(grouped);
   }
 
-  getDistributionCenterKeys(): number[] {
-    return Object.keys(this.groupedOrders()).map(key => Number(key));
+  getDistributionCenterKeys(): string[] {
+    return Object.keys(this.groupedOrders());
   }
 
-  selectDistributionCenter(centerId: number): void {
+  toggleDistributionCenterExpansion(centerId: string): void {
     if (this.selectedDistributionCenter() === centerId) {
       this.selectedDistributionCenter.set(null);
     } else {
       this.selectedDistributionCenter.set(centerId);
-      // Deseleccionar todas las órdenes de otros centros
-      const grouped = this.groupedOrders();
-      this.getDistributionCenterKeys().forEach(key => {
-        if (key !== centerId) {
-          grouped[key].orders.forEach(order => order.selected = false);
-        }
-      });
-      this.groupedOrders.set({ ...grouped });
     }
   }
 
-  toggleOrderSelection(centerId: number, orderId: string): void {
+  toggleOrderSelection(centerId: string, orderId: string): void {
     const grouped = this.groupedOrders();
     const order = grouped[centerId].orders.find(o => o.id === orderId);
-    if (order) {
-      order.selected = !order.selected;
 
-      // Si se selecciona una orden, asegurarse de que ese sea el centro seleccionado
-      if (order.selected && this.selectedDistributionCenter() !== centerId) {
-        this.selectedDistributionCenter.set(centerId);
-        // Deseleccionar órdenes de otros centros
-        this.getDistributionCenterKeys().forEach(key => {
-          if (key !== centerId) {
-            grouped[key].orders.forEach(o => o.selected = false);
-          }
-        });
+    if (order) {
+      const currentSelectedCenter = this.getSelectedDistributionCenterId();
+
+      if (!order.selected && currentSelectedCenter && currentSelectedCenter !== centerId) {
+        this.errorMessage.set('No puede seleccionar órdenes de diferentes centros de distribución.');
+        setTimeout(() => this.errorMessage.set(''), 3000);
+        return;
       }
+
+      order.selected = !order.selected;
       this.groupedOrders.set({ ...grouped });
     }
   }
 
-  toggleSelectAll(centerId: number): void {
+  toggleSelectAll(centerId: string): void {
     const grouped = this.groupedOrders();
     const orders = grouped[centerId].orders;
     const allSelected = orders.every(order => order.selected);
+
+    const currentSelectedCenter = this.getSelectedDistributionCenterId();
+    if (!allSelected && currentSelectedCenter && currentSelectedCenter !== centerId) {
+      this.errorMessage.set('No puede seleccionar órdenes de diferentes centros de distribución.');
+      setTimeout(() => this.errorMessage.set(''), 3000);
+      return;
+    }
+
+    if (allSelected && currentSelectedCenter && currentSelectedCenter !== centerId) {
+      this.errorMessage.set('Primero debe deseleccionar las órdenes del otro centro de distribución.');
+      setTimeout(() => this.errorMessage.set(''), 3000);
+      return;
+    }
 
     orders.forEach(order => {
       order.selected = !allSelected;
     });
 
-    if (!allSelected) {
-      this.selectedDistributionCenter.set(centerId);
-      // Deseleccionar órdenes de otros centros
-      this.getDistributionCenterKeys().forEach(key => {
-        if (key !== centerId) {
-          grouped[key].orders.forEach(o => o.selected = false);
-        }
-      });
-    }
     this.groupedOrders.set({ ...grouped });
   }
 
-getSelectedOrders(): (Order & { selected: boolean })[] {
-  const allOrders: (Order & { selected: boolean })[] = [];
-  const grouped = this.groupedOrders();
+  getSelectedOrders(): (OrderInList & { selected: boolean })[] {
+    const allOrders: (OrderInList & { selected: boolean })[] = [];
+    const grouped = this.groupedOrders();
 
-  this.getDistributionCenterKeys().forEach(key => {
-    if (grouped[key]?.orders) { // ✅ validación extra
-      allOrders.push(...grouped[key].orders.filter(order => order.selected));
+    this.getDistributionCenterKeys().forEach(key => {
+      if (grouped[key]?.orders) {
+        allOrders.push(...grouped[key].orders.filter(order => order.selected));
+      }
+    });
+
+    return allOrders;
+  }
+
+  getSelectedDistributionCenterId(): string | null {
+    const grouped = this.groupedOrders();
+
+    for (const centerId of this.getDistributionCenterKeys()) {
+      if (grouped[centerId].orders.some(order => order.selected)) {
+        return centerId;
+      }
     }
-  });
 
-  return allOrders;
-}
+    return null;
+  }
 
-isAllSelected(centerId: number): boolean {
-  const orders = this.groupedOrders()[centerId]?.orders || []; // ✅ fallback
-  return orders.length > 0 && orders.every(order => order.selected);
-}
+  hasMultipleDistributionCentersSelected(): boolean {
+    const grouped = this.groupedOrders();
+    let centersWithSelection = 0;
 
-isSomeSelected(centerId: number): boolean {
-  const orders = this.groupedOrders()[centerId]?.orders || []; // ✅ fallback
-  return orders.some(order => order.selected) && !this.isAllSelected(centerId);
-}
+    this.getDistributionCenterKeys().forEach(centerId => {
+      if (grouped[centerId].orders.some(order => order.selected)) {
+        centersWithSelection++;
+      }
+    });
+
+    return centersWithSelection > 1;
+  }
+
+  isAllSelected(centerId: string): boolean {
+    const orders = this.groupedOrders()[centerId]?.orders || [];
+    return orders.length > 0 && orders.every(order => order.selected);
+  }
+
+  isSomeSelected(centerId: string): boolean {
+    const orders = this.groupedOrders()[centerId]?.orders || [];
+    return orders.some(order => order.selected) && !this.isAllSelected(centerId);
+  }
 
   canCreateRoute(): boolean {
-    return this.getSelectedOrders().length > 0;
+    return this.getSelectedOrders().length > 0 && !this.hasMultipleDistributionCentersSelected();
   }
 
   openCreateRouteForm(): void {
     if (!this.canCreateRoute()) {
-      this.errorMessage.set('Debe seleccionar al menos una orden para crear una ruta.');
+      if (this.hasMultipleDistributionCentersSelected()) {
+        this.errorMessage.set('No puede crear una ruta con órdenes de diferentes centros de distribución.');
+      } else {
+        this.errorMessage.set('Debe seleccionar al menos una orden para crear una ruta.');
+      }
+      setTimeout(() => this.errorMessage.set(''), 3000);
       return;
     }
 
@@ -227,15 +223,9 @@ isSomeSelected(centerId: number): boolean {
 
   resetRouteForm(): void {
     this.routeForm.set({
-      origin: '',
-      origin_lat: 0,
-      origin_long: 0,
-      destiny: '',
-      destiny_lat: 0,
-      destiny_long: 0,
-      date_limit: '',
-      restrictions: '',
-      vehicle: ''
+      name: '',
+      vehicle_plate: '',
+      restrictions: ''
     });
   }
 
@@ -246,13 +236,19 @@ isSomeSelected(centerId: number): boolean {
     }
 
     const selectedOrders = this.getSelectedOrders();
-    const productIds = selectedOrders.flatMap(order =>
-      order.products.map(product => product.id)
-    );
+    const distributionCenterId = this.getSelectedDistributionCenterId();
 
-    const routeData = {
-      ...this.routeForm(),
-      products: productIds
+    if (!distributionCenterId) {
+      this.errorMessage.set('Error al identificar el centro de distribución.');
+      return;
+    }
+
+    const routeData: any = {
+      name: this.routeForm().name,
+      vehicle_plate: this.routeForm().vehicle_plate,
+      restrictions: this.routeForm().restrictions || 'Ninguna',
+      distribution_center_id: distributionCenterId,
+      order_ids: selectedOrders.map(order => order.id)
     };
 
     this.loading.set(true);
@@ -262,24 +258,24 @@ isSomeSelected(centerId: number): boolean {
     this.routeService.createRoute(routeData).subscribe({
       next: (response) => {
         console.log('Route created:', response);
-        this.successMessage.set('Ruta creada exitosamente.');
+
         this.showCreateRouteForm.set(false);
         this.resetRouteForm();
 
-        // Deseleccionar todas las órdenes
+        this.showSuccessAnimation.set(true);
+
         const grouped = this.groupedOrders();
         this.getDistributionCenterKeys().forEach(key => {
           grouped[key].orders.forEach(order => order.selected = false);
         });
-        this.selectedDistributionCenter.set(null);
         this.groupedOrders.set({ ...grouped });
 
         this.loading.set(false);
 
-        // Navegar al listado después de 2 segundos
         setTimeout(() => {
+          this.showSuccessAnimation.set(false);
           this.router.navigate(['/rutas']);
-        }, 2000);
+        }, 2500);
       },
       error: (error) => {
         console.error('Error creating route:', error);
@@ -291,26 +287,16 @@ isSomeSelected(centerId: number): boolean {
 
   validateRouteForm(): boolean {
     const form = this.routeForm();
-    return !!(
-      form.origin &&
-      form.destiny &&
-      form.date_limit &&
-      form.vehicle &&
-      form.origin_lat &&
-      form.origin_long &&
-      form.destiny_lat &&
-      form.destiny_long
-    );
+    return !!(form.name && form.vehicle_plate);
   }
 
-  updateFormField(field: string, event: Event): void {
-    const input = event.target as HTMLInputElement | HTMLTextAreaElement | null;
-    if (!input) return;
-    const value = input.value;
-    this.routeForm.set({ ...this.routeForm(), [field]: value });
+  updateFormField(field: string, value: any): void {
+    const form = this.routeForm();
+    this.routeForm.set({ ...form, [field]: value });
   }
 
   formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -319,9 +305,7 @@ isSomeSelected(centerId: number): boolean {
     });
   }
 
-  getTotalProducts(order: Order): number {
-    return order.products.reduce((sum, product) => sum + product.quantity, 0);
+  truncateId(id: string): string {
+    return id.substring(0, 8) + '...';
   }
-
-
 }

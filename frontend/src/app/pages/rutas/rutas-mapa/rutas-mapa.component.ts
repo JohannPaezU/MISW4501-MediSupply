@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal, AfterViewInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouteService } from '../../../services/rutas/route.service';
-import { RouteModel } from '../../../interfaces/route.interface';
-
+import { RouteMapResponse } from '../../../interfaces/route.interface';
+import { GoogleMapsLoaderService } from '../../../services/google/googleMapsLoader.service';
 
 declare const google: any;
 
@@ -15,173 +15,253 @@ declare const google: any;
   styleUrl: './rutas-mapa.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RutasMapaComponent implements OnInit, AfterViewInit {
-  routes = signal<RouteModel[]>([]);
+export class RutasMapaComponent implements OnInit, AfterViewInit, OnDestroy {
+  routeData = signal<RouteMapResponse | null>(null);
   loading = signal<boolean>(false);
   errorMessage = signal<string>('');
+  lastUpdate = signal<string>('');
   map: any = null;
   markers: any[] = [];
-  lastUpdate = signal<string>('');
+  routeId: string | null = null;
+  private mapInitialized = false;
 
   constructor(
     private routeService: RouteService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute,
+    private googleMapsLoader: GoogleMapsLoaderService
+  ) { }
 
   ngOnInit(): void {
-    this.loadRoutes();
+    this.route.paramMap.subscribe(params => {
+      this.routeId = params.get('id');
+      if (this.routeId) {
+        this.loadRouteMap();
+      } else {
+        this.errorMessage.set('No se especificó una ruta para mostrar.');
+      }
+    });
     this.updateLastUpdateTime();
   }
 
   ngAfterViewInit(): void {
-    this.initMap();
+
+    this.loading.set(true);
+    this.googleMapsLoader.loadGoogleMaps()
+      .then(() => {
+        this.loading.set(false);
+        if (this.routeData()) {
+          this.initMap();
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading Google Maps:', error);
+        this.errorMessage.set('Error al cargar Google Maps. Por favor, recargue la página.');
+        this.loading.set(false);
+      });
   }
 
-  loadRoutes(): void {
+  ngOnDestroy(): void {
+
+    this.clearMarkers();
+    this.map = null;
+  }
+
+  loadRouteMap(): void {
+    if (!this.routeId) return;
+
     this.loading.set(true);
     this.errorMessage.set('');
 
-    this.routeService.getRoutes().subscribe({
+    this.routeService.getRouteMap(this.routeId).subscribe({
       next: (response) => {
-        this.routes.set(response.routes);
+        this.routeData.set(response);
         this.loading.set(false);
-        if (this.map) {
-          this.addMarkersToMap();
+
+
+        if (this.googleMapsLoader.isGoogleMapsLoaded() && !this.mapInitialized) {
+          this.initMap();
         }
       },
       error: (error) => {
-        console.error('Error loading routes:', error);
-        this.errorMessage.set('Error al cargar las rutas. Por favor, intente nuevamente.');
+        console.error('Error loading route map:', error);
+        this.errorMessage.set('Error al cargar el mapa de la ruta. Por favor, intente nuevamente.');
         this.loading.set(false);
       }
     });
   }
 
   initMap(): void {
-    // Configuración inicial del mapa (centrado en una ubicación por defecto)
+    const data = this.routeData();
+    if (!data || data.stops.length === 0) {
+      this.errorMessage.set('No hay paradas disponibles para mostrar en el mapa.');
+      return;
+    }
+
+    if (this.mapInitialized) {
+      this.addMarkersAndRoute();
+      return;
+    }
+
+    const centerLat = data.stops[0].latitude;
+    const centerLng = data.stops[0].longitude;
+
     const mapOptions = {
-      center: { lat: 6.2476, lng: -75.5658 }, // Medellín por defecto
-      zoom: 12,
-      mapTypeId: 'roadmap'
+      center: { lat: centerLat, lng: centerLng },
+      zoom: 13,
+      mapTypeId: 'roadmap',
+      gestureHandling: 'greedy',
+      disableDefaultUI: false,
+      zoomControl: true,
+      mapTypeControl: false,
+      scaleControl: false,
+      streetViewControl: false,
+      rotateControl: false,
+      fullscreenControl: true
     };
 
     const mapElement = document.getElementById('map');
     if (mapElement && typeof google !== 'undefined') {
       this.map = new google.maps.Map(mapElement, mapOptions);
-      if (this.routes().length > 0) {
-        this.addMarkersToMap();
-      }
+      this.mapInitialized = true;
+      this.addMarkersAndRoute();
     } else {
-      // Si Google Maps no está cargado, mostrar mapa estático o mensaje
-      console.warn('Google Maps not loaded');
+      this.errorMessage.set('Google Maps no está disponible.');
     }
   }
 
-  addMarkersToMap(): void {
+  clearMarkers(): void {
+    this.markers.forEach(marker => {
+      if (marker.setMap) {
+        marker.setMap(null);
+      }
+    });
+    this.markers = [];
+  }
+
+  addMarkersAndRoute(): void {
     if (!this.map) return;
 
-    // Limpiar marcadores existentes
-    this.markers.forEach(marker => marker.setMap(null));
-    this.markers = [];
+    const data = this.routeData();
+    if (!data) return;
+
+
+    this.clearMarkers();
 
     const bounds = new google.maps.LatLngBounds();
+    const routePath: any[] = [];
 
-    this.routes().forEach((route, index) => {
-      // Marcador de origen
-      const originMarker = new google.maps.Marker({
-        position: { lat: route.origin_lat, lng: route.origin_long },
+    data.stops.forEach((stop, index) => {
+      const position = { lat: stop.latitude, lng: stop.longitude };
+
+      const marker = new google.maps.Marker({
+        position: position,
         map: this.map,
-        title: `Origen: ${route.origin}`,
+        title: stop.client_name,
         label: {
-          text: 'O',
+          text: (index + 1).toString(),
           color: 'white',
           fontWeight: 'bold'
         },
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: '#4CAF50',
+          scale: 12,
+          fillColor: this.getStopColor(index),
           fillOpacity: 1,
           strokeColor: 'white',
           strokeWeight: 2
-        }
-      });
-
-      // Marcador de destino
-      const destinyMarker = new google.maps.Marker({
-        position: { lat: route.destiny_lat, lng: route.destiny_long },
-        map: this.map,
-        title: `Destino: ${route.destiny}`,
-        label: {
-          text: 'D',
-          color: 'white',
-          fontWeight: 'bold'
         },
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: '#F44336',
-          fillOpacity: 1,
-          strokeColor: 'white',
-          strokeWeight: 2
-        }
+        optimized: true
       });
 
-      // Info windows
-      const originInfoWindow = new google.maps.InfoWindow({
+      const infoWindow = new google.maps.InfoWindow({
         content: `
-          <div style="padding: 10px;">
-            <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Origen</h3>
-            <p style="margin: 4px 0; font-size: 12px;"><strong>Ubicación:</strong> ${route.origin}</p>
-            <p style="margin: 4px 0; font-size: 12px;"><strong>Vehículo:</strong> ${route.vehicle}</p>
-            <p style="margin: 4px 0; font-size: 12px;"><strong>Ruta ID:</strong> ${route.id}</p>
+          <div style="padding: 10px; max-width: 250px;">
+            <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">
+              Parada ${index + 1}
+            </h3>
+            <p style="margin: 4px 0; font-size: 12px;">
+              <strong>Cliente:</strong> ${stop.client_name}
+            </p>
+            <p style="margin: 4px 0; font-size: 12px;">
+              <strong>Dirección:</strong> ${stop.client_address}
+            </p>
+            <p style="margin: 4px 0; font-size: 12px;">
+              <strong>Teléfono:</strong> ${stop.client_phone}
+            </p>
+            <p style="margin: 4px 0; font-size: 12px;">
+              <strong>Fecha entrega:</strong> ${this.formatDate(stop.delivery_date)}
+            </p>
+            <p style="margin: 4px 0; font-size: 12px;">
+              <strong>Estado:</strong>
+              <span style="color: #1565c0; font-weight: 500;">${stop.order_status}</span>
+            </p>
           </div>
         `
       });
 
-      const destinyInfoWindow = new google.maps.InfoWindow({
-        content: `
-          <div style="padding: 10px;">
-            <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">Destino</h3>
-            <p style="margin: 4px 0; font-size: 12px;"><strong>Ubicación:</strong> ${route.destiny}</p>
-            <p style="margin: 4px 0; font-size: 12px;"><strong>Fecha Límite:</strong> ${this.formatDate(route.date_limit)}</p>
-            <p style="margin: 4px 0; font-size: 12px;"><strong>Ruta ID:</strong> ${route.id}</p>
-          </div>
-        `
+      marker.addListener('click', () => {
+        this.markers.forEach(m => {
+          if (m.infoWindow && m.infoWindow !== infoWindow) {
+            m.infoWindow.close();
+          }
+        });
+        infoWindow.open(this.map, marker);
       });
 
-      originMarker.addListener('click', () => {
-        originInfoWindow.open(this.map, originMarker);
-      });
+      (marker as any).infoWindow = infoWindow;
 
-      destinyMarker.addListener('click', () => {
-        destinyInfoWindow.open(this.map, destinyMarker);
-      });
+      this.markers.push(marker);
+      bounds.extend(position);
+      routePath.push(position);
+    });
 
-      // Línea de ruta
+    if (routePath.length > 1) {
       const routeLine = new google.maps.Polyline({
-        path: [
-          { lat: route.origin_lat, lng: route.origin_long },
-          { lat: route.destiny_lat, lng: route.destiny_long }
-        ],
+        path: routePath,
         geodesic: true,
         strokeColor: '#2196F3',
         strokeOpacity: 0.8,
-        strokeWeight: 3,
+        strokeWeight: 4,
         map: this.map
       });
 
-      this.markers.push(originMarker, destinyMarker, routeLine);
 
-      // Expandir bounds
-      bounds.extend({ lat: route.origin_lat, lng: route.origin_long });
-      bounds.extend({ lat: route.destiny_lat, lng: route.destiny_long });
-    });
+      const lineSymbol = {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        strokeColor: '#1565C0',
+        fillColor: '#1565C0',
+        fillOpacity: 1,
+        scale: 3
+      };
 
-    // Ajustar el mapa para mostrar todos los marcadores
-    if (this.routes().length > 0) {
+      routeLine.setOptions({
+        icons: [{
+          icon: lineSymbol,
+          offset: '50%',
+          repeat: '100px'
+        }]
+      });
+
+      this.markers.push(routeLine);
+    }
+
+
+    if (data.stops.length > 0) {
       this.map.fitBounds(bounds);
     }
+  }
+
+  getStopColor(index: number): string {
+    const colors = [
+      '#4CAF50',
+      '#FF9800',
+      '#9C27B0',
+      '#F44336',
+      '#2196F3',
+      '#FFEB3B',
+    ];
+    return colors[index % colors.length];
   }
 
   updateLastUpdateTime(): void {
@@ -197,6 +277,7 @@ export class RutasMapaComponent implements OnInit, AfterViewInit {
   }
 
   formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -210,7 +291,9 @@ export class RutasMapaComponent implements OnInit, AfterViewInit {
   }
 
   retryLoad(): void {
-    this.loadRoutes();
-    this.updateLastUpdateTime();
+    if (this.routeId) {
+      this.loadRouteMap();
+      this.updateLastUpdateTime();
+    }
   }
 }

@@ -1,35 +1,4 @@
-export interface Order {
-  id: string;
-  comments: string;
-  delivery_date: string;
-  status: string;
-  created_at: string;
-  seller: Seller;
-  client: Client;
-  distribution_center: DistributionCenter;
-  products: Product[];
-}
-
-export interface Seller {
-  id: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  doi: string;
-  role: string;
-  created_at: string;
-}
-
-export interface Client {
-  id: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  doi: string;
-  address: string;
-  role: string;
-  created_at: string;
-}
+import { OrderInList } from "./order.interface";
 
 export interface DistributionCenter {
   id: string;
@@ -40,64 +9,95 @@ export interface DistributionCenter {
   created_at: string;
 }
 
-export interface Product {
+export interface OrderInRoute {
   id: string;
-  name: string;
-  store: string;
-  batch: string;
-  due_date: string;
-  price_per_unit: number;
-  quantity: number;
-  image_url: string;
-}
-
-export interface OrdersResponse {
-  total_count: number;
-  orders: { id: string; status: string }[];
-}
-
-export interface RouteModel {
-  id: number;
-  origin: string;
-  origin_lat: number;
-  origin_long: number;
-  destiny: string;
-  destiny_lat: number;
-  destiny_long: number;
-  date_limit: string;
-  restrictions: string;
-  vehicle: string;
+  comments: string;
+  delivery_date: string;
+  status: string;
   created_at: string;
 }
 
+export interface RouteModel {
+  id: string;
+  name: string;
+  vehicle_plate: string;
+  restrictions: string;
+  delivery_deadline: string;
+  created_at: string;
+  distribution_center: DistributionCenter;
+  orders?: OrderInRoute[];
+}
+
 export interface RoutesResponse {
+  total_count: number;
   routes: RouteModel[];
 }
 
 export interface CreateRouteRequest {
-  products: string[];
-  origin: string;
-  origin_lat: number;
-  origin_long: number;
-  destiny: string;
-  destiny_lat: number;
-  destiny_long: number;
-  date_limit: string;
+  name: string;
+  vehicle_plate: string;
   restrictions: string;
-  vehicle: string;
+  distribution_center_id: string;
+  order_ids: string[];
 }
 
 export interface CreateRouteResponse {
-  id: number;
-  origin: string;
-  origin_lat: number;
-  origin_long: number;
-  destiny: string;
-  destiny_lat: number;
-  destiny_long: number;
-  date_limit: string;
+  id: string;
+  name: string;
+  vehicle_plate: string;
   restrictions: string;
-  vehicle: string;
-  products: number[];
+  delivery_deadline: string;
   created_at: string;
+  distribution_center: DistributionCenter;
+  orders: OrderInRoute[];
+}
+
+export interface RouteMapStop {
+  order_id: string;
+  order_status: string;
+  delivery_date: string;
+  client_name: string;
+  client_address: string;
+  client_phone: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface RouteMapResponse {
+  id: string;
+  name: string;
+  vehicle_plate: string;
+  restrictions: string;
+  delivery_deadline: string;
+  created_at: string;
+  total_count: number;
+  distribution_center: DistributionCenter;
+  stops: RouteMapStop[];
+}
+
+export interface CreateRouteRequest {
+  name: string;
+  vehicle_plate: string;
+  restrictions: string;
+  distribution_center_id: string;
+  order_ids: string[];
+}
+
+export interface CreateRouteResponse {
+  id: string;
+  name: string;
+  vehicle_plate: string;
+  restrictions: string;
+  delivery_deadline: string;
+  created_at: string;
+  distribution_center: DistributionCenter;
+  orders: OrderInRoute[];
+}
+
+export interface GroupedOrders {
+  [distributionCenterId: string]: {
+    centerName: string;
+    centerInfo: string;
+    orders: (OrderInList & { selected: boolean })[];
+  };
 }

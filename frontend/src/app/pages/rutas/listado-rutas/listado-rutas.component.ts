@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { RouteService } from '../../../services/rutas/route.service';
 import { RouteModel } from '../../../interfaces/route.interface';
 
-
 @Component({
   selector: 'app-listado-rutas',
   standalone: true,
@@ -17,8 +16,8 @@ export class ListadoRutasComponent implements OnInit {
   routes = signal<RouteModel[]>([]);
   loading = signal<boolean>(false);
   errorMessage = signal<string>('');
+  selectedRouteId = signal<string | null>(null);
 
-  // Paginación
   currentPage = signal<number>(1);
   pageSize = signal<number>(10);
   totalRoutes = signal<number>(0);
@@ -39,7 +38,7 @@ export class ListadoRutasComponent implements OnInit {
     this.routeService.getRoutes().subscribe({
       next: (response) => {
         this.routes.set(response.routes);
-        this.totalRoutes.set(response.routes.length);
+        this.totalRoutes.set(response.total_count);
         this.loading.set(false);
       },
       error: (error) => {
@@ -48,6 +47,14 @@ export class ListadoRutasComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  selectRoute(routeId: string): void {
+    if (this.selectedRouteId() === routeId) {
+      this.selectedRouteId.set(null);
+    } else {
+      this.selectedRouteId.set(routeId);
+    }
   }
 
   getPaginatedRoutes(): RouteModel[] {
@@ -60,13 +67,12 @@ export class ListadoRutasComponent implements OnInit {
     return Math.ceil(this.totalRoutes() / this.pageSize());
   }
 
-  // Método para calcular el índice final de la página actual
   getEndIndex(): number {
     return Math.min(this.currentPage() * this.pageSize(), this.totalRoutes());
   }
 
-  // Método para calcular el índice inicial de la página actual
   getStartIndex(): number {
+    if (this.totalRoutes() === 0) return 0;
     return (this.currentPage() - 1) * this.pageSize() + 1;
   }
 
@@ -82,20 +88,35 @@ export class ListadoRutasComponent implements OnInit {
   }
 
   navigateToMap(): void {
-    this.router.navigate(['/rutas/mapa']);
+    const selectedId = this.selectedRouteId();
+    if (!selectedId) {
+      this.errorMessage.set('Debe seleccionar una ruta para ver el mapa.');
+      setTimeout(() => this.errorMessage.set(''), 3000);
+      return;
+    }
+    this.router.navigate(['/rutas/rutas-mapa', selectedId]);
   }
 
   navigateToCreate(): void {
     this.router.navigate(['/rutas/crear-ruta']);
   }
 
+  viewRouteDetails(routeId: string): void {
+    this.router.navigate(['/rutas', routeId]);
+  }
+
   formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit'
     });
+  }
+
+  truncateId(id: string): string {
+    return id.substring(0, 8) + '...';
   }
 
   retryLoad(): void {

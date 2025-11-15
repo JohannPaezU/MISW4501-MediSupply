@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="page-header">
-    <h1 class="page-title">Mapa de rutas</h1>
+    <h1 class="page-title">Mapa de Ruta</h1>
     <div class="page-actions">
       <button class="btn btn-secondary" (click)="navigateBack()">
         Volver al Listado
@@ -8,7 +8,27 @@
     </div>
   </div>
 
-  <!-- Mensaje de error -->
+  <div *ngIf="routeData() && !loading()" class="route-info-card">
+    <div class="route-info-header">
+      <h2>{{ routeData()!.name }}</h2>
+      <span class="vehicle-badge">{{ routeData()!.vehicle_plate }}</span>
+    </div>
+    <div class="route-info-details">
+      <div class="info-item">
+        <span class="info-label">Fecha límite:</span>
+        <span class="info-value">{{ formatDate(routeData()!.delivery_deadline) }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Restricciones:</span>
+        <span class="info-value">{{ routeData()!.restrictions || 'Ninguna' }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Total de paradas:</span>
+        <span class="info-value">{{ routeData()!.total_count }}</span>
+      </div>
+    </div>
+  </div>
+
   <div *ngIf="errorMessage()" class="alert alert-error">
     <span>{{ errorMessage() }}</span>
     <button class="btn btn-link btn-retry" (click)="retryLoad()">
@@ -16,40 +36,53 @@
     </button>
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading()" class="loading-overlay">
     <p>Cargando mapa...</p>
   </div>
 
-  <!-- Contenedor del mapa -->
-  <div class="map-wrapper">
+  <div class="map-wrapper" *ngIf="!loading() && !errorMessage()">
     <div id="map" class="map-container"></div>
     <div class="map-info">
       <p>{{ lastUpdate() }}</p>
     </div>
   </div>
 
-  <!-- Leyenda del mapa -->
-  <div *ngIf="!loading() && routes().length > 0" class="map-legend">
+  <div *ngIf="!loading() && routeData()" class="map-legend">
     <h3>Leyenda</h3>
     <div class="legend-items">
       <div class="legend-item">
-        <div class="legend-icon origin"></div>
-        <span>Origen (O)</span>
+        <div class="legend-icon stop-1"></div>
+        <span>Parada 1</span>
       </div>
       <div class="legend-item">
-        <div class="legend-icon destiny"></div>
-        <span>Destino (D)</span>
+        <div class="legend-icon stop-2"></div>
+        <span>Parada 2</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon stop-3"></div>
+        <span>Parada 3+</span>
       </div>
       <div class="legend-item">
         <div class="legend-line"></div>
-        <span>Ruta</span>
+        <span>Ruta de entrega</span>
       </div>
     </div>
   </div>
 
-  <!-- Estado sin rutas -->
-  <div *ngIf="!loading() && routes().length === 0 && !errorMessage()" class="no-routes">
-    <p>No hay rutas disponibles para mostrar en el mapa.</p>
+
+  <div *ngIf="!loading() && routeData()" class="stops-list">
+    <h3>Paradas de la Ruta</h3>
+    <div class="stops-container">
+      <div *ngFor="let stop of routeData()!.stops; let i = index" class="stop-card">
+        <div class="stop-number">{{ i + 1 }}</div>
+        <div class="stop-details">
+          <h4>{{ stop.client_name }}</h4>
+          <p><strong>Dirección:</strong> {{ stop.client_address }}</p>
+          <p><strong>Teléfono:</strong> {{ stop.client_phone }}</p>
+          <p><strong>Fecha entrega:</strong> {{ formatDate(stop.delivery_date) }}</p>
+          <span class="status-badge">{{ stop.order_status }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

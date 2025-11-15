@@ -2,22 +2,16 @@
   <div class="page-header">
     <h1 class="page-title">Crear Ruta</h1>
     <div class="page-actions">
-      <button
-        class="btn btn-primary"
-        [disabled]="!canCreateRoute() || loading()"
-        (click)="openCreateRouteForm()"
-      >
-        Crear Ruta
+      <button class="btn btn-secondary" (click)="navigateBack()" [disabled]="loading()">
+        Volver al Listado
       </button>
-      <button class="btn btn-secondary" (click)="loadOrders()" [disabled]="loading()">
-        Recargar
+      <button class="btn btn-primary" (click)="openCreateRouteForm()" [disabled]="!canCreateRoute() || loading()">
+        Crear Ruta con Selección
       </button>
     </div>
   </div>
 
-  <!-- Mensajes -->
   <div *ngIf="errorMessage()" class="alert alert-error">
-    <span class="alert-icon">⚠️</span>
     <span>{{ errorMessage() }}</span>
   </div>
 
@@ -25,140 +19,143 @@
     {{ successMessage() }}
   </div>
 
-  <!-- Loader -->
-  <div *ngIf="loading()" class="loading-spinner">Cargando órdenes...</div>
 
-  <!-- Tabla de órdenes -->
-  <div *ngIf="!loading() && getDistributionCenterKeys().length > 0">
-    <div *ngFor="let centerId of getDistributionCenterKeys()" class="center-section">
-      <div class="center-header" (click)="selectDistributionCenter(centerId)">
-        <h2>{{ groupedOrders()[centerId].centerName }}</h2>
-        <span class="center-toggle"
-          >{{ selectedDistributionCenter() === centerId ? '▲' : '▼' }}</span
-        >
+  <div *ngIf="loading() && !showCreateRouteForm()" class="loading-container">
+    <p>Cargando órdenes...</p>
+  </div>
+
+
+  <div *ngIf="showCreateRouteForm()" class="route-form-modal" (click)="cancelCreateRoute()">
+    <div class="route-form-content" (click)="$event.stopPropagation()">
+      <h2 class="form-title">Crear Nueva Ruta</h2>
+
+      <div class="form-content">
+        <div class="form-field">
+          <label class="form-label">Nombre de la Ruta *</label>
+          <input type="text" class="form-input" [value]="routeForm().name"
+            (input)="updateFormField('name', $any($event.target).value)" placeholder="Ej: Ruta Bogotá Zona Norte">
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Placa del Vehículo *</label>
+          <input type="text" class="form-input" [value]="routeForm().vehicle_plate"
+            (input)="updateFormField('vehicle_plate', $any($event.target).value)" placeholder="Ej: ABC-123">
+        </div>
+
+        <div class="form-field form-field-full">
+          <label class="form-label">Restricciones</label>
+          <textarea class="form-input" [value]="routeForm().restrictions"
+            (input)="updateFormField('restrictions', $any($event.target).value)" rows="3"
+            placeholder="Ej: Evitar vías con peaje"></textarea>
+        </div>
+
+        <div class="selected-orders-summary">
+          <h3>Órdenes Seleccionadas: {{ getSelectedOrders().length }}</h3>
+          <p class="field-hint" *ngIf="getSelectedDistributionCenterId()">
+            Centro de Distribución: {{ groupedOrders()[getSelectedDistributionCenterId()!].centerName }}
+          </p>
+        </div>
       </div>
 
-      <div
-        class="table-container"
-        *ngIf="selectedDistributionCenter() === centerId || isSomeSelected(centerId)"
-      >
+      <div class="form-actions">
+        <button class="btn btn-secondary" (click)="cancelCreateRoute()" [disabled]="loading()">
+          Cancelar
+        </button>
+        <button class="btn btn-primary" (click)="createRoute()" [disabled]="!validateRouteForm() || loading()">
+          {{ loading() ? 'Creando...' : 'Crear Ruta' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Listado de órdenes agrupadas por centro de distribución -->
+  <div *ngIf="!loading() && !showCreateRouteForm()">
+    <div *ngIf="getDistributionCenterKeys().length === 0" class="no-data">
+      <p>No hay órdenes disponibles para asignar a rutas.</p>
+      <button class="btn btn-link" (click)="loadOrders()">
+        Recargar órdenes
+      </button>
+    </div>
+
+    <div *ngFor="let centerId of getDistributionCenterKeys()" class="distribution-center-section">
+      <div class="center-header">
+        <div>
+          <h2 class="center-title">
+            {{ groupedOrders()[centerId].centerName }}
+            <span class="order-count">({{ groupedOrders()[centerId].orders.length }} órdenes)</span>
+          </h2>
+          <p class="center-info">{{ groupedOrders()[centerId].centerInfo }}</p>
+        </div>
+        <button
+          class="btn btn-link"
+          (click)="toggleDistributionCenterExpansion(centerId)">
+          {{ selectedDistributionCenter() === centerId ? 'Colapsar' : 'Expandir' }}
+        </button>
+      </div>
+
+      <div *ngIf="selectedDistributionCenter() === centerId || selectedDistributionCenter() === null"
+           class="table-container">
         <table class="data-table">
           <thead>
             <tr>
-              <th>
+              <th style="width: 50px;">
                 <input
-                title="Seleccion"
                   type="checkbox"
+                  title="Seleccionar todas"
                   [checked]="isAllSelected(centerId)"
                   [indeterminate]="isSomeSelected(centerId)"
                   (change)="toggleSelectAll(centerId)"
-                />
+                  (click)="$event.stopPropagation()">
               </th>
-              <th>ID</th>
+              <th>ID Orden</th>
               <th>Fecha Creación</th>
               <th>Fecha Entrega</th>
               <th>Comentarios</th>
-              <th>Productos</th>
+              <th>Estado</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let order of groupedOrders()[centerId].orders">
-              <td>
+            <tr *ngFor="let order of groupedOrders()[centerId].orders"
+                [class.selected-row]="order.selected"
+                class="selectable-order-row"
+                (click)="toggleOrderSelection(centerId, order.id)">
+              <td (click)="$event.stopPropagation()">
                 <input
-                title="Seleccion"
                   type="checkbox"
-                  [(ngModel)]="order.selected"
-                  (change)="toggleOrderSelection(centerId, order.id)"
-                />
+                  title="Seleccionar orden"
+                  [checked]="order.selected"
+                  (change)="toggleOrderSelection(centerId, order.id)">
               </td>
-              <td class="id-cell">{{ order.id }}</td>
+              <td>
+                <div class="id-cell">
+                  <span class="id-text">{{ truncateId(order.id) }}</span>
+                </div>
+              </td>
               <td>{{ formatDate(order.created_at) }}</td>
               <td>{{ formatDate(order.delivery_date) }}</td>
               <td>{{ order.comments || 'Sin comentarios' }}</td>
-              <td>{{ getTotalProducts(order) }}</td>
-            </tr>
-            <tr *ngIf="groupedOrders()[centerId].orders.length === 0">
-              <td colspan="6" class="no-data-cell">No hay órdenes recibidas.</td>
+              <td>
+                <span class="status-badge status-received">{{ order.status }}</span>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Formulario de creación de ruta -->
-  <div *ngIf="showCreateRouteForm()" class="route-form-container">
-    <h2>Información de la Ruta</h2>
-    <div class="form-content">
-      <div class="form-field">
-        <label class="form-label">Origen</label>
-        <input
-          type="text"
-          class="form-input"
-          [(ngModel)]="routeForm().origin"
-          (input)="updateFormField('origin', $event)"
-          placeholder="Ej: Centro de Distribución Norte"
-        />
-      </div>
 
-      <div class="form-field">
-        <label class="form-label">Destino</label>
-        <input
-          type="text"
-          class="form-input"
-          [(ngModel)]="routeForm().destiny"
-          (input)="updateFormField('destiny', $event)"
-          placeholder="Ej: Calle 45 #10-23"
-        />
-      </div>
-
-      <div class="form-field">
-        <label class="form-label">Fecha Límite</label>
-        <input
-        title="fecha"
-          type="date"
-          class="form-input"
-          [(ngModel)]="routeForm().date_limit"
-          (input)="updateFormField('date_limit', $event)"
-        />
-      </div>
-
-      <div class="form-field">
-        <label class="form-label">Vehículo</label>
-        <input
-          type="text"
-          class="form-input"
-          [(ngModel)]="routeForm().vehicle"
-          (input)="updateFormField('vehicle', $event)"
-          placeholder="Ej: Camión 123ABC"
-        />
-      </div>
-
-      <div class="form-field">
-        <label class="form-label">Restricciones</label>
-        <textarea
-          class="form-input"
-          [(ngModel)]="routeForm().restrictions"
-          (input)="updateFormField('restrictions', $event)"
-          placeholder="Ej: No pasar por túneles, carga frágil..."
-        ></textarea>
-      </div>
+<div *ngIf="showSuccessAnimation()" class="success-animation-overlay">
+  <div class="success-animation-content">
+    <div class="success-checkmark">
+      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+      </svg>
     </div>
-
-    <div class="form-actions">
-      <button class="btn btn-secondary" (click)="cancelCreateRoute()">Cancelar</button>
-      <button
-        class="btn btn-primary"
-        [disabled]="loading()"
-        (click)="createRoute()"
-      >
-        Crear Ruta
-      </button>
-    </div>
-  </div>
-
-  <!-- No hay órdenes -->
-  <div *ngIf="!loading() && getDistributionCenterKeys().length === 0" class="no-data-cell">
-    No hay órdenes con estado "received".
+    <h2 class="success-title">¡Ruta Creada Exitosamente!</h2>
+    <p class="success-message">Redirigiendo al listado de rutas...</p>
   </div>
 </div>

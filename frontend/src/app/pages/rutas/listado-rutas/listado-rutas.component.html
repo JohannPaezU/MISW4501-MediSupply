@@ -1,8 +1,8 @@
 <div class="page-container">
   <div class="page-header">
-    <h1 class="page-title">Detalles rutas</h1>
+    <h1 class="page-title">Detalles Rutas</h1>
     <div class="page-actions">
-      <button class="btn btn-secondary" (click)="navigateToMap()">
+      <button class="btn btn-secondary" (click)="navigateToMap()" [disabled]="!selectedRouteId()">
         Ver Mapa
       </button>
       <button class="btn btn-primary" (click)="navigateToCreate()">
@@ -11,7 +11,6 @@
     </div>
   </div>
 
-  <!-- Mensaje de error -->
   <div *ngIf="errorMessage()" class="alert alert-error">
     <span>{{ errorMessage() }}</span>
     <button class="btn btn-link btn-retry" (click)="retryLoad()">
@@ -19,35 +18,52 @@
     </button>
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading()" class="loading-container">
     <p>Cargando rutas...</p>
   </div>
 
-  <!-- Tabla de rutas -->
   <div *ngIf="!loading() && !errorMessage()" class="table-container">
     <table class="data-table">
       <thead>
         <tr>
+          <th style="width: 50px;">Seleccionar</th>
           <th>ID</th>
-          <th>Origen</th>
-          <th>Restricciones</th>
+          <th>Nombre</th>
+          <th>Centro de Distribución</th>
           <th>Vehículo</th>
-          <th>Destino</th>
-          <th>Fecha Max Entrega</th>
+          <th>Restricciones</th>
+          <th>Fecha Límite</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let route of getPaginatedRoutes()">
-          <td>{{ route.id }}</td>
-          <td>{{ route.origin }}</td>
+        <tr *ngFor="let route of getPaginatedRoutes()" [class.selected-row]="selectedRouteId() === route.id"
+          class="selectable-row" (click)="selectRoute(route.id)">
+          <td (click)="$event.stopPropagation()">
+            <input type="radio" name="selectedRoute" [checked]="selectedRouteId() === route.id"
+              (change)="selectRoute(route.id)" title="Seleccionar ruta">
+          </td>
+          <td>
+            <div class="id-cell">
+              <span class="id-text">{{ truncateId(route.id) }}</span>
+            </div>
+          </td>
+          <td>{{ route.name }}</td>
+          <td>
+            <div class="center-info">
+              <strong>{{ route.distribution_center.name }}</strong>
+              <span class="center-location">
+                {{ route.distribution_center.city }}, {{ route.distribution_center.country }}
+              </span>
+            </div>
+          </td>
+          <td>
+            <span class="vehicle-badge">{{ route.vehicle_plate }}</span>
+          </td>
           <td>{{ route.restrictions || 'Ninguna' }}</td>
-          <td>{{ route.vehicle }}</td>
-          <td>{{ route.destiny }}</td>
-          <td>{{ formatDate(route.date_limit) }}</td>
+          <td>{{ formatDate(route.delivery_deadline) }}</td>
         </tr>
         <tr *ngIf="routes().length === 0">
-          <td colspan="6" class="no-data-cell">
+          <td colspan="7" class="no-data-cell">
             No hay rutas disponibles
           </td>
         </tr>
@@ -55,11 +71,10 @@
     </table>
   </div>
 
-  <!-- Paginación -->
   <div *ngIf="!loading() && routes().length > 0" class="pagination-controls">
     <div class="page-size-selector">
       <span>Filas por página:</span>
-      <select title="Pagina" [value]="pageSize()" (change)="changePageSize(+$any($event.target).value)">
+      <select title="Página" [value]="pageSize()" (change)="changePageSize(+$any($event.target).value)">
         <option [value]="10">10</option>
         <option [value]="25">25</option>
         <option [value]="50">50</option>
@@ -71,14 +86,10 @@
     </div>
 
     <div class="page-navigation">
-      <button
-        (click)="goToPage(currentPage() - 1)"
-        [disabled]="currentPage() === 1">
+      <button (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1">
         ‹
       </button>
-      <button
-        (click)="goToPage(currentPage() + 1)"
-        [disabled]="currentPage() === getTotalPages()">
+      <button (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === getTotalPages()">
         ›
       </button>
     </div>
