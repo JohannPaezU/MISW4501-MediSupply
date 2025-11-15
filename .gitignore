@@ -85,7 +85,7 @@ pnpm-debug.log*
 .eslintcache
 *.tsbuildinfo
 .out/
-environments/
+frontend/src/environments/environment.prod.ts
 
 
 # See http://help.github.com/ignore-files/ for more about ignoring files.
@@ -101,7 +101,7 @@ environments/
 npm-debug.log
 yarn-error.log
 
-frontend/src/environments/
+
 # IDEs and editors
 .idea/
 .project
