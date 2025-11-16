@@ -16,7 +16,6 @@ class ProductRepository {
     }
 
     fun getRecommendedProducts(authToken: String, clientId: String): Call<ProductListResponse> {
-        Log.d("ProductRepository", "Getting recommended products for client: $clientId")
         return productService.getRecommendedProducts(authToken, clientId)
     }
 

@@ -28,7 +28,8 @@ class OrderProductDetailTest {
             batch = batch,
             due_date = dueDate,
             price_per_unit = pricePerUnit,
-            quantity = quantity
+            quantity = quantity,
+            image_url = "https://example.com/image.jpg"
         )
 
         // Then
@@ -60,7 +61,8 @@ class OrderProductDetailTest {
             batch = "BATCH-001",
             due_date = "2025-12-31",
             price_per_unit = 10.5,
-            quantity = 2
+            quantity = 2,
+            image_url = "https://example.com/image1.jpg"
         )
         val product2 = OrderProductDetail(
             id = "product-123",
@@ -69,7 +71,8 @@ class OrderProductDetailTest {
             batch = "BATCH-001",
             due_date = "2025-12-31",
             price_per_unit = 10.5,
-            quantity = 2
+            quantity = 2,
+            image_url = "https://example.com/image1.jpg"
         )
         val product3 = OrderProductDetail(
             id = "product-456",
@@ -78,7 +81,8 @@ class OrderProductDetailTest {
             batch = "BATCH-002",
             due_date = "2026-01-01",
             price_per_unit = 20.0,
-            quantity = 1
+            quantity = 1,
+            image_url = "https://example.com/image2.jpg"
         )
 
         // When & Then
@@ -113,7 +117,8 @@ class OrderProductDetailTest {
             batch = "",
             due_date = "",
             price_per_unit = 0.0,
-            quantity = 0
+            quantity = 0,
+            image_url = ""
         )
 
         // When & Then
@@ -136,7 +141,8 @@ class OrderProductDetailTest {
             batch = "BATCH-2025!@#",
             due_date = "2025-12-31",
             price_per_unit = 15.99,
-            quantity = 5
+            quantity = 5,
+            image_url = "https://example.com/image.jpg"
         )
 
         // When & Then
@@ -166,7 +172,8 @@ class OrderProductDetailTest {
                 batch = "BATCH",
                 due_date = "2025-12-31",
                 price_per_unit = price,
-                quantity = quantity
+                quantity = quantity,
+                image_url = "https://example.com/image.jpg"
             )
             assertEquals("Price should match", price, product.price_per_unit, 0.01)
             assertEquals("Quantity should match", quantity, product.quantity)
@@ -187,7 +194,8 @@ class OrderProductDetailTest {
                 batch = "BATCH",
                 due_date = "2025-12-31",
                 price_per_unit = 10.0,
-                quantity = quantity
+                quantity = quantity,
+                image_url = "https://example.com/image.jpg"
             )
             assertEquals("Quantity should match", quantity, product.quantity)
         }
@@ -220,7 +228,7 @@ class OrderProductDetailTest {
         val product = createTestOrderProductDetail()
 
         // When
-        val (id, name, store, batch, due_date, price_per_unit, quantity) = product
+        val (id, name, store, batch, due_date, price_per_unit, quantity, image_url) = product
 
         // Then
         assertEquals("Component 1 should be id", product.id, id)
@@ -230,6 +238,7 @@ class OrderProductDetailTest {
         assertEquals("Component 5 should be due_date", product.due_date, due_date)
         assertEquals("Component 6 should be price_per_unit", product.price_per_unit, price_per_unit, 0.01)
         assertEquals("Component 7 should be quantity", product.quantity, quantity)
+        assertEquals("Component 8 should be image_url", product.image_url, image_url)
     }
 
     @Test
@@ -247,7 +256,8 @@ class OrderProductDetailTest {
             batch = longBatch,
             due_date = "2025-12-31",
             price_per_unit = 10.0,
-            quantity = 1
+            quantity = 1,
+            image_url = "https://example.com/image.jpg"
         )
 
         // When & Then
@@ -276,7 +286,8 @@ class OrderProductDetailTest {
                 batch = "BATCH",
                 due_date = date,
                 price_per_unit = 10.0,
-                quantity = 1
+                quantity = 1,
+                image_url = "https://example.com/image.jpg"
             )
             assertEquals("Date should match", date, product.due_date)
         }
@@ -305,7 +316,8 @@ class OrderProductDetailTest {
             batch = "AMX-MED-2025",
             due_date = "2026-01-17",
             price_per_unit = 18.0,
-            quantity = 1
+            quantity = 1,
+            image_url = "https://example.com/image.jpg"
         )
     }
 }

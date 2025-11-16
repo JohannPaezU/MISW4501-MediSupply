@@ -37,11 +37,8 @@ class UserViewModel(
         userRepository.loginUser(loginUserRequest).enqueue(object : Callback<LoginUserResponse>{
             override fun onResponse(call: Call<LoginUserResponse>, res: Response<LoginUserResponse>) {
                 if (res.isSuccessful && res.body() != null) {
-                    Log.d("UserViewModel", "Login successful - Response: ${res.body()}")
                     onResult(true, res.body()?.message!!)
                 } else {
-                    Log.e("UserViewModel", "Login failed - Error code: ${res.code()}, Message: ${res.message()}")
-                    Log.e("UserViewModel", "Error body: ${res.errorBody()?.string()}")
                     onResult(false, "Error logging in: ${res.code()}")
                 }
             }

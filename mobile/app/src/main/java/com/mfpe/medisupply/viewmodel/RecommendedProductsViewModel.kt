@@ -10,9 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RecommendedProductsViewModel : ViewModel() {
-
-    private val productRepository = ProductRepository()
+class RecommendedProductsViewModel(
+    private val productRepository: ProductRepository = ProductRepository()
+) : ViewModel() {
 
     fun getRecommendedProducts(
         authToken: String,
@@ -21,13 +21,10 @@ class RecommendedProductsViewModel : ViewModel() {
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                Log.d("RecommendedProductsViewModel", "Getting recommended products for client: $clientId")
                 val response = productRepository.getRecommendedProducts(
                     authToken,
                     clientId
                 ).execute()
-
-                Log.d("RecommendedProductsViewModel", "Response: ${response.body()}")
 
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && response.body() != null) {
