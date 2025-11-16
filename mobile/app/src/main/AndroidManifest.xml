@@ -21,6 +21,9 @@
             android:name=".ui.OrderDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.OrderProductsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.OrderSummaryActivity"
             android:exported="false" />
         <activity

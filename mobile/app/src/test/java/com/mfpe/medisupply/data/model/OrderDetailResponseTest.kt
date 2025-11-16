@@ -163,7 +163,8 @@ class OrderDetailResponseTest {
                 batch = "IBU-BOG-2025",
                 due_date = "2027-01-16",
                 price_per_unit = 12.5,
-                quantity = 1
+                quantity = 1,
+                image_url = "https://example.com/image2.jpg"
             ),
             OrderProductDetail(
                 id = "68e1e44b-bc60-42bd-b8d0-e1cfa349da2b",
@@ -172,7 +173,8 @@ class OrderDetailResponseTest {
                 batch = "LRT-BCM-2025",
                 due_date = "2026-08-15",
                 price_per_unit = 11.2,
-                quantity = 1
+                quantity = 1,
+                image_url = "https://example.com/image3.jpg"
             )
         )
 
@@ -363,7 +365,8 @@ class OrderDetailResponseTest {
             batch = "AMX-MED-2025",
             due_date = "2026-01-17",
             price_per_unit = 18.0,
-            quantity = 1
+            quantity = 1,
+            image_url = "https://example.com/image.jpg"
         )
     }
 }

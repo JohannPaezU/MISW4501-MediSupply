@@ -21,7 +21,11 @@ class RecommendedProductsActivityTest {
         
         // When & Then
         try {
-            val startMethod = companionClass.getDeclaredMethod("start", android.content.Context::class.java)
+            val startMethod = companionClass.getDeclaredMethod(
+                "start", 
+                android.content.Context::class.java,
+                String::class.java
+            )
             assertNotNull("Start method should exist", startMethod)
         } catch (e: NoSuchMethodException) {
             fail("Start method should exist: ${e.message}")

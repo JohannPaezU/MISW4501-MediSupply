@@ -9,6 +9,7 @@ data class OrderProductDetail(
     val batch: String,
     val due_date: String,
     val price_per_unit: Double,
-    val quantity: Int
+    val quantity: Int,
+    val image_url: String
 ): Serializable
 

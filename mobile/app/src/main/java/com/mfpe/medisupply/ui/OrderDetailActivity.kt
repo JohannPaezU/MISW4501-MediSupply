@@ -1,14 +1,11 @@
 package com.mfpe.medisupply.ui
 
 import android.os.Bundle
-import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.mfpe.medisupply.adapters.OrderProductDetailAdapter
 import com.mfpe.medisupply.data.model.Order
 import com.mfpe.medisupply.data.model.OrderDetailResponse
 import com.mfpe.medisupply.databinding.ActivityOrderDetailBinding
@@ -22,8 +19,6 @@ class OrderDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOrderDetailBinding
     private lateinit var orderDetailViewModel: OrderDetailViewModel
-    private lateinit var productsAdapter: OrderProductDetailAdapter
-    private var isProductsVisible = false
     private var orderDetail: OrderDetailResponse? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +30,6 @@ class OrderDetailActivity : AppCompatActivity() {
         // Inicializar ViewModel
         orderDetailViewModel = ViewModelProvider(this)[OrderDetailViewModel::class.java]
 
-        setupRecyclerView()
         setupClickListeners()
 
         // Obtener orderId del intent o del Order (para compatibilidad)
@@ -59,32 +53,16 @@ class OrderDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupRecyclerView() {
-        productsAdapter = OrderProductDetailAdapter()
-
-        binding.recyclerViewProducts.apply {
-            layoutManager = LinearLayoutManager(this@OrderDetailActivity)
-            adapter = productsAdapter
-        }
-    }
-
     private fun setupClickListeners() {
         binding.btnBack.setOnClickListener {
             finish()
         }
 
         binding.btnViewProducts.setOnClickListener {
-            isProductsVisible = !isProductsVisible
-
-            if (isProductsVisible) {
-                orderDetail?.let {
-                    productsAdapter.submitList(it.products)
-                    binding.cardProducts.visibility = View.VISIBLE
-                    binding.btnViewProducts.text = "Ocultar productos"
-                }
-            } else {
-                binding.cardProducts.visibility = View.GONE
-                binding.btnViewProducts.text = "Ver productos"
+            orderDetail?.let {
+                OrderProductsActivity.start(this, it.products)
+            } ?: run {
+                Toast.makeText(this, "No hay productos disponibles", Toast.LENGTH_SHORT).show()
             }
         }
     }

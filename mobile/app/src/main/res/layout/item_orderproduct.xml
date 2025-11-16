@@ -50,16 +50,6 @@
             android:gravity="center"
             tools:text="$25.000" />
 
-        <TextView
-            android:id="@+id/tvProductExpiry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="12sp"
-            android:textColor="@color/secondary_gray"
-            android:gravity="center"
-            tools:text="Vence: 12/2025" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
