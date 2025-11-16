@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mfpe.medisupply.R
-import com.mfpe.medisupply.adapters.OrderProductsAdapter
+import com.mfpe.medisupply.adapters.OrderCreationAdapter
 import com.mfpe.medisupply.databinding.ActivityOrderBinding
 import com.mfpe.medisupply.utils.PrefsManager
 import com.mfpe.medisupply.viewmodel.ProductsViewModel
@@ -17,7 +17,7 @@ import com.mfpe.medisupply.viewmodel.ProductsViewModel
 class OrderActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOrderBinding
-    private lateinit var orderProductsAdapter: OrderProductsAdapter
+    private lateinit var orderProductsAdapter: OrderCreationAdapter
     private lateinit var productsViewModel: ProductsViewModel
 
     private val orderSummaryLauncher = registerForActivityResult(
@@ -53,7 +53,7 @@ class OrderActivity : AppCompatActivity() {
                     this,
                     getString(R.string.error_no_products_selected),
                     Toast.LENGTH_LONG
-                ).show()
+                ).show() 
                 return@setOnClickListener
             }
 
@@ -71,7 +71,7 @@ class OrderActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        orderProductsAdapter = OrderProductsAdapter()
+        orderProductsAdapter = OrderCreationAdapter()
 
         binding.rvOrderProducts.apply {
             layoutManager = GridLayoutManager(this@OrderActivity, 2)

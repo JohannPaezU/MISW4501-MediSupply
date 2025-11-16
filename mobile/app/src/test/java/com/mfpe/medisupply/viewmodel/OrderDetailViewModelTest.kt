@@ -578,7 +578,8 @@ class OrderDetailViewModelTest {
             batch = "AMX-MED-2025",
             due_date = "2026-01-17",
             price_per_unit = 18.0,
-            quantity = 1
+            quantity = 1,
+            image_url = "https://example.com/image.jpg"
         )
     }
 }

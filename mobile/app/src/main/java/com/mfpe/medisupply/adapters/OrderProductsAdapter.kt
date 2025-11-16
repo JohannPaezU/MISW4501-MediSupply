@@ -7,15 +7,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mfpe.medisupply.R
-import com.mfpe.medisupply.data.model.Product
+import com.mfpe.medisupply.data.model.OrderProductDetail
 import com.mfpe.medisupply.databinding.ItemOrderproductBinding
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
 import java.util.Locale
 
-class OrderProductsAdapter : ListAdapter<Product, OrderProductsAdapter.OrderProductViewHolder>(ProductoDiffCallback()) {
-
-    private val quantityMap = mutableMapOf<String, Int>()
+class OrderProductsAdapter : ListAdapter<OrderProductDetail, OrderProductsAdapter.OrderProductViewHolder>(
+    OrderProductDiffCallback()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderProductViewHolder {
         val binding = ItemOrderproductBinding.inflate(
@@ -27,74 +26,47 @@ class OrderProductsAdapter : ListAdapter<Product, OrderProductsAdapter.OrderProd
     }
 
     override fun onBindViewHolder(holder: OrderProductViewHolder, position: Int) {
-        val product = getItem(position)
-        val currentQuantity = quantityMap[product.id] ?: 0
-        holder.bind(product, currentQuantity,
-            onDecrease = {
-                updateQuantity(product.id, -1)
-                notifyItemChanged(position)
-            },
-            onIncrease = {
-                updateQuantity(product.id, 1)
-                notifyItemChanged(position)
-            }
-        )
+        holder.bind(getItem(position))
     }
-
-    private fun updateQuantity(productId: String, delta: Int) {
-        val currentQuantity = quantityMap[productId] ?: 0
-        val newQuantity = (currentQuantity + delta).coerceAtLeast(0)
-        quantityMap[productId] = newQuantity
-    }
-
-    fun getProductsWithQuantities(): Map<String, Int> = quantityMap.toMap()
 
     class OrderProductViewHolder(
         private val binding: ItemOrderproductBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(
-            product: Product,
-            quantity: Int,
-            onDecrease: () -> Unit,
-            onIncrease: () -> Unit
-        ) {
+        fun bind(product: OrderProductDetail) {
             binding.apply {
                 tvProductName.text = product.name
+
+                // Formatear precio
                 val formato = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
                 tvProductPrice.text = formato.format(product.price_per_unit)
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val displayFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
-                try {
-                    val date = dateFormat.parse(product.due_date)
-                    if (date != null) {
-                        tvProductExpiry.text = "Vence: ${displayFormat.format(date)}"
-                    } else {
-                        tvProductExpiry.text = "Vence: ${product.due_date}"
-                    }
-                } catch (e: Exception) {
-                    tvProductExpiry.text = "Vence: ${product.due_date}"
-                }
+
+                // Mostrar cantidad (ocultar botones y mostrar solo el texto)
+                btnIncrease.visibility = android.view.View.GONE
+                btnDecrease.visibility = android.view.View.GONE
+                tvQuantity.text = product.quantity.toString()
+                tvQuantity.textSize = 14f
+                tvQuantity.setTextColor(androidx.core.content.ContextCompat.getColor(
+                    tvQuantity.context,
+                    com.mfpe.medisupply.R.color.dark_gray
+                ))
+
+                // Cargar imagen con Glide
                 Glide.with(ivProductImage.context)
                     .load(product.image_url)
                     .placeholder(R.drawable.ic_launcher_background)
                     .error(R.drawable.ic_launcher_background)
                     .into(ivProductImage)
-                tvQuantity.text = quantity.toString()
-
-                // Configurar listeners
-                btnDecrease.setOnClickListener { onDecrease() }
-                btnIncrease.setOnClickListener { onIncrease() }
             }
         }
     }
 
-    class ProductoDiffCallback : DiffUtil.ItemCallback<Product>() {
-        override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
+    class OrderProductDiffCallback : DiffUtil.ItemCallback<OrderProductDetail>() {
+        override fun areItemsTheSame(oldItem: OrderProductDetail, newItem: OrderProductDetail): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
+        override fun areContentsTheSame(oldItem: OrderProductDetail, newItem: OrderProductDetail): Boolean {
             return oldItem == newItem
         }
     }
