@@ -1,0 +1,85 @@
+HU,sub_task,status,completion_date,assignee
+HU02,SCRUM-123 - Realizar pruebas unitarias backend,Done,2025-10-15,Johann Sebastian Paez Campos
+HU02,SCRUM-124 - Realizar pruebas unitarias frontend,Done,2025-10-19,Miguel Fernando Padilla Espino
+HU02,SCRUM-122 - Realizar pruebas manuales,Done,2025-10-12,Julian Oliveros forero
+HU02,SCRUM-121 - Integrar backend y frontend,Done,2025-10-15,js.cervantes
+HU02,SCRUM-120 - Crear frontend,Done,2025-10-12,js.cervantes
+HU02,SCRUM-119 - Crear backend,Done,2025-10-10,Johann Sebastian Paez Campos
+HU05,SCRUM-125 - Crear backend,Done,2025-10-10,Miguel Fernando Padilla Espino
+HU05,SCRUM-126 - Crear frontend,Done,2025-10-10,Johann Sebastian Paez Campos
+HU05,SCRUM-127 - Integrar backend y frontend,Done,2025-10-12,Johann Sebastian Paez Campos
+HU05,SCRUM-128 - Realizar pruebas manuales,Done,2025-10-12,js.cervantes
+HU05,SCRUM-129 - Realizar pruebas unitarias backend,Done,2025-10-15,Miguel Fernando Padilla Espino
+HU05,SCRUM-130 - Realizar pruebas unitarias frontend,Done,2025-10-19,Johann Sebastian Paez Campos
+HU03,SCRUM-136 - Crear backend,Done,2025-10-10,js.cervantes
+HU03,SCRUM-137 - Crear frontend,Done,2025-10-12,Julian Oliveros forero
+HU03,SCRUM-138 - Integrar backend y frontend,Done,2025-10-15,Julian Oliveros forero
+HU03,SCRUM-139 - Realizar pruebas manuales,Done,2025-10-15,Miguel Fernando Padilla Espino
+HU03,SCRUM-140 - Realizar pruebas unitarias backend,Done,2025-10-19,js.cervantes
+HU03,SCRUM-141 - Realizar pruebas unitarias frontend,Done,2025-10-19,Julian Oliveros forero
+HU011,SCRUM-131 - Crear backend,Done,2025-10-12,Julian Oliveros forero
+HU011,SCRUM-132 - Crear componente de registro en APP,Done,2025-10-10,Miguel Fernando Padilla Espino
+HU011,SCRUM-133 - Crear vista de registro en APP,Done,2025-10-10,Miguel Fernando Padilla Espino
+HU011,SCRUM-134 - Realizar pruebas unitarias backend,Done,2025-10-15,Julian Oliveros forero
+HU011,SCRUM-135 - Realizar pruebas manuales,Done,2025-10-12,Johann Sebastian Paez Campos
+HU011,SCRUM-152 - Realizar Pruebas End-to-end Front,Done,2025-10-15,Julian Oliveros forero
+HU04,SCRUM-183 - Crear backend,Done,2025-10-21,Johann Sebastian Paez Campos
+HU04,SCRUM-184 - Crear componente de registro de pedidos en APP,Done,2025-10-26,js.cervantes
+HU04,SCRUM-185 - Crear vista de registro de pedidos en APP,Done,2025-10-26,Julian Oliveros forero
+HU04,SCRUM-186 - Realizar pruebas unitarias backend para pedidos,Done,2025-10-29,Miguel Fernando Padilla Espino
+HU04,SCRUM-187 - Realizar pruebas manuales de pedidos,Done,2025-10-30,Johann Sebastian Paez Campos
+HU04,SCRUM-188 - Realizar Pruebas End-to-end Front de pedidos,Done,2025-11-01,js.cervantes
+HU06,SCRUM-160 - Crear Backend,Done,2025-10-26,Miguel Fernando Padilla Espino
+HU06,SCRUM-161 - Realizar Pruebas Backend,Done,2025-10-28,js.cervantes
+HU06,SCRUM-162 - Crear componente en APP,Done,2025-10-21,Johann Sebastian Paez Campos
+HU06,SCRUM-163 - Crear vista en APP,Done,2025-10-24,Johann Sebastian Paez Campos
+HU06,SCRUM-164 - Realizar Pruebas Manuales,Done,2025-10-29,Julian Oliveros forero
+HU06,SCRUM-165 - Realizar Pruebas End-to-end,Done,2025-10-24,Miguel Fernando Padilla Espino
+HU09,SCRUM-159 - Crear backend,Done,2025-10-26,Julian Oliveros forero
+HU09,SCRUM-166 - Crear componente de registro de pedidos en APP,Done,2025-10-26,js.cervantes
+HU09,SCRUM-167 - Crear vista de registro de pedidos en APP,Done,2025-10-26,Johann Sebastian Paez Campos
+HU09,SCRUM-168 - Realizar pruebas unitarias backend para pedidos,Done,2025-10-26,Julian Oliveros forero
+HU09,SCRUM-169 - Realizar pruebas manuales de pedidos,Done,2025-10-28,js.cervantes
+HU09,SCRUM-171 - Realizar Pruebas End-to-end Front de pedidos,Done,2025-10-28,Johann Sebastian Paez Campos
+HU08,SCRUM-153 - Crear backend,Done,2025-10-24,Johann Sebastian Paez Campos
+HU08,SCRUM-154 - Crear componente en APP,Done,2025-10-26,Miguel Fernando Padilla Espino
+HU08,SCRUM-155 - Crear vista en APP,Done,2025-10-29,Julian Oliveros forero
+HU08,SCRUM-156 - Realizar pruebas backend,Done,2025-10-30,js.cervantes
+HU08,SCRUM-157 - Realizar pruebas manuales,Done,2025-10-30,Johann Sebastian Paez Campos
+HU08,SCRUM-158 - Realizar pruebas end-to-end,Done,2025-11-01,Miguel Fernando Padilla Espino
+HU07,SCRUM-170 - Crear Backend,Done,2025-10-24,Miguel Fernando Padilla Espino
+HU07,SCRUM-172 - Crear Componente en APP,Done,2025-10-26,js.cervantes
+HU07,SCRUM-173 - Crear vista en APP,Done,2025-10-24,Julian Oliveros forero
+HU07,SCRUM-174 - Realizar Pruebas End-to-end,Done,2025-10-30,Johann Sebastian Paez Campos
+HU07,SCRUM-175 - Realizar pruebas manuales,Done,2025-10-30,Miguel Fernando Padilla Espino
+HU07,SCRUM-176 - Realizar pruebas backend,Done,2025-11-01,js.cervantes
+HU01,SCRUM-207 - Crear backend,Done,2025-11-16,js.cervantes
+HU01,SCRUM-208 - Crear componente en APP,Done,2025-11-16,Miguel Fernando Padilla Espino
+HU01,SCRUM-209 - Crear vista en APP,Done,2025-11-16,Julian Oliveros forero
+HU01,SCRUM-210 - Realizar pruebas backend,Done,2025-11-16,Johann Sebastian Paez Campos
+HU01,SCRUM-211 - Realizar pruebas manuales,Done,2025-11-18,Miguel Fernando Padilla Espino
+HU01,SCRUM-212 - Realizar pruebas end-to-end,Done,2025-11-18,js.cervantes
+HU012,SCRUM-189 - Crear backend,Done,2025-11-04,Miguel Fernando Padilla Espino
+HU012,SCRUM-190 - Crear componente de registro de pedidos en APP,Done,2025-11-05,Julian Oliveros forero
+HU012,SCRUM-191 - Crear vista de registro de pedidos en APP,Done,2025-11-05,Johann Sebastian Paez Campos
+HU012,SCRUM-192 - Realizar pruebas unitarias backend para pedidos,Done,2025-11-05,js.cervantes
+HU012,SCRUM-193 - Realizar pruebas manuales de pedidos,Done,2025-11-05,Miguel Fernando Padilla Espino
+HU012,SCRUM-194 - Realizar Pruebas End-to-end Front de pedidos,Done,2025-11-05,Julian Oliveros forero
+HU013,SCRUM-195 - Crear backend,Done,2025-11-05,Johann Sebastian Paez Campos
+HU013,SCRUM-196 - Crear componente en APP,Done,2025-11-16,js.cervantes
+HU013,SCRUM-197 - Crear vista en APP,Done,2025-11-16,Miguel Fernando Padilla Espino
+HU013,SCRUM-198 - Realizar pruebas backend,Done,2025-11-16,Julian Oliveros forero
+HU013,SCRUM-199 - Realizar pruebas manuales,Done,2025-11-16,js.cervantes
+HU013,SCRUM-200 - Realizar pruebas end-to-end,Done,2025-11-18,Johann Sebastian Paez Campos
+HU014,SCRUM-201 - Crear backend,Done,2025-11-15,Julian Oliveros forero
+HU014,SCRUM-202 - Crear componente en APP,Done,2025-11-16,Johann Sebastian Paez Campos
+HU014,SCRUM-203 - Crear vista en APP,Done,2025-11-16,js.cervantes
+HU014,SCRUM-204 - Realizar pruebas backend,Done,2025-11-16,Miguel Fernando Padilla Espino
+HU014,SCRUM-205 - Realizar pruebas manuales,Done,2025-11-18,Julian Oliveros forero
+HU014,SCRUM-206 - Realizar pruebas end-to-end,Done,2025-11-18,Johann Sebastian Paez Campos
+HU10,SCRUM-177 - Crear backend para procesamiento de video,Done,2025-11-05,Johann Sebastian Paez Campos
+HU10,SCRUM-178 - Crear componente de video en APP,Done,2025-11-14,Julian Oliveros forero
+HU10,SCRUM-179 - Crear vista de recomendaciones en APP,Done,2025-11-14,js.cervantes
+HU10,SCRUM-180 - Realizar pruebas unitarias backend para video,Done,2025-11-15,Miguel Fernando Padilla Espino
+HU10,SCRUM-181 - Realizar pruebas manuales de video,Done,2025-11-15,Julian Oliveros forero
+HU10,SCRUM-182 - Realizar Pruebas End-to-end Front de video,Done,2025-11-18,Miguel Fernando Padilla Espino
