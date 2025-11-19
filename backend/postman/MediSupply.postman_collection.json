@@ -262,7 +262,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"419187\"\r\n}",
+							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp_code\": \"907648\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -472,7 +472,6 @@
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								},
@@ -1001,7 +1000,6 @@
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								},
@@ -1238,12 +1236,18 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/products",
+							"raw": "{{base_url}}/products?limit=2",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"products"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								}
 							]
 						}
 					},
@@ -1296,6 +1300,35 @@
 							"body": "{\n    \"total_count\": 5,\n    \"products\": [\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"details\": \"Antibiótico de amplio espectro para infecciones bacterianas leves y moderadas.\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/f1/Amoxicillin_500_mg_capsules.jpg\",\n            \"due_date\": \"2027-08-28\",\n            \"stock\": 800,\n            \"price_per_unit\": 18,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"details\": \"Antiinflamatorio y analgésico de uso común para el dolor y la fiebre.\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/d/d8/Advil_tablets.jpg\",\n            \"due_date\": \"2027-08-05\",\n            \"stock\": 1200,\n            \"price_per_unit\": 12.5,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"617181bb-03e6-497a-b285-a1a6e6df456c\",\n            \"name\": \"Loratadina 10mg\",\n            \"details\": \"Antihistamínico utilizado para aliviar síntomas de alergias estacionales y cutáneas.\",\n            \"store\": \"CEDI Bucaramanga\",\n            \"batch\": \"LRT-BCM-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/6/6e/Loratadine_10mg_tablets.jpg\",\n            \"due_date\": \"2025-12-22\",\n            \"stock\": 1100,\n            \"price_per_unit\": 11.2,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"8154a5fc-4262-45d8-9f67-cabfe11c7165\",\n            \"name\": \"Omeprazol 20mg\",\n            \"details\": \"Medicamento para reducir la acidez estomacal y tratar el reflujo gástrico.\",\n            \"store\": \"CEDI Barranquilla\",\n            \"batch\": \"OMP-BAQ-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/4/4a/Omeprazole_capsules.jpg\",\n            \"due_date\": \"2026-10-02\",\n            \"stock\": 950,\n            \"price_per_unit\": 14.3,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        },\n        {\n            \"id\": \"7f5a44fd-22da-4ee3-a580-cec9043f0d8d\",\n            \"name\": \"Paracetamol 500mg\",\n            \"details\": \"Medicamento para aliviar el dolor y reducir la fiebre, seguro en dosis recomendadas.\",\n            \"store\": \"CEDI Cali\",\n            \"batch\": \"PAR-CAL-2025\",\n            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/f/f1/Paracetamol_500_mg_tablets.jpg\",\n            \"due_date\": \"2027-07-27\",\n            \"stock\": 2000,\n            \"price_per_unit\": 9.8,\n            \"created_at\": \"2025-10-23T01:57:29.775289Z\"\n        }\n    ]\n}"
 						}
 					]
+				},
+				{
+					"name": "Get Recommended Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/recommended?client_id=3674850f-4129-447d-86aa-d3dcde861d63",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"recommended"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "client_id",
+									"value": "3674850f-4129-447d-86aa-d3dcde861d63"
+								}
+							]
+						}
+					},
+					"response": []
 				},
 				{
 					"name": "Get Products By Id",
@@ -1964,7 +1997,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-27\",\r\n    \"distribution_center_id\": \"8206bc3d-f79f-4b4c-8c74-078413fd64b3\",\r\n    \"client_id\": \"cd968a87-af40-44f9-9934-b8a80eab1e75\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"95932601-216a-43a9-8106-08743fbf7c84\",\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"product_id\": \"34828941-42ab-4a60-9e72-eb63fe607bd4\",\r\n            \"quantity\": 5\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-27\",\r\n    \"distribution_center_id\": \"20768bc8-49a7-4687-b583-598c027c66ca\",\r\n    \"client_id\": \"41c49d12-1527-4f5c-a431-09bfcef08072\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"3ed06266-78d1-4192-92d6-a6166bea5987\",\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"product_id\": \"81cd2b5e-ed29-4aac-9260-a791372f9f64\",\r\n            \"quantity\": 5\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1989,7 +2022,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-22\",\r\n    \"distribution_center_id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\r\n    \"client_id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\r\n            \"quantity\": 20\r\n        },\r\n        {\r\n            \"product_id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\r\n            \"quantity\": 50\r\n        }\r\n    ]\r\n}",
+									"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-27\",\r\n    \"distribution_center_id\": \"20768bc8-49a7-4687-b583-598c027c66ca\",\r\n    \"client_id\": \"41c49d12-1527-4f5c-a431-09bfcef08072\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"3ed06266-78d1-4192-92d6-a6166bea5987\",\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"product_id\": \"81cd2b5e-ed29-4aac-9260-a791372f9f64\",\r\n            \"quantity\": 5\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2012,7 +2045,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Thu, 23 Oct 2025 02:08:03 GMT"
+									"value": "Sat, 08 Nov 2025 20:48:28 GMT"
 								},
 								{
 									"key": "server",
@@ -2020,63 +2053,7 @@
 								},
 								{
 									"key": "content-length",
-									"value": "1321"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json",
-									"description": "",
-									"type": "text"
-								}
-							],
-							"cookie": [
-								{
-									"expires": "Invalid Date",
-									"domain": "",
-									"path": ""
-								}
-							],
-							"body": "{\n    \"id\": \"5ee0785a-14c1-4349-8370-a934c08a3a89\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-22\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-10-23T02:08:04.157779Z\",\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-23T01:57:23.938432Z\"\n    },\n    \"client\": {\n        \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n        \"full_name\": \"Kristie Jackson\",\n        \"email\": \"mkelley@example.com\",\n        \"phone\": \"4685138662\",\n        \"doi\": \"0300989191\",\n        \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-10-23T01:57:29.566347Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-08-05\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 20\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-08-28\",\n            \"price_per_unit\": 18,\n            \"quantity\": 50\n        }\n    ]\n}"
-						},
-						{
-							"name": "Create Order (By Client)",
-							"originalRequest": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-22\",\r\n    \"distribution_center_id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\r\n    \"client_id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\r\n            \"quantity\": 20\r\n        },\r\n        {\r\n            \"product_id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\r\n            \"quantity\": 50\r\n        }\r\n    ]\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/orders",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"orders"
-									]
-								}
-							},
-							"status": "Created",
-							"code": 201,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "date",
-									"value": "Thu, 23 Oct 2025 02:16:14 GMT"
-								},
-								{
-									"key": "server",
-									"value": "uvicorn"
-								},
-								{
-									"key": "content-length",
-									"value": "1077"
+									"value": "1526"
 								},
 								{
 									"key": "Content-Type",
@@ -2086,7 +2063,57 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": \"d25b1ebd-5287-489d-bbcf-6392da73809e\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-22\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-10-23T02:16:14.943648Z\",\n    \"client\": {\n        \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n        \"full_name\": \"Kristie Jackson\",\n        \"email\": \"mkelley@example.com\",\n        \"phone\": \"4685138662\",\n        \"doi\": \"0300989191\",\n        \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-10-23T01:57:29.566347Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-08-05\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 20\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-08-28\",\n            \"price_per_unit\": 18,\n            \"quantity\": 50\n        }\n    ]\n}"
+							"body": "{\n    \"id\": \"d7c4d22e-82d3-4a6a-b435-561179277514\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-27\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-11-08T20:48:29.068596Z\",\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-11-08T20:09:56.985285Z\"\n    },\n    \"client\": {\n        \"id\": \"41c49d12-1527-4f5c-a431-09bfcef08072\",\n        \"full_name\": \"Nina Ryan\",\n        \"email\": \"jared66@example.org\",\n        \"phone\": \"5525021725\",\n        \"doi\": \"3949586969\",\n        \"address\": \"755 Warren Mountain Apt. 075\\nClarkville, NC 60845\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-11-08T20:10:07.804289Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"20768bc8-49a7-4687-b583-598c027c66ca\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-11-08T20:10:07.872771Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"3ed06266-78d1-4192-92d6-a6166bea5987\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-06-02\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 10,\n            \"image_url\": \"https://s2.elespanol.com/2023/06/20/enclave-ods/historias/772933132_234095802_1024x576.jpg\"\n        },\n        {\n            \"id\": \"81cd2b5e-ed29-4aac-9260-a791372f9f64\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-03-20\",\n            \"price_per_unit\": 18,\n            \"quantity\": 5,\n            \"image_url\": \"https://img.freepik.com/vector-gratis/pastillas-medicas-composicion-realista_98292-1233.jpg\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Create Order (By Client)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"comments\": \"Por favor utilizar el timbre rojo\",\r\n    \"delivery_date\": \"2025-10-27\",\r\n    \"distribution_center_id\": \"20768bc8-49a7-4687-b583-598c027c66ca\",\r\n    //\"client_id\": \"41c49d12-1527-4f5c-a431-09bfcef08072\",\r\n    \"products\": [\r\n        {\r\n            \"product_id\": \"3ed06266-78d1-4192-92d6-a6166bea5987\",\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"product_id\": \"81cd2b5e-ed29-4aac-9260-a791372f9f64\",\r\n            \"quantity\": 5\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/orders",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 08 Nov 2025 20:47:04 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1282"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"cd4c00fb-4848-411a-a7b7-a0f1cd4f41a7\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-27\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-11-08T20:47:04.889594Z\",\n    \"client\": {\n        \"id\": \"41c49d12-1527-4f5c-a431-09bfcef08072\",\n        \"full_name\": \"Nina Ryan\",\n        \"email\": \"jared66@example.org\",\n        \"phone\": \"5525021725\",\n        \"doi\": \"3949586969\",\n        \"address\": \"755 Warren Mountain Apt. 075\\nClarkville, NC 60845\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-11-08T20:10:07.804289Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"20768bc8-49a7-4687-b583-598c027c66ca\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-11-08T20:10:07.872771Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"3ed06266-78d1-4192-92d6-a6166bea5987\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-06-02\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 10,\n            \"image_url\": \"https://s2.elespanol.com/2023/06/20/enclave-ods/historias/772933132_234095802_1024x576.jpg\"\n        },\n        {\n            \"id\": \"81cd2b5e-ed29-4aac-9260-a791372f9f64\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-03-20\",\n            \"price_per_unit\": 18,\n            \"quantity\": 5,\n            \"image_url\": \"https://img.freepik.com/vector-gratis/pastillas-medicas-composicion-realista_98292-1233.jpg\"\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -2096,12 +2123,33 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/orders",
+							"raw": "{{base_url}}/orders?route_id=null",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"orders"
+							],
+							"query": [
+								{
+									"key": "delivery_date",
+									"value": "2025-11-01",
+									"disabled": true
+								},
+								{
+									"key": "order_status",
+									"value": "returned",
+									"disabled": true
+								},
+								{
+									"key": "distribution_center_id",
+									"value": "2475a55e-7b9b-4d88-8be4-980399f52c1f",
+									"disabled": true
+								},
+								{
+									"key": "route_id",
+									"value": "null"
+								}
 							]
 						}
 					},
@@ -2172,7 +2220,7 @@
 							"variable": [
 								{
 									"key": "orderId",
-									"value": "d25b1ebd-5287-489d-bbcf-6392da73809e"
+									"value": "76426483-bfb0-400c-ab83-06a5cf65dfa9"
 								}
 							]
 						}
@@ -2195,7 +2243,7 @@
 									"variable": [
 										{
 											"key": "orderId",
-											"value": "5ee0785a-14c1-4349-8370-a934c08a3a89"
+											"value": "288d6d8b-47da-4cb9-bcfb-dc4794908f11"
 										}
 									]
 								}
@@ -2206,7 +2254,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Thu, 23 Oct 2025 02:10:32 GMT"
+									"value": "Sat, 08 Nov 2025 20:18:30 GMT"
 								},
 								{
 									"key": "server",
@@ -2214,7 +2262,7 @@
 								},
 								{
 									"key": "content-length",
-									"value": "1321"
+									"value": "1526"
 								},
 								{
 									"key": "Content-Type",
@@ -2223,14 +2271,8 @@
 									"type": "text"
 								}
 							],
-							"cookie": [
-								{
-									"expires": "Invalid Date",
-									"domain": "",
-									"path": ""
-								}
-							],
-							"body": "{\n    \"id\": \"5ee0785a-14c1-4349-8370-a934c08a3a89\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-22\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-10-23T02:08:04.157779Z\",\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-10-23T01:57:23.938432Z\"\n    },\n    \"client\": {\n        \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n        \"full_name\": \"Kristie Jackson\",\n        \"email\": \"mkelley@example.com\",\n        \"phone\": \"4685138662\",\n        \"doi\": \"0300989191\",\n        \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-10-23T01:57:29.566347Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-08-05\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 20\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-08-28\",\n            \"price_per_unit\": 18,\n            \"quantity\": 50\n        }\n    ]\n}"
+							"cookie": [],
+							"body": "{\n    \"id\": \"288d6d8b-47da-4cb9-bcfb-dc4794908f11\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-27\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-11-08T20:17:34.898268Z\",\n    \"seller\": {\n        \"id\": \"44444444-4444-4444-4444-444444444444\",\n        \"full_name\": \"Johann Sebastian Páez Campos\",\n        \"email\": \"sebastian.paezcampos@gmail.com\",\n        \"phone\": \"123456789\",\n        \"doi\": \"4444444444-4\",\n        \"role\": \"commercial\",\n        \"created_at\": \"2025-11-08T20:09:56.985285Z\"\n    },\n    \"client\": {\n        \"id\": \"41c49d12-1527-4f5c-a431-09bfcef08072\",\n        \"full_name\": \"Nina Ryan\",\n        \"email\": \"jared66@example.org\",\n        \"phone\": \"5525021725\",\n        \"doi\": \"3949586969\",\n        \"address\": \"755 Warren Mountain Apt. 075\\nClarkville, NC 60845\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-11-08T20:10:07.804289Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"20768bc8-49a7-4687-b583-598c027c66ca\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-11-08T20:10:07.872771Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"3ed06266-78d1-4192-92d6-a6166bea5987\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-06-02\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 10,\n            \"image_url\": \"https://s2.elespanol.com/2023/06/20/enclave-ods/historias/772933132_234095802_1024x576.jpg\"\n        },\n        {\n            \"id\": \"81cd2b5e-ed29-4aac-9260-a791372f9f64\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-03-20\",\n            \"price_per_unit\": 18,\n            \"quantity\": 5,\n            \"image_url\": \"https://img.freepik.com/vector-gratis/pastillas-medicas-composicion-realista_98292-1233.jpg\"\n        }\n    ]\n}"
 						},
 						{
 							"name": "Get Order By Id (By Client)",
@@ -2249,7 +2291,7 @@
 									"variable": [
 										{
 											"key": "orderId",
-											"value": "d25b1ebd-5287-489d-bbcf-6392da73809e"
+											"value": "cd4c00fb-4848-411a-a7b7-a0f1cd4f41a7"
 										}
 									]
 								}
@@ -2260,7 +2302,7 @@
 							"header": [
 								{
 									"key": "date",
-									"value": "Thu, 23 Oct 2025 02:16:40 GMT"
+									"value": "Sat, 08 Nov 2025 20:47:42 GMT"
 								},
 								{
 									"key": "server",
@@ -2268,7 +2310,7 @@
 								},
 								{
 									"key": "content-length",
-									"value": "1077"
+									"value": "1282"
 								},
 								{
 									"key": "Content-Type",
@@ -2278,7 +2320,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": \"d25b1ebd-5287-489d-bbcf-6392da73809e\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-22\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-10-23T02:16:14.943648Z\",\n    \"client\": {\n        \"id\": \"80e7c7c0-572e-4e6d-b0c4-bb50a50c24fc\",\n        \"full_name\": \"Kristie Jackson\",\n        \"email\": \"mkelley@example.com\",\n        \"phone\": \"4685138662\",\n        \"doi\": \"0300989191\",\n        \"address\": \"85600 Huynh Curve Apt. 357\\nNew William, UT 91318\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-10-23T01:57:29.554348Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"177bc254-b365-40eb-809e-d497eaa9ffe1\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-10-23T01:57:29.566347Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"f9361d19-974b-4d7a-b556-dfd232b73fa1\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-08-05\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 20\n        },\n        {\n            \"id\": \"9e80faf6-4eb7-49a4-8ee6-decbfe575ea1\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-08-28\",\n            \"price_per_unit\": 18,\n            \"quantity\": 50\n        }\n    ]\n}"
+							"body": "{\n    \"id\": \"cd4c00fb-4848-411a-a7b7-a0f1cd4f41a7\",\n    \"comments\": \"Por favor utilizar el timbre rojo\",\n    \"delivery_date\": \"2025-10-27\",\n    \"status\": \"received\",\n    \"created_at\": \"2025-11-08T20:47:04.889594Z\",\n    \"client\": {\n        \"id\": \"41c49d12-1527-4f5c-a431-09bfcef08072\",\n        \"full_name\": \"Nina Ryan\",\n        \"email\": \"jared66@example.org\",\n        \"phone\": \"5525021725\",\n        \"doi\": \"3949586969\",\n        \"address\": \"755 Warren Mountain Apt. 075\\nClarkville, NC 60845\",\n        \"role\": \"institutional\",\n        \"created_at\": \"2025-11-08T20:10:07.804289Z\"\n    },\n    \"distribution_center\": {\n        \"id\": \"20768bc8-49a7-4687-b583-598c027c66ca\",\n        \"name\": \"Centro de Distribución Bogotá\",\n        \"address\": \"Calle 123 #45-67, Bogotá, Colombia\",\n        \"city\": \"Bogotá\",\n        \"country\": \"Colombia\",\n        \"created_at\": \"2025-11-08T20:10:07.872771Z\"\n    },\n    \"products\": [\n        {\n            \"id\": \"3ed06266-78d1-4192-92d6-a6166bea5987\",\n            \"name\": \"Ibuprofeno 400mg\",\n            \"store\": \"CEDI Bogotá\",\n            \"batch\": \"IBU-BOG-2025\",\n            \"due_date\": \"2027-06-02\",\n            \"price_per_unit\": 12.5,\n            \"quantity\": 10,\n            \"image_url\": \"https://s2.elespanol.com/2023/06/20/enclave-ods/historias/772933132_234095802_1024x576.jpg\"\n        },\n        {\n            \"id\": \"81cd2b5e-ed29-4aac-9260-a791372f9f64\",\n            \"name\": \"Amoxicilina 500mg\",\n            \"store\": \"CEDI Medellín\",\n            \"batch\": \"AMX-MED-2025\",\n            \"due_date\": \"2027-03-20\",\n            \"price_per_unit\": 18,\n            \"quantity\": 5,\n            \"image_url\": \"https://img.freepik.com/vector-gratis/pastillas-medicas-composicion-realista_98292-1233.jpg\"\n        }\n    ]\n}"
 						}
 					]
 				}
@@ -2366,7 +2408,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"expected_date\": \"2025-11-03\",\r\n    \"address\": \"Tv 78K #41 - 35 Sur, Bogota, Colombia\"\r\n}",
+							"raw": "{\r\n    \"expected_date\": \"2025-11-11\",\r\n    \"address\": \"Tv 78K #41 - 35 Sur, Bogota, Colombia\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2448,7 +2490,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/visits?expected_date=2025-11-03&visit_status=pending",
+							"raw": "{{base_url}}/visits",
 							"host": [
 								"{{base_url}}"
 							],
@@ -2458,11 +2500,13 @@
 							"query": [
 								{
 									"key": "expected_date",
-									"value": "2025-11-03"
+									"value": "2025-11-03",
+									"disabled": true
 								},
 								{
 									"key": "visit_status",
-									"value": "pending"
+									"value": "pending",
+									"disabled": true
 								}
 							]
 						}
@@ -2686,7 +2730,7 @@
 							"variable": [
 								{
 									"key": "visitId",
-									"value": "12cb8f44-4470-406e-94f4-7b43ac33edae"
+									"value": "bba6dadd-e48d-48b1-92ab-923c8309dd4d"
 								}
 							]
 						}
@@ -2895,7 +2939,6 @@
 								{
 									"key": "Content-Type",
 									"value": "application/json",
-									"name": "Content-Type",
 									"description": "",
 									"type": "text"
 								}
@@ -2908,6 +2951,319 @@
 								}
 							],
 							"body": "{\n    \"total_count\": 1,\n    \"orders\": [\n        {\n            \"id\": \"d73bb426-fde1-45df-aada-6f8b21c26962\",\n            \"comments\": \"Por favor utilizar el timbre rojo\",\n            \"delivery_date\": \"2025-10-27\",\n            \"status\": \"preparing\",\n            \"created_at\": \"2025-10-20T21:44:36.795000Z\",\n            \"seller\": {\n                \"id\": \"55555555-5555-5555-5555-555555555555\",\n                \"full_name\": \"Miguel Fernando Padilla Espino\",\n                \"email\": \"miguelpadillaespino@gmail.com\",\n                \"phone\": \"123456789\",\n                \"doi\": \"5555555555-5\",\n                \"role\": \"commercial\",\n                \"created_at\": \"2025-10-29T07:22:26.736882Z\",\n                \"zone\": {\n                    \"id\": \"164ef870-5c16-4a73-b4e4-dc9a9fdfd1c5\",\n                    \"description\": \"Miami\",\n                    \"created_at\": \"2025-10-29T07:22:24.571552Z\"\n                }\n            },\n            \"products\": []\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Routes",
+			"item": [
+				{
+					"name": "Create Route",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ruta Bogotá Zona Norte\",\r\n    \"vehicle_plate\": \"ABC-123\",\r\n    \"restrictions\": \"Evitar vías con peaje\",\r\n    \"distribution_center_id\": \"c4833d2f-beaa-4c3e-80e7-b8e58846c111\",\r\n    \"order_ids\": [\r\n        \"3431edcb-2e23-4724-94c8-49cf591d1080\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Route",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Ruta Bogotá Zona Norte\",\r\n    \"vehicle_plate\": \"ABC-123\",\r\n    \"restrictions\": \"Evitar vías con peaje\",\r\n    \"distribution_center_id\": \"2475a55e-7b9b-4d88-8be4-980399f52c1f\",\r\n    \"order_ids\": [\r\n        \"bc169fe3-c569-4b99-be51-2715fce74810\",\r\n        \"76426483-bfb0-400c-ab83-06a5cf65dfa9\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/routes",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"routes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 12 Nov 2025 05:48:30 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "860"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"b619b43d-4443-4b49-ba4f-e8d37cc48955\",\n    \"name\": \"Ruta Bogotá Zona Norte\",\n    \"vehicle_plate\": \"ABC-123\",\n    \"restrictions\": \"Evitar vías con peaje\",\n    \"delivery_deadline\": \"2025-11-18\",\n    \"created_at\": \"2025-11-12T05:48:30.847399Z\",\n    \"distribution_center\": {\n        \"id\": \"2475a55e-7b9b-4d88-8be4-980399f52c1f\",\n        \"name\": \"Centro de Distribución Buenos Aires\",\n        \"address\": \"Av. Siempre Viva 101, Buenos Aires, Argentina\",\n        \"city\": \"Buenos Aires\",\n        \"country\": \"Argentina\",\n        \"created_at\": \"2025-11-12T05:04:40.278140Z\"\n    },\n    \"orders\": [\n        {\n            \"id\": \"76426483-bfb0-400c-ab83-06a5cf65dfa9\",\n            \"comments\": \"Llamar antes de la entrega.\",\n            \"delivery_date\": \"2025-11-18\",\n            \"status\": \"received\",\n            \"created_at\": \"2025-11-12T05:04:40.575721Z\"\n        },\n        {\n            \"id\": \"bc169fe3-c569-4b99-be51-2715fce74810\",\n            \"comments\": \"Dejar en la recepción si no hay nadie.\",\n            \"delivery_date\": \"2025-11-20\",\n            \"status\": \"received\",\n            \"created_at\": \"2025-11-12T05:04:40.575721Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Routes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Routes",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/routes",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"routes"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 12 Nov 2025 06:47:01 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "978"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"total_count\": 2,\n    \"routes\": [\n        {\n            \"id\": \"b619b43d-4443-4b49-ba4f-e8d37cc48955\",\n            \"name\": \"Ruta Bogotá Zona Norte\",\n            \"vehicle_plate\": \"ABC-123\",\n            \"restrictions\": \"Evitar vías con peaje\",\n            \"delivery_deadline\": \"2025-11-18\",\n            \"created_at\": \"2025-11-12T05:48:30.847399Z\",\n            \"distribution_center\": {\n                \"id\": \"2475a55e-7b9b-4d88-8be4-980399f52c1f\",\n                \"name\": \"Centro de Distribución Buenos Aires\",\n                \"address\": \"Av. Siempre Viva 101, Buenos Aires, Argentina\",\n                \"city\": \"Buenos Aires\",\n                \"country\": \"Argentina\",\n                \"created_at\": \"2025-11-12T05:04:40.278140Z\"\n            }\n        },\n        {\n            \"id\": \"0e657edf-b574-4971-a49b-3a33dd953ba5\",\n            \"name\": \"Ruta Bogotá Zona Norte\",\n            \"vehicle_plate\": \"ABC-123\",\n            \"restrictions\": \"Evitar vías con peaje\",\n            \"delivery_deadline\": \"2025-12-22\",\n            \"created_at\": \"2025-11-12T05:53:11.426474Z\",\n            \"distribution_center\": {\n                \"id\": \"c4833d2f-beaa-4c3e-80e7-b8e58846c111\",\n                \"name\": \"Centro de Distribución San José\",\n                \"address\": \"Calle Central 606, San José, Costa Rica\",\n                \"city\": \"San José\",\n                \"country\": \"Costa Rica\",\n                \"created_at\": \"2025-11-12T05:04:40.278140Z\"\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Route By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routes/:routeId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":routeId"
+							],
+							"variable": [
+								{
+									"key": "routeId",
+									"value": "b619b43d-4443-4b49-ba4f-e8d37cc48955"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Route By Id",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/routes/:routeId",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"routes",
+										":routeId"
+									],
+									"variable": [
+										{
+											"key": "routeId",
+											"value": "b619b43d-4443-4b49-ba4f-e8d37cc48955"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 12 Nov 2025 05:50:32 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "860"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"b619b43d-4443-4b49-ba4f-e8d37cc48955\",\n    \"name\": \"Ruta Bogotá Zona Norte\",\n    \"vehicle_plate\": \"ABC-123\",\n    \"restrictions\": \"Evitar vías con peaje\",\n    \"delivery_deadline\": \"2025-11-18\",\n    \"created_at\": \"2025-11-12T05:48:30.847399Z\",\n    \"distribution_center\": {\n        \"id\": \"2475a55e-7b9b-4d88-8be4-980399f52c1f\",\n        \"name\": \"Centro de Distribución Buenos Aires\",\n        \"address\": \"Av. Siempre Viva 101, Buenos Aires, Argentina\",\n        \"city\": \"Buenos Aires\",\n        \"country\": \"Argentina\",\n        \"created_at\": \"2025-11-12T05:04:40.278140Z\"\n    },\n    \"orders\": [\n        {\n            \"id\": \"76426483-bfb0-400c-ab83-06a5cf65dfa9\",\n            \"comments\": \"Llamar antes de la entrega.\",\n            \"delivery_date\": \"2025-11-18\",\n            \"status\": \"received\",\n            \"created_at\": \"2025-11-12T05:04:40.575721Z\"\n        },\n        {\n            \"id\": \"bc169fe3-c569-4b99-be51-2715fce74810\",\n            \"comments\": \"Dejar en la recepción si no hay nadie.\",\n            \"delivery_date\": \"2025-11-20\",\n            \"status\": \"received\",\n            \"created_at\": \"2025-11-12T05:04:40.575721Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Route Map",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routes/:routeId/map",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":routeId",
+								"map"
+							],
+							"variable": [
+								{
+									"key": "routeId",
+									"value": "b619b43d-4443-4b49-ba4f-e8d37cc48955"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Route Map",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/routes/:routeId/map",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"routes",
+										":routeId",
+										"map"
+									],
+									"variable": [
+										{
+											"key": "routeId",
+											"value": "b619b43d-4443-4b49-ba4f-e8d37cc48955"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 12 Nov 2025 06:26:40 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "847"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": "{\n    \"id\": \"b619b43d-4443-4b49-ba4f-e8d37cc48955\",\n    \"name\": \"Ruta Bogotá Zona Norte\",\n    \"vehicle_plate\": \"ABC-123\",\n    \"restrictions\": \"Evitar vías con peaje\",\n    \"delivery_deadline\": \"2025-11-18\",\n    \"created_at\": \"2025-11-12T05:48:30.847399Z\",\n    \"total_count\": 2,\n    \"stops\": [\n        {\n            \"order_id\": \"76426483-bfb0-400c-ab83-06a5cf65dfa9\",\n            \"order_status\": \"received\",\n            \"delivery_date\": \"2025-11-18\",\n            \"client_name\": \"Madison Guerrero\",\n            \"client_address\": \"6314 Haynes Keys Suite 147\\nEast Tamarachester, VT 78708\",\n            \"client_phone\": \"9490993126\",\n            \"latitude\": -14.063020175490816,\n            \"longitude\": -75.72770669356474\n        },\n        {\n            \"order_id\": \"bc169fe3-c569-4b99-be51-2715fce74810\",\n            \"order_status\": \"received\",\n            \"delivery_date\": \"2025-11-20\",\n            \"client_name\": \"Brandon Gonzalez\",\n            \"client_address\": \"2627 Martinez Skyway\\nNorth Richard, PW 83975\",\n            \"client_phone\": \"6096005700\",\n            \"latitude\": -14.065092257501739,\n            \"longitude\": -75.72826980824333\n        }\n    ]\n}"
 						}
 					]
 				}
