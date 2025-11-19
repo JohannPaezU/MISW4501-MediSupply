@@ -10,9 +10,7 @@ class TestRouteRouter(BaseTest):
             "vehicle_plate": "ABC-1234",
             "restrictions": "No heavy loads",
             "distribution_center_id": order.distribution_center_id,
-            "order_ids": [
-                order.id
-            ],
+            "order_ids": [order.id],
         }
 
     def test_register_route_with_invalid_parameters(self, authorized_client):
@@ -50,7 +48,9 @@ class TestRouteRouter(BaseTest):
         assert response.status_code == 404
         assert "Orders not found" in json_response["message"]
 
-    def test_register_route_with_nonexistent_distribution_center(self, authorized_client):
+    def test_register_route_with_nonexistent_distribution_center(
+        self, authorized_client
+    ):
         payload = self.create_route_payload()
         payload["distribution_center_id"] = "12345678-1234-1234-1234-123456789012"
         response = authorized_client.post(f"{self.prefix}/routes", json=payload)
@@ -59,7 +59,9 @@ class TestRouteRouter(BaseTest):
         assert response.status_code == 404
         assert "Distribution center not found" in json_response["message"]
 
-    def test_register_route_with_mismatched_distribution_center(self, authorized_client):
+    def test_register_route_with_mismatched_distribution_center(
+        self, authorized_client
+    ):
         payload = self.create_route_payload()
         other_distribution_center_id = next(
             dc.id
@@ -71,7 +73,10 @@ class TestRouteRouter(BaseTest):
         json_response = response.json()
 
         assert response.status_code == 400
-        assert "does not belong to the specified distribution center" in json_response["message"]
+        assert (
+            "does not belong to the specified distribution center"
+            in json_response["message"]
+        )
 
     def test_register_route_successfully(self, authorized_client):
         payload = self.create_route_payload()
@@ -82,7 +87,10 @@ class TestRouteRouter(BaseTest):
         assert json_response["name"] == payload["name"]
         assert json_response["vehicle_plate"] == payload["vehicle_plate"]
         assert json_response["restrictions"] == payload["restrictions"]
-        assert json_response["distribution_center"]["id"] == payload["distribution_center_id"]
+        assert (
+            json_response["distribution_center"]["id"]
+            == payload["distribution_center_id"]
+        )
         assert len(json_response["orders"]) == len(payload["order_ids"])
 
     def test_get_all_routes(self, authorized_client):
@@ -115,11 +123,16 @@ class TestRouteRouter(BaseTest):
         assert json_response["name"] == payload["name"]
         assert json_response["vehicle_plate"] == payload["vehicle_plate"]
         assert json_response["restrictions"] == payload["restrictions"]
-        assert json_response["distribution_center"]["id"] == payload["distribution_center_id"]
+        assert (
+            json_response["distribution_center"]["id"]
+            == payload["distribution_center_id"]
+        )
         assert len(json_response["orders"]) == len(payload["order_ids"])
 
     def test_get_route_map_not_found(self, authorized_client):
-        response = authorized_client.get(f"{self.prefix}/routes/nonexistent-route-id/map")
+        response = authorized_client.get(
+            f"{self.prefix}/routes/nonexistent-route-id/map"
+        )
         json_response = response.json()
 
         assert response.status_code == 404

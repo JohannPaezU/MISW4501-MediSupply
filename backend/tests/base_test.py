@@ -4,12 +4,12 @@ from fastapi.testclient import TestClient
 from src.core.security import create_access_token
 from src.models.db_models import (
     DistributionCenter,
+    Order,
     Product,
     Provider,
     User,
     Visit,
     Zone,
-    Order,
 )
 from src.models.enums.user_role import UserRole
 
