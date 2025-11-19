@@ -55,10 +55,6 @@ class ClientListAdapter(
             actionListener?.onRecommendationsClick(client)
         }
 
-        holder.binding.buttonVisit.setOnClickListener {
-            actionListener?.onVisitClick(client)
-        }
-
         // Toggle de detalles expandidos y botones al hacer click en la tarjeta
         holder.itemView.setOnClickListener {
             val isExpanded = holder.binding.expandedDetails.visibility == View.VISIBLE

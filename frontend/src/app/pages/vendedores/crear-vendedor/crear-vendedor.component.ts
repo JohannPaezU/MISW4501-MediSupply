@@ -117,6 +117,9 @@ export class CrearVendedorComponent implements OnInit {
         next: (response) => this.onCreateSuccess(response),
         error: (err) => this.onCreateError(err)
       });
+    setTimeout(() => {
+      this.router.navigate(['/vendedores/lista-vendedores']);
+    }, 3000);
 
   }
 

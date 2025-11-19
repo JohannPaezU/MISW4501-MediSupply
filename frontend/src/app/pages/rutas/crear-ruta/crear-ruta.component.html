@@ -1,1 +1,161 @@
-<p>crear-ruta works!</p>,
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">Crear Ruta</h1>
+    <div class="page-actions">
+      <button class="btn btn-secondary" (click)="navigateBack()" [disabled]="loading()">
+        Volver al Listado
+      </button>
+      <button class="btn btn-primary" (click)="openCreateRouteForm()" [disabled]="!canCreateRoute() || loading()">
+        Crear Ruta con Selección
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage()" class="alert alert-error">
+    <span>{{ errorMessage() }}</span>
+  </div>
+
+  <div *ngIf="successMessage()" class="toast success">
+    {{ successMessage() }}
+  </div>
+
+
+  <div *ngIf="loading() && !showCreateRouteForm()" class="loading-container">
+    <p>Cargando órdenes...</p>
+  </div>
+
+
+  <div *ngIf="showCreateRouteForm()" class="route-form-modal" (click)="cancelCreateRoute()">
+    <div class="route-form-content" (click)="$event.stopPropagation()">
+      <h2 class="form-title">Crear Nueva Ruta</h2>
+
+      <div class="form-content">
+        <div class="form-field">
+          <label class="form-label">Nombre de la Ruta *</label>
+          <input type="text" class="form-input" [value]="routeForm().name"
+            (input)="updateFormField('name', $any($event.target).value)" placeholder="Ej: Ruta Bogotá Zona Norte">
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">Placa del Vehículo *</label>
+          <input type="text" class="form-input" [value]="routeForm().vehicle_plate"
+            (input)="updateFormField('vehicle_plate', $any($event.target).value)" placeholder="Ej: ABC-123">
+        </div>
+
+        <div class="form-field form-field-full">
+          <label class="form-label">Restricciones</label>
+          <textarea class="form-input" [value]="routeForm().restrictions"
+            (input)="updateFormField('restrictions', $any($event.target).value)" rows="3"
+            placeholder="Ej: Evitar vías con peaje"></textarea>
+        </div>
+
+        <div class="selected-orders-summary">
+          <h3>Órdenes Seleccionadas: {{ getSelectedOrders().length }}</h3>
+          <p class="field-hint" *ngIf="getSelectedDistributionCenterId()">
+            Centro de Distribución: {{ groupedOrders()[getSelectedDistributionCenterId()!].centerName }}
+          </p>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-secondary" (click)="cancelCreateRoute()" [disabled]="loading()">
+          Cancelar
+        </button>
+        <button class="btn btn-primary" (click)="createRoute()" [disabled]="!validateRouteForm() || loading()">
+          {{ loading() ? 'Creando...' : 'Crear Ruta' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Listado de órdenes agrupadas por centro de distribución -->
+  <div *ngIf="!loading() && !showCreateRouteForm()">
+    <div *ngIf="getDistributionCenterKeys().length === 0" class="no-data">
+      <p>No hay órdenes disponibles para asignar a rutas.</p>
+      <button class="btn btn-link" (click)="loadOrders()">
+        Recargar órdenes
+      </button>
+    </div>
+
+    <div *ngFor="let centerId of getDistributionCenterKeys()" class="distribution-center-section">
+      <div class="center-header">
+        <div>
+          <h2 class="center-title">
+            {{ groupedOrders()[centerId].centerName }}
+            <span class="order-count">({{ groupedOrders()[centerId].orders.length }} órdenes)</span>
+          </h2>
+          <p class="center-info">{{ groupedOrders()[centerId].centerInfo }}</p>
+        </div>
+        <button
+          class="btn btn-link"
+          (click)="toggleDistributionCenterExpansion(centerId)">
+          {{ selectedDistributionCenter() === centerId ? 'Colapsar' : 'Expandir' }}
+        </button>
+      </div>
+
+      <div *ngIf="selectedDistributionCenter() === centerId || selectedDistributionCenter() === null"
+           class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">
+                <input
+                  type="checkbox"
+                  title="Seleccionar todas"
+                  [checked]="isAllSelected(centerId)"
+                  [indeterminate]="isSomeSelected(centerId)"
+                  (change)="toggleSelectAll(centerId)"
+                  (click)="$event.stopPropagation()">
+              </th>
+              <th>ID Orden</th>
+              <th>Fecha Creación</th>
+              <th>Fecha Entrega</th>
+              <th>Comentarios</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of groupedOrders()[centerId].orders"
+                [class.selected-row]="order.selected"
+                class="selectable-order-row"
+                (click)="toggleOrderSelection(centerId, order.id)">
+              <td (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  title="Seleccionar orden"
+                  [checked]="order.selected"
+                  (change)="toggleOrderSelection(centerId, order.id)">
+              </td>
+              <td>
+                <div class="id-cell">
+                  <span class="id-text">{{ truncateId(order.id) }}</span>
+                </div>
+              </td>
+              <td>{{ formatDate(order.created_at) }}</td>
+              <td>{{ formatDate(order.delivery_date) }}</td>
+              <td>{{ order.comments || 'Sin comentarios' }}</td>
+              <td>
+                <span class="status-badge status-received">{{ order.status }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="showSuccessAnimation()" class="success-animation-overlay">
+  <div class="success-animation-content">
+    <div class="success-checkmark">
+      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+      </svg>
+    </div>
+    <h2 class="success-title">¡Ruta Creada Exitosamente!</h2>
+    <p class="success-message">Redirigiendo al listado de rutas...</p>
+  </div>
+</div>
