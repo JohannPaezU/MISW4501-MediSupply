@@ -13,9 +13,9 @@ from src.schemas.base_schema import (
 
 
 class RouteCreateRequest(BaseSchema):
-    name: Annotated[str, Field(max_length=100)]
-    vehicle_plate: Annotated[str, Field(max_length=20)]
-    restrictions: Annotated[str | None, Field(max_length=255)] = None
+    name: Annotated[str, Field(min_length=4, max_length=100)]
+    vehicle_plate: Annotated[str, Field(min_length=6, max_length=20)]
+    restrictions: Annotated[str | None, Field(min_length=5, max_length=255)] = None
     distribution_center_id: Annotated[str, Field(min_length=36, max_length=36)]
     order_ids: Annotated[list[str], Field(min_length=1)]
 

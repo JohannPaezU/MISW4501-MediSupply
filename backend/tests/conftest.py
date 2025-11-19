@@ -155,6 +155,7 @@ def _populate_users(db: Session) -> list[User]:
             phone="123456789",
             role=UserRole.INSTITUTIONAL,
             doi="0000000000-0",
+            address="789 Corporate Ave",
             seller_id="11111111-1111-1111-1111-111111111111",
             geolocation_id=_get_random_geolocation(db=db).id,
         ),
