@@ -176,25 +176,25 @@ Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ej
 
 El proyecto utiliza estas variables de entorno. Cree un archivo `.env` en la raíz del proyecto basado en `.env.template`:
 
-| Variable | Descripción | Valor de Ejemplo |
-|----------|-------------|------------------|
-| `APP_PORT` | Puerto en el que escucha la aplicación FastAPI | `8000` |
-| `CORS_ORIGINS` | Orígenes permitidos para CORS (separados por coma) | `http://localhost:3000,http://localhost:8080` |
-| `LOGIN_URL` | URL de login del frontend | `http://localhost:3000/login` |
-| `GOOGLE_MAPS_API_KEY` | Clave API de Google Maps para servicios de geolocalización y geocodificación | Tu clave API de Google Maps |
-| `BUCKET_NAME` | Nombre del bucket de almacenamiento en GCP | `medi-supply-bucket-stg` |
-| `GCP_CREDENTIALS` | Credenciales JSON de la cuenta de servicio de GCP (formato JSON en string) | JSON de credenciales de GCP |
-| `POSTGRES_HOST` | Hostname/nombre de servicio para Postgres | `postgres_db` (docker-compose) o `localhost` |
-| `POSTGRES_PORT` | Puerto para conexión Postgres | `5432` |
-| `POSTGRES_USER` | Nombre de usuario Postgres | `admin` |
-| `POSTGRES_PASSWORD` | Contraseña Postgres | `admin` |
-| `POSTGRES_DB` | Nombre de la base de datos Postgres | `medi_supply` |
-| `OTP_EXPIRATION_MINUTES` | Tiempo de expiración del código OTP en minutos | `5` |
-| `JWT_SECRET_KEY` | Clave secreta para firma de tokens JWT | Cadena segura aleatoria (ej., generada con `openssl rand -hex 32`) |
-| `JWT_ALGORITHM` | Algoritmo para codificación JWT | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Tiempo de expiración del token JWT en minutos | `180` |
-| `EMAIL_SENDER` | Dirección de correo del remitente para notificaciones OTP | `noreply@medisupply.com` |
-| `EMAIL_API_KEY` | Clave API del proveedor de servicio de correo | Su clave API del servicio de correo |
+| Variable                      | Descripción                                                                  | Valor de Ejemplo                                                   |
+|-------------------------------|------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| `APP_PORT`                    | Puerto en el que escucha la aplicación FastAPI                               | `8000`                                                             |
+| `CORS_ORIGINS`                | Orígenes permitidos para CORS (separados por coma)                           | `http://localhost:3000,http://localhost:8080`                      |
+| `LOGIN_URL`                   | URL de login del frontend                                                    | `http://localhost:3000/login`                                      |
+| `GOOGLE_MAPS_API_KEY`         | Clave API de Google Maps para servicios de geolocalización y geocodificación | Tu clave API de Google Maps                                        |
+| `BUCKET_NAME`                 | Nombre del bucket de almacenamiento en GCP                                   | `medi-supply-bucket-stg`                                           |
+| `GCP_CREDENTIALS`             | Credenciales JSON de la cuenta de servicio de GCP (formato JSON en string)   | JSON de credenciales de GCP                                        |
+| `POSTGRES_HOST`               | Hostname/nombre de servicio para Postgres                                    | `postgres_db` (docker-compose) o `localhost`                       |
+| `POSTGRES_PORT`               | Puerto para conexión Postgres                                                | `5432`                                                             |
+| `POSTGRES_USER`               | Nombre de usuario Postgres                                                   | `admin`                                                            |
+| `POSTGRES_PASSWORD`           | Contraseña Postgres                                                          | `admin`                                                            |
+| `POSTGRES_DB`                 | Nombre de la base de datos Postgres                                          | `medi_supply`                                                      |
+| `OTP_EXPIRATION_MINUTES`      | Tiempo de expiración del código OTP en minutos                               | `5`                                                                |
+| `JWT_SECRET_KEY`              | Clave secreta para firma de tokens JWT                                       | Cadena segura aleatoria (ej., generada con `openssl rand -hex 32`) |
+| `JWT_ALGORITHM`               | Algoritmo para codificación JWT                                              | `HS256`                                                            |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Tiempo de expiración del token JWT en minutos                                | `180`                                                              |
+| `EMAIL_SENDER`                | Dirección de correo del remitente para notificaciones OTP                    | `noreply@medisupply.com`                                           |
+| `EMAIL_API_KEY`               | Clave API del proveedor de servicio de correo                                | Su clave API del servicio de correo                                |
 
 Vea `.env.template` para una plantilla con todas las variables requeridas.
 
