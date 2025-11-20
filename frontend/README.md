@@ -3,7 +3,7 @@
 Sistema de gestión para distribución de suministros médicos.
 
 
----
+----
 
 ## 📋 Requisitos Previos
 
