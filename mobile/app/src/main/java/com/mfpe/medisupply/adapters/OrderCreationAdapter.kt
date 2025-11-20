@@ -25,9 +25,18 @@ class OrderCreationAdapter : ListAdapter<Product, OrderCreationAdapter.OrderProd
             parent,
             false
         )
-        return OrderProductViewHolder(binding) { productId, newQuantity ->
-            quantities[productId] = newQuantity
-        }
+        return OrderProductViewHolder(
+            binding,
+            { productId, newQuantity ->
+                quantities[productId] = newQuantity
+                // Notificar que el item ha cambiado para actualizar la vista
+                val position = currentList.indexOfFirst { it.id == productId }
+                if (position != -1) {
+                    notifyItemChanged(position)
+                }
+            },
+            { productId -> quantities[productId] ?: 0 }
+        )
     }
 
     override fun onBindViewHolder(holder: OrderProductViewHolder, position: Int) {
@@ -42,7 +51,8 @@ class OrderCreationAdapter : ListAdapter<Product, OrderCreationAdapter.OrderProd
 
     class OrderProductViewHolder(
         private val binding: ItemOrderproductBinding,
-        private val onQuantityChanged: (String, Int) -> Unit
+        private val onQuantityChanged: (String, Int) -> Unit,
+        private val getCurrentQuantity: (String) -> Int
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: Product, currentQuantity: Int) {
@@ -65,15 +75,15 @@ class OrderCreationAdapter : ListAdapter<Product, OrderCreationAdapter.OrderProd
 
                 // Configurar botones de incremento/decremento
                 btnIncrease.setOnClickListener {
-                    val newQuantity = currentQuantity + 1
+                    val currentQty = getCurrentQuantity(product.id)
+                    val newQuantity = currentQty + 1
                     onQuantityChanged(product.id, newQuantity)
-                    tvQuantity.text = newQuantity.toString()
                 }
 
                 btnDecrease.setOnClickListener {
-                    val newQuantity = maxOf(0, currentQuantity - 1)
+                    val currentQty = getCurrentQuantity(product.id)
+                    val newQuantity = maxOf(0, currentQty - 1)
                     onQuantityChanged(product.id, newQuantity)
-                    tvQuantity.text = newQuantity.toString()
                 }
             }
         }
