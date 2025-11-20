@@ -109,3 +109,12 @@ class VisitBase(BaseSchema):
     visual_evidence_url: str | None = None
     status: VisitStatus
     created_at: datetime
+
+
+class RouteBase(BaseSchema):
+    id: str
+    name: str
+    vehicle_plate: str
+    restrictions: str | None = None
+    delivery_deadline: date
+    created_at: datetime

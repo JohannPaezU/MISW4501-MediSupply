@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 from src.core.security import create_access_token
 from src.models.db_models import (
     DistributionCenter,
+    Order,
     Product,
     Provider,
     User,
@@ -24,6 +25,7 @@ class BaseTest:
     zones: list[Zone]
     products: list[Product]
     distribution_centers: list[DistributionCenter]
+    orders: list[Order]
     visits: list[Visit]
 
     @pytest.fixture(autouse=True)
@@ -68,4 +70,5 @@ class BaseTest:
         self.zones = setup_teardown_db["zones"]
         self.products = setup_teardown_db["products"]
         self.distribution_centers = setup_teardown_db["distribution_centers"]
+        self.orders = setup_teardown_db["orders"]
         self.visits = setup_teardown_db["visits"]

@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import Field
 
@@ -8,6 +8,7 @@ from src.schemas.base_schema import (
     BaseSchema,
     DistributionCenterBase,
     OrderBase,
+    RouteBase,
     SellerBase,
     UserBase,
 )
@@ -19,11 +20,11 @@ class OrderProductCreateRequest(BaseSchema):
 
 
 class OrderCreateRequest(BaseSchema):
-    comments: Optional[Annotated[str | None, Field(max_length=255)]] = None
+    comments: Annotated[str | None, Field(max_length=255)] = None
     delivery_date: Annotated[date, Field()]
     distribution_center_id: Annotated[str, Field(min_length=36, max_length=36)]
     client_id: Annotated[str | None, Field(min_length=36, max_length=36)] = None
-    products: Annotated[list[OrderProductCreateRequest], Field(min_items=1)]
+    products: Annotated[list[OrderProductCreateRequest], Field(min_length=1)]
 
 
 class OrderProductDetail(BaseSchema):
@@ -34,6 +35,7 @@ class OrderProductDetail(BaseSchema):
     due_date: date
     price_per_unit: float
     quantity: int
+    image_url: str
 
     @classmethod
     def from_order_product(cls, order_product: OrderProduct) -> "OrderProductDetail":
@@ -45,6 +47,7 @@ class OrderProductDetail(BaseSchema):
             due_date=order_product.product.due_date,
             price_per_unit=order_product.product.price_per_unit,
             quantity=order_product.quantity,
+            image_url=order_product.product.image_url,
         )
 
 
@@ -52,9 +55,15 @@ class OrderResponse(OrderBase):
     seller: SellerBase | None = None
     client: UserBase
     distribution_center: DistributionCenterBase
+    route: RouteBase | None = None
     products: list[OrderProductDetail]
+
+
+class OrderMinimalResponse(OrderBase):
+    distribution_center: DistributionCenterBase
+    route: RouteBase | None = None
 
 
 class GetOrdersResponse(BaseSchema):
     total_count: int
-    orders: list[OrderBase]
+    orders: list[OrderMinimalResponse]

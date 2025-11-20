@@ -25,6 +25,7 @@ Este repositorio contiene la API backend del proyecto MediSupply. La API es una 
   - [Planes de Venta](#planes-de-venta)
   - [Centros de Distribución](#centros-de-distribución)
   - [Órdenes](#órdenes)
+  - [Rutas](#rutas)
   - [Clientes](#clientes)
   - [Visitas](#visitas)
   - [Reportes](#reportes)
@@ -106,6 +107,7 @@ Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ej
 │   │   ├── product_router.py       
 │   │   ├── provider_router.py      
 │   │   ├── report_router.py
+│   │   ├── route_router.py
 │   │   ├── seller_router.py        
 │   │   ├── selling_plan_router.py  
 │   │   ├── visit_router.py
@@ -119,6 +121,7 @@ Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ej
 │   │   ├── product_schema.py 
 │   │   ├── provider_schema.py 
 │   │   ├── report_schema.py
+│   │   ├── route_schema.py
 │   │   ├── seller_schema.py   
 │   │   ├── selling_plan_schema.py 
 │   │   ├── user_schema.py    
@@ -135,6 +138,7 @@ Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ej
 │   │   ├── product_service.py 
 │   │   ├── provider_service.py 
 │   │   ├── report_service.py
+│   │   ├── route_service.py
 │   │   ├── seller_service.py   
 │   │   ├── selling_plan_service.py 
 │   │   ├── storage_service.py
@@ -158,6 +162,7 @@ Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ej
     ├── test_product_router.py      
     ├── test_provider_router.py     
     ├── test_report_router.py
+    ├── test_route_router.py
     ├── test_security_access.py     
     ├── test_seller_router.py       
     ├── test_selling_plan_router.py 
@@ -171,25 +176,25 @@ Nota: Las pruebas son pruebas de integración y requieren que Docker esté en ej
 
 El proyecto utiliza estas variables de entorno. Cree un archivo `.env` en la raíz del proyecto basado en `.env.template`:
 
-| Variable | Descripción | Valor de Ejemplo |
-|----------|-------------|------------------|
-| `APP_PORT` | Puerto en el que escucha la aplicación FastAPI | `8000` |
-| `CORS_ORIGINS` | Orígenes permitidos para CORS (separados por coma) | `http://localhost:3000,http://localhost:8080` |
-| `LOGIN_URL` | URL de login del frontend | `http://localhost:3000/login` |
-| `GOOGLE_MAPS_API_KEY` | Clave API de Google Maps para servicios de geolocalización y geocodificación | Tu clave API de Google Maps |
-| `BUCKET_NAME` | Nombre del bucket de almacenamiento en GCP | `medi-supply-bucket-stg` |
-| `GCP_CREDENTIALS` | Credenciales JSON de la cuenta de servicio de GCP (formato JSON en string) | JSON de credenciales de GCP |
-| `POSTGRES_HOST` | Hostname/nombre de servicio para Postgres | `postgres_db` (docker-compose) o `localhost` |
-| `POSTGRES_PORT` | Puerto para conexión Postgres | `5432` |
-| `POSTGRES_USER` | Nombre de usuario Postgres | `admin` |
-| `POSTGRES_PASSWORD` | Contraseña Postgres | `admin` |
-| `POSTGRES_DB` | Nombre de la base de datos Postgres | `medi_supply` |
-| `OTP_EXPIRATION_MINUTES` | Tiempo de expiración del código OTP en minutos | `5` |
-| `JWT_SECRET_KEY` | Clave secreta para firma de tokens JWT | Cadena segura aleatoria (ej., generada con `openssl rand -hex 32`) |
-| `JWT_ALGORITHM` | Algoritmo para codificación JWT | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Tiempo de expiración del token JWT en minutos | `180` |
-| `EMAIL_SENDER` | Dirección de correo del remitente para notificaciones OTP | `noreply@medisupply.com` |
-| `EMAIL_API_KEY` | Clave API del proveedor de servicio de correo | Su clave API del servicio de correo |
+| Variable                      | Descripción                                                                  | Valor de Ejemplo                                                   |
+|-------------------------------|------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| `APP_PORT`                    | Puerto en el que escucha la aplicación FastAPI                               | `8000`                                                             |
+| `CORS_ORIGINS`                | Orígenes permitidos para CORS (separados por coma)                           | `http://localhost:3000,http://localhost:8080`                      |
+| `LOGIN_URL`                   | URL de login del frontend                                                    | `http://localhost:3000/login`                                      |
+| `GOOGLE_MAPS_API_KEY`         | Clave API de Google Maps para servicios de geolocalización y geocodificación | Tu clave API de Google Maps                                        |
+| `BUCKET_NAME`                 | Nombre del bucket de almacenamiento en GCP                                   | `medi-supply-bucket-stg`                                           |
+| `GCP_CREDENTIALS`             | Credenciales JSON de la cuenta de servicio de GCP (formato JSON en string)   | JSON de credenciales de GCP                                        |
+| `POSTGRES_HOST`               | Hostname/nombre de servicio para Postgres                                    | `postgres_db` (docker-compose) o `localhost`                       |
+| `POSTGRES_PORT`               | Puerto para conexión Postgres                                                | `5432`                                                             |
+| `POSTGRES_USER`               | Nombre de usuario Postgres                                                   | `admin`                                                            |
+| `POSTGRES_PASSWORD`           | Contraseña Postgres                                                          | `admin`                                                            |
+| `POSTGRES_DB`                 | Nombre de la base de datos Postgres                                          | `medi_supply`                                                      |
+| `OTP_EXPIRATION_MINUTES`      | Tiempo de expiración del código OTP en minutos                               | `5`                                                                |
+| `JWT_SECRET_KEY`              | Clave secreta para firma de tokens JWT                                       | Cadena segura aleatoria (ej., generada con `openssl rand -hex 32`) |
+| `JWT_ALGORITHM`               | Algoritmo para codificación JWT                                              | `HS256`                                                            |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Tiempo de expiración del token JWT en minutos                                | `180`                                                              |
+| `EMAIL_SENDER`                | Dirección de correo del remitente para notificaciones OTP                    | `noreply@medisupply.com`                                           |
+| `EMAIL_API_KEY`               | Clave API del proveedor de servicio de correo                                | Su clave API del servicio de correo                                |
 
 Vea `.env.template` para una plantilla con todas las variables requeridas.
 
@@ -264,6 +269,7 @@ La API proporciona los siguientes endpoints:
 - **GET** `/products` - Obtener la lista de todos los productos disponibles
 - **POST** `/products` - Registrar un nuevo producto en el sistema
 - **POST** `/products-batch` - Registrar múltiples productos de forma masiva
+- **GET** `/products/recommended` - Obtener la lista de productos recomendados para un cliente específico
 - **GET** `/products/{product_id}` - Obtener los detalles de un producto específico por su ID
 
 ### Planes de Venta
@@ -279,6 +285,12 @@ La API proporciona los siguientes endpoints:
 - **POST** `/orders` - Crear una nueva orden en el sistema
 - **GET** `/orders` - Obtener la lista de todas las órdenes creadas por el usuario actual
 - **GET** `/orders/{order_id}` - Obtener los detalles de una orden específica por su ID
+
+### Rutas
+- **POST** `/routes` - Crear una nueva ruta en el sistema (solo administradores)
+- **GET** `/routes` - Obtener la lista de todas las rutas disponibles (solo administradores)
+- **GET** `/routes/{route_id}` - Obtener los detalles de una ruta específica por su ID (solo administradores)
+- **GET** `/routes/{route_id}/map` - Obtener los detalles del mapa de una ruta con todas sus paradas (solo administradores)
 
 ### Clientes
 - **GET** `/clients` - Obtener la lista de clientes asociados al vendedor actual (solo usuarios comerciales)

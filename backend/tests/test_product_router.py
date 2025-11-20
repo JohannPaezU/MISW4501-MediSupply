@@ -1,5 +1,8 @@
 from unittest.mock import patch
 
+import pytest
+
+from src.models.enums.user_role import UserRole
 from tests.base_test import BaseTest
 
 
@@ -170,6 +173,87 @@ class TestProductRouter(BaseTest):
         assert "total_count" in json_response
         assert "products" in json_response
         assert isinstance(json_response["products"], list)
+
+    @pytest.mark.parametrize(
+        "authorized_client",
+        ["admin_token", "commercial_token", "institutional_token"],
+        indirect=True,
+    )
+    def test_get_all_products_with_filter(self, authorized_client):
+        next(iter(self.products))
+        filter_params = {"limit": 2}
+        response = authorized_client.get(
+            f"{self.prefix}/products", params=filter_params
+        )
+        json_response = response.json()
+        assert response.status_code == 200
+        assert "total_count" in json_response
+        assert "products" in json_response
+        assert isinstance(json_response["products"], list)
+
+    @pytest.mark.parametrize(
+        "authorized_client", ["admin_token", "commercial_token"], indirect=True
+    )
+    def test_get_all_recommended_products_without_client_id(self, authorized_client):
+        response = authorized_client.get(f"{self.prefix}/products/recommended")
+        json_response = response.json()
+        assert response.status_code == 400
+        assert (
+            json_response["message"]
+            == "Client ID must be provided for non-institutional users"
+        )
+
+    @pytest.mark.parametrize(
+        "authorized_client", ["admin_token", "commercial_token"], indirect=True
+    )
+    def test_get_all_recommended_products_with_invalid_client(self, authorized_client):
+        response = authorized_client.get(
+            f"{self.prefix}/products/recommended",
+            params={"client_id": "123e4567-e89b-12d3-a456-426614174000"},
+        )
+        json_response = response.json()
+        assert response.status_code == 404
+        assert json_response["message"] == "Client not found"
+
+    @pytest.mark.parametrize(
+        "authorized_client",
+        ["admin_token", "commercial_token", "institutional_token"],
+        indirect=True,
+    )
+    def test_get_all_recommended_products(self, authorized_client):
+        client = next(
+            user for user in self.users if user.role == UserRole.INSTITUTIONAL
+        )
+        response = authorized_client.get(
+            f"{self.prefix}/products/recommended", params={"client_id": client.id}
+        )
+        json_response = response.json()
+        assert response.status_code == 200
+        assert "total_count" in json_response
+        assert "products" in json_response
+        assert isinstance(json_response["products"], list)
+
+    @pytest.mark.parametrize(
+        "authorized_client",
+        ["admin_token", "commercial_token", "institutional_token"],
+        indirect=True,
+    )
+    @patch("src.services.product_service._get_ranked_products", return_value=[])
+    def test_get_all_recommended_products_without_orders(
+        self, mock_get_ranked_products, authorized_client
+    ):
+        client = next(
+            user for user in self.users if user.role == UserRole.INSTITUTIONAL
+        )
+        response = authorized_client.get(
+            f"{self.prefix}/products/recommended", params={"client_id": client.id}
+        )
+        json_response = response.json()
+        assert response.status_code == 200
+        assert "total_count" in json_response
+        assert "products" in json_response
+        assert isinstance(json_response["products"], list)
+        mock_get_ranked_products.assert_called()
 
     def test_get_product_not_found(self, authorized_client):
         response = authorized_client.get(

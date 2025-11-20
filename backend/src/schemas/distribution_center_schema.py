@@ -1,8 +1,14 @@
-from src.schemas.base_schema import BaseSchema, DistributionCenterBase, OrderBase
+from src.schemas.base_schema import (
+    BaseSchema,
+    DistributionCenterBase,
+    OrderBase,
+    RouteBase,
+)
 
 
 class DistributionCenterResponse(DistributionCenterBase):
     orders: list[OrderBase]
+    routes: list[RouteBase]
 
 
 class GetDistributionCentersResponse(BaseSchema):

@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { finalize, timer } from 'rxjs';
+import { finalize } from 'rxjs';
 
 import { ProveedorService } from '../../../services/proveedores/proveedor.service';
 import { ProviderCreateRequest } from '../../../interfaces/proveedor.intrface';
@@ -94,9 +94,11 @@ export class CrearProveedorComponent {
         this.showToast(message, 'error');
       }
     });
+    setTimeout(() => {
+      this.router.navigate(['/proveedores/lista-proveedores']);
+    }, 3000);
 
   }
-
 
   showToast(message: string, type: 'success' | 'error'): void {
     this.toastMessage = message;
@@ -108,7 +110,6 @@ export class CrearProveedorComponent {
       this.cdr.detectChanges();
     }, 5000);
   }
-
 
 }
 
