@@ -9,6 +9,7 @@ MediSupply es una aplicación móvil Android desarrollada en Kotlin que forma pa
 ### Estructura de Directorios
 
 
+
 ```text
 mobile/
 ├── app/
