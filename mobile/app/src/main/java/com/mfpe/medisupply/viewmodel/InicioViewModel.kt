@@ -22,7 +22,7 @@ class InicioViewModel(
     val text: LiveData<String> = _text
 
     fun scheduleVisit(authToken: String, expectedDate: String, onResult: (Boolean, String) -> Unit) {
-        val visitRequest = VisitRequest(expectedDate)
+        val visitRequest = VisitRequest(expectedDate.substring(0, 10))
         clientRepository.createVisit(authToken, visitRequest).enqueue(object : Callback<VisitResponse> {
             override fun onResponse(call: Call<VisitResponse>, response: Response<VisitResponse>) {
                 if (response.isSuccessful && response.body() != null) {
